@@ -54,7 +54,7 @@ window.ab-chess = window.ab-chess || function (id, width, options) {
       var rowNumber = parseInt(squareName[1]);
 
       if (rowNumber % 2 === 0) {
-          return colNumber % 2 === 1counter
+          return colNumber % 2 === 1;
       } else {
           return colNumber % 2 === 0;
       }
@@ -69,13 +69,13 @@ window.ab-chess = window.ab-chess || function (id, width, options) {
       var i = 0;
       var j = 0;
       var position = fen.replace(/\s.*/, '');
+      var regex_fen = /^([BKNPQR1-8]{1,8}\/){7}[BKNQPR1-8]{1,8}/i;
+      var regex_square = /[BKNPQR1]/i;
+      var regex_number = /[2-8]/;
       var row = '';
       var rows = position.split('/');
-      var regExpFEN = /^([BKNPQR1-8]{1,8}\/){7}[BKNQPR1-8]{1,8}/i;
-      var regExpFENCase = /[BKNPQR1]/i;
-      var regExpFENChiffre = /[2-8]/;
 
-      if (!regExpFEN.test(fen)) {
+      if (!regex_fen.test(fen)) {
           return false;
       }
       
@@ -85,10 +85,10 @@ window.ab-chess = window.ab-chess || function (id, width, options) {
           
           for (j = 0; j < row.length; j += 1) {
               char = row.charAt(j);
-              if (regExpFENCase.test(char)) {
+              if (regex_square.test(char)) {
                   counter += 1;
                   
-              } else if (regExpFENChiffre.test(char)) {
+              } else if (regex_number.test(char)) {
                   counter += parseInt(char);
                   
               } else {
