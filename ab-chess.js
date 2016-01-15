@@ -1,13 +1,13 @@
 // The ab-chess object will expose some functions for managing chessboards, chessgames, etc...
 
-window.ab - chess = window.ab - chess || function (id, width, options) {
+window.abchess = window.abchess || function (id, width, options) {
     'use strict';
   
     // Chess constants
   
     var columns = 'abcdefgh';
 
-    var piece = {
+    var chess_piece = {
         black: 'b',
         black_bishop: 'b',
         black_king: 'k',
@@ -25,13 +25,15 @@ window.ab - chess = window.ab - chess || function (id, width, options) {
         white_rook: 'R'
     };
 
-    var html_id = {
-
-    };
-
     var error = {
         fen: 'Invalid FEN string.'
     };
+
+    var images_path = '/images/wikipedia/';
+
+    var png_extension = '.png';
+
+
 
     function Chessboard(id, width) {
     
@@ -134,8 +136,8 @@ window.ab - chess = window.ab - chess || function (id, width, options) {
 
             for (i = 0; i < rows.length; i += 1) {
                 row = rows[i];
-                numColonne = 1;
-                numrow = 8 - i;
+                colNumber = 1;
+                rowNumber = 8 - i;
           
                 // Columns loop
 
@@ -143,18 +145,18 @@ window.ab - chess = window.ab - chess || function (id, width, options) {
                     char = row.charAt(j);
 
                     if (regex_number.test(char)) {
-                        numColonne += parseInt(char);
+                        colNumber += parseInt(char);
 
                     } else if (regex_piece.test(char)) {
-                        nomCase = columns[numColonne - 1] + numrow;
-                        nomPiece = char.toLowerCase() === char ?
-                            BLACK + char.toLowerCase() :
-                            WHITE + char.toLowerCase();
-                        this.placerPiece(nomCase, nomPiece);
-                        numColonne += 1;
+                        square = columns[colNumber - 1] + rowNumber;
+                        piece = char.toLowerCase() === char ?
+                            chess_piece.black + char.toLowerCase() :
+                            chess_piece.white + char.toLowerCase();
+                        this.placerPiece(square, piece);
+                        colNumber += 1;
 
                     } else {
-                        throw new SyntaxError(ERREURS.FEN);
+                        throw new SyntaxError(error.fen);
                     }
                 }
             }
@@ -162,27 +164,26 @@ window.ab - chess = window.ab - chess || function (id, width, options) {
 
         createSquares: function () {
       
-            // Création des cases dans propriété
+            // Create the chessboard squares property.
   
-            var caseBlanche = false;
+            var isWhiteSquare = false;
             var caseHTML;
-            var colonne = '';
+            var column = '';
             var cssClass = '';
-            var numColonne = 0;
-            var numrow = 0;
+            var colNumber = 0;
+            var rowNumber = 0;
 
-            for (numrow = 1; numrow < 9; numrow += 1) {
+            for (rowNumber = 1; rowNumber < 9; rowNumber += 1) {
 
-                for (numColonne = 1; numColonne < 9; numColonne += 1) {
-                    colonne = COLONNES[numColonne - 1];
-                    caseBlanche =
-                    Echiquier.estCaseBlanche(colonne + numrow);
+                for (colNumber = 1; colNumber < 9; colNumber += 1) {
+                    column = columns[colNumber - 1];
+                    isWhiteSquare = Chessboard.isWhiteSquare(column + rowNumber);
                     caseHTML = document.createElement("DIV");
-                    cssClass = caseBlanche ?
+                    cssClass = isWhiteSquare ?
                         CSS.CASE + " " + CSS.CASE_BLANCHE :
                         CSS.CASE + " " + CSS.CASE_NOIRE;
                     caseHTML.className = cssClass;
-                    this.casesHTML[colonne + numrow] = caseHTML;
+                    this.casesHTML[column + rowNumber] = caseHTML;
                 }
             }
         },
@@ -191,18 +192,17 @@ window.ab - chess = window.ab - chess || function (id, width, options) {
       
             // Draw the chessboard
       
-            var
-                bordureBas,
-                bordureDroite,
-                caseHTML,
-                casesHTML,              // Element conteneur cases
-                colonne = '',
-                echiquierHTML,          // Element échiquier entier
-                i = 0,
-                j = 0,
-                morceauBordure,
-                numColonne = 0,
-                numrow = 0;
+            var bottomBorder;
+            var rightBorder;
+            var caseHTML;
+            var casesHTML;              // Element conteneur cases
+            var column = '';
+            var echiquierHTML;          // Element échiquier entier
+            var i = 0;
+            var j = 0;
+            var borderFragment;
+            var colNumber = 0;
+            var rowNumber = 0;
     
             // Construction échiquier
 
@@ -218,17 +218,17 @@ window.ab - chess = window.ab - chess || function (id, width, options) {
             // Cases : a8 => h8. Si retourne : h1 => a1
 
             for (i = 8; i > 0; i -= 1) {
-                numrow = i;
+                rowNumber = i;
                 if (this.inverse) {
-                    numrow = 9 - numrow;
+                    rowNumber = 9 - rowNumber;
                 }
                 for (j = 1; j < 9; j += 1) {
-                    numColonne = j;
+                    colNumber = j;
                     if (this.inverse) {
-                        numColonne = 9 - numColonne;
+                        colNumber = 9 - colNumber;
                     }
-                    colonne = COLONNES[numColonne - 1];
-                    caseHTML = this.casesHTML[colonne + numrow];
+                    column = columns[colNumber - 1];
+                    caseHTML = this.casesHTML[column + rowNumber];
                     casesHTML.appendChild(caseHTML);
                 }
             }
@@ -237,42 +237,42 @@ window.ab - chess = window.ab - chess || function (id, width, options) {
 
                 // Bordure horizontale (bas)
 
-                bordureBas = document.createElement("DIV");
-                bordureBas.className = CSS.BORDURE_HORIZONTALE;
-                bordureBas.style.width = this.width + "px";
+                bottomBorder = document.createElement("DIV");
+                bottomBorder.className = CSS.BORDURE_HORIZONTALE;
+                bottomBorder.style.width = this.width + "px";
 
                 for (i = 1; i < 9; i += 1) {
-                    numColonne = i;
+                    colNumber = i;
                     if (this.inverse) {
-                        numColonne = 9 - numColonne;
+                        colNumber = 9 - colNumber;
                     }
-                    morceauBordure = document.createElement("DIV");
-                    morceauBordure.className = CSS.MORCEAU_HORIZONTAL;
-                    morceauBordure.innerHTML =
-                    COLONNES[numColonne - 1].toUpperCase();
-                    bordureBas.appendChild(morceauBordure);
+                    borderFragment = document.createElement("DIV");
+                    borderFragment.className = CSS.MORCEAU_HORIZONTAL;
+                    borderFragment.innerHTML =
+                    columns[colNumber - 1].toUpperCase();
+                    bottomBorder.appendChild(borderFragment);
                 }
 
                 // Bordure verticale (droite)
 
-                bordureDroite = document.createElement("DIV");
-                bordureDroite.className = CSS.BORDURE_VERTICALE;
-                bordureDroite.style.height = this.width + "px";
+                rightBorder = document.createElement("DIV");
+                rightBorder.className = CSS.BORDURE_VERTICALE;
+                rightBorder.style.height = this.width + "px";
 
                 for (i = 8; i > 0; i -= 1) {
-                    numrow = i;
+                    rowNumber = i;
                     if (this.inverse) {
-                        numrow = 9 - numrow;
+                        rowNumber = 9 - rowNumber;
                     }
-                    morceauBordure = document.createElement("DIV");
-                    morceauBordure.className = CSS.MORCEAU_VERTICAL;
-                    morceauBordure.style.lineHeight = (this.width / 8) + "px";
-                    morceauBordure.innerHTML = numrow;
-                    bordureDroite.appendChild(morceauBordure);
+                    borderFragment = document.createElement("DIV");
+                    borderFragment.className = CSS.MORCEAU_VERTICAL;
+                    borderFragment.style.lineHeight = (this.width / 8) + "px";
+                    borderFragment.innerHTML = rowNumber;
+                    rightBorder.appendChild(borderFragment);
                 }
 
-                echiquierHTML.appendChild(bordureDroite);
-                echiquierHTML.appendChild(bordureBas);
+                echiquierHTML.appendChild(rightBorder);
+                echiquierHTML.appendChild(bottomBorder);
             }
 
             this.container.appendChild(echiquierHTML);
@@ -285,7 +285,7 @@ window.ab - chess = window.ab - chess || function (id, width, options) {
       
             var pieceHTML = document.createElement("DIV");
 
-            pieceHTML.style.backgroundImage = "url('" + CHEMIN_IMAGES + piece + PNG_EXTENSION + "')";
+            pieceHTML.style.backgroundImage = "url('" + images_path + piece + png_extension + "')";
             this.casesHTML[nomCase].appendChild(pieceHTML);
         }
 
