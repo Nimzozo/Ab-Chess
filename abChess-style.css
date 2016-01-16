@@ -1,0 +1,62 @@
+#abc {
+    background: lightsteelblue;
+}
+
+.inlineBlock {
+    display: inline-block;
+    margin: auto;
+    vertical-align: top;
+}
+
+.squaresDiv {
+    display: inline-block;
+    border: 1px solid black;
+    vertical-align: top;
+}
+
+.square {
+    display: inline-block;
+    position: relative;
+    width: 12.5%;
+    height: 12.5%;
+    margin: 0;
+    vertical-align: top;
+}
+
+.whiteSquare {
+    background: peachpuff;
+}
+
+.blackSquare {
+    background: darksalmon;
+}
+
+.square > div {
+    height: 100%;
+    background-size: 100% 100%;
+}
+
+.bottomBorder {
+    height: 20px;
+    text-align: center;
+    font-size: 80%;
+    line-height: 20px;
+}
+
+.bottomBorder > div {
+    display: inline-block;
+    width: 12.5%;
+    vertical-align: top;
+}
+
+.rightBorder {
+    display: inline-block;
+    width: 20px;
+    text-align: center;
+    font-size: 80%;
+    vertical-align: top;
+}
+
+.rightBorder > div {
+    height: 12.5%;
+}
