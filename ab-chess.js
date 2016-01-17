@@ -1,3 +1,5 @@
+// This file is useless and should be deleted.
+
 // The ab-chess object will expose some functions for managing chessboards, chessgames, etc...
 
 window.abchess = window.abchess || function (id, width, options) {
