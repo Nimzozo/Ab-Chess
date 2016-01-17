@@ -1,11 +1,14 @@
-// Chess script
+// abChess script
 
 window.abChess = window.abChess || function (containerId, width) {
     'use strict';
 
-    // The global abChess() function
+    // The global abChess() module
+
+    var abc;
 
     var columns = 'abcdefgh';
+
     var chess_piece = {
         black: 'b',
         black_bishop: 'b',
@@ -22,6 +25,7 @@ window.abChess = window.abChess || function (containerId, width) {
         white_queen: 'Q',
         white_rook: 'R'
     };
+
     var css = {
         black_square: 'blackSquare',
         bottom_border: 'bottomBorder',
@@ -31,10 +35,13 @@ window.abChess = window.abChess || function (containerId, width) {
         squares_div: 'squaresDiv',
         white_square: 'whiteSquare'
     };
+
     var default_fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+
     var error = {
         fen: 'Invalid FEN string.'
     };
+
     var images_path = '../../Images/wikipedia/';
     var png_extension = '.png';
 
@@ -276,7 +283,7 @@ window.abChess = window.abChess || function (containerId, width) {
 
     // Returned api.
 
-    var abc = new Chessboard(containerId, width);
+    abc = new Chessboard(containerId, width);
 
     return {
         draw: function () {
@@ -286,6 +293,14 @@ window.abChess = window.abChess || function (containerId, width) {
 
         fen: function (fen) {
             abc.loadFEN(fen);
+        },
+
+        flip: function () {
+            abc.isFlipped = !abc.isFlipped;
+            while (abc.container.hasChildNodes()) {
+                abc.container.removeChild(abc.container.lastChild);
+            }
+            abc.draw();
         }
     };
 
