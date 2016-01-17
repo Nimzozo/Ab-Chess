@@ -173,7 +173,57 @@ window.abChess = window.abChess || function (containerId, width) {
 
             // Load a position from a FEN string.
 
+            var chars = [];
+            var colNumber = 0;
+            var piece = '';
+            var position;
+            var regex_number = /[1-8]/;
+            var regex_piece = /[BKNPQR]/i;
+            var rowNumber = 0;
+            var rows = [];
+            var square = '';
             fen = fen || default_fen;
+            if (!Chessboard.isValidFEN(fen)) {
+                throw new SyntaxError(error.fen);
+            }
+            position = fen.replace(/\s.*/, '');
+            rows = position.split('/');
+            rowNumber = 8;
+            rows.forEach(function (rowValue) {
+
+                // Rows loop
+
+                colNumber = 1;
+                chars = rowValue.split('');
+                chars.forEach(function (char) {
+
+                    // Columns loop
+
+                    if (regex_number.test(char)) {
+                        colNumber += parseInt(char);
+                    } else if (regex_piece.test(char)) {
+                        square = columns[colNumber - 1] + rowNumber;
+                        piece = (char.toLowerCase() === char)
+                            ? chess_piece.black + char.toLowerCase()
+                            : chess_piece.white + char.toLowerCase();
+                        the_object.putPiece(square, piece);
+                        colNumber += 1;
+                    } else {
+                        throw new SyntaxError(error.fen);
+                    }
+                });
+                rowNumber -= 1;
+            });
+        };
+
+        the_object.putPiece = function (square, piece) {
+
+            // Put a piece on a square.
+            // Parameters are strings.
+
+            var htmlPiece = document.createElement("DIV");
+            htmlPiece.style.backgroundImage = 'url("' + images_path + piece + png_extension + '")';
+            the_object.htmlSquares[square].appendChild(htmlPiece);
         };
 
         return the_object;
@@ -196,6 +246,7 @@ window.abChess = window.abChess || function (containerId, width) {
 
         // FEN string validator
 
+        var chars = [];
         var position = fen.replace(/\s.*/, '');
         var regex_fen = /^([BKNPQR1-8]{1,8}\/){7}[BKNQPR1-8]{1,8}/i;
         var regex_number = /[2-8]/;
@@ -205,21 +256,21 @@ window.abChess = window.abChess || function (containerId, width) {
         if (!regex_fen.test(fen)) {
             return false;
         }
-        rows.forEach(function (value) {
+        return rows.every(function (value) {
             squaresCounter = 0;
-            value.forEach(function (char) {
+            chars = value.split('');
+            chars.every(function (char) {
                 if (regex_square.test(char)) {
                     squaresCounter += 1;
-                } else if (regex_number.test(char)) {
-                    squaresCounter += parseInt(char);
-                } else {
-                    return false;
+                    return true;
                 }
-            });
-            if (squaresCounter !== 8) {
+                if (regex_number.test(char)) {
+                    squaresCounter += parseInt(char);
+                    return true;
+                }
                 return false;
-            }
-            return true;
+            });
+            return (squaresCounter === 8);
         });
     };
 
