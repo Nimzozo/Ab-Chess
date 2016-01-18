@@ -62,19 +62,22 @@ window.abChess = window.abChess || function (containerId, width) {
 
         the_square.putPiece = function (piece) {
 
-            // Put a piece on a square.
+            // Put a piece on the square.
 
             var htmlPiece = document.createElement("DIV");
             htmlPiece.style.backgroundImage = 'url("' + images_path + piece + png_extension + '")';
             the_square.div.appendChild(htmlPiece);
+            the_square.isEmpty = false;
         };
 
         the_square.removePiece = function () {
 
-            // Remove a piece from a square.
+            // Remove the piece from the square.
 
             if (!the_square.isEmpty) {
-                //the_square.div;
+                while (the_square.div.hasChildNodes()) {
+                    the_square.div.removeChild(the_square.div.lastChild);
+                }
                 the_square.isEmpty = true;
                 the_square.piece = '';
             }
@@ -82,7 +85,7 @@ window.abChess = window.abChess || function (containerId, width) {
 
         the_square.select = function () {
 
-            // Select or unselect a square.
+            // Select or unselect the square.
 
             var initialClass = css.square + ' ';
             if (the_square.isSelected) {
@@ -107,9 +110,9 @@ window.abChess = window.abChess || function (containerId, width) {
         var colNumber = columns.indexOf(name[0]) + 1;
         var rowNumber = parseInt(name[1]);
         if (rowNumber % 2 === 0) {
-            return colNumber % 2 === 1;
+            return (colNumber % 2 === 1);
         } else {
-            return colNumber % 2 === 0;
+            return (colNumber % 2 === 0);
         }
     };
 
@@ -122,6 +125,7 @@ window.abChess = window.abChess || function (containerId, width) {
         var the_board = {
             container: document.getElementById(containerId),
             containerId: containerId,
+            fen: '',
             game: {},
             hasBorder: true,
             isFlipped: false,
@@ -265,6 +269,15 @@ window.abChess = window.abChess || function (containerId, width) {
             }
         };
 
+        the_board.empty = function () {
+
+            // Remove all the pieces of the board.
+
+            Object.keys(the_board.htmlSquares).forEach(function (key) {
+                the_board.htmlSquares[key].removePiece();
+            });
+        };
+
         the_board.loadFEN = function (fen) {
 
             // Load a position from a FEN string.
@@ -283,7 +296,9 @@ window.abChess = window.abChess || function (containerId, width) {
             if (!Chessboard.isValidFEN(fen)) {
                 throw new SyntaxError(error.fen);
             }
+            the_board.empty();
             position = fen.replace(/\s.*/, '');
+            the_board.fen = position;
             rows = position.split('/');
             rowNumber = 8;
             rows.forEach(function (rowValue) {
@@ -371,7 +386,7 @@ window.abChess = window.abChess || function (containerId, width) {
             "(O-O-O|" +
             "O-O|" +
             "([BNQR][a-h]?[1-8]?|K)x?[a-h][1-8]|" +
-            "([a-h]x)?[a-h][1-8](=[BNQR])?" +
+            "([a-h]x)?[a-h][1-8](\=[BNQR])?" +
             ")(\\+|#)?";
         var regex = new RegExp(regexString, "gm");
         return regex.test(pgn.trim());
