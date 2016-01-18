@@ -3,20 +3,24 @@
 
 <head>
     <title>AB-Chess test page</title>
-    <link rel="stylesheet" href="abChess-0.1/abChess-style.css">
+    <link rel="stylesheet" href="css/abChess-0.1/abChess-style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
 
-    <h1>This is the AB-Chess test page.</h1>
-    <div id="abc"></div>
-    <script src='abChess-0.1/abChess-0.1.js'></script>
-    <script>
-        var test = abChess('abc', 400);
-        test.draw();
-        test.fen();
-    </script>
-        
+    <div id='chessboardContainer'>
+        <h1>This is the AB-Chess test page.</h1>
+        <div id="abc"></div>
+        <div id="commands">
+            <input id="flipButton" type="button" value="Flip">
+        </div>
+    </div>
+    <ul id='testList'></ul>
+
+    <script src="js/tester-function.js"></script>
+    <script src='js/abChess-0.1/abChess-0.1.js'></script>
+    <script src='js/main.js'></script>
 </body>
 
 </html>
