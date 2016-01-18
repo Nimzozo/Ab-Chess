@@ -9,6 +9,7 @@ Properties :
 
 container
 containerId
+fen
 game
 hasBorder
 isFlipped
@@ -20,6 +21,7 @@ Methods :
 activateEventHandlers()
 createHTMLSquares()
 draw()
+empty()
 loadFEN(fen)
 
 Static methods :
