@@ -1,0 +1,28 @@
+#chessboardContainer {
+    text-align: center;
+}
+
+#abc {
+    background: lightsteelblue;
+    margin: auto;
+    display: inline-block;
+}
+
+#commands {
+    width: 400px;
+    border: 2px solid grey;
+    margin: 8px auto;
+}
+
+#commands > * {
+    margin: 8px;
+    background-color: lightblue;
+    border: none;
+    height: 50px;
+    width: 80px;
+    font-size: 2em;
+}
+
+#commands > *:hover {
+    background-color: lightskyblue;
+}
