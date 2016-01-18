@@ -1,0 +1,18 @@
+Class :
+
+ChessBoard(containerId, width)
+
+Methods :
+
+activateEventHandlers()
+createHTMLSquares()
+draw()
+loadFEN(fen)
+movePiece(start, arrival)
+putPiece(square, piece)
+selectSquare(square)
+
+Static methods :
+
+isWhiteSquare(square)
+isValidFEN(fen)
