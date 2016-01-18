@@ -1,6 +1,19 @@
+abChess documentation text file
+
+
 Class :
 
 ChessBoard(containerId, width)
+
+Properties :
+
+container
+containerId
+game
+hasBorder
+isFlipped
+htmlSquares
+width
 
 Methods :
 
@@ -16,3 +29,4 @@ Static methods :
 
 isWhiteSquare(square)
 isValidFEN(fen)
+
