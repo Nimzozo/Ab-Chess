@@ -14,15 +14,14 @@
     margin: 8px auto;
 }
 
-#commands > * {
+#commands > input[type='button'] {
     margin: 8px;
-    background-color: lightblue;
+    background-color: gainsboro;
     border: none;
-    height: 50px;
-    width: 80px;
-    font-size: 2em;
+    height: 30px;
+    width: 50px;
 }
 
-#commands > *:hover {
+#commands > input[type='button']:hover {
     background-color: lightskyblue;
 }
