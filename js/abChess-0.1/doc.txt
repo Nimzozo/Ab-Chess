@@ -21,12 +21,32 @@ activateEventHandlers()
 createHTMLSquares()
 draw()
 loadFEN(fen)
-movePiece(start, arrival)
-putPiece(square, piece)
-selectSquare(square)
 
 Static methods :
 
-isWhiteSquare(square)
 isValidFEN(fen)
 
+
+Class :
+
+Square(name)
+
+Properties :
+
+clickHandler
+div
+isEmpty
+isSelected
+isWhite
+name
+piece
+
+Methods :
+
+putPiece(piece)
+removePiece()
+select()
+
+Static methods :
+
+isWhite(name)
