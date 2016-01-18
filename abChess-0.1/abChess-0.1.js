@@ -3,7 +3,7 @@
 window.abChess = window.abChess || function (containerId, width) {
     'use strict';
 
-    // The global abChess() module
+    // The global abChess module
 
     var abc;
 
@@ -31,6 +31,7 @@ window.abChess = window.abChess || function (containerId, width) {
         bottom_border: 'bottomBorder',
         inline_block: 'inlineBlock',
         right_border: 'rightBorder',
+        selected_square: 'selectedSquare',
         square: 'square',
         squares_div: 'squaresDiv',
         white_square: 'whiteSquare'
@@ -42,14 +43,14 @@ window.abChess = window.abChess || function (containerId, width) {
         fen: 'Invalid FEN string.'
     };
 
-    var images_path = '../../Images/wikipedia/';
+    var images_path = '../Images/wikipedia/';
     var png_extension = '.png';
 
     function Chessboard(containerId, width) {
 
         // The HTML chessboard class constructor.
 
-        var the_object = {
+        var the_board = {
             container: document.getElementById(containerId),
             containerId: containerId,
             game: {},
@@ -59,38 +60,59 @@ window.abChess = window.abChess || function (containerId, width) {
             width: width
         };
 
-        the_object.createHTMLSquares = function () {
+        the_board.activateEventHandlers = function () {
+            Object.keys(the_board.htmlSquares).forEach(function (key) {
+                var square = the_board.htmlSquares[key];
+                var handler = function () {
+                    the_board.selectSquare(key);
+                };
+                square.clickHandler = handler;
+                square.div.addEventListener('click', handler);
+            });
+        };
 
-            // Creates the htmlSquares property.
+        the_board.createHTMLSquares = function () {
+
+            // Create the htmlSquares property.
 
             var colNumber = 1;
             var column = '';
             var cssClass = '';
-            var htmlSquare;
+            var div;
+            var htmlSquare = {};
             var isWhiteSquare = false;
+            var name = '';
             var rowNumber = 1;
             var squares = {};
             while (rowNumber < 9) {
                 colNumber = 1;
                 while (colNumber < 9) {
                     column = columns[colNumber - 1];
-                    isWhiteSquare = Chessboard.isWhiteSquare(column + rowNumber);
-                    htmlSquare = document.createElement("DIV");
+                    name = column + rowNumber;
+                    isWhiteSquare = Chessboard.isWhiteSquare(name);
+                    div = document.createElement("DIV");
                     cssClass = (isWhiteSquare)
                         ? css.square + " " + css.white_square
                         : css.square + " " + css.black_square;
-                    htmlSquare.className = cssClass;
-                    squares[column + rowNumber] = htmlSquare;
+                    div.className = cssClass;
+                    htmlSquare = {
+                        clickHandler: null,
+                        div: div,
+                        isWhite: isWhiteSquare,
+                        name: name,
+                        isSelected: false
+                    };
+                    squares[name] = htmlSquare;
                     colNumber += 1;
                 }
                 rowNumber += 1;
             }
-            the_object.htmlSquares = squares;
+            the_board.htmlSquares = squares;
         };
 
-        the_object.draw = function () {
+        the_board.draw = function () {
 
-            // Draws the chessboard.
+            // Draw the chessboard.
 
             var borderFragment;
             var bottomBorder;
@@ -102,52 +124,52 @@ window.abChess = window.abChess || function (containerId, width) {
             var rowNumber = 0;
             var squaresDiv;
             squaresDiv = document.createElement("DIV");
-            squaresDiv.style.width = the_object.width + "px";
-            squaresDiv.style.height = the_object.width + "px";
+            squaresDiv.style.width = the_board.width + "px";
+            squaresDiv.style.height = the_board.width + "px";
             squaresDiv.className = css.squares_div;
-            if (!the_object.isFlipped) {
+            if (!the_board.isFlipped) {
 
-                // Draws the squares (the first row is from a8 to h8).
+                // Draw the squares (the first row is from a8 to h8).
 
                 rowNumber = 8;
                 while (rowNumber > 0) {
                     colNumber = 1;
                     while (colNumber < 9) {
                         column = columns[colNumber - 1];
-                        htmlSquare = the_object.htmlSquares[column + rowNumber];
-                        squaresDiv.appendChild(htmlSquare);
+                        htmlSquare = the_board.htmlSquares[column + rowNumber];
+                        squaresDiv.appendChild(htmlSquare.div);
                         colNumber += 1;
                     }
                     rowNumber -= 1;
                 }
             } else {
 
-                // Draws the squares (the first row is from h1 to a1).
+                // Draw the squares (the first row is from h1 to a1).
 
                 rowNumber = 1;
                 while (rowNumber < 9) {
                     colNumber = 8;
                     while (colNumber > 0) {
                         column = columns[colNumber - 1];
-                        htmlSquare = the_object.htmlSquares[column + rowNumber];
-                        squaresDiv.appendChild(htmlSquare);
+                        htmlSquare = the_board.htmlSquares[column + rowNumber];
+                        squaresDiv.appendChild(htmlSquare.div);
                         colNumber -= 1;
                     }
                     rowNumber += 1;
                 }
             }
-            the_object.container.appendChild(squaresDiv);
-            if (the_object.hasBorder) {
+            the_board.container.appendChild(squaresDiv);
+            if (the_board.hasBorder) {
 
                 // Bottom border
 
                 bottomBorder = document.createElement("DIV");
                 bottomBorder.className = css.bottom_border;
-                bottomBorder.style.width = the_object.width + "px";
+                bottomBorder.style.width = the_board.width + "px";
                 colNumber = 1;
                 while (colNumber < 9) {
                     borderFragment = document.createElement("DIV");
-                    index = (the_object.isFlipped)
+                    index = (the_board.isFlipped)
                         ? 8 - colNumber
                         : colNumber - 1;
                     borderFragment.innerHTML = columns[index].toUpperCase();
@@ -159,24 +181,24 @@ window.abChess = window.abChess || function (containerId, width) {
 
                 rightBorder = document.createElement("DIV");
                 rightBorder.className = css.right_border;
-                rightBorder.style.height = the_object.width + "px";
+                rightBorder.style.height = the_board.width + "px";
                 rowNumber = 1;
                 while (rowNumber < 9) {
                     borderFragment = document.createElement("DIV");
-                    borderFragment.style.lineHeight = (the_object.width / 8) + "px";
-                    index = (the_object.isFlipped)
+                    borderFragment.style.lineHeight = (the_board.width / 8) + "px";
+                    index = (the_board.isFlipped)
                         ? rowNumber
                         : 9 - rowNumber;
                     borderFragment.innerHTML = index;
                     rightBorder.appendChild(borderFragment);
                     rowNumber += 1;
                 }
-                the_object.container.appendChild(rightBorder);
-                the_object.container.appendChild(bottomBorder);
+                the_board.container.appendChild(rightBorder);
+                the_board.container.appendChild(bottomBorder);
             }
         };
 
-        the_object.loadFEN = function (fen) {
+        the_board.loadFEN = function (fen) {
 
             // Load a position from a FEN string.
 
@@ -213,7 +235,7 @@ window.abChess = window.abChess || function (containerId, width) {
                         piece = (char.toLowerCase() === char)
                             ? chess_piece.black + char.toLowerCase()
                             : chess_piece.white + char.toLowerCase();
-                        the_object.putPiece(square, piece);
+                        the_board.putPiece(square, piece);
                         colNumber += 1;
                     } else {
                         throw new SyntaxError(error.fen);
@@ -223,17 +245,35 @@ window.abChess = window.abChess || function (containerId, width) {
             });
         };
 
-        the_object.putPiece = function (square, piece) {
+        the_board.putPiece = function (square, piece) {
 
             // Put a piece on a square.
             // Parameters are strings.
 
             var htmlPiece = document.createElement("DIV");
             htmlPiece.style.backgroundImage = 'url("' + images_path + piece + png_extension + '")';
-            the_object.htmlSquares[square].appendChild(htmlPiece);
+            the_board.htmlSquares[square].div.appendChild(htmlPiece);
         };
 
-        return the_object;
+        the_board.selectSquare = function (square) {
+
+            // Select or unselect a square.
+
+            var initialClass = css.square + ' ';
+            var htmlSquare = the_board.htmlSquares[square];
+            if (htmlSquare.isSelected) {
+                initialClass += (htmlSquare.isWhite)
+                    ? css.white_square
+                    : css.black_square;
+                htmlSquare.div.className = initialClass;
+                htmlSquare.isSelected = false;
+            } else {
+                htmlSquare.div.className += ' ' + css.selected_square;
+                htmlSquare.isSelected = true;
+            }
+        };
+
+        return the_board;
     }
 
     Chessboard.isWhiteSquare = function (square) {
@@ -281,26 +321,78 @@ window.abChess = window.abChess || function (containerId, width) {
         });
     };
 
-    // Returned api.
+    // ---------------------------------------------------
+
+    function Chessgame(pgn) {
+
+        // The Chessgame class constructor.
+
+        var the_game = {
+            moves: [],
+            pgn: pgn
+        };
+
+        return the_game;
+    }
+
+    Chessgame.isValidPGN = function (pgn) {
+
+        // PGN string validator
+
+        var regexString = "([1-9][0-9]*\\.{1,3}\\s*)?" +
+            "(O-O-O|" +
+            "O-O|" +
+            "([BNQR][a-h]?[1-8]?|K)x?[a-h][1-8]|" +
+            "([a-h]x)?[a-h][1-8](=[BNQR])?" +
+            ")(\\+|#)?";
+        var regex = new RegExp(regexString, "gm");
+        return regex.test(pgn.trim());
+    };
+
+    // ---------------------------------------------------
 
     abc = new Chessboard(containerId, width);
 
+    // Returned api.
+
     return {
         draw: function () {
+
+            // Draw the chessboard.
+
             abc.createHTMLSquares();
+            abc.activateEventHandlers();
             abc.draw();
         },
 
-        fen: function (fen) {
-            abc.loadFEN(fen);
+        fen: {
+
+            // Get or set the FEN position.
+
+            get: function () {
+                return abc.fen;
+            },
+            set: function (fen) {
+                abc.loadFEN(fen);
+            }
         },
 
         flip: function () {
+
+            // Flip the board.
+
             abc.isFlipped = !abc.isFlipped;
             while (abc.container.hasChildNodes()) {
                 abc.container.removeChild(abc.container.lastChild);
             }
             abc.draw();
+        },
+
+        select: function (square) {
+
+            // Select a square (or the piece on it).
+
+            abc.selectSquare(square);
         }
     };
 
