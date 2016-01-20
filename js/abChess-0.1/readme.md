@@ -3,9 +3,9 @@
 
 ##ChessBoard(containerId, width)
 
-|Properties
-|---------------
-|`clickablePieces`
+| Properties | Description |
+|------------|-------------|
+|`clickablePieces`|
 |`container`
 |`containerId`
 |`draggablePieces`
@@ -16,23 +16,23 @@
 |`squares`
 |`width`
 
-|Methods
-|---------------
+| Methods | Description |
+|------------|-------------|
 |`bindEventHandlers()`
 |`createSquares()`
 |`draw()`
 |`empty()`
 |`loadFEN(fen)`
 
-|Static methods
-|---------------
+| Static methods | Description |
+|------------|-------------|
 |`isValidFEN(fen)`
 
 
 ##Square(name)
 
-|Properties
-|---------------
+| Properties | Description |
+|------------|-------------|
 |`div`
 |`isEmpty`
 |`isSelected`
@@ -40,8 +40,8 @@
 |`name`
 |`piece`
 
-|Methods
-|---------------
+| Methods | Description |
+|------------|-------------|
 |`dragDropHandler()`
 |`dragEnterHandler()`
 |`dragLeaveHandler()`
@@ -50,21 +50,21 @@
 |`putPiece(piece)`
 |`removePiece()`
 
-|Static methods
-|---------------
+| Static methods | Description |
+|------------|-------------|
 |`isWhite(name)`
 
 
 ##Piece(name)
 
-|Properties
-|---------------
+| Properties | Description |
+|------------|-------------|
 |`div`
 |`isSelected`
 |`name`
 
-|Methods
-|---------------
+| Methods | Description |
+|------------|-------------|
 |`clickHandler()`
 |`dragEndHandler()`
 |`dragStartHandler()`
@@ -72,15 +72,15 @@
 
 ##Chessgame()
 
-|Properties
-|---------------
+| Properties | Description |
+|------------|-------------|
 |`turn`
 
-|Methods
-|---------------
+| Methods | Description |
+|------------|-------------|
 |`getFEN()`
 |`getPGN()`
 
-|Static methods
-|---------------
+| Static methods | Description |
+|------------|-------------|
 |`isValidPGN(pgn)`
