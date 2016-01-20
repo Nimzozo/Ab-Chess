@@ -1,7 +1,7 @@
 abChess documentation text file
 
 
-###ChessBoard(containerId, width)
+* ChessBoard(containerId, width)
 
 |Properties
 |---------------
@@ -29,7 +29,7 @@ abChess documentation text file
 |isValidFEN(fen)
 
 
-###Square(name)
+* Square(name)
 
 |Properties
 |---------------
@@ -55,7 +55,7 @@ abChess documentation text file
 |isWhite(name)
 
 
-Piece(name)
+* Piece(name)
 
 |Properties
 |---------------
@@ -70,7 +70,7 @@ Piece(name)
 |dragStartHandler()
 
 
-Chessgame()
+* Chessgame()
 
 |Properties
 |---------------
