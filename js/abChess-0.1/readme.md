@@ -40,7 +40,6 @@ isWhite
 name
 piece
 ```
-
 **Methods**
 ```
 dragDropHandler()
