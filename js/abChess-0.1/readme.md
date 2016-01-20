@@ -1,79 +1,85 @@
 #abChess documentation
 
 
-**Class :**
-   - ChessBoard(containerId, width)
+####ChessBoard(containerId, width)
 
-Properties :
-   - clickablePieces
-   - container
-   - containerId
-   - draggablePieces
-   - fen
-   - game
-   - hasBorder
-   - isFlipped
-   - squares
-   - width
+**Properties**
 
-Methods :
-   - bindEventHandlers()
-   - createSquares()
-   - draw()
-   - empty()
-   - loadFEN(fen)
+clickablePieces
 
-Static methods :
-   - isValidFEN(fen)
+container
 
+containerId
 
-**Class :**
-   - Square(name)
+draggablePieces
 
-Properties :
-   - div
-   - isEmpty
-   -  isSelected
-   - isWhite
-   - name
-   - piece
+fen
 
-Methods :
-   - dragDropHandler()
-   - dragEnterHandler()
-   - dragLeaveHandler()
-   - dragOverHandler()
-   - highlight()
-   - putPiece(piece)
-   - removePiece()
+game
 
-Static methods :
-   - isWhite(name)
+hasBorder
+
+isFlipped
+
+squares
+
+width
+
+**Methods**
+bindEventHandlers()
+createSquares()
+draw()
+empty()
+loadFEN(fen)
+
+**Static methods**
+isValidFEN(fen)
 
 
-**Class :**
-   - Piece(name)
+####Square(name)
 
-Properties :
-   - div
-   - isSelected
-   - name
+**Properties**
+div
+isEmpty
+isSelected
+isWhite
+name
+piece
 
-Methods :
-   - clickHandler()
-   - dragEndHandler()
-   - dragStartHandler()
+**Methods**
+dragDropHandler()
+dragEnterHandler()
+dragLeaveHandler()
+dragOverHandler()
+highlight()
+putPiece(piece)
+removePiece()
+
+**Static methods**
+isWhite(name)
 
 
-**Class :**
-   - Chessgame()
+####Piece(name)
 
-Properties :
-   - turn
+**Properties**
+div
+isSelected
+name
 
-Methods :
-   - getFEN()
-   - getPGN()
+**Methods**
+clickHandler()
+dragEndHandler()
+dragStartHandler()
 
-Static methods :
-   - isValidPGN(pgn)
+
+####Chessgame()
+
+**Properties**
+turn
+
+**Methods**
+getFEN()
+getPGN()
+
+**Static methods**
+isValidPGN(pgn)
