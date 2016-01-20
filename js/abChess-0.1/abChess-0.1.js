@@ -39,14 +39,24 @@ window.abChess = window.abChess || function (containerId, width) {
 
     var default_fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
+    var draggedPiece = null;
+
+    var draggingAction = false;
+
     var error = {
         fen: 'Invalid FEN string.'
     };
 
-    var images_path = '../Images/wikipedia/';
+    var images_path = '../images/wikipedia/';
     var png_extension = '.png';
 
     function Piece(name) {
+
+        // The Piece class constructs an HTML DIV element.
+        // The name property is a 2 chars string (b|w[bknqr])
+        // to identify the chess piece.
+        // The chess image is set with css backgroundImage.
+
         var div = document.createElement("DIV");
         var the_piece;
         var url = images_path + name + png_extension;
@@ -63,14 +73,13 @@ window.abChess = window.abChess || function (containerId, width) {
         };
 
         the_piece.dragEndHandler = function () {
-            Chessboard.draggingAction = false;
+            draggingAction = false;
         };
 
         the_piece.dragStartHandler = function (e) {
             e.dataTransfer.effectAllowed = 'move';
-            Chessboard.dropSquare = null;
-            Chessboard.draggingAction = true;
-            Chessboard.draggedPiece = the_piece;
+            draggingAction = true;
+            draggedPiece = the_piece;
             //the_piece.div.style.opacity = '0.5';
         };
 
@@ -81,7 +90,7 @@ window.abChess = window.abChess || function (containerId, width) {
 
     function Square(name) {
 
-        // Square class constructor.
+        // The Square class constructs a HTML DIV element named with its coordinate.
 
         var the_square = {
             div: null,
@@ -93,31 +102,47 @@ window.abChess = window.abChess || function (containerId, width) {
         };
 
         the_square.dragEnterHandler = function (e) {
-            if (Chessboard.draggingAction) {
+            if (draggingAction) {
                 e.preventDefault();
-                the_square.select();
+                the_square.highlight();
             }
         };
 
-        the_square.dragLeaveHandler = function (e) {
-            if (Chessboard.draggingAction) {
-                the_square.select();
+        the_square.dragLeaveHandler = function () {
+            if (draggingAction) {
+                the_square.highlight();
             }
         };
 
         the_square.dragOverHandler = function (e) {
-            if (Chessboard.draggingAction) {
+            if (draggingAction) {
                 e.preventDefault();
             }
         };
 
         the_square.dropHandler = function (e) {
-            if (Chessboard.draggingAction) {
+            if (draggingAction) {
                 e.preventDefault();
                 e.dataTransfer.dropEffect = 'move';
-                the_square.putPiece(Chessboard.draggedPiece);
-                the_square.select();
-                Chessboard.dropSquare = the_square;
+                the_square.putPiece(draggedPiece);
+                the_square.highlight();
+            }
+        };
+
+        the_square.highlight = function () {
+
+            // Highlight or un-highlight the square.
+
+            var initialClass = css.square + ' ';
+            if (the_square.isSelected) {
+                initialClass += (the_square.isWhite)
+                    ? css.white_square
+                    : css.black_square;
+                the_square.div.className = initialClass;
+                the_square.isSelected = false;
+            } else {
+                the_square.div.className += ' ' + css.selected_square;
+                the_square.isSelected = true;
             }
         };
 
@@ -145,23 +170,6 @@ window.abChess = window.abChess || function (containerId, width) {
             }
         };
 
-        the_square.select = function () {
-
-            // Select or unselect the square.
-
-            var initialClass = css.square + ' ';
-            if (the_square.isSelected) {
-                initialClass += (the_square.isWhite)
-                    ? css.white_square
-                    : css.black_square;
-                the_square.div.className = initialClass;
-                the_square.isSelected = false;
-            } else {
-                the_square.div.className += ' ' + css.selected_square;
-                the_square.isSelected = true;
-            }
-        };
-
         return the_square;
     }
 
@@ -182,7 +190,7 @@ window.abChess = window.abChess || function (containerId, width) {
 
     function Chessboard(containerId, width) {
 
-        // The HTML chessboard class constructor.
+        // The Chessboard class constructs an HTML chessboard.
 
         var the_board = {
             clickablePieces: false,
@@ -406,12 +414,6 @@ window.abChess = window.abChess || function (containerId, width) {
         return the_board;
     }
 
-    Chessboard.draggingAction = false;
-
-    Chessboard.draggedPiece = null;
-
-    Chessboard.dropSquare = null;
-
     Chessboard.isValidFEN = function (fen) {
 
         // FEN string validator
@@ -449,7 +451,9 @@ window.abChess = window.abChess || function (containerId, width) {
 
     function Chessgame(pgn) {
 
-        // The Chessgame class constructor.
+        // The Chessgame class constructs a full chess game.
+        // It should manage :
+        //
 
         var the_game = {
             moves: [],
@@ -512,11 +516,11 @@ window.abChess = window.abChess || function (containerId, width) {
             abc.draw();
         },
 
-        select: function (square) {
+        highlight: function (square) {
 
-            // Select a square (or the piece on it).
+            // Highlight a square (or the piece on it).
 
-            abc.squares[square].select();
+            abc.squares[square].highlight();
         }
     };
 
