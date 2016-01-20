@@ -3,52 +3,82 @@ abChess documentation text file
 
 Class :
 
-ChessBoard(containerId, width)
+    ChessBoard(containerId, width)
 
 Properties :
 
-container
-containerId
-fen
-game
-hasBorder
-isFlipped
-htmlSquares
-width
+    clickablePieces
+    container
+    containerId
+    draggablePieces
+    fen
+    game
+    hasBorder
+    isFlipped
+    squares
+    width
 
 Methods :
 
-activateEventHandlers()
-createHTMLSquares()
-draw()
-empty()
-loadFEN(fen)
+    bindEventHandlers()
+    createSquares()
+    draw()
+    empty()
+    loadFEN(fen)
 
 Static methods :
 
-isValidFEN(fen)
+    isValidFEN(fen)
+
+Static vars :
+
+    draggingAction
+    draggedPiece
+    dropSquare
 
 
 Class :
 
-Square(name)
+    Square(name)
 
 Properties :
 
-clickHandler
-div
-isEmpty
-isSelected
-isWhite
-name
-piece
+    div
+    isEmpty
+    isSelected
+    isWhite
+    name
+    piece
 
 Methods :
 
-putPiece(piece)
-removePiece()
-select()
+    dragDropHandler()
+    dragEndHandler()
+    dragEnterHandler()
+    dragLeaveHandler()
+    dragOverHandler()
+    dragStartHandler()
+    putPiece(piece)
+    removePiece()
+    select()
 
 Static methods :
 
-isWhite(name)
+    isWhite(name)
+
+
+Class :
+
+    Piece(name)
+
+Properties :
+
+    div
+    isSelected
+    name
+
+Methods :
+
+    clickHandler()
+    dragEndHandler()
+    dragStartHandler()
