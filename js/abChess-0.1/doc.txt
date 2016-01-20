@@ -53,11 +53,9 @@ Properties :
 Methods :
 
     dragDropHandler()
-    dragEndHandler()
     dragEnterHandler()
     dragLeaveHandler()
     dragOverHandler()
-    dragStartHandler()
     putPiece(piece)
     removePiece()
     select()
