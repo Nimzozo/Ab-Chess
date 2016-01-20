@@ -1,7 +1,7 @@
-#abChess documentation text file
+#abChess documentation
 
 
-Class :
+##Class :
     ChessBoard(containerId, width)
     
 Properties :
@@ -27,7 +27,7 @@ Static methods :
    - isValidFEN(fen)
 
 
-Class :
+##Class :
     Square(name)
     
 Properties :
@@ -51,7 +51,7 @@ Static methods :
    - isWhite(name)
 
 
-Class :
+##Class :
     Piece(name)
     
 Properties :
@@ -65,7 +65,7 @@ Methods :
    - dragStartHandler()
 
 
-Class :
+##Class :
     Chessgame()
     
 Properties :
