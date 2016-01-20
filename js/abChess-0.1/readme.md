@@ -5,82 +5,82 @@
 
 |Properties
 |---------------
-|clickablePieces
-|container
-|containerId
-|draggablePieces
-|fen
-|game
-|hasBorder
-|isFlipped
-|squares
-|width
+|`clickablePieces`
+|`container`
+|`containerId`
+|`draggablePieces`
+|`fen`
+|`game`
+|`hasBorder`
+|`isFlipped`
+|`squares`
+|`width`
 
 |Methods
 |---------------
-|bindEventHandlers()
-|createSquares()
-|draw()
-|empty()
-|loadFEN(fen)
+|`bindEventHandlers()`
+|`createSquares()`
+|`draw()`
+|`empty()`
+|`loadFEN(fen)`
 
 |Static methods
 |---------------
-|isValidFEN(fen)
+|`isValidFEN(fen)`
 
 
 ##Square(name)
 
 |Properties
 |---------------
-|div
-|isEmpty
-|isSelected
-|isWhite
-|name
-|piece
+|`div`
+|`isEmpty`
+|`isSelected`
+|`isWhite`
+|`name`
+|`piece`
 
 |Methods
 |---------------
-|dragDropHandler()
-|dragEnterHandler()
-|dragLeaveHandler()
-|dragOverHandler()
-|highlight()
-|putPiece(piece)
-|removePiece()
+|`dragDropHandler()`
+|`dragEnterHandler()`
+|`dragLeaveHandler()`
+|`dragOverHandler()`
+|`highlight()`
+|`putPiece(piece)`
+|`removePiece()`
 
 |Static methods
 |---------------
-|isWhite(name)
+|`isWhite(name)`
 
 
 ##Piece(name)
 
 |Properties
 |---------------
-|div
-|isSelected
-|name
+|`div`
+|`isSelected`
+|`name`
 
 |Methods
 |---------------
-|clickHandler()
-|dragEndHandler()
-|dragStartHandler()
+|`clickHandler()`
+|`dragEndHandler()`
+|`dragStartHandler()`
 
 
 ##Chessgame()
 
 |Properties
 |---------------
-|turn
+|`turn`
 
 |Methods
 |---------------
-|getFEN()
-|getPGN()
+|`getFEN()`
+|`getPGN()`
 
 |Static methods
 |---------------
-|isValidPGN(pgn)
+|`isValidPGN(pgn)`
