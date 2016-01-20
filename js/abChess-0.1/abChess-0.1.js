@@ -46,28 +46,90 @@ window.abChess = window.abChess || function (containerId, width) {
     var images_path = '../Images/wikipedia/';
     var png_extension = '.png';
 
+    function Piece(name) {
+        var div = document.createElement("DIV");
+        var the_piece;
+        var url = images_path + name + png_extension;
+        div.setAttribute('draggable', 'true');
+        div.style.backgroundImage = 'url("' + url + '")';
+        the_piece = {
+            div: div,
+            name: name,
+            square: null
+        };
+
+        the_piece.clickHandler = function () {
+
+        };
+
+        the_piece.dragEndHandler = function () {
+            Chessboard.draggingAction = false;
+        };
+
+        the_piece.dragStartHandler = function (e) {
+            e.dataTransfer.effectAllowed = 'move';
+            Chessboard.dropSquare = null;
+            Chessboard.draggingAction = true;
+            Chessboard.draggedPiece = the_piece;
+            //the_piece.div.style.opacity = '0.5';
+        };
+
+        return the_piece;
+    }
+
+    // -------------------------------------------------------------
+
     function Square(name) {
 
         // Square class constructor.
 
         var the_square = {
-            clickHandler: null,
             div: null,
             isEmpty: true,
             isSelected: false,
             isWhite: Square.isWhite(name),
             name: name,
-            piece: ''
+            piece: null
+        };
+
+        the_square.dragEnterHandler = function (e) {
+            if (Chessboard.draggingAction) {
+                e.preventDefault();
+                the_square.select();
+            }
+        };
+
+        the_square.dragLeaveHandler = function (e) {
+            if (Chessboard.draggingAction) {
+                the_square.select();
+            }
+        };
+
+        the_square.dragOverHandler = function (e) {
+            if (Chessboard.draggingAction) {
+                e.preventDefault();
+            }
+        };
+
+        the_square.dropHandler = function (e) {
+            if (Chessboard.draggingAction) {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+                the_square.putPiece(Chessboard.draggedPiece);
+                the_square.select();
+                Chessboard.dropSquare = the_square;
+            }
         };
 
         the_square.putPiece = function (piece) {
 
             // Put a piece on the square.
 
-            var htmlPiece = document.createElement("DIV");
-            htmlPiece.style.backgroundImage = 'url("' + images_path + piece + png_extension + '")';
-            the_square.div.appendChild(htmlPiece);
+            the_square.removePiece();
+            the_square.div.appendChild(piece.div);
             the_square.isEmpty = false;
+            the_square.piece = piece;
+            piece.square = the_square;
         };
 
         the_square.removePiece = function () {
@@ -79,7 +141,7 @@ window.abChess = window.abChess || function (containerId, width) {
                     the_square.div.removeChild(the_square.div.lastChild);
                 }
                 the_square.isEmpty = true;
-                the_square.piece = '';
+                the_square.piece = null;
             }
         };
 
@@ -123,42 +185,52 @@ window.abChess = window.abChess || function (containerId, width) {
         // The HTML chessboard class constructor.
 
         var the_board = {
+            clickablePieces: false,
             container: document.getElementById(containerId),
             containerId: containerId,
+            draggablePieces: true,
             fen: '',
             game: {},
             hasBorder: true,
             isFlipped: false,
-            htmlSquares: {},
+            squares: {},
             width: width
         };
 
-        the_board.activateEventHandlers = function () {
+        the_board.bindEventHandlers = function () {
 
-            // Square class ??
+            // Add/remove the event handlers on the squares' div.
 
-            Object.keys(the_board.htmlSquares).forEach(function (key) {
-                var square = the_board.htmlSquares[key];
-                var handler = function () {
-                    square.select();
-                };
-                square.clickHandler = handler;
-                square.div.addEventListener('click', handler);
+            Object.keys(the_board.squares).forEach(function (key) {
+                var square = the_board.squares[key];
+                if (the_board.clickablePieces) {
+                    square.piece.div.addEventListener('click', square.piece.clickHandler);
+                }
+                if (the_board.draggablePieces) {
+                    if (!square.isEmpty) {
+                        square.piece.div.addEventListener('dragstart', square.piece.dragStartHandler);
+                        square.piece.div.addEventListener('dragend', square.piece.dragEndHandler);
+                    }
+                    square.div.addEventListener('dragenter', square.dragEnterHandler);
+                    square.div.addEventListener('dragleave', square.dragLeaveHandler);
+                    square.div.addEventListener('dragover', square.dragOverHandler);
+                    square.div.addEventListener('drop', square.dropHandler);
+                }
             });
         };
 
-        the_board.createHTMLSquares = function () {
+        the_board.createSquares = function () {
 
-            // Create the htmlSquares property.
+            // Create the squares property.
 
             var colNumber = 1;
             var column = '';
             var cssClass = '';
             var div;
-            var htmlSquare = {};
             var isWhiteSquare = false;
             var name = '';
             var rowNumber = 1;
+            var square = {};
             var squares = {};
             while (rowNumber < 9) {
                 colNumber = 1;
@@ -171,14 +243,14 @@ window.abChess = window.abChess || function (containerId, width) {
                         ? css.square + " " + css.white_square
                         : css.square + " " + css.black_square;
                     div.className = cssClass;
-                    htmlSquare = new Square(name);
-                    htmlSquare.div = div;
-                    squares[name] = htmlSquare;
+                    square = new Square(name);
+                    square.div = div;
+                    squares[name] = square;
                     colNumber += 1;
                 }
                 rowNumber += 1;
             }
-            the_board.htmlSquares = squares;
+            the_board.squares = squares;
         };
 
         the_board.draw = function () {
@@ -189,10 +261,10 @@ window.abChess = window.abChess || function (containerId, width) {
             var bottomBorder;
             var colNumber = 0;
             var column = '';
-            var htmlSquare;
             var index = 0;
             var rightBorder;
             var rowNumber = 0;
+            var square;
             var squaresDiv;
             squaresDiv = document.createElement("DIV");
             squaresDiv.style.width = the_board.width + "px";
@@ -207,8 +279,8 @@ window.abChess = window.abChess || function (containerId, width) {
                     colNumber = 1;
                     while (colNumber < 9) {
                         column = columns[colNumber - 1];
-                        htmlSquare = the_board.htmlSquares[column + rowNumber];
-                        squaresDiv.appendChild(htmlSquare.div);
+                        square = the_board.squares[column + rowNumber];
+                        squaresDiv.appendChild(square.div);
                         colNumber += 1;
                     }
                     rowNumber -= 1;
@@ -222,8 +294,8 @@ window.abChess = window.abChess || function (containerId, width) {
                     colNumber = 8;
                     while (colNumber > 0) {
                         column = columns[colNumber - 1];
-                        htmlSquare = the_board.htmlSquares[column + rowNumber];
-                        squaresDiv.appendChild(htmlSquare.div);
+                        square = the_board.squares[column + rowNumber];
+                        squaresDiv.appendChild(square.div);
                         colNumber -= 1;
                     }
                     rowNumber += 1;
@@ -273,8 +345,8 @@ window.abChess = window.abChess || function (containerId, width) {
 
             // Remove all the pieces of the board.
 
-            Object.keys(the_board.htmlSquares).forEach(function (key) {
-                the_board.htmlSquares[key].removePiece();
+            Object.keys(the_board.squares).forEach(function (key) {
+                the_board.squares[key].removePiece();
             });
         };
 
@@ -284,7 +356,8 @@ window.abChess = window.abChess || function (containerId, width) {
 
             var chars = [];
             var colNumber = 0;
-            var piece = '';
+            var piece;
+            var pieceName = '';
             var position;
             var regex_number = /[1-8]/;
             var regex_piece = /[BKNPQR]/i;
@@ -315,10 +388,11 @@ window.abChess = window.abChess || function (containerId, width) {
                         colNumber += parseInt(char);
                     } else if (regex_piece.test(char)) {
                         squareName = columns[colNumber - 1] + rowNumber;
-                        square = the_board.htmlSquares[squareName];
-                        piece = (char.toLowerCase() === char)
+                        square = the_board.squares[squareName];
+                        pieceName = (char.toLowerCase() === char)
                             ? chess_piece.black + char.toLowerCase()
                             : chess_piece.white + char.toLowerCase();
+                        piece = new Piece(pieceName);
                         square.putPiece(piece);
                         colNumber += 1;
                     } else {
@@ -331,6 +405,12 @@ window.abChess = window.abChess || function (containerId, width) {
 
         return the_board;
     }
+
+    Chessboard.draggingAction = false;
+
+    Chessboard.draggedPiece = null;
+
+    Chessboard.dropSquare = null;
 
     Chessboard.isValidFEN = function (fen) {
 
@@ -363,6 +443,7 @@ window.abChess = window.abChess || function (containerId, width) {
             return (squaresCounter === 8);
         });
     };
+
 
     // ---------------------------------------------------
 
@@ -403,8 +484,7 @@ window.abChess = window.abChess || function (containerId, width) {
 
             // Draw the chessboard.
 
-            abc.createHTMLSquares();
-            abc.activateEventHandlers();
+            abc.createSquares();
             abc.draw();
         },
 
@@ -417,6 +497,7 @@ window.abChess = window.abChess || function (containerId, width) {
             },
             set: function (fen) {
                 abc.loadFEN(fen);
+                abc.bindEventHandlers();
             }
         },
 
@@ -435,7 +516,7 @@ window.abChess = window.abChess || function (containerId, width) {
 
             // Select a square (or the piece on it).
 
-            abc.htmlSquares[square].select();
+            abc.squares[square].select();
         }
     };
 
