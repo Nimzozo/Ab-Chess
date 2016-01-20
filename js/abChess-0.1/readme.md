@@ -3,6 +3,7 @@ abChess documentation text file
 
 Class :
     ChessBoard(containerId, width)
+    
 Properties :
     clickablePieces
     container
@@ -14,18 +15,21 @@ Properties :
     isFlipped
     squares
     width
+    
 Methods :
     bindEventHandlers()
     createSquares()
     draw()
     empty()
     loadFEN(fen)
+    
 Static methods :
     isValidFEN(fen)
 
 
 Class :
     Square(name)
+    
 Properties :
     div
     isEmpty
@@ -33,6 +37,7 @@ Properties :
     isWhite
     name
     piece
+    
 Methods :
     dragDropHandler()
     dragEnterHandler()
@@ -41,16 +46,19 @@ Methods :
     highlight()
     putPiece(piece)
     removePiece()
+    
 Static methods :
     isWhite(name)
 
 
 Class :
     Piece(name)
+    
 Properties :
     div
     isSelected
     name
+    
 Methods :
     clickHandler()
     dragEndHandler()
@@ -59,10 +67,13 @@ Methods :
 
 Class :
     Chessgame()
+    
 Properties :
     turn
+    
 Methods :
     getFEN()
     getPGN()
+    
 Static methods :
     isValidPGN(pgn)
