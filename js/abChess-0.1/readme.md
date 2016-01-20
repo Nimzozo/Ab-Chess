@@ -2,6 +2,7 @@
 
 
 ####ChessBoard(containerId, width)
+
 **Properties**
 ```
 clickablePieces
@@ -51,8 +52,9 @@ putPiece(piece)
 removePiece()
 ```
 **Static methods**
+```
 isWhite(name)
-
+```
 
 ####Piece(name)
 
@@ -72,12 +74,15 @@ dragStartHandler()
 ####Chessgame()
 
 **Properties**
+```
 turn
-
+```
 **Methods**
 ```
 getFEN()
 getPGN()
 ```
 **Static methods**
+```
 isValidPGN(pgn)
+```
