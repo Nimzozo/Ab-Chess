@@ -5,7 +5,7 @@
 
 | Properties | Description |
 |------------|-------------|
-|`clickablePieces`|
+|`clickablePieces`| 
 |`container`
 |`containerId`
 |`draggablePieces`
@@ -18,15 +18,15 @@
 
 | Methods | Description |
 |------------|-------------|
-|`bindEventHandlers()`
-|`createSquares()`
-|`draw()`
-|`empty()`
-|`loadFEN(fen)`
+|`bindEventHandlers()`|
+|`createSquares()`|
+|`draw()`|
+|`empty()`|
+|`loadFEN(fen)`|
 
 | Static methods | Description |
 |------------|-------------|
-|`isValidFEN(fen)`
+|`isValidFEN(fen)`|
 
 
 ##Square(name)
