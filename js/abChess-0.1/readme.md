@@ -1,8 +1,8 @@
 #abChess documentation
 
 
-##Class :
-    ChessBoard(containerId, width)
+**Class :**
+   - ChessBoard(containerId, width)
     
 Properties :
    - clickablePieces
@@ -27,8 +27,8 @@ Static methods :
    - isValidFEN(fen)
 
 
-##Class :
-    Square(name)
+**Class :**
+   - Square(name)
     
 Properties :
    - div
@@ -51,7 +51,7 @@ Static methods :
    - isWhite(name)
 
 
-##Class :
+**Class :**
     Piece(name)
     
 Properties :
@@ -65,7 +65,7 @@ Methods :
    - dragStartHandler()
 
 
-##Class :
+**Class :**
     Chessgame()
     
 Properties :
