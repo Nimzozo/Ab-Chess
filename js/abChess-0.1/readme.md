@@ -67,11 +67,11 @@
 | Properties | Description |
 |------------|-------------|
 |`pgn`
-|`positions`
-|`turn`
+|`fenPositions`
 
 | Methods | Description |
 |------------|-------------|
 |`getFEN()`
 |`getPGN()`
+|`getPositionFromFEN(fen)`
 |`isValidPGN(pgn)`
