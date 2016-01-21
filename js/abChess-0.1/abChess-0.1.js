@@ -1,11 +1,11 @@
 // abChess script
 
-window.abChess = window.abChess || function (containerId, width) {
+window.AbChess = window.AbChess || function (containerId, width) {
     'use strict';
 
     // The global abChess module
 
-    var abc;
+    var abChess;
 
     var columns = 'abcdefgh';
 
@@ -80,7 +80,29 @@ window.abChess = window.abChess || function (containerId, width) {
             e.dataTransfer.effectAllowed = 'move';
             draggingAction = true;
             draggedPiece = the_piece;
-            //the_piece.div.style.opacity = '0.5';
+        };
+
+        the_piece.put = function (square) {
+
+            // Put the piece on a square.
+
+            if (!square.isEmpty()) {
+                square.piece.remove();
+            }
+            square.div.appendChild(the_piece.div);
+            square.piece = the_piece;
+            the_piece.square = square;
+        };
+
+        the_piece.remove = function () {
+
+            // Remove the piece from the square.
+
+            if (the_piece.square !== null) {
+                the_piece.square.div.removeChild(the_piece.div);
+            }
+            the_piece.square.piece = null;
+            the_piece.square = null;
         };
 
         return the_piece;
@@ -94,9 +116,7 @@ window.abChess = window.abChess || function (containerId, width) {
 
         var the_square = {
             div: null,
-            isEmpty: true,
-            isSelected: false,
-            isWhite: Square.isWhite(name),
+            isHighlighted: false,
             name: name,
             piece: null
         };
@@ -124,50 +144,34 @@ window.abChess = window.abChess || function (containerId, width) {
             if (draggingAction) {
                 e.preventDefault();
                 e.dataTransfer.dropEffect = 'move';
-                the_square.putPiece(draggedPiece);
+                draggedPiece.remove();
+                draggedPiece.put(the_square);
                 the_square.highlight();
             }
         };
 
         the_square.highlight = function () {
 
-            // Highlight or un-highlight the square.
+            // Highlight or cancel the highlight of the square.
 
             var initialClass = css.square + ' ';
-            if (the_square.isSelected) {
-                initialClass += (the_square.isWhite)
+            if (the_square.isHighlighted) {
+                initialClass += (Square.isWhite(the_square.name))
                     ? css.white_square
                     : css.black_square;
                 the_square.div.className = initialClass;
-                the_square.isSelected = false;
+                the_square.isHighlighted = false;
             } else {
                 the_square.div.className += ' ' + css.selected_square;
-                the_square.isSelected = true;
+                the_square.isHighlighted = true;
             }
         };
 
-        the_square.putPiece = function (piece) {
+        the_square.isEmpty = function () {
 
-            // Put a piece on the square.
+            // Check whether the square is empty.
 
-            the_square.removePiece();
-            the_square.div.appendChild(piece.div);
-            the_square.isEmpty = false;
-            the_square.piece = piece;
-            piece.square = the_square;
-        };
-
-        the_square.removePiece = function () {
-
-            // Remove the piece from the square.
-
-            if (!the_square.isEmpty) {
-                while (the_square.div.hasChildNodes()) {
-                    the_square.div.removeChild(the_square.div.lastChild);
-                }
-                the_square.isEmpty = true;
-                the_square.piece = null;
-            }
+            return (the_square.piece === null);
         };
 
         return the_square;
@@ -197,7 +201,6 @@ window.abChess = window.abChess || function (containerId, width) {
             container: document.getElementById(containerId),
             containerId: containerId,
             draggablePieces: true,
-            fen: '',
             game: {},
             hasBorder: true,
             isFlipped: false,
@@ -215,7 +218,7 @@ window.abChess = window.abChess || function (containerId, width) {
                     square.piece.div.addEventListener('click', square.piece.clickHandler);
                 }
                 if (the_board.draggablePieces) {
-                    if (!square.isEmpty) {
+                    if (!square.isEmpty()) {
                         square.piece.div.addEventListener('dragstart', square.piece.dragStartHandler);
                         square.piece.div.addEventListener('dragend', square.piece.dragEndHandler);
                     }
@@ -354,11 +357,58 @@ window.abChess = window.abChess || function (containerId, width) {
             // Remove all the pieces of the board.
 
             Object.keys(the_board.squares).forEach(function (key) {
-                the_board.squares[key].removePiece();
+                var currentSquare = the_board.squares[key];
+                if (!currentSquare.isEmpty()) {
+                    the_board.squares[key].piece.remove();
+                }
             });
         };
 
-        the_board.loadFEN = function (fen) {
+        the_board.getPosition = function () {
+
+            // Get the position of the pieces in a FEN string.
+
+            var colNumber = 1;
+            var count = 0;
+            var currentSquare;
+            var pieceName = '';
+            var position = '';
+            var rowNumber = 8;
+            var squareName = '';
+            while (rowNumber > 0) {
+                colNumber = 1;
+                while (colNumber < 9) {
+                    squareName = columns[colNumber - 1] + rowNumber;
+                    currentSquare = the_board.squares[squareName];
+                    if (currentSquare.isEmpty()) {
+                        count += 1;
+                    } else {
+                        pieceName = currentSquare.piece.name;
+                        if (count > 0) {
+                            position += count;
+                            count = 0;
+                        }
+                        position += (pieceName[0] === chess_piece.white)
+                            ? pieceName[1].toUpperCase()
+                            : pieceName[1].toLowerCase();
+                    }
+                    if (colNumber === 8) {
+                        if (count > 0) {
+                            position += count;
+                            count = 0;
+                        }
+                        if (rowNumber > 1) {
+                            position += '/';
+                        }
+                    }
+                    colNumber += 1;
+                }
+                rowNumber -= 1;
+            }
+            return position;
+        };
+
+        the_board.loadPosition = function (fen) {
 
             // Load a position from a FEN string.
 
@@ -379,7 +429,6 @@ window.abChess = window.abChess || function (containerId, width) {
             }
             the_board.empty();
             position = fen.replace(/\s.*/, '');
-            the_board.fen = position;
             rows = position.split('/');
             rowNumber = 8;
             rows.forEach(function (rowValue) {
@@ -401,7 +450,7 @@ window.abChess = window.abChess || function (containerId, width) {
                             ? chess_piece.black + char.toLowerCase()
                             : chess_piece.white + char.toLowerCase();
                         piece = new Piece(pieceName);
-                        square.putPiece(piece);
+                        piece.put(square);
                         colNumber += 1;
                     } else {
                         throw new SyntaxError(error.fen);
@@ -446,18 +495,20 @@ window.abChess = window.abChess || function (containerId, width) {
         });
     };
 
-
     // ---------------------------------------------------
 
-    function Chessgame(pgn) {
+    function Chessgame() {
 
         // The Chessgame class constructs a full chess game.
-        // It should manage :
-        //
+        // We assume a chessgame is mainly an ordered collection
+        // of FEN positions.
+        // A FEN position is a chess position plus some data :
+        // active color, casting possibilities, en passant square,
+        // halfmove clock and fullmove number.
 
         var the_game = {
-            moves: [],
-            pgn: pgn
+            pgn: '',
+            positions: []
         };
 
         return the_game;
@@ -479,7 +530,7 @@ window.abChess = window.abChess || function (containerId, width) {
 
     // ---------------------------------------------------
 
-    abc = new Chessboard(containerId, width);
+    abChess = new Chessboard(containerId, width);
 
     // Returned api.
 
@@ -488,8 +539,8 @@ window.abChess = window.abChess || function (containerId, width) {
 
             // Draw the chessboard.
 
-            abc.createSquares();
-            abc.draw();
+            abChess.createSquares();
+            abChess.draw();
         },
 
         fen: {
@@ -497,11 +548,11 @@ window.abChess = window.abChess || function (containerId, width) {
             // Get or set the FEN position.
 
             get: function () {
-                return abc.fen;
+                return abChess.getPosition();
             },
             set: function (fen) {
-                abc.loadFEN(fen);
-                abc.bindEventHandlers();
+                abChess.loadPosition(fen);
+                abChess.bindEventHandlers();
             }
         },
 
@@ -509,18 +560,18 @@ window.abChess = window.abChess || function (containerId, width) {
 
             // Flip the board.
 
-            abc.isFlipped = !abc.isFlipped;
-            while (abc.container.hasChildNodes()) {
-                abc.container.removeChild(abc.container.lastChild);
+            abChess.isFlipped = !abChess.isFlipped;
+            while (abChess.container.hasChildNodes()) {
+                abChess.container.removeChild(abChess.container.lastChild);
             }
-            abc.draw();
+            abChess.draw();
         },
 
         highlight: function (square) {
 
             // Highlight a square (or the piece on it).
 
-            abc.squares[square].highlight();
+            abChess.squares[square].highlight();
         }
     };
 
