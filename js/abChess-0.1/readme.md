@@ -9,7 +9,6 @@
 |`container`
 |`containerId`
 |`draggablePieces`
-|`fen`
 |`game`
 |`hasBorder`
 |`isFlipped`
@@ -22,7 +21,7 @@
 |`createSquares()`|
 |`draw()`|
 |`empty()`|
-|`loadFEN(fen)`|
+|`loadPosition(fen)`|
 
 | Static methods | Description |
 |------------|-------------|
@@ -34,9 +33,7 @@
 | Properties | Description |
 |------------|-------------|
 |`div`
-|`isEmpty`
-|`isSelected`
-|`isWhite`
+|`isHighlighted`
 |`name`
 |`piece`
 
@@ -47,8 +44,7 @@
 |`dragLeaveHandler()`
 |`dragOverHandler()`
 |`highlight()`
-|`putPiece(piece)`
-|`removePiece()`
+|`isEmpty()`
 
 | Static methods | Description |
 |------------|-------------|
@@ -68,12 +64,15 @@
 |`clickHandler()`
 |`dragEndHandler()`
 |`dragStartHandler()`
-
+|`put(square)`
+|`remove()`
 
 ##Chessgame()
 
 | Properties | Description |
 |------------|-------------|
+|`pgn`
+|`positions`
 |`turn`
 
 | Methods | Description |
