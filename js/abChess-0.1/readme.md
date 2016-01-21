@@ -17,15 +17,12 @@
 
 | Methods | Description |
 |------------|-------------|
-|`bindEventHandlers()`|
 |`createSquares()`|
 |`draw()`|
 |`empty()`|
-|`loadPosition(fen)`|
-
-| Static methods | Description |
-|------------|-------------|
+|`getPosition()`|
 |`isValidFEN(fen)`|
+|`loadPosition(fen)`|
 
 
 ##Square(name)
@@ -45,9 +42,6 @@
 |`dragOverHandler()`
 |`highlight()`
 |`isEmpty()`
-
-| Static methods | Description |
-|------------|-------------|
 |`isWhite(name)`
 
 
@@ -67,6 +61,7 @@
 |`put(square)`
 |`remove()`
 
+
 ##Chessgame()
 
 | Properties | Description |
@@ -79,7 +74,4 @@
 |------------|-------------|
 |`getFEN()`
 |`getPGN()`
-
-| Static methods | Description |
-|------------|-------------|
 |`isValidPGN(pgn)`
