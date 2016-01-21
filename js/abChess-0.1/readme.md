@@ -1,4 +1,4 @@
-# abChess documentation
+# AbChess code documentation
 
 
 ##ChessBoard(containerId, width)
