@@ -57,13 +57,9 @@ window.AbChess = window.AbChess || function (containerId, width) {
         // to identify the chess piece.
         // The chess image is set with css backgroundImage.
 
-        var div = document.createElement("DIV");
         var the_piece;
-        var url = images_path + name + png_extension;
-        div.setAttribute('draggable', 'true');
-        div.style.backgroundImage = 'url("' + url + '")';
         the_piece = {
-            div: div,
+            div: null,
             name: name,
             square: null
         };
@@ -208,28 +204,6 @@ window.AbChess = window.AbChess || function (containerId, width) {
             width: width
         };
 
-        the_board.bindEventHandlers = function () {
-
-            // Add/remove the event handlers on the squares' div.
-
-            Object.keys(the_board.squares).forEach(function (key) {
-                var square = the_board.squares[key];
-                if (the_board.clickablePieces) {
-                    square.piece.div.addEventListener('click', square.piece.clickHandler);
-                }
-                if (the_board.draggablePieces) {
-                    if (!square.isEmpty()) {
-                        square.piece.div.addEventListener('dragstart', square.piece.dragStartHandler);
-                        square.piece.div.addEventListener('dragend', square.piece.dragEndHandler);
-                    }
-                    square.div.addEventListener('dragenter', square.dragEnterHandler);
-                    square.div.addEventListener('dragleave', square.dragLeaveHandler);
-                    square.div.addEventListener('dragover', square.dragOverHandler);
-                    square.div.addEventListener('drop', square.dropHandler);
-                }
-            });
-        };
-
         the_board.createSquares = function () {
 
             // Create the squares property.
@@ -256,6 +230,10 @@ window.AbChess = window.AbChess || function (containerId, width) {
                     div.className = cssClass;
                     square = new Square(name);
                     square.div = div;
+                    div.addEventListener('dragenter', square.dragEnterHandler);
+                    div.addEventListener('dragleave', square.dragLeaveHandler);
+                    div.addEventListener('dragover', square.dragOverHandler);
+                    div.addEventListener('drop', square.dropHandler);
                     squares[name] = square;
                     colNumber += 1;
                 }
@@ -412,51 +390,36 @@ window.AbChess = window.AbChess || function (containerId, width) {
 
             // Load a position from a FEN string.
 
-            var chars = [];
-            var colNumber = 0;
+            var char = '';
+            var div;
             var piece;
             var pieceName = '';
-            var position;
-            var regex_number = /[1-8]/;
-            var regex_piece = /[BKNPQR]/i;
-            var rowNumber = 0;
-            var rows = [];
+            var position = {};
+            var positionArray = [];
             var square = {};
-            var squareName = '';
+            var url = '';
             fen = fen || default_fen;
             if (!Chessboard.isValidFEN(fen)) {
                 throw new SyntaxError(error.fen);
             }
             the_board.empty();
-            position = fen.replace(/\s.*/, '');
-            rows = position.split('/');
-            rowNumber = 8;
-            rows.forEach(function (rowValue) {
-
-                // Rows loop
-
-                colNumber = 1;
-                chars = rowValue.split('');
-                chars.forEach(function (char) {
-
-                    // Columns loop
-
-                    if (regex_number.test(char)) {
-                        colNumber += parseInt(char);
-                    } else if (regex_piece.test(char)) {
-                        squareName = columns[colNumber - 1] + rowNumber;
-                        square = the_board.squares[squareName];
-                        pieceName = (char.toLowerCase() === char)
-                            ? chess_piece.black + char.toLowerCase()
-                            : chess_piece.white + char.toLowerCase();
-                        piece = new Piece(pieceName);
-                        piece.put(square);
-                        colNumber += 1;
-                    } else {
-                        throw new SyntaxError(error.fen);
-                    }
-                });
-                rowNumber -= 1;
+            position = Chessgame.getPositionFromFEN(fen);
+            positionArray = Object.keys(position);
+            positionArray.forEach(function (squareName) {
+                square = the_board.squares[squareName];
+                char = position[squareName];
+                pieceName = (char.toLowerCase() === char)
+                    ? chess_piece.black + char
+                    : chess_piece.white + char.toLowerCase();
+                piece = new Piece(pieceName);
+                div = document.createElement("DIV");
+                url = images_path + pieceName + png_extension;
+                div.style.backgroundImage = 'url("' + url + '")';
+                div.setAttribute('draggable', 'true');
+                div.addEventListener('dragstart', piece.dragStartHandler);
+                div.addEventListener('dragend', piece.dragEndHandler);
+                piece.div = div;
+                piece.put(square);
             });
         };
 
@@ -503,16 +466,52 @@ window.AbChess = window.AbChess || function (containerId, width) {
         // We assume a chessgame is mainly an ordered collection
         // of FEN positions.
         // A FEN position is a chess position plus some data :
-        // active color, casting possibilities, en passant square,
+        // active color, castling possibilities, en passant square,
         // halfmove clock and fullmove number.
 
         var the_game = {
             pgn: '',
-            positions: []
+            fenPositions: []
         };
+
+        the_game.getPGN = function () {
+            return the_game.pgn;
+        };
+
+
 
         return the_game;
     }
+
+    Chessgame.getPositionFromFEN = function (fen) {
+
+        // Return a position object from a FEN position string.
+
+        var colNumber = 1;
+        var fenArray = [];
+        var name = '';
+        var object = {};
+        var regexNumber = /[1-8]/;
+        var regexPiece = /[bknpqr]/i;
+        var rowNumber = 8;
+        fen = fen.replace(/\s.*/, '');
+        fenArray = fen.split('');
+        fenArray.forEach(function (char) {
+            if (regexPiece.test(char)) {
+                name = columns[colNumber - 1] + rowNumber;
+                object[name] = char;
+                colNumber += 1;
+            } else if (regexNumber.test(char)) {
+                colNumber += parseInt(char);
+            } else if (char === '/') {
+                colNumber = 1;
+                rowNumber -= 1;
+            } else {
+                throw new Error(error.fen);
+            }
+        });
+        return object;
+    };
 
     Chessgame.isValidPGN = function (pgn) {
 
@@ -552,7 +551,6 @@ window.AbChess = window.AbChess || function (containerId, width) {
             },
             set: function (fen) {
                 abChess.loadPosition(fen);
-                abChess.bindEventHandlers();
             }
         },
 
