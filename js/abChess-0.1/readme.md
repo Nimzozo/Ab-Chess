@@ -21,7 +21,6 @@
 |`draw()`|
 |`empty()`|
 |`getPosition()`|
-|`isValidFEN(fen)`|
 |`loadPosition(fen)`|
 
 
@@ -71,7 +70,22 @@
 
 | Methods | Description |
 |------------|-------------|
-|`getFEN()`
 |`getPGN()`
-|`getPositionFromFEN(fen)`
 |`isValidPGN(pgn)`
+
+
+##Position(fen)
+
+| Properties | Description |
+|------------|----
+|`fen`
+
+| Methods  | Description |
+|------------|-------------|
+|`getAllowedCastles()`
+|`getEnPassantTarget()`
+|`getFullmoveNumber()`
+|`getHalfmoveClock()`
+|`getOccupiedSquares()`
+|`isValidFEN(fen)`
+|`isWhiteTurn()`
