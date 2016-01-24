@@ -1,9 +1,5 @@
-// abChess script
-
 window.AbChess = window.AbChess || function (containerId, width) {
     'use strict';
-
-    // The global abChess module
 
     var abChess;
 
@@ -48,7 +44,13 @@ window.AbChess = window.AbChess || function (containerId, width) {
     };
 
     var images_path = '../images/wikipedia/';
+
     var png_extension = '.png';
+
+    var regex_fen = /^([bBkKnNpPqQrR1-8]{1,8}\/){7}[bBkKnNpPqQrR1-8]{1,8}\s(w|b)\s(KQ?k?q?|K?Qk?q?|K?Q?kq?|K?Q?k?q|-)\s([a-h][36]|-)\s(0|[1-9]\d*)\s([1-9]\d*)$/;
+    var regex_fen_row = /^([bknpqr1]{8}|[bknpqr12]{7}|[bknpqr1-3]{6}|[bknpqr1-4]{5}|[bknpqr1-5]{4}|[bknpqr1-6]{3}|[bknpqr]7|7[bknpqr]|8)$/i;
+
+
 
     function Piece(name) {
 
@@ -62,10 +64,6 @@ window.AbChess = window.AbChess || function (containerId, width) {
             div: null,
             name: name,
             square: null
-        };
-
-        the_piece.clickHandler = function () {
-
         };
 
         the_piece.dragEndHandler = function () {
@@ -390,30 +388,24 @@ window.AbChess = window.AbChess || function (containerId, width) {
 
             // Load a position from a FEN string.
 
-            var char = '';
-            var div;
-            var piece;
-            var pieceName = '';
             var position = {};
-            var positionArray = [];
-            var square = {};
-            var url = '';
+            var squares = {};
             fen = fen || default_fen;
-            if (!Chessboard.isValidFEN(fen)) {
+            if (!Position.isValidFEN(fen, true)) {
                 throw new SyntaxError(error.fen);
             }
             the_board.empty();
-            position = Chessgame.getPositionFromFEN(fen);
-            positionArray = Object.keys(position);
-            positionArray.forEach(function (squareName) {
-                square = the_board.squares[squareName];
-                char = position[squareName];
-                pieceName = (char.toLowerCase() === char)
+            position = new Position(fen);
+            squares = position.getOccupiedSquares();
+            Object.keys(squares).forEach(function (squareName) {
+                var square = the_board.squares[squareName];
+                var char = squares[squareName];
+                var pieceName = (char.toLowerCase() === char)
                     ? chess_piece.black + char
                     : chess_piece.white + char.toLowerCase();
-                piece = new Piece(pieceName);
-                div = document.createElement("DIV");
-                url = images_path + pieceName + png_extension;
+                var piece = new Piece(pieceName);
+                var div = document.createElement("DIV");
+                var url = images_path + pieceName + png_extension;
                 div.style.backgroundImage = 'url("' + url + '")';
                 div.setAttribute('draggable', 'true');
                 div.addEventListener('dragstart', piece.dragStartHandler);
@@ -426,37 +418,80 @@ window.AbChess = window.AbChess || function (containerId, width) {
         return the_board;
     }
 
-    Chessboard.isValidFEN = function (fen) {
+    // ---------------------------------------------------
+
+    function Position(fen) {
+
+        // A chess Position is constructed with a FEN string.
+        // It represents the pieces placement plus some extra data.
+
+        var the_position = {
+            fen: fen
+        };
+
+        the_position.getAllowedCastles = function () {
+
+        };
+
+        the_position.getEnPassantTarget = function () {
+
+        };
+
+        the_position.getFullmoveNumber = function () {
+
+        };
+
+        the_position.getHalfmoveClock = function () {
+
+        };
+
+        the_position.getOccupiedSquares = function () {
+
+            // Return a position object from a FEN position string.
+
+            var colNumber = 1;
+            var name = '';
+            var object = {};
+            var regexNumber = /[1-8]/;
+            var regexPiece = /[bknpqr]/i;
+            var rowNumber = 8;
+            var rows = the_position.fen.replace(/\s.*/, '');
+            var rowsArray = rows.split('/');
+            rowsArray.forEach(function (row, index) {
+                colNumber = 1;
+                rowNumber = 8 - index;
+                row.split('').forEach(function (char) {
+                    if (regexPiece.test(char)) {
+                        name = columns[colNumber - 1] + rowNumber;
+                        object[name] = char;
+                        colNumber += 1;
+                    } else if (regexNumber.test(char)) {
+                        colNumber += parseInt(char);
+                    } else {
+                        throw new Error(error.fen);
+                    }
+                });
+            });
+            return object;
+        };
+
+        return the_position;
+    }
+
+    Position.isValidFEN = function (fen, onlyRows) {
 
         // FEN string validator
 
-        var chars = [];
-        var position = fen.replace(/\s.*/, '');
-        var regex_fen = /^([BKNPQR1-8]{1,8}\/){7}[BKNQPR1-8]{1,8}/i;
-        var regex_number = /[2-8]/;
-        var regex_square = /[BKNPQR1]/i;
-        var rows = position.split('/');
-        var squaresCounter = 0;
-        if (!regex_fen.test(fen)) {
+        var rows = fen.replace(/\s.*/, '').split('/');
+        onlyRows = onlyRows || false;
+        if (!onlyRows && !regex_fen.test(fen)) {
             return false;
         }
-        return rows.every(function (value) {
-            squaresCounter = 0;
-            chars = value.split('');
-            chars.every(function (char) {
-                if (regex_square.test(char)) {
-                    squaresCounter += 1;
-                    return true;
-                }
-                if (regex_number.test(char)) {
-                    squaresCounter += parseInt(char);
-                    return true;
-                }
-                return false;
-            });
-            return (squaresCounter === 8);
+        return rows.every(function (row) {
+            return regex_fen_row.test(row);
         });
     };
+
 
     // ---------------------------------------------------
 
@@ -478,60 +513,22 @@ window.AbChess = window.AbChess || function (containerId, width) {
             return the_game.pgn;
         };
 
-
-
         return the_game;
     }
-
-    Chessgame.getPositionFromFEN = function (fen) {
-
-        // Return a position object from a FEN position string.
-
-        var colNumber = 1;
-        var fenArray = [];
-        var name = '';
-        var object = {};
-        var regexNumber = /[1-8]/;
-        var regexPiece = /[bknpqr]/i;
-        var rowNumber = 8;
-        fen = fen.replace(/\s.*/, '');
-        fenArray = fen.split('');
-        fenArray.forEach(function (char) {
-            if (regexPiece.test(char)) {
-                name = columns[colNumber - 1] + rowNumber;
-                object[name] = char;
-                colNumber += 1;
-            } else if (regexNumber.test(char)) {
-                colNumber += parseInt(char);
-            } else if (char === '/') {
-                colNumber = 1;
-                rowNumber -= 1;
-            } else {
-                throw new Error(error.fen);
-            }
-        });
-        return object;
-    };
 
     Chessgame.isValidPGN = function (pgn) {
 
         // PGN string validator
 
-        var regexString = "([1-9][0-9]*\\.{1,3}\\s*)?" +
-            "(O-O-O|" +
-            "O-O|" +
-            "([BNQR][a-h]?[1-8]?|K)x?[a-h][1-8]|" +
-            "([a-h]x)?[a-h][1-8](\=[BNQR])?" +
-            ")(\\+|#)?";
-        var regex = new RegExp(regexString, "gm");
+        var regex = /([1-9][0-9]*\\.{1,3}\\s*)?(O-O-O|O-O|([BNQR][a-h]?[1-8]?|K)x?[a-h][1-8]|([a-h]x)?[a-h][1-8](\=[BNQR])?)(\\+|#)?/gm;
         return regex.test(pgn.trim());
     };
 
     // ---------------------------------------------------
+    //
+    // ---------------------------------------------------
 
     abChess = new Chessboard(containerId, width);
-
-    // Returned api.
 
     return {
         draw: function () {
@@ -541,7 +538,6 @@ window.AbChess = window.AbChess || function (containerId, width) {
             abChess.createSquares();
             abChess.draw();
         },
-
         fen: {
 
             // Get or set the FEN position.
@@ -553,7 +549,6 @@ window.AbChess = window.AbChess || function (containerId, width) {
                 abChess.loadPosition(fen);
             }
         },
-
         flip: function () {
 
             // Flip the board.
@@ -564,7 +559,6 @@ window.AbChess = window.AbChess || function (containerId, width) {
             }
             abChess.draw();
         },
-
         highlight: function (square) {
 
             // Highlight a square (or the piece on it).
@@ -572,5 +566,4 @@ window.AbChess = window.AbChess || function (containerId, width) {
             abChess.squares[square].highlight();
         }
     };
-
 };
