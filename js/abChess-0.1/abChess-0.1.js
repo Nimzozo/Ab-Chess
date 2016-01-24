@@ -50,8 +50,6 @@ window.AbChess = window.AbChess || function (containerId, width) {
     var regex_fen = /^([bBkKnNpPqQrR1-8]{1,8}\/){7}[bBkKnNpPqQrR1-8]{1,8}\s(w|b)\s(KQ?k?q?|K?Qk?q?|K?Q?kq?|K?Q?k?q|-)\s([a-h][36]|-)\s(0|[1-9]\d*)\s([1-9]\d*)$/;
     var regex_fen_row = /^([bknpqr1]{8}|[bknpqr12]{7}|[bknpqr1-3]{6}|[bknpqr1-4]{5}|[bknpqr1-5]{4}|[bknpqr1-6]{3}|[bknpqr]7|7[bknpqr]|8)$/i;
 
-
-
     function Piece(name) {
 
         // The Piece class constructs an HTML DIV element.
@@ -429,20 +427,29 @@ window.AbChess = window.AbChess || function (containerId, width) {
             fen: fen
         };
 
-        the_position.getAllowedCastles = function () {
+        the_position.getActiveColor = function () {
+            var matches = regex_fen.exec(the_position.fen);
+            return matches[2];
+        };
 
+        the_position.getAllowedCastles = function () {
+            var matches = regex_fen.exec(the_position.fen);
+            return matches[3];
         };
 
         the_position.getEnPassantTarget = function () {
-
+            var matches = regex_fen.exec(the_position.fen);
+            return matches[4];
         };
 
         the_position.getFullmoveNumber = function () {
-
+            var matches = regex_fen.exec(the_position.fen);
+            return matches[6];
         };
 
         the_position.getHalfmoveClock = function () {
-
+            var matches = regex_fen.exec(the_position.fen);
+            return matches[5];
         };
 
         the_position.getOccupiedSquares = function () {
