@@ -1,5 +1,5 @@
 window.addEventListener('load', function () {
-    var abc = abChess('abc', 400);
+    var abc = new AbChess('abc', 400);
     var fenInput = document.getElementById('fenInput');
     abc.draw();
     document.getElementById('startButton').addEventListener('click', function () {
@@ -16,5 +16,7 @@ window.addEventListener('load', function () {
     fenInput.addEventListener('change', function (e) {
         abc.fen.set(e.target.value);
     });
-
+    document.getElementById('abc').addEventListener('dragend', function () {
+        fenInput.value = abc.fen.get();
+    });
 });
