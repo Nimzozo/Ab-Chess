@@ -53,7 +53,7 @@ window.AbChess = window.AbChess || function (containerId, width) {
     function Piece(name) {
 
         // The Piece class constructs an HTML DIV element.
-        // The name property is a 2 chars string (b|w[bknqr])
+        // The name property is a 2 chars string ((b|w)[bknqr])
         // to identify the chess piece.
         // The chess image is set with css backgroundImage.
 
@@ -62,6 +62,13 @@ window.AbChess = window.AbChess || function (containerId, width) {
             div: null,
             name: name,
             square: null
+        };
+
+        the_piece.clickHandler = function () {
+            if (the_piece.name[1].toUpperCase() === chess_piece.white_king) {
+                var pos = new Position(default_fen);
+                alert(pos.getTargets_king(the_piece.square.name));
+            }
         };
 
         the_piece.dragEndHandler = function () {
@@ -174,7 +181,7 @@ window.AbChess = window.AbChess || function (containerId, width) {
         // Check whether the square is white or not.
 
         var colNumber = columns.indexOf(name[0]) + 1;
-        var rowNumber = parseInt(name[1]);
+        var rowNumber = Number(name[1]);
         if (rowNumber % 2 === 0) {
             return (colNumber % 2 === 1);
         } else {
@@ -221,8 +228,8 @@ window.AbChess = window.AbChess || function (containerId, width) {
                     isWhiteSquare = Square.isWhite(name);
                     div = document.createElement("DIV");
                     cssClass = (isWhiteSquare)
-                        ? css.square + " " + css.white_square
-                        : css.square + " " + css.black_square;
+                        ? css.square + ' ' + css.white_square
+                        : css.square + ' ' + css.black_square;
                     div.className = cssClass;
                     square = new Square(name);
                     square.div = div;
@@ -408,6 +415,7 @@ window.AbChess = window.AbChess || function (containerId, width) {
                 div.setAttribute('draggable', 'true');
                 div.addEventListener('dragstart', piece.dragStartHandler);
                 div.addEventListener('dragend', piece.dragEndHandler);
+                div.addEventListener('click', piece.clickHandler);
                 piece.div = div;
                 piece.put(square);
             });
@@ -454,7 +462,7 @@ window.AbChess = window.AbChess || function (containerId, width) {
 
         the_position.getOccupiedSquares = function () {
 
-            // Return a position object from a FEN position string.
+            // Return an object representing the squares with their piece.
 
             var colNumber = 1;
             var name = '';
@@ -473,13 +481,103 @@ window.AbChess = window.AbChess || function (containerId, width) {
                         object[name] = char;
                         colNumber += 1;
                     } else if (regexNumber.test(char)) {
-                        colNumber += parseInt(char);
+                        colNumber += Number(char);
                     } else {
                         throw new Error(error.fen);
                     }
                 });
             });
             return object;
+        };
+
+        the_position.getPiecesPlacements = function (color) {
+
+            // Return the names of the squares where are placed
+            // the pieces of a specific color.
+
+            var placements = [];
+            var squares = the_position.getOccupiedSquares();
+            var squaresArray = Object.keys(squares);
+            squaresArray.forEach(function (square) {
+                var piece = squares[square];
+                if ((color === chess_piece.white
+                    && piece === piece.toUpperCase())
+                    || (color === chess_piece.black
+                        && piece === piece.toLowerCase())) {
+                    placements.push(square);
+                }
+            });
+            return placements;
+        };
+
+        the_position.getTargets = function (start) {
+
+            // Return the targetted squares where a specific piece can move.
+
+            var squares = the_position.getOccupiedSquares();
+            var squaresArray = Object.keys(squares);
+            var targets = [];
+            squaresArray.forEach(function (square) {
+                var color = '';
+                var piece = squares[square];
+                color = (piece.toLowerCase() === piece)
+                    ? chess_piece.black
+                    : chess_piece.white;
+                switch (piece) {
+                    case chess_piece.black_bishop:
+                    case chess_piece.white_bishop:
+
+                        break;
+                    case chess_piece.black_king:
+                    case chess_piece.white_king:
+                        targets = the_position.getTargets_king(start, color);
+                        break;
+                    case chess_piece.black_knight:
+                    case chess_piece.white_knight:
+
+                        break;
+                    case chess_piece.black_pawn:
+
+                        break;
+                    case chess_piece.white_pawn:
+
+                        break;
+                    case chess_piece.black_queen:
+                    case chess_piece.white_queen:
+
+                        break;
+                    case chess_piece.black_rook:
+                    case chess_piece.white_rook:
+
+                        break;
+                }
+            });
+            return targets;
+        };
+
+        the_position.getTargets_king = function (start, color) {
+
+            // Return an array of squares a king on a specific square can reach.
+
+            var colMoves = [-1, 0, 1];
+            var colNumber = 1 + columns.indexOf(start[0]);
+            var rowMoves = [-1, 0, 1];
+            var rowNumber = Number(start[1]);
+            var squares = the_position.getOccupiedSquares();
+            var targets = [];
+            var testColNumber = 0;
+            var testRowNumber = 0;
+            var testSquare = '';
+            colMoves.forEach(function (colValue) {
+                rowMoves.forEach(function (rowValue) {
+                    testColNumber = colNumber + colValue;
+                    testRowNumber = rowNumber + rowValue;
+                    testSquare = columns[testColNumber - 1] + testRowNumber;
+                    // Tests additionnels
+                    targets.push(testSquare);
+                });
+            });
+            return targets;
         };
 
         return the_position;
@@ -502,7 +600,7 @@ window.AbChess = window.AbChess || function (containerId, width) {
 
     // ---------------------------------------------------
 
-    function Chessgame() {
+    function Chessgame(pgn) {
 
         // The Chessgame class constructs a full chess game.
         // We assume a chessgame is mainly an ordered collection
@@ -512,7 +610,7 @@ window.AbChess = window.AbChess || function (containerId, width) {
         // halfmove clock and fullmove number.
 
         var the_game = {
-            pgn: '',
+            pgn: pgn,
             fenPositions: []
         };
 
@@ -532,7 +630,7 @@ window.AbChess = window.AbChess || function (containerId, width) {
     };
 
     // ---------------------------------------------------
-    //
+    // Api
     // ---------------------------------------------------
 
     abChess = new Chessboard(containerId, width);
