@@ -461,12 +461,12 @@ window.AbChess = window.AbChess || function (containerId, width) {
 
         the_position.getFullmoveNumber = function () {
             var matches = regex_fen.exec(the_position.fen);
-            return matches[6];
+            return Number(matches[6]);
         };
 
         the_position.getHalfmoveClock = function () {
             var matches = regex_fen.exec(the_position.fen);
-            return matches[5];
+            return Number(matches[5]);
         };
 
         the_position.getKingSquare = function (color) {
@@ -487,6 +487,83 @@ window.AbChess = window.AbChess || function (containerId, width) {
                 return true;
             });
             return square;
+        };
+
+        the_position.getNextPosition = function (move) {
+
+            // Return the new Position object after a move has been played.
+            // The move parameter must be on the form ([a-h][1-8]-[a-h][1-8])
+
+            var allowedCastles = the_position.getAllowedCastles();
+            var arrivalRowNumber = 0;
+            var arrivalSquare = move.substr(3, 2);
+            var nextActiveColor = '';
+            var nextAllowedCastles = '';
+            var nextEnPassantTarget = '';
+            var nextFEN = '';
+            var nextFullmoveNumber = 0;
+            var nextHalfmoveClock = 0;
+            var nextPosition = {};
+            var occupiedSquares = the_position.getOccupiedSquares();
+            var playedPiece = '';
+            var startRowNumber = 0;
+            var startSquare = move.substr(0, 2);
+            var takenPiece = occupiedSquares[arrivalSquare];
+            nextActiveColor = (the_position.getActiveColor() === chess_piece.white)
+                ? chess_piece.black
+                : chess_piece.white;
+            arrivalRowNumber = Number(arrivalSquare[1]);
+            startRowNumber = Number(startSquare[1]);
+            playedPiece = occupiedSquares[startSquare];
+            if (allowedCastles !== '-') {
+                if (allowedCastles.search(/[kq]/) !== -1) {
+                    if (playedPiece === chess_piece.black_king) {
+                        nextAllowedCastles = allowedCastles.replace(/[kq]/g, '');
+                    }
+                    if (playedPiece === chess_piece.black_rook) {
+                        if (startSquare === 'a8') {
+                            nextAllowedCastles = allowedCastles.replace(/q/, '');
+                        }
+                        if (startSquare === 'h8') {
+                            nextAllowedCastles = allowedCastles.replace(/k/, '');
+                        }
+                    }
+                }
+                if (allowedCastles.search(/[KQ]/) !== -1) {
+                    if (playedPiece === chess_piece.white_king) {
+                        nextAllowedCastles = allowedCastles.replace(/[KQ]/g, '');
+                    }
+                    if (playedPiece === chess_piece.white_rook) {
+                        if (startSquare === 'a1') {
+                            nextAllowedCastles = allowedCastles.replace(/Q/, '');
+                        }
+                        if (startSquare === 'h1') {
+                            nextAllowedCastles = allowedCastles.replace(/K/, '');
+                        }
+                    }
+                }
+            }
+            if (playedPiece === chess_piece.black_pawn || playedPiece === chess_piece.white_pawn) {
+                if (arrivalRowNumber - startRowNumber === 2) {
+                    nextEnPassantTarget = startSquare[0] + '3';
+                }
+                if (startRowNumber - arrivalRowNumber === 2) {
+                    nextEnPassantTarget = startSquare[0] + '6';
+                }
+            }
+            if (playedPiece === chess_piece.black_pawn || playedPiece === chess_piece.white_pawn || takenPiece !== undefined) {
+                nextHalfmoveClock = the_position.getHalfmoveClock() + 1;
+            } else {
+                nextHalfmoveClock = 0;
+            }
+            nextFullmoveNumber = (nextActiveColor === chess_piece.white)
+                ? the_position.getFullmoveNumber() + 1
+                : the_position.getFullmoveNumber();
+            nextFEN = ' ' + nextActiveColor + ' ' + nextAllowedCastles + ' '
+            + nextEnPassantTarget + ' ' + nextHalfmoveClock + ' '
+            + nextFullmoveNumber;
+            nextPosition = new Position(nextFEN);
+            return nextPosition;
         };
 
         the_position.getOccupiedSquares = function () {
@@ -884,7 +961,11 @@ window.AbChess = window.AbChess || function (containerId, width) {
 
         var the_game = {
             pgn: pgn,
-            fenPositions: []
+            fenPositions: [default_fen]
+        };
+
+        the_game.getNextPosition = function (index, move) {
+
         };
 
         the_game.getPGN = function () {
