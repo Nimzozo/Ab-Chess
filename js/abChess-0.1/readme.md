@@ -20,7 +20,7 @@
 <hr>
 
 ####AbChess.fen
-<code>AbChess.fen()</code>
+<code>AbChess.fen</code>
 <br>Returns a fen object which allows to get and set FEN strings.
 
 **Methods :**
@@ -39,7 +39,7 @@
 <hr>
 
 ####AbChess.game
-<code>AbChess.game()</code>
+<code>AbChess.game</code>
 <br>Returns a game object which allows to manage the chess game data.
 
 **Methods :**
