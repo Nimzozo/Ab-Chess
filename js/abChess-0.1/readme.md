@@ -1,6 +1,6 @@
 # AbChess API documentation
 
-<h2>Class AbChess</h2>
+##Class AbChess
 <code>new AbChess(containerId, [width])</code>
 <br>Constructs an AbChess object containing properties and methods to manage a chess game.
 
@@ -19,7 +19,7 @@
 <br>Flip the board.
 <hr>
 
-<h4>AbChess.fen</h4>
+####AbChess.fen
 <code>AbChess.fen()</code>
 <br>Returns a fen object which allows to get and set FEN strings.
 
@@ -35,9 +35,10 @@
 *Parameters :*
 * <code>fen</code> *\<String\>*
 <br>The FEN string.
+
 <hr>
 
-<h4>AbChess.game</h4>
+####AbChess.game
 <code>AbChess.game()</code>
 <br>Returns a game object which allows to manage the chess game data.
 
