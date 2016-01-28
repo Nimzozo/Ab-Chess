@@ -22,3 +22,14 @@
 <h4>AbChess.game</h4>
 <code>AbChess.game()</code>
 <br>Returns a game object which allows to manage the chess game data.
+
+**Methods :**
+
+<code>play(move)</code>
+<br>Play the desired move.
+
+*Parameters :*
+* <code>move</code> *\<String\>*
+<br>The string representation of the move to play It must be on the form <code>[a-h][1-8]-[a-h][1-8]</code>.
+<br>For example : <code>play('e2-e4')</code>
+<hr>
