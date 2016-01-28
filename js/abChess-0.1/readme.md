@@ -1,7 +1,6 @@
 # AbChess API documentation
 
-<h3>Class AbChess</h3>
-<hr>
+<h2>Class AbChess</h2>
 <code>new AbChess(containerId, [width])</code>
 <br>Constructs an AbChess object containing properties and methods to manage a chess game.
 
@@ -19,3 +18,7 @@
 <code>flip()</code>
 <br>Flip the board.
 <hr>
+
+<h4>AbChess.game</h4>
+<code>AbChess.game()</code>
+<br>Returns a game object which allows to manage the chess game data.
