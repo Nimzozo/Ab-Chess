@@ -1,36 +1,22 @@
 # AbChess API documentation
 
-<table>
-  <tr>
-    <th>Constructor</th>
-    <th>Arguments</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td rowspan='2'><code>AbChess()</code></td>
-    <td><code>containerId</code></td>
-    <td>The id of the HTML element container</td>
-  </tr>
-  <tr>
-    <td><code>width</code></td>
-    <td>The desired width of the board</td>
-  </tr>
-</table>
+<h3>Class AbChess</h3>
+<hr>
+Construct an AbChess object containing properties and methods to manage a chessgame.
 
-<table>
-  <tr>
-    <th>Method</th>
-    <th>Arguments</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td><code>draw()</code></td>
-    <td>-</td>
-    <td>Draw the board</td>
-  </tr>
-  <tr>
-    <td><code>flip()</code></td>
-    <td>-</td>
-    <td>Flip the board</td>
-  </tr>
-</table>
+<code>AbChess(containerId, width)</code>
+
+**Parameters :**
+* <code>containerId</code> **\<String\>**
+<br>The id of the HTML element container.
+* <code>width</code> **\<Number\>**
+<br>The desired width of the board.
+
+**Methods :**
+
+<code>draw()</code>
+<br>Draw the board.
+<hr>
+<code>flip()</code>
+<br>Flip the board.
+<hr>
