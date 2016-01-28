@@ -2,6 +2,7 @@ window.AbChess = window.AbChess || function (containerId, width) {
     'use strict';
 
     var abChess;
+    var abGame;
 
     var columns = 'abcdefgh';
 
@@ -498,8 +499,8 @@ window.AbChess = window.AbChess || function (containerId, width) {
             var arrivalRowNumber = 0;
             var arrivalSquare = move.substr(3, 2);
             var nextActiveColor = '';
-            var nextAllowedCastles = '';
-            var nextEnPassantTarget = '';
+            var nextAllowedCastles = allowedCastles;
+            var nextEnPassantTarget = '-';
             var nextFEN = '';
             var nextFullmoveNumber = 0;
             var nextHalfmoveClock = 0;
@@ -559,14 +560,14 @@ window.AbChess = window.AbChess || function (containerId, width) {
             nextFullmoveNumber = (nextActiveColor === chess_piece.white)
                 ? the_position.getFullmoveNumber() + 1
                 : the_position.getFullmoveNumber();
-            occupiedSquares.delete(startSquare);
+            delete occupiedSquares[startSquare];
             occupiedSquares[arrivalSquare] = playedPiece;
             nextFEN = Position.objectToFEN(occupiedSquares) + ' '
             + nextActiveColor + ' ' + nextAllowedCastles + ' '
             + nextEnPassantTarget + ' ' + nextHalfmoveClock + ' '
             + nextFullmoveNumber;
             nextPosition = new Position(nextFEN);
-            return nextPosition;
+            return nextFEN;
         };
 
         the_position.getOccupiedSquares = function () {
@@ -1007,6 +1008,12 @@ window.AbChess = window.AbChess || function (containerId, width) {
 
         the_game.getNextPosition = function (index, move) {
 
+            // Return the position after a specified move
+            // is played in a specified position.
+
+            var fenPosition = the_game.fenPositions[index];
+            var position = new Position(fenPosition);
+            return position.getNextPosition(move);
         };
 
         the_game.getPGN = function () {
@@ -1029,6 +1036,7 @@ window.AbChess = window.AbChess || function (containerId, width) {
     // ---------------------------------------------------
 
     abChess = new Chessboard(containerId, width);
+    abGame = new Chessgame();
 
     return {
         draw: function () {
@@ -1058,6 +1066,14 @@ window.AbChess = window.AbChess || function (containerId, width) {
                 abChess.container.removeChild(abChess.container.lastChild);
             }
             abChess.draw();
+        },
+        game: {
+
+            // Game data/methods.
+
+            play: function (move) {
+                return abGame.getNextPosition(0, move);
+            }
         }
     };
 };
