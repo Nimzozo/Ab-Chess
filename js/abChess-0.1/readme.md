@@ -19,6 +19,24 @@
 <br>Flip the board.
 <hr>
 
+<h4>AbChess.fen</h4>
+<code>AbChess.fen()</code>
+<br>Returns a fen object which allows to get and set FEN strings.
+
+**Methods :**
+
+*\<String\>* <code>get()</code>
+<br>Returns the current FEN string.
+<hr>
+
+<code>set(fen)</code>
+<br>Set the current FEN string.
+
+*Parameters :*
+* <code>fen</code> *\<String\>*
+<br>The FEN string.
+<hr>
+
 <h4>AbChess.game</h4>
 <code>AbChess.game()</code>
 <br>Returns a game object which allows to manage the chess game data.
@@ -32,4 +50,5 @@
 * <code>move</code> *\<String\>*
 <br>The string representation of the move to play. It must match the regular expression <code>[a-h][1-8]-[a-h][1-8]</code>.
 <br>For example : <code>play('e2-e4')</code>
+
 <hr>
