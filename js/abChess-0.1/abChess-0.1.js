@@ -559,7 +559,10 @@ window.AbChess = window.AbChess || function (containerId, width) {
             nextFullmoveNumber = (nextActiveColor === chess_piece.white)
                 ? the_position.getFullmoveNumber() + 1
                 : the_position.getFullmoveNumber();
-            nextFEN = ' ' + nextActiveColor + ' ' + nextAllowedCastles + ' '
+            occupiedSquares.delete(startSquare);
+            occupiedSquares[arrivalSquare] = playedPiece;
+            nextFEN = Position.objectToFEN(occupiedSquares) + ' '
+            + nextActiveColor + ' ' + nextAllowedCastles + ' '
             + nextEnPassantTarget + ' ' + nextHalfmoveClock + ' '
             + nextFullmoveNumber;
             nextPosition = new Position(nextFEN);
@@ -935,7 +938,7 @@ window.AbChess = window.AbChess || function (containerId, width) {
 
     Position.isValidFEN = function (fen, onlyRows) {
 
-        // FEN string validator
+        // FEN string validator.
 
         var rows = fen.replace(/\s.*/, '').split('/');
         onlyRows = onlyRows || false;
@@ -945,6 +948,44 @@ window.AbChess = window.AbChess || function (containerId, width) {
         return rows.every(function (row) {
             return regex_fen_row.test(row);
         });
+    };
+
+    Position.objectToFEN = function (position) {
+
+        // Convert a position to a FEN string.
+
+        var colNumber = 1;
+        var counter = 0;
+        var fenPosition = '';
+        var rowNumber = 8;
+        var square = '';
+        while (rowNumber > 0) {
+            colNumber = 1;
+            counter = 0;
+            while (colNumber < 9) {
+                square = columns[colNumber - 1] + rowNumber;
+                if (position.hasOwnProperty(square)) {
+                    if (counter > 0) {
+                        fenPosition += counter;
+                        counter = 0;
+                    }
+                    fenPosition += position[square];
+                } else {
+                    counter += 1;
+                }
+                if (colNumber === 8) {
+                    if (counter > 0) {
+                        fenPosition += counter;
+                    }
+                    if (rowNumber > 1) {
+                        fenPosition += '/';
+                    }
+                }
+                colNumber += 1;
+            }
+            rowNumber -= 1;
+        }
+        return fenPosition;
     };
 
 
@@ -1017,12 +1058,6 @@ window.AbChess = window.AbChess || function (containerId, width) {
                 abChess.container.removeChild(abChess.container.lastChild);
             }
             abChess.draw();
-        },
-        highlight: function (square) {
-
-            // Highlight a square (or the piece on it).
-
-            abChess.squares[square].highlight();
         }
     };
 };
