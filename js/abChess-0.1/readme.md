@@ -4,12 +4,12 @@
 <hr>
 Construct an AbChess object containing properties and methods to manage a chessgame.
 
-<code>AbChess(containerId, width)</code>
+<code>AbChess(containerId, [width])</code>
 
 **Parameters :**
-* <code>containerId</code> **\<String\>**
+* <code>containerId</code> *\<String\>*
 <br>The id of the HTML element container.
-* <code>width</code> **\<Number\>**
+* <code>width</code> *\<Number\>*
 <br>**Optional.** The desired width in pixels of the board. The default value is 400.
 
 **Methods :**
