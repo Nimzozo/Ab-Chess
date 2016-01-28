@@ -2,13 +2,12 @@
 
 <h3>Class AbChess</h3>
 <hr>
-Construct an AbChess object containing properties and methods to manage a chessgame.
-
-<code>AbChess(containerId, [width])</code>
+<code>new AbChess(containerId, [width])</code>
+<br>Constructs an AbChess object containing properties and methods to manage a chess game.
 
 **Parameters :**
 * <code>containerId</code> *\<String\>*
-<br>The id of the HTML element container.
+<br>The id of the desired HTML element to contain the chess board.
 * <code>width</code> *\<Number\>*
 <br>**Optional.** The desired width in pixels of the board. The default value is 400.
 
