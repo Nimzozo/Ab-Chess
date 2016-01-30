@@ -1,3 +1,7 @@
+// TODO :
+// special moves : castles, promotions
+// tests : castles, en passant, mate, etc...
+
 window.AbChess = window.AbChess || function (containerId, width) {
     'use strict';
 
@@ -57,9 +61,21 @@ window.AbChess = window.AbChess || function (containerId, width) {
 
             // Check whether a move is legal or not.
 
+            var activeColor = the_position.getActiveColor();
             var arrival = move.substr(3, 2);
+            var occupiedSquares = the_position.getOccupiedSquares();
+            var pieceColor = '';
             var start = move.substr(0, 2);
             var targets = the_position.getTargets(start, false);
+            if (!occupiedSquares.hasOwnProperty(start)) {
+                return false;
+            }
+            pieceColor = (occupiedSquares[start] === occupiedSquares[start].toLowerCase())
+                ? chess_piece.black
+                : chess_piece.white;
+            if (activeColor !== pieceColor) {
+                return false;
+            }
             return targets.some(function (target) {
                 return (target === arrival);
             });
@@ -251,6 +267,9 @@ window.AbChess = window.AbChess || function (containerId, width) {
             var piece = '';
             var squares = the_position.getOccupiedSquares();
             var targets = [];
+            if (!squares.hasOwnProperty(start)) {
+                return targets;
+            }
             piece = squares[start];
             color = (piece.toLowerCase() === piece)
                 ? chess_piece.black
