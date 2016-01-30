@@ -34,7 +34,8 @@ window.AbChess = window.AbChess || function (containerId, width) {
     var draggedPiece = null;
     var draggingAction = false;
     var error = {
-        fen: 'Invalid FEN string.'
+        fen: 'Invalid FEN string.',
+        illegal_move: 'Illegal move.'
     };
     var images_path = '../images/wikipedia/';
     var png_extension = '.png';
@@ -50,6 +51,18 @@ window.AbChess = window.AbChess || function (containerId, width) {
 
         var the_position = {
             fen: fen
+        };
+
+        the_position.checkLegality = function (move) {
+
+            // Check whether a move is legal or not.
+
+            var arrival = move.substr(3, 2);
+            var start = move.substr(0, 2);
+            var targets = the_position.getTargets(start, false);
+            return targets.some(function (target) {
+                return (target === arrival);
+            });
         };
 
         the_position.getActiveColor = function () {
@@ -174,7 +187,7 @@ window.AbChess = window.AbChess || function (containerId, width) {
             + nextEnPassantTarget + ' ' + nextHalfmoveClock + ' '
             + nextFullmoveNumber;
             nextPosition = new Position(nextFEN);
-            return nextFEN;
+            return nextPosition;
         };
 
         the_position.getOccupiedSquares = function () {
@@ -227,9 +240,12 @@ window.AbChess = window.AbChess || function (containerId, width) {
             return placements;
         };
 
-        the_position.getTargets = function (start) {
+        the_position.getTargets = function (start, onlyAttack) {
 
-            // Return the targetted squares where a specific piece can move.
+            // Return the target a specific piece can reach.
+            // A target is a square that a piece controls or can move on.
+            // The onlyAttack parameter allows to filter
+            // pawn non-attacking moves.
 
             var color = '';
             var piece = '';
@@ -254,7 +270,7 @@ window.AbChess = window.AbChess || function (containerId, width) {
                     break;
                 case chess_piece.black_pawn:
                 case chess_piece.white_pawn:
-                    targets = the_position.getTargets_pawn(start, color);
+                    targets = the_position.getTargets_pawn(start, color, onlyAttack);
                     break;
                 case chess_piece.black_queen:
                 case chess_piece.white_queen:
@@ -422,7 +438,7 @@ window.AbChess = window.AbChess || function (containerId, width) {
             return targets;
         };
 
-        the_position.getTargets_pawn = function (start, color) {
+        the_position.getTargets_pawn = function (start, color, onlyAttack) {
 
             // Return an array of squares a pawn on a specific square can reach.
             // Pawns move, take, promote, etc...
@@ -443,22 +459,24 @@ window.AbChess = window.AbChess || function (containerId, width) {
             var testRowNumber = 0;
             var testSquare = '';
             testRowNumber = rowNumber + direction;
-            colDirections.forEach(function (colDirection) {
-                testColNumber = colNumber + colDirection;
-                testSquare = columns[testColNumber - 1] + testRowNumber;
-                if (ennemiesPlaces.indexOf(testSquare) !== -1) {
-                    targets.push(testSquare);
-                }
-            });
-            testColNumber = colNumber;
-            testSquare = columns[testColNumber - 1] + testRowNumber;
-            if (alliesPlaces.indexOf(testSquare) === -1 && ennemiesPlaces.indexOf(testSquare) === -1) {
-                targets.push(testSquare);
-                if (rowNumber === 2 || rowNumber === 7) {
-                    testRowNumber = rowNumber + 2 * direction;
+                colDirections.forEach(function (colDirection) {
+                    testColNumber = colNumber + colDirection;
                     testSquare = columns[testColNumber - 1] + testRowNumber;
-                    if (alliesPlaces.indexOf(testSquare) === -1 && ennemiesPlaces.indexOf(testSquare) === -1) {
+                    if (ennemiesPlaces.indexOf(testSquare) !== -1) {
                         targets.push(testSquare);
+                    }
+                });
+            if (!onlyAttack) {
+                testColNumber = colNumber;
+                testSquare = columns[testColNumber - 1] + testRowNumber;
+                if (alliesPlaces.indexOf(testSquare) === -1 && ennemiesPlaces.indexOf(testSquare) === -1) {
+                    targets.push(testSquare);
+                    if (rowNumber === 2 || rowNumber === 7) {
+                        testRowNumber = rowNumber + 2 * direction;
+                        testSquare = columns[testColNumber - 1] + testRowNumber;
+                        if (alliesPlaces.indexOf(testSquare) === -1 && ennemiesPlaces.indexOf(testSquare) === -1) {
+                            targets.push(testSquare);
+                        }
                     }
                 }
             }
@@ -552,7 +570,7 @@ window.AbChess = window.AbChess || function (containerId, width) {
             var kingSquare = the_position.getKingSquare(color);
             ennemies = the_position.getPiecesPlaces(ennemiesColor);
             return ennemies.some(function (square) {
-                var targets = the_position.getTargets(square);
+                var targets = the_position.getTargets(square, true);
                 if (targets.indexOf(kingSquare) !== -1) {
                     return false;
                 } else {
@@ -649,7 +667,7 @@ window.AbChess = window.AbChess || function (containerId, width) {
         the_piece.highlightLegalSquares = function () {
             var fen = the_piece.square.board.getPosition();
             var pos = new Position(fen);
-            var targets = pos.getTargets(the_piece.square.name);
+            var targets = pos.getTargets(the_piece.square.name, false);
             targets.forEach(function (target) {
                 var square = the_piece.square.board.squares[target];
                 square.highlight();
@@ -1018,18 +1036,28 @@ window.AbChess = window.AbChess || function (containerId, width) {
             fenPositions: [default_fen]
         };
 
-        the_game.getNextPosition = function (index, move) {
-
-            // Return the position after a specified move
-            // is played in a specified position.
-
-            var fenPosition = the_game.fenPositions[index];
-            var position = new Position(fenPosition);
-            return position.getNextPosition(move);
-        };
-
         the_game.getPGN = function () {
             return the_game.pgn;
+        };
+
+        the_game.play = function (move) {
+
+            // Play a move and store the new FEN in the Chessgame object
+            // if it's legal. Then returns the new FEN.
+
+            var lastFENPosition = '';
+            var lastIndex = the_game.fenPositions.length - 1;
+            var lastPosition = {};
+            var nextPosition = {};
+            lastFENPosition = the_game.fenPositions[lastIndex];
+            lastPosition = new Position(lastFENPosition);
+            if (lastPosition.checkLegality(move)) {
+                nextPosition = lastPosition.getNextPosition(move);
+                the_game.fenPositions.push(nextPosition.fen);
+                return nextPosition.fen;
+            } else {
+                throw new Error(error.illegal_move);
+            }
         };
 
         return the_game;
@@ -1083,8 +1111,13 @@ window.AbChess = window.AbChess || function (containerId, width) {
 
             // Game data/methods.
 
+            isLegal: function (move) {
+                var lastIndex = abGame.fenPositions.length - 1;
+                var position = new Position(abGame.fenPositions[lastIndex]);
+                return position.checkLegality(move);
+            },
             play: function (move) {
-                return abGame.getNextPosition(0, move);
+                return abGame.play(move);
             }
         }
     };
