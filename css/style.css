@@ -19,7 +19,7 @@
     background-color: gainsboro;
     border: none;
     height: 30px;
-    width: 50px;
+    min-width: 50px;
 }
 
 #commands > input[type='button']:hover {
