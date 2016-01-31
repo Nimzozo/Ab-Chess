@@ -49,7 +49,7 @@
 
 <hr>
 
-<code>isLegal(move)</code>
+*\<Boolean\>* <code>isLegal(move)</code>
 <br>Check if a move is legal or not.
 
 *Parameters :*
