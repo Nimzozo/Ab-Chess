@@ -55,7 +55,7 @@
 *Parameters :*
 * <code>move</code> *\<String\>*
 <br>The string representation of the move to play. It must match the regular expression <code>[a-h][1-8]-[a-h][1-8]</code>.
-<br>For example : <code>play('e2-e4')</code>
+<br>For example : <code>isLegal('e2-e4')</code>
 
 <hr>
 
