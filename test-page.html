@@ -3,27 +3,35 @@
 
 <head>
     <title>AB-Chess test page</title>
-    <link rel="stylesheet" href="css/abChess-0.1/abChess-style.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="abChess-0.1/abChess-style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
     <div id='chessboardContainer'>
         <h1>This is the AB-Chess test page.</h1>
+        <div id="gameInfo">
+            <span id="turnInfo"></span>
+            <span id="checkInfo"></span>
+            <span id="lastMoveInfo"></span>
+        </div>
         <div id="abc"></div>
         <div id="commands">
             <input id="fenInput" type="text" placeholder="FEN" size="50">
             <input id="startButton" type="button" value="Start">
             <input id="emptyButton" type="button" value="Empty">
             <input id="flipButton" type="button" value="Flip">
+            <br>
+            <input id="moveInput" type="text" placeholder="Move" size="5">
+            <input id="moveButton" type="button" value="Test a move">
         </div>
     </div>
     <ul id='testList'></ul>
 
-    <script src="js/tester-function.js"></script>
-    <script src='js/abChess-0.1/abChess-0.1.js'></script>
-    <script src='js/main.js'></script>
+    <script src="tester-function.js"></script>
+    <script src='abChess-0.1/abChess-0.1.js'></script>
+    <script src='main.js'></script>
 </body>
 
 </html>
