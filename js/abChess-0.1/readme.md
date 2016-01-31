@@ -44,6 +44,21 @@
 
 **Methods :**
 
+*\<String\>* <code>getActiveColor()</code>
+<br>Return a character ('b' or 'w') representing the active color.
+
+<hr>
+
+<code>isLegal(move)</code>
+<br>Check if a move is legal or not.
+
+*Parameters :*
+* <code>move</code> *\<String\>*
+<br>The string representation of the move to play. It must match the regular expression <code>[a-h][1-8]-[a-h][1-8]</code>.
+<br>For example : <code>play('e2-e4')</code>
+
+<hr>
+
 <code>play(move)</code>
 <br>Play the desired move.
 
