@@ -49,6 +49,11 @@
 
 <hr>
 
+*\<Boolean\>* <code>isInCheck()</code>
+<br>Check if the active color is in check.
+
+<hr>
+
 *\<Boolean\>* <code>isLegal(move)</code>
 <br>Check if a move is legal or not.
 
