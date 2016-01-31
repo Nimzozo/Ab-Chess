@@ -67,6 +67,7 @@ window.AbChess = window.AbChess || function (containerId, width) {
             var pieceColor = '';
             var start = move.substr(0, 2);
             var targets = the_position.getTargets(start, false);
+            var testPosition = the_position.getNextPosition(move);
             if (!occupiedSquares.hasOwnProperty(start)) {
                 return false;
             }
@@ -74,6 +75,9 @@ window.AbChess = window.AbChess || function (containerId, width) {
                 ? chess_piece.black
                 : chess_piece.white;
             if (activeColor !== pieceColor) {
+                return false;
+            }
+            if (testPosition.isInCheck(activeColor)) {
                 return false;
             }
             return targets.some(function (target) {
@@ -590,11 +594,7 @@ window.AbChess = window.AbChess || function (containerId, width) {
             ennemies = the_position.getPiecesPlaces(ennemiesColor);
             return ennemies.some(function (square) {
                 var targets = the_position.getTargets(square, true);
-                if (targets.indexOf(kingSquare) !== -1) {
-                    return false;
-                } else {
-                    return true;
-                }
+                return (targets.indexOf(kingSquare) !== -1);
             });
         };
 
@@ -1130,12 +1130,36 @@ window.AbChess = window.AbChess || function (containerId, width) {
 
             // Game data/methods.
 
+            getActiveColor: function () {
+
+                // Return the active color : b|w.
+
+                var lastIndex = abGame.fenPositions.length - 1;
+                var position = new Position(abGame.fenPositions[lastIndex]);
+                return position.getActiveColor();
+            },
+            getLastMoveNotation: function () {
+
+                // Return the PGN notation of the last played move.
+
+
+            },
+            isInCheck: function () {
+                var activeColor = '';
+                var lastIndex = abGame.fenPositions.length - 1;
+                var position = new Position(abGame.fenPositions[lastIndex]);
+                activeColor = position.getActiveColor();
+                return position.isInCheck(activeColor);
+            },
             isLegal: function (move) {
                 var lastIndex = abGame.fenPositions.length - 1;
                 var position = new Position(abGame.fenPositions[lastIndex]);
                 return position.checkLegality(move);
             },
             play: function (move) {
+
+                // Play the desired move and return the resulting FEN string.
+
                 return abGame.play(move);
             }
         }
