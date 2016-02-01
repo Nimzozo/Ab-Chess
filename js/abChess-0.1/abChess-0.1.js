@@ -1,11 +1,11 @@
 // TODO :
-// special moves : castles, promotions, en passant
+// special tests : en passant, castles, promotions QRNB
 
 window.AbChess = window.AbChess || function (containerId, width) {
     'use strict';
 
-    var abChess;
-    var abGame;
+    var abChess = {};
+    var abGame = {};
     var columns = 'abcdefgh';
     var chess_piece = {
         black: 'b',
@@ -34,8 +34,8 @@ window.AbChess = window.AbChess || function (containerId, width) {
         white_square: 'whiteSquare'
     };
     var default_fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
-    var draggedPiece = null;
-    var draggingAction = false;
+    var dragStart = null;
+    var isDragging = false;
     var error = {
         fen: 'Invalid FEN string.',
         illegal_move: 'Illegal move.'
@@ -661,25 +661,36 @@ window.AbChess = window.AbChess || function (containerId, width) {
         // to identify the chess piece.
         // The chess image is set with css backgroundImage.
 
+        var div = document.createElement("DIV");
         var the_piece;
+        var url = images_path + name + png_extension;
+        div.style.backgroundImage = 'url("' + url + '")';
+        div.setAttribute('draggable', 'true');
+
         the_piece = {
-            div: null,
+            div: div,
             name: name,
             square: null
         };
 
+        the_piece.initEventsListeners = function () {
+            div.addEventListener('dragstart', the_piece.dragStartHandler);
+            div.addEventListener('dragend', the_piece.dragEndHandler);
+            div.addEventListener('click', the_piece.clickHandler);
+        };
+
         the_piece.clickHandler = function () {
-            // the_piece.highlightLegalSquares();
+
         };
 
         the_piece.dragEndHandler = function () {
-            draggingAction = false;
+            isDragging = false;
         };
 
         the_piece.dragStartHandler = function (e) {
             e.dataTransfer.effectAllowed = 'move';
-            draggingAction = true;
-            draggedPiece = the_piece;
+            isDragging = true;
+            dragStart = the_piece.square.name;
         };
 
         the_piece.put = function (square) {
@@ -724,30 +735,31 @@ window.AbChess = window.AbChess || function (containerId, width) {
         };
 
         the_square.dragEnterHandler = function (e) {
-            if (draggingAction) {
+            if (isDragging) {
                 e.preventDefault();
                 the_square.highlight();
             }
         };
 
         the_square.dragLeaveHandler = function () {
-            if (draggingAction) {
+            if (isDragging) {
                 the_square.highlight();
             }
         };
 
         the_square.dragOverHandler = function (e) {
-            if (draggingAction) {
+            if (isDragging) {
                 e.preventDefault();
             }
         };
 
         the_square.dropHandler = function (e) {
-            if (draggingAction) {
+            var move = '';
+            if (isDragging) {
                 e.preventDefault();
                 e.dataTransfer.dropEffect = 'move';
-                draggedPiece.remove();
-                draggedPiece.put(the_square);
+                move = dragStart + '-' + the_square.name;
+                the_square.board.play(move);
                 the_square.highlight();
             }
         };
@@ -999,6 +1011,74 @@ window.AbChess = window.AbChess || function (containerId, width) {
             });
         };
 
+        the_board.play = function (move, promotion) {
+
+            // Play the desired move on the board. Manage special moves.
+
+            var arrival = move.substr(3, 2);
+            var arrivalSquare = the_board.squares[arrival];
+            var emptyArrival = arrivalSquare.isEmpty();
+            var enPassant = '';
+            var newPiece = {};
+            var newPieceColor = '';
+            var piece = {};
+            var regexCastle = /^e(1-c1|1-g1|8-c8|8-g8)$/;
+            var regexEnPassant = /^([a-h]4-[a-h]3|[a-h]5-[a-h]6)$/;
+            var regexPromotion = /^([a-h]2-[a-h]1|[a-h]7-[a-h]8)$/;
+            var rook = {};
+            var rookArrival = '';
+            var rookStart = '';
+            var start = move.substr(0, 2);
+            var startSquare = the_board.squares[start];
+            if (!startSquare.isEmpty()) {
+                piece = startSquare.piece;
+                piece.remove();
+                piece.put(arrivalSquare);
+                if (regexCastle.test(move) && piece.name[1] === chess_piece.black_king) {
+                    switch (arrival[0]) {
+                        case columns[2]:
+                            rookStart = columns[0];
+                            rookArrival = columns[3];
+                            break;
+                        case columns[6]:
+                            rookStart = columns[7];
+                            rookArrival = columns[5];
+                            break;
+                    }
+                    rookArrival += arrival[1];
+                    rookStart += arrival[1];
+                    if (!the_board.squares[rookStart].isEmpty()) {
+                        rook = the_board.squares[rookStart].piece;
+                        rook.remove();
+                        rook.put(the_board.squares[rookArrival]);
+                    }
+                } else if (piece.name[1] === chess_piece.black_pawn) {
+                    if (regexEnPassant.test(move) && emptyArrival) {
+                        enPassant = arrival[0];
+                        switch (arrival[1]) {
+                            case '3':
+                                enPassant += '4';
+                                break;
+                            case '6':
+                                enPassant += '5';
+                                break;
+                        }
+                        if (!the_board.squares[enPassant].isEmpty()) {
+                            the_board.squares[enPassant].piece.remove();
+                        }
+                    } else if (regexPromotion.test(move)) {
+                        promotion = promotion || chess_piece.black_queen;
+                        newPieceColor = (arrival[1] === '1')
+                            ? chess_piece.black
+                            : chess_piece.white;
+                        newPiece = new Piece(newPieceColor + promotion.toLowerCase());
+                        newPiece.initEventsListeners();
+                        newPiece.put(arrivalSquare);
+                    }
+                }
+            }
+        };
+
         the_board.loadPosition = function (fen) {
 
             // Load a position from a FEN string.
@@ -1017,14 +1097,7 @@ window.AbChess = window.AbChess || function (containerId, width) {
                     ? chess_piece.black + char
                     : chess_piece.white + char.toLowerCase();
                 var piece = new Piece(pieceName);
-                var div = document.createElement("DIV");
-                var url = images_path + pieceName + png_extension;
-                div.style.backgroundImage = 'url("' + url + '")';
-                div.setAttribute('draggable', 'true');
-                div.addEventListener('dragstart', piece.dragStartHandler);
-                div.addEventListener('dragend', piece.dragEndHandler);
-                div.addEventListener('click', piece.clickHandler);
-                piece.div = div;
+                piece.initEventsListeners();
                 piece.put(square);
             });
         };
