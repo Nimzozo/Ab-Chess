@@ -1,6 +1,6 @@
-# ab-chess
+# ab-chess *[Still under development]*
 
-An object oriented chess program written in Javascript. **[Still under developement]**
+An object oriented chess program written in Javascript. 
 
 This project is based on my previous work available on http://net-echecs.olympe.in/ .
 
