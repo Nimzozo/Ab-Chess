@@ -21,7 +21,7 @@ window.addEventListener('load', function () {
     fenInput.addEventListener('change', function () {
         abc.fen.set(fenInput.value);
     });
-    document.getElementById('abc').addEventListener('dragend', function () {
+    document.getElementById('abc').addEventListener('drop', function () {
         fenInput.value = abc.fen.get();
     });
     document.getElementById('moveButton').addEventListener('click', function () {
