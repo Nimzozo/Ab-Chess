@@ -1,6 +1,6 @@
 # ab-chess
 
-An object-oriented chess script mainly written in Javascript.
+An object oriented chess program written in Javascript. **[Still under developement]**
 
 This project is based on my previous work available on http://net-echecs.olympe.in/ .
 
