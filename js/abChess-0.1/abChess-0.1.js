@@ -1,5 +1,6 @@
 // TODO :
-// special tests : en passant, castles, promotions QRNB
+// special legality tests : castles
+// click handler
 
 window.AbChess = window.AbChess || function (containerId, width) {
     'use strict';
@@ -433,7 +434,8 @@ window.AbChess = window.AbChess || function (containerId, width) {
         the_position.getTargets_pawn = function (start, color, onlyAttack) {
 
             // Return an array of squares a pawn on a specific square can reach.
-            // Pawns move, take, promote, etc...
+            // Pawns can move, take (en passant), promote.
+            // Set onlyAttack to true to check only captures.
 
             var alliesPlaces = the_position.getPiecesPlaces(color);
             var colDirections = [-1, 1];
@@ -445,6 +447,7 @@ window.AbChess = window.AbChess || function (containerId, width) {
                 ? chess_piece.white
                 : chess_piece.black;
             var ennemiesPlaces = the_position.getPiecesPlaces(ennemiesColor);
+            var enPassantSquare = the_position.getEnPassantTarget();
             var rowNumber = Number(start[1]);
             var targets = [];
             var testColNumber = 0;
@@ -454,7 +457,7 @@ window.AbChess = window.AbChess || function (containerId, width) {
             colDirections.forEach(function (colDirection) {
                 testColNumber = colNumber + colDirection;
                 testSquare = columns[testColNumber - 1] + testRowNumber;
-                if (ennemiesPlaces.indexOf(testSquare) !== -1) {
+                if (ennemiesPlaces.indexOf(testSquare) !== -1 || enPassantSquare === testSquare) {
                     targets.push(testSquare);
                 }
             });
@@ -961,53 +964,53 @@ window.AbChess = window.AbChess || function (containerId, width) {
             });
         };
 
-        the_board.getFENPosition = function () {
+        the_board.getPositionObject = function () {
 
-            // Get the position of the pieces in a FEN string.
+            // Return a position object of the pieces places.
 
-            var colNumber = 1;
-            var count = 0;
-            var currentSquare;
-            var pieceName = '';
-            var position = '';
-            var rowNumber = 8;
-            var squareName = '';
-            while (rowNumber > 0) {
-                colNumber = 1;
-                while (colNumber < 9) {
-                    squareName = columns[colNumber - 1] + rowNumber;
-                    currentSquare = the_board.squares[squareName];
-                    if (currentSquare.isEmpty()) {
-                        count += 1;
-                    } else {
-                        pieceName = currentSquare.piece.name;
-                        if (count > 0) {
-                            position += count;
-                            count = 0;
-                        }
-                        position += (pieceName[0] === chess_piece.white)
-                            ? pieceName[1].toUpperCase()
-                            : pieceName[1].toLowerCase();
-                    }
-                    if (colNumber === 8) {
-                        if (count > 0) {
-                            position += count;
-                            count = 0;
-                        }
-                        if (rowNumber > 1) {
-                            position += '/';
-                        }
-                    }
-                    colNumber += 1;
+            var occupiedSquares = {};
+            var squares = Object.keys(the_board.squares);
+            squares.forEach(function (key) {
+                var pieceChar = '';
+                var pieceName = '';
+                var square = the_board.squares[key];
+                if (!square.isEmpty()) {
+                    pieceName = square.piece.name;
+                    pieceChar = (pieceName[0] === chess_piece.white)
+                        ? pieceName[1].toUpperCase()
+                        : pieceName[1].toLowerCase();
+                    occupiedSquares[key] = pieceChar;
                 }
-                rowNumber -= 1;
-            }
-            return position;
+            });
+            return occupiedSquares;
         };
 
         the_board.highlightSquares = function (squares) {
             squares.forEach(function (square) {
                 the_board.squares[square].highlight();
+            });
+        };
+
+        the_board.loadPosition = function (fen) {
+
+            // Load a position from a FEN string.
+
+            var squares = {};
+            fen = fen || default_fen;
+            if (!Position.isValidFEN(fen, true)) {
+                throw new SyntaxError(error.fen);
+            }
+            the_board.empty();
+            squares = Position.fenToObject(fen);
+            Object.keys(squares).forEach(function (squareName) {
+                var square = the_board.squares[squareName];
+                var char = squares[squareName];
+                var pieceName = (char.toLowerCase() === char)
+                    ? chess_piece.black + char
+                    : chess_piece.white + char.toLowerCase();
+                var piece = new Piece(pieceName);
+                piece.initEventsListeners();
+                piece.put(square);
             });
         };
 
@@ -1077,29 +1080,6 @@ window.AbChess = window.AbChess || function (containerId, width) {
                     }
                 }
             }
-        };
-
-        the_board.loadPosition = function (fen) {
-
-            // Load a position from a FEN string.
-
-            var squares = {};
-            fen = fen || default_fen;
-            if (!Position.isValidFEN(fen, true)) {
-                throw new SyntaxError(error.fen);
-            }
-            the_board.empty();
-            squares = Position.fenToObject(fen);
-            Object.keys(squares).forEach(function (squareName) {
-                var square = the_board.squares[squareName];
-                var char = squares[squareName];
-                var pieceName = (char.toLowerCase() === char)
-                    ? chess_piece.black + char
-                    : chess_piece.white + char.toLowerCase();
-                var piece = new Piece(pieceName);
-                piece.initEventsListeners();
-                piece.put(square);
-            });
         };
 
         return the_board;
@@ -1197,7 +1177,8 @@ window.AbChess = window.AbChess || function (containerId, width) {
             // Get or set the FEN position.
 
             get: function () {
-                return abChess.getFENPosition();
+                var position = abChess.getPositionObject();
+                return Position.objectToFEN(position);
             },
             set: function (fen) {
                 abChess.loadPosition(fen);
