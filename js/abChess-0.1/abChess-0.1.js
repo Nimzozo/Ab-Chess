@@ -269,8 +269,8 @@ window.AbChess = window.AbChess || function (containerId, width) {
 
             // Return the target a specific piece can reach.
             // A target is a square that a piece controls or can move on.
-            // The onlyAttack parameter allows to filter
-            // pawn non-attacking moves.
+            // The onlyAttack parameter allows to filter special king moves
+            // and pawn non-attacking moves.
 
             var color = '';
             var piece = '';
@@ -291,6 +291,9 @@ window.AbChess = window.AbChess || function (containerId, width) {
                 case chess_piece.black_king:
                 case chess_piece.white_king:
                     targets = the_position.getTargets_king(start, color);
+                    if (!onlyAttack) {
+                        targets.concat(the_position.getTargets_king_special(start, color));
+                    }
                     break;
                 case chess_piece.black_knight:
                 case chess_piece.white_knight:
@@ -390,23 +393,11 @@ window.AbChess = window.AbChess || function (containerId, width) {
         the_position.getTargets_king = function (start, color) {
 
             // Return an array of squares a king on a specific square can reach.
-            // A king cannot be near the ennemy king.
-            // A king can castle.
+            // Only for normal moves.
 
             var alliesPlaces = the_position.getPiecesPlaces(color);
-            var allowedCastles = the_position.getAllowedCastles();
             var colMoves = [-1, 0, 1];
             var colNumber = 1 + columns.indexOf(start[0]);
-            var ennemiesColor = (color === chess_piece.black)
-                ? chess_piece.white
-                : chess_piece.black;
-            var ennemyColNumber = 0;
-            var ennemyRowNumber = 0;
-            var ennemyKingSquare = the_position.getKingSquare(ennemiesColor);
-            var ennemyKingTargets = [];
-            var kingSideCastle = ['f', 'g'];
-            var occupiedSquares = Position.fenToObject(the_position.fen);
-            var queenSideCastle = ['b', 'c', 'd'];
             var rowMoves = [-1, 0, 1];
             var rowNumber = Number(start[1]);
             var targets = [];
@@ -416,27 +407,39 @@ window.AbChess = window.AbChess || function (containerId, width) {
             colMoves.forEach(function (colValue) {
                 rowMoves.forEach(function (rowValue) {
                     if (colValue !== 0 || rowValue !== 0) {
-                        ennemyColNumber = 1 + columns.indexOf(ennemyKingSquare[0]) + colValue;
-                        ennemyRowNumber = Number(ennemyKingSquare[1]) + rowValue;
-                        if (ennemyColNumber > 0 && ennemyColNumber < 9 && ennemyRowNumber > 0 && ennemyRowNumber < 9) {
-                            ennemyKingTargets.push(columns[ennemyColNumber - 1] + ennemyRowNumber);
-                        }
-                    }
-                });
-            });
-            colMoves.forEach(function (colValue) {
-                rowMoves.forEach(function (rowValue) {
-                    if (colValue !== 0 || rowValue !== 0) {
                         testColNumber = colNumber + colValue;
                         testRowNumber = rowNumber + rowValue;
                         if (testColNumber > 0 && testColNumber < 9 && testRowNumber > 0 && testRowNumber < 9) {
                             testSquare = columns[testColNumber - 1] + testRowNumber;
-                            if (alliesPlaces.indexOf(testSquare) === -1 && ennemyKingTargets.indexOf(testSquare) === -1) {
+                            if (alliesPlaces.indexOf(testSquare) === -1) {
                                 targets.push(testSquare);
                             }
                         }
                     }
                 });
+            });
+            return targets;
+        };
+
+        the_position.getTargets_king_special = function (start, color) {
+
+            // Return an array of squares a king on a specific square can reach.
+            // Only for : castles,  filter ennemy king opposition.
+
+            var allowedCastles = the_position.getAllowedCastles();
+            var ennemiesColor = (color === chess_piece.black)
+                ? chess_piece.white
+                : chess_piece.black;
+            var ennemyKingSquare = the_position.getKingSquare(ennemiesColor);
+            var ennemyKingTargets = the_position.getTargets_king(ennemyKingSquare, ennemiesColor);
+            var kingSideCastle = ['f', 'g'];
+            var normalTargets = the_position.getTargets_king(start, color);
+            var occupiedSquares = Position.fenToObject(the_position.fen);
+            var queenSideCastle = ['b', 'c', 'd'];
+            var targets = [];
+            var testSquare = '';
+            targets = normalTargets.filter(function (target) {
+                return (ennemyKingTargets.indexOf(target) !== -1);
             });
             if (start === 'e1') {
                 if (allowedCastles.indexOf(chess_piece.white_queen) !== -1 && !the_position.isControlledBy('d1', chess_piece.black)) {
