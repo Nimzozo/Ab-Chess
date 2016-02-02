@@ -1,6 +1,43 @@
+// AbChess-0.1.js
+// 2016-02-02
+// Copyright (c) 2016 Nimzozo
+
 // TODO :
-// special legality tests : castles
 // click handler
+
+/*global
+    window
+*/
+
+/*jslint
+    browser, white
+*/
+
+/*property
+    AbChess, abs, addEventListener, appendChild, backgroundImage, black,
+    black_bishop, black_king, black_knight, black_pawn, black_queen,
+    black_rook, black_square, board, bottom_border, checkLegality, className,
+    clickHandler, clickablePieces, concat, container, containerId,
+    createElement, createSquares, dataTransfer, div, dragEndHandler,
+    dragEnterHandler, dragLeaveHandler, dragOverHandler, dragStartHandler,
+    draggablePieces, draw, dropEffect, dropHandler, effectAllowed, empty,
+    every, exec, fen, fenPositions, fenToObject, flip, forEach, game, get,
+    getActiveColor, getAllowedCastles, getElementById, getEnPassantTarget,
+    getFullmoveNumber, getHalfmoveClock, getKingSquare, getLastMoveNotation,
+    getMoveNotation, getNextPosition, getPGN, getPiecesPlaces,
+    getPositionObject, getTargets, getTargets_bishop, getTargets_king,
+    getTargets_knight, getTargets_pawn, getTargets_queen, getTargets_rook,
+    hasBorder, hasChildNodes, hasOwnProperty, height, highlight,
+    highlightSquares, illegal_move, indexOf, initEventsListeners, inline_block,
+    innerHTML, isControlledBy, isEmpty, isFlipped, isHighlighted, isInCheck,
+    isLegal, isValidFEN, isValidPGN, isWhite, keys, lastChild, length,
+    lineHeight, loadPosition, moves, name, objectToFEN, pgn, piece, play,
+    preventDefault, push, put, remove, removeChild, replace, right_border,
+    search, selected_square, set, setAttribute, some, split, square, squares,
+    squares_div, style, substr, test, toLowerCase, toUpperCase, trim, white,
+    white_bishop, white_king, white_knight, white_pawn, white_queen,
+    white_rook, white_square, width
+*/
 
 window.AbChess = window.AbChess || function (containerId, width) {
     'use strict';
@@ -402,34 +439,34 @@ window.AbChess = window.AbChess || function (containerId, width) {
                 });
             });
             if (start === 'e1') {
-                if (allowedCastles.indexOf(chess_piece.white_queen) !== -1) {
+                if (allowedCastles.indexOf(chess_piece.white_queen) !== -1 && !the_position.isControlledBy('d1', chess_piece.black)) {
                     if (queenSideCastle.every(function (column) {
-                        var testSquare = column + '1';
+                        testSquare = column + '1';
                         return !occupiedSquares.hasOwnProperty(testSquare);
                     })) {
                         targets.push('c1');
                     }
                 }
-                if (allowedCastles.indexOf(chess_piece.white_king) !== -1) {
+                if (allowedCastles.indexOf(chess_piece.white_king) !== -1 && !the_position.isControlledBy('f1', chess_piece.black)) {
                     if (kingSideCastle.every(function (column) {
-                        var testSquare = column + '1';
+                        testSquare = column + '1';
                         return !occupiedSquares.hasOwnProperty(testSquare);
                     })) {
                         targets.push('g1');
                     }
                 }
             } else if (start === 'e8') {
-                if (allowedCastles.indexOf(chess_piece.black_queen) !== -1) {
+                if (allowedCastles.indexOf(chess_piece.black_queen) !== -1 && !the_position.isControlledBy('d8', chess_piece.white)) {
                     if (queenSideCastle.every(function (column) {
-                        var testSquare = column + '8';
+                        testSquare = column + '8';
                         return !occupiedSquares.hasOwnProperty(testSquare);
                     })) {
                         targets.push('c8');
                     }
                 }
-                if (allowedCastles.indexOf(chess_piece.black_king) !== -1) {
+                if (allowedCastles.indexOf(chess_piece.black_king) !== -1 && !the_position.isControlledBy('f8', chess_piece.white)) {
                     if (kingSideCastle.every(function (column) {
-                        var testSquare = column + '8';
+                        testSquare = column + '8';
                         return !occupiedSquares.hasOwnProperty(testSquare);
                     })) {
                         targets.push('g8');
@@ -593,20 +630,28 @@ window.AbChess = window.AbChess || function (containerId, width) {
             return targets;
         };
 
-        the_position.isInCheck = function (color) {
+        the_position.isControlledBy = function (square, color) {
 
-            // Check whether the desired king is in check.
+            // Check whether the desired square is controlled
+            // by the specified color.
 
             var ennemies = [];
             var ennemiesColor = (color === chess_piece.white)
                 ? chess_piece.black
                 : chess_piece.white;
-            var kingSquare = the_position.getKingSquare(color);
             ennemies = the_position.getPiecesPlaces(ennemiesColor);
-            return ennemies.some(function (square) {
-                var targets = the_position.getTargets(square, true);
-                return (targets.indexOf(kingSquare) !== -1);
+            return ennemies.some(function (ennemy) {
+                var targets = the_position.getTargets(ennemy, true);
+                return (targets.indexOf(square) !== -1);
             });
+        };
+
+        the_position.isInCheck = function (color) {
+
+            // Check whether the desired king is in check.
+
+            var kingSquare = the_position.getKingSquare(color);
+            return the_position.isControlledBy(kingSquare, color);
         };
 
         return the_position;
