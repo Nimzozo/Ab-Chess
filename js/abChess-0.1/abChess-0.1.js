@@ -1,6 +1,5 @@
 // TODO :
 // special legality tests : castles
-// remove castles after rook captures
 // click handler
 
 window.AbChess = window.AbChess || function (containerId, width) {
@@ -136,7 +135,7 @@ window.AbChess = window.AbChess || function (containerId, width) {
 
             // Return the new Position object after a move has been played.
             // The move parameter must be on the form [a-h][1-8]-[a-h][1-8].
-            // The states of FEN extra data are updated.
+            // The states of FEN extra data are updated here.
 
             var allowedCastles = the_position.getAllowedCastles();
             var arrivalRowNumber = 0;
@@ -164,26 +163,22 @@ window.AbChess = window.AbChess || function (containerId, width) {
                     if (playedPiece === chess_piece.black_king) {
                         nextAllowedCastles = allowedCastles.replace(/[kq]/g, '');
                     }
-                    if (playedPiece === chess_piece.black_rook) {
-                        if (startSquare === 'a8') {
-                            nextAllowedCastles = allowedCastles.replace(/q/, '');
-                        }
-                        if (startSquare === 'h8') {
-                            nextAllowedCastles = allowedCastles.replace(/k/, '');
-                        }
+                    if (startSquare === 'a8' || arrivalSquare === 'a8') {
+                        nextAllowedCastles = allowedCastles.replace(/q/, '');
+                    }
+                    if (startSquare === 'h8' || arrivalSquare === 'h8') {
+                        nextAllowedCastles = allowedCastles.replace(/k/, '');
                     }
                 }
                 if (allowedCastles.search(/[KQ]/) !== -1) {
                     if (playedPiece === chess_piece.white_king) {
                         nextAllowedCastles = allowedCastles.replace(/[KQ]/g, '');
                     }
-                    if (playedPiece === chess_piece.white_rook) {
-                        if (startSquare === 'a1') {
-                            nextAllowedCastles = allowedCastles.replace(/Q/, '');
-                        }
-                        if (startSquare === 'h1') {
-                            nextAllowedCastles = allowedCastles.replace(/K/, '');
-                        }
+                    if (startSquare === 'a1' || arrivalSquare === 'a1') {
+                        nextAllowedCastles = allowedCastles.replace(/Q/, '');
+                    }
+                    if (startSquare === 'h1' || arrivalSquare === 'h1') {
+                        nextAllowedCastles = allowedCastles.replace(/K/, '');
                     }
                 }
             }
