@@ -1,5 +1,6 @@
 // TODO :
 // special legality tests : castles
+// remove castles after rook captures
 // click handler
 
 window.AbChess = window.AbChess || function (containerId, width) {
@@ -60,6 +61,7 @@ window.AbChess = window.AbChess || function (containerId, width) {
         the_position.checkLegality = function (move) {
 
             // Check whether a move is legal or not.
+            // Check : active color, kings are not in check, moves are legal.
 
             var activeColor = the_position.getActiveColor();
             var arrival = move.substr(3, 2);
@@ -133,7 +135,8 @@ window.AbChess = window.AbChess || function (containerId, width) {
         the_position.getNextPosition = function (move) {
 
             // Return the new Position object after a move has been played.
-            // The move parameter must be on the form ([a-h][1-8]-[a-h][1-8]).
+            // The move parameter must be on the form [a-h][1-8]-[a-h][1-8].
+            // The states of FEN extra data are updated.
 
             var allowedCastles = the_position.getAllowedCastles();
             var arrivalRowNumber = 0;
@@ -355,8 +358,11 @@ window.AbChess = window.AbChess || function (containerId, width) {
         the_position.getTargets_king = function (start, color) {
 
             // Return an array of squares a king on a specific square can reach.
+            // A king cannot be near the ennemy king.
+            // A king can castle.
 
             var alliesPlaces = the_position.getPiecesPlaces(color);
+            var allowedCastles = the_position.getAllowedCastles();
             var colMoves = [-1, 0, 1];
             var colNumber = 1 + columns.indexOf(start[0]);
             var ennemiesColor = (color === chess_piece.black)
@@ -366,6 +372,9 @@ window.AbChess = window.AbChess || function (containerId, width) {
             var ennemyRowNumber = 0;
             var ennemyKingSquare = the_position.getKingSquare(ennemiesColor);
             var ennemyKingTargets = [];
+            var kingSideCastle = ['f', 'g'];
+            var occupiedSquares = Position.fenToObject(the_position.fen);
+            var queenSideCastle = ['b', 'c', 'd'];
             var rowMoves = [-1, 0, 1];
             var rowNumber = Number(start[1]);
             var targets = [];
@@ -397,6 +406,41 @@ window.AbChess = window.AbChess || function (containerId, width) {
                     }
                 });
             });
+            if (start === 'e1') {
+                if (allowedCastles.indexOf(chess_piece.white_queen) !== -1) {
+                    if (queenSideCastle.every(function (column) {
+                        var testSquare = column + '1';
+                        return !occupiedSquares.hasOwnProperty(testSquare);
+                    })) {
+                        targets.push('c1');
+                    }
+                }
+                if (allowedCastles.indexOf(chess_piece.white_king) !== -1) {
+                    if (kingSideCastle.every(function (column) {
+                        var testSquare = column + '1';
+                        return !occupiedSquares.hasOwnProperty(testSquare);
+                    })) {
+                        targets.push('g1');
+                    }
+                }
+            } else if (start === 'e8') {
+                if (allowedCastles.indexOf(chess_piece.black_queen) !== -1) {
+                    if (queenSideCastle.every(function (column) {
+                        var testSquare = column + '8';
+                        return !occupiedSquares.hasOwnProperty(testSquare);
+                    })) {
+                        targets.push('c8');
+                    }
+                }
+                if (allowedCastles.indexOf(chess_piece.black_king) !== -1) {
+                    if (kingSideCastle.every(function (column) {
+                        var testSquare = column + '8';
+                        return !occupiedSquares.hasOwnProperty(testSquare);
+                    })) {
+                        targets.push('g8');
+                    }
+                }
+            }
             return targets;
         };
 
