@@ -12,6 +12,9 @@
 
 ####AbChess.board
 
+<code>AbChess.board</code>
+<br>Returns a board object which allows to manage the HTML chess board.
+
 **Methods :**
 
 <code>board.draw()</code>
@@ -31,7 +34,7 @@
 
 <hr>
 
-<code>flip()</code>
+<code>board.flip()</code>
 <br>Flip the board.
 <hr>
 
@@ -42,12 +45,12 @@
 
 **Methods :**
 
-*\<String\>* <code>getActiveColor()</code>
+*\<String\>* <code>game.getActiveColor()</code>
 <br>Return a character ('b' or 'w') representing the active color.
 
 <hr>
 
-*\<Array\>* <code>getLegalSquares(start)</code>
+*\<Array\>* <code>game.getLegalSquares(start)</code>
 <br>Return an array of string representations of legal squares.
 
 *Parameters :*
@@ -57,12 +60,12 @@
 
 <hr>
 
-*\<Boolean\>* <code>isInCheck()</code>
+*\<Boolean\>* <code>game.isInCheck()</code>
 <br>Check if the active color is in check.
 
 <hr>
 
-*\<Boolean\>* <code>isLegal(move)</code>
+*\<Boolean\>* <code>game.isLegal(move)</code>
 <br>Check if a move is legal or not.
 
 *Parameters :*
@@ -72,7 +75,7 @@
 
 <hr>
 
-<code>play(move)</code>
+<code>game.play(move)</code>
 <br>Play the desired move.
 
 *Parameters :*
