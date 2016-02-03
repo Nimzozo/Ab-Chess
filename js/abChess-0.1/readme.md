@@ -1,21 +1,23 @@
-# AbChess API documentation
+#AbChess API documentation
 
 ##Class AbChess
 <code>new AbChess(containerId, [config])</code>
 <br>Constructs an AbChess object containing properties and methods to manage a chess game.
 
-<b>Parameters :</b>
+**Parameters :**
 * <code>containerId</code> *\<String\>*
 <br>The id of the desired HTML element to contain the chess board.
 * <code>config</code> *\<Object\>*
 <br>**Optional.** A configuration object.
 
+<hr>
 ###AbChess.board
 
 <code>AbChess.board</code>
 <br>Returns a board object which allows to manage the HTML chess board.
 
 ####Methods :
+<hr>
 
 <code>board.draw()</code>
 <br>Draw the board.
@@ -39,6 +41,7 @@
 <hr>
 
 ###AbChess.game
+<hr>
 
 <code>AbChess.game</code>
 <br>Returns a game object which allows to manage the chess game data.
