@@ -3,13 +3,13 @@
 }
 
 #abc {
-    background: lightsteelblue;
     margin: auto;
     display: inline-block;
 }
 
 #commands {
-    width: 400px;
+    padding: 8px;
+    width: 600px;
     border: 2px solid grey;
     margin: 8px auto;
 }
@@ -24,4 +24,12 @@
 
 #commands > input[type='button']:hover {
     background-color: lightskyblue;
+}
+
+#testList {
+    position: fixed;
+    top: 0;
+    left: 0;
+    border: 2px solid black;
+    overflow: auto;
 }
