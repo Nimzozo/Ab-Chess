@@ -15,7 +15,7 @@
 <code>AbChess.board</code>
 <br>Returns a board object which allows to manage the HTML chess board.
 
-####**Methods :**
+####Methods :
 
 <code>board.draw()</code>
 <br>Draw the board.
@@ -28,7 +28,7 @@
 <code>board.fen.set(fen)</code>
 <br>Set the current FEN string.
 
-*Parameters :*
+**Parameters :**
 * <code>fen</code> *\<String\>*
 <br>The FEN string to set.
 
@@ -43,7 +43,7 @@
 <code>AbChess.game</code>
 <br>Returns a game object which allows to manage the chess game data.
 
-####**Methods :**
+####Methods :
 
 *\<String\>* <code>game.getActiveColor()</code>
 <br>Return a character ('b' or 'w') representing the active color.
@@ -53,7 +53,7 @@
 *\<Array\>* <code>game.getLegalSquares(start)</code>
 <br>Return an array of string representations of legal squares.
 
-*Parameters :*
+**Parameters :**
 * <code>start</code> *\<String\>*
 <br>The string representation of the start square. It must match the regular expression <code>[a-h][1-8]</code>.
 <br>For example : <code>getLegalSquares('e2')</code>
@@ -68,7 +68,7 @@
 *\<Boolean\>* <code>game.isLegal(move)</code>
 <br>Check if a move is legal or not.
 
-*Parameters :*
+**Parameters :**
 * <code>move</code> *\<String\>*
 <br>The string representation of the move to play. It must match the regular expression <code>[a-h][1-8]-[a-h][1-8]</code>.
 <br>For example : <code>isLegal('e2-e4')</code>
@@ -78,7 +78,7 @@
 <code>game.play(move)</code>
 <br>Play the desired move.
 
-*Parameters :*
+**Parameters :**
 * <code>move</code> *\<String\>*
 <br>The string representation of the move to play. It must match the regular expression <code>[a-h][1-8]-[a-h][1-8]</code>.
 <br>For example : <code>play('e2-e4')</code>
