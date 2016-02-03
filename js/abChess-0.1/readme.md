@@ -14,19 +14,21 @@
 
 **Methods :**
 
-<code>draw()</code>
+<code>board.draw()</code>
 <br>Draw the board.
 <hr>
 
-*\<String\>* <code>AbChess.fen.get()</code>
+*\<String\>* <code>board.fen.get()</code>
 <br>Returns the current FEN string.
 <hr>
 
-<code>AbChess.fen.set(fen)</code>
+<code>board.fen.set(fen)</code>
 <br>Set the current FEN string.
+
 *Parameters :*
 * <code>fen</code> *\<String\>*
-<br>The FEN string.
+<br>The FEN string to set.
+
 <hr>
 
 <code>flip()</code>
@@ -34,6 +36,7 @@
 <hr>
 
 ####AbChess.game
+
 <code>AbChess.game</code>
 <br>Returns a game object which allows to manage the chess game data.
 
@@ -41,6 +44,16 @@
 
 *\<String\>* <code>getActiveColor()</code>
 <br>Return a character ('b' or 'w') representing the active color.
+
+<hr>
+
+*\<Array\>* <code>getLegalSquares(start)</code>
+<br>Return an array of string representations of legal squares.
+
+*Parameters :*
+* <code>start</code> *\<String\>*
+<br>The string representation of the start square. It must match the regular expression <code>[a-h][1-8]</code>.
+<br>For example : <code>getLegalSquares('e2')</code>
 
 <hr>
 
