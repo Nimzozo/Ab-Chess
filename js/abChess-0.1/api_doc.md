@@ -10,7 +10,7 @@ var abChess = new AbChess(containerId, [config]);
 
 | Parameters | Type | Description
 | :--- | :--- | :---
-| __`containerId`__ | Number | The id of the HTML element to contain the chess board.
+| __`containerId`__ | String | The id of the HTML element to contain the chess board.
 | __`config`__ | Object | Optional. A configuration object containing the following optional properties.
 | &nbsp;&nbsp;`clickable` | Boolean | A value to set if the pieces should be clickable or not. Set to `true` by default.
 | &nbsp;&nbsp;`draggable` | Boolean | A value to set if the pieces should be draggable or not. Set to `true` by default.
