@@ -23,39 +23,39 @@ var abChess = new AbChess(containerId, [config]);
 
 ###### Methods
 
-- __`draw()`__
+__`draw()`__
 
   Draw the chess board in the container element.
   
-- __`fen`__
+__`fen`__
 
   Get or set the FEN string notation of the current position.
 
-- __`flip()`__
+__`flip()`__
 
   Change the orientation of the chess board.
 
-- __`getActiveColor()`__
+__`getActiveColor()`__
 
   Return 'w' or 'b' to indicate if it is white or black to play a move.
   
-- __`getLegalSquares(start)`__
+__`getLegalSquares(start)`__
 
   Return an array of string representations of the legal squares from the desired start square.
   
   The `start` string should be in the format `[a-h][1-8]`.
 
-- __`isInCheck()`__
+__`isInCheck()`__
 
   Check if the king of the active color is currently in check.
 
-- __`isLegal(move)`__
+__`isLegal(move)`__
 
   Check if a move is legal.
   
   The __`move`__ string should be in the format `[a-h][1-8]-[a-h][1-8]`.
 
-- __`play(move)`__
+__`play(move)`__
 
   Play a move.
   
