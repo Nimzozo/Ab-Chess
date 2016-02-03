@@ -1,7 +1,3 @@
-#abc {
-    background: lightsteelblue;
-}
-
 .inlineBlock {
     display: inline-block;
     margin: auto;
@@ -9,6 +5,7 @@
 }
 
 .squaresDiv {
+    position: relative;
     display: inline-block;
     border: 1px solid black;
     vertical-align: top;
@@ -21,6 +18,7 @@
     height: 12.5%;
     margin: 0;
     vertical-align: top;
+    cursor: pointer;
 }
 
 .whiteSquare {
@@ -29,6 +27,14 @@
 
 .blackSquare {
     background: darksalmon;
+}
+
+.highlightedSquare {
+    background-color: lightslategrey;
+}
+
+.selectedSquare {
+    box-shadow: inset 0 0 2px 4px green;
 }
 
 .square > div {
