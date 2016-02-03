@@ -1,5 +1,7 @@
 #AbChess API documentation
 
+## _Deprecated doc. Please go to the [api_doc.md](https://github.com/Nimzozo/ab-chess/blob/master/js/abChess-0.1/api_doc.md) file._
+
 ##Class AbChess
 <code>new AbChess(containerId, [config])</code>
 <br>Constructs an AbChess object containing properties and methods to manage a chess game.
