@@ -8,47 +8,18 @@ The AbChess class contructs an object to manage chess data as well as render a b
 var abChess = new AbChess(containerId, [config]);
 ```
 
-###### Parameters
-
-__`containerId`__
-
-  The id of the HTML element to contain the chess board.
-
-__`config`__
-
-  Optional. A configuration object containing the following optional properties :
-  
-  - __`clickable`__
-  
-    A boolean value to set if the pieces should be clickable or not. Set to `true` by default.
-
-  - __`draggable`__
-  
-    A boolean value to set if the pieces should be draggable or not. Set to `true` by default.
-
-  - __`flipped`__
-  
-    A boolean value to set if the board should be flipped or not. Set to `false` by default.
-
-  - __`hasBorder`__
-  
-    A boolean value to set if the board should have notation borders or not. Set to `true` by default.
-
-  - __`onDragEndFunction`__
-  
-    A function to execute on a dragend event.
-  
-  - __`onDragStartFunction`__
-  
-    A function to execute on a dragstart event.
-
-  - __`onDropFunction`__
-  
-    A function to execute on a drop event.
-
-  - __`width`__
-  
-    A number representing the width of the board. Set to 360 by default.
+| Parameters | Type | Description
+| :--- | :--- | :---
+| __`containerId`__ | Number | The id of the HTML element to contain the chess board.
+| __`config`__ | Object | Optional. A configuration object containing the following optional properties.
+| &nbsp;&nbsp;`clickable` | Boolean | A value to set if the pieces should be clickable or not. Set to `true` by default.
+| &nbsp;&nbsp;`draggable` | Boolean | A value to set if the pieces should be draggable or not. Set to `true` by default.
+| &nbsp;&nbsp;`flipped` | Boolean | A value to set if the board should be flipped or not. Set to `false` by default.
+| &nbsp;&nbsp;`hasBorder` | Boolean | A value to set if the board should have notation borders or not. Set to `true` by default.
+| &nbsp;&nbsp;`onDragEndFunction` | Function | A function to execute when a drag operation starts.
+| &nbsp;&nbsp;`onDragStartFunction` | Function | A function to execute when a drag operation ends.
+| &nbsp;&nbsp;`onDropFunction` | Function | A function to execute when a piece is dropped on the board.
+| &nbsp;&nbsp;`width` | Number | A number representing the width of the board. Set to 360 by default.
 
 ###### Methods
 
