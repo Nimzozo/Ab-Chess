@@ -5,7 +5,7 @@
 // TODO :
 // click handler
 // Config object : make events cleaner
-// castles BUG
+// update rook position after castle
 // promotion minor bug
 // rewrite getNextPosition()
 
@@ -232,9 +232,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 }
             }
             if (playedPiece === chess_piece.black_pawn || playedPiece === chess_piece.white_pawn || takenPiece !== undefined) {
-                nextHalfmoveClock = the_position.getHalfmoveClock() + 1;
-            } else {
                 nextHalfmoveClock = 0;
+            } else {
+                nextHalfmoveClock = the_position.getHalfmoveClock() + 1;
             }
             nextFullmoveNumber = (nextActiveColor === chess_piece.white)
                 ? the_position.getFullmoveNumber() + 1
@@ -298,10 +298,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     break;
                 case chess_piece.black_king:
                 case chess_piece.white_king:
-                    targets = the_position.getTargets_king(start, color);
-                    if (!onlyAttack) {
-                        targets = targets.concat(the_position.getTargets_king_special(start, color));
-                    }
+                    targets = (onlyAttack)
+                        ? the_position.getTargets_king(start, color)
+                        : the_position.getTargets_king_special(start, color);
                     break;
                 case chess_piece.black_knight:
                 case chess_piece.white_knight:
@@ -447,7 +446,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var targets = [];
             var testSquare = '';
             targets = normalTargets.filter(function (target) {
-                return (ennemyKingTargets.indexOf(target) !== -1);
+                return (ennemyKingTargets.indexOf(target) === -1);
             });
             if (start === 'e1') {
                 if (allowedCastles.indexOf(chess_piece.white_queen) !== -1 && !the_position.isControlledBy('d1', chess_piece.black)) {
@@ -647,10 +646,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // by the specified color.
 
             var ennemies = [];
-            var ennemiesColor = (color === chess_piece.white)
-                ? chess_piece.black
-                : chess_piece.white;
-            ennemies = the_position.getPiecesPlaces(ennemiesColor);
+            ennemies = the_position.getPiecesPlaces(color);
             return ennemies.some(function (ennemy) {
                 var targets = the_position.getTargets(ennemy, true);
                 return (targets.indexOf(square) !== -1);
@@ -661,8 +657,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Check whether the desired king is in check.
 
+            var ennemiesColor = (color === chess_piece.white)
+                ? chess_piece.black
+                : chess_piece.white;
             var kingSquare = the_position.getKingSquare(color);
-            return the_position.isControlledBy(kingSquare, color);
+            return the_position.isControlledBy(kingSquare, ennemiesColor);
         };
 
         return the_position;
