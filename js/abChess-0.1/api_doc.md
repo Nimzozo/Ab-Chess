@@ -5,18 +5,18 @@ The AbChess class contructs an object to manage chess data as well as render a b
 ######Syntax
 
 ```Javascript
-abChess = new AbChess(containerId, [config]);
+var abChess = new AbChess(containerId, [config]);
 ```
 
 ######Parameters
 
 __`containerId`__
 
-  The container.
+  The id of the HTML element to contain the chess board.
 
 __`config`__
 
-  A config object.
+  Optional. A configuration object containing several optional properties.
 
 ######Methods
 
