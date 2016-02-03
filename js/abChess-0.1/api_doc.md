@@ -17,35 +17,36 @@ __`containerId`__
 __`config`__
 
   Optional. A configuration object containing the following optional properties :
-  - clickable
+  
+  - __`clickable`__
   
     A boolean value to set if the pieces should be clickable or not. Set to `true` by default.
 
-  - draggable
+  - __`draggable`__
   
     A boolean value to set if the pieces should be draggable or not. Set to `true` by default.
 
-  - flipped
+  - __`flipped`__
   
     A boolean value to set if the board should be flipped or not. Set to `false` by default.
 
-  - hasBorder
+  - __`hasBorder`__
   
     A boolean value to set if the board should have notation borders or not. Set to `true` by default.
 
-  - onDragEndFunction
+  - __`onDragEndFunction`__
   
     A function to execute on a dragend event.
   
-  - onDragStartFunction
+  - __`onDragStartFunction`__
   
     A function to execute on a dragstart event.
 
-  - onDropFunction
+  - __`onDropFunction`__
   
     A function to execute on a drop event.
 
-  - width: 360
+  - __`width`__
   
     A number representing the width of the board. Set to 360 by default.
 
