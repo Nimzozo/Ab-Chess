@@ -41,7 +41,6 @@
 <hr>
 
 ###AbChess.game
-<hr>
 
 <code>AbChess.game</code>
 <br>Returns a game object which allows to manage the chess game data.
