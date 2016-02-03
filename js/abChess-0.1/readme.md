@@ -46,6 +46,7 @@
 <br>Returns a game object which allows to manage the chess game data.
 
 ####Methods :
+<hr>
 
 *\<String\>* <code>game.getActiveColor()</code>
 <br>Return a character ('b' or 'w') representing the active color.
