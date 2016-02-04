@@ -1,12 +1,12 @@
 // AbChess-0.1.js
-// 2016-02-03
+// 2016-02-04
 // Copyright (c) 2016 Nimzozo
 
 // TODO :
 // click handler
 // Config object : make events cleaner
 // under-promotions
-// update rook position after castle
+// castle bugs
 // promotion minor bug
 
 /*global
@@ -171,44 +171,40 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
         the_position.getNewAllowedCastles = function (move) {
             var allowedCastles = the_position.getAllowedCastles();
-            var arrivalRowNumber = 0;
             var arrivalSquare = move.substr(3, 2);
-            var nextAllowedCastles = '-';
             var occupiedSquares = Position.fenToObject(the_position.fen);
             var playedPiece = '';
-            var startRowNumber = 0;
             var startSquare = move.substr(0, 2);
-            arrivalRowNumber = Number(arrivalSquare[1]);
-            startRowNumber = Number(startSquare[1]);
+            if (allowedCastles === '-') {
+                return allowedCastles;
+            }
             playedPiece = occupiedSquares[startSquare];
-            if (allowedCastles !== '-') {
-                if (allowedCastles.search(/[kq]/) !== -1) {
-                    if (playedPiece === chess_piece.black_king) {
-                        nextAllowedCastles = allowedCastles.replace(/[kq]/g, '');
-                    }
-                    if (startSquare === 'a8' || arrivalSquare === 'a8') {
-                        nextAllowedCastles = allowedCastles.replace(/q/, '');
-                    }
-                    if (startSquare === 'h8' || arrivalSquare === 'h8') {
-                        nextAllowedCastles = allowedCastles.replace(/k/, '');
-                    }
+            if (allowedCastles.search(/[kq]/) !== -1) {
+                if (playedPiece === chess_piece.black_king) {
+                    allowedCastles = allowedCastles.replace(/[kq]/g, '');
                 }
-                if (allowedCastles.search(/[KQ]/) !== -1) {
-                    if (playedPiece === chess_piece.white_king) {
-                        nextAllowedCastles = allowedCastles.replace(/[KQ]/g, '');
-                    }
-                    if (startSquare === 'a1' || arrivalSquare === 'a1') {
-                        nextAllowedCastles = allowedCastles.replace(/Q/, '');
-                    }
-                    if (startSquare === 'h1' || arrivalSquare === 'h1') {
-                        nextAllowedCastles = allowedCastles.replace(/K/, '');
-                    }
+                if (startSquare === 'a8' || arrivalSquare === 'a8') {
+                    allowedCastles = allowedCastles.replace(/q/, '');
                 }
-                if (nextAllowedCastles === '') {
-                    nextAllowedCastles = '-';
+                if (startSquare === 'h8' || arrivalSquare === 'h8') {
+                    allowedCastles = allowedCastles.replace(/k/, '');
                 }
             }
-            return nextAllowedCastles;
+            if (allowedCastles.search(/[KQ]/) !== -1) {
+                if (playedPiece === chess_piece.white_king) {
+                    allowedCastles = allowedCastles.replace(/[KQ]/g, '');
+                }
+                if (startSquare === 'a1' || arrivalSquare === 'a1') {
+                    allowedCastles = allowedCastles.replace(/Q/, '');
+                }
+                if (startSquare === 'h1' || arrivalSquare === 'h1') {
+                    allowedCastles = allowedCastles.replace(/K/, '');
+                }
+            }
+            if (allowedCastles === '') {
+                allowedCastles = '-';
+            }
+            return allowedCastles;
         };
 
         the_position.getNewEnPassant = function (move) {
@@ -275,12 +271,24 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var occupiedSquares = Position.fenToObject(the_position.fen);
             var playedPiece = '';
             var positionString = '';
+            var rookArrival = '';
+            var rookStart = '';
             var startSquare = move.substr(0, 2);
             playedPiece = occupiedSquares[startSquare];
             if (playedPiece.toLowerCase() === chess_piece.black_king && regex_castle.test(move)) {
-                // TODO
-            }
-            if (playedPiece.toLowerCase() === chess_piece.black_pawn) {
+                rookStart = (arrivalSquare[0] === columns[2])
+                    ? columns[0] + arrivalSquare[1]
+                    : columns[7] + arrivalSquare[1];
+                rookArrival = (arrivalSquare[0] === columns[2])
+                    ? columns[3] + arrivalSquare[1]
+                    : columns[5] + arrivalSquare[1];
+                delete occupiedSquares[rookStart];
+                if (startSquare === 'e1') {
+                    occupiedSquares[rookArrival] = chess_piece.white_rook;
+                } else {
+                    occupiedSquares[rookArrival] = chess_piece.black_rook;
+                }
+            } else if (playedPiece.toLowerCase() === chess_piece.black_pawn) {
                 if (arrivalSquare === enPassantSquare && regex_en_passant.test(move)) {
                     enPassantCapture = enPassantSquare[0] + startSquare[1];
                     delete occupiedSquares[enPassantCapture];
@@ -502,7 +510,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             targets = normalTargets.filter(function (target) {
                 return (ennemyKingTargets.indexOf(target) === -1);
             });
-            if (start === 'e1') {
+            if (start === 'e1' && !the_position.isControlledBy('e1', chess_piece.black)) {
                 if (allowedCastles.indexOf(chess_piece.white_queen) !== -1 && !the_position.isControlledBy('d1', chess_piece.black)) {
                     if (queenSideCastle.every(function (column) {
                         testSquare = column + '1';
@@ -519,7 +527,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                         targets.push('g1');
                     }
                 }
-            } else if (start === 'e8') {
+            } else if (start === 'e8' && !the_position.isControlledBy('e8', chess_piece.white)) {
                 if (allowedCastles.indexOf(chess_piece.black_queen) !== -1 && !the_position.isControlledBy('d8', chess_piece.white)) {
                     if (queenSideCastle.every(function (column) {
                         testSquare = column + '8';
@@ -1364,8 +1372,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
         // PGN string validator.
 
-        var regex = /([1-9][0-9]*\\.{1,3}\\s*)?(O-O-O|O-O|([BNQR][a-h]?[1-8]?|K)x?[a-h][1-8]|([a-h]x)?[a-h][1-8](\=[BNQR])?)(\\+|#)?/gm;
-        return regex.test(pgn.trim());
+        var regex_pgn = /([1-9][0-9]*\\.{1,3}\\s*)?(O-O-O|O-O|([BNQR][a-h]?[1-8]?|K)x?[a-h][1-8]|([a-h]x)?[a-h][1-8](\=[BNQR])?)(\\+|#)?/gm;
+        return regex_pgn.test(pgn.trim());
     };
 
     // -------------------------------------------------------------------------
@@ -1410,93 +1418,95 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
     // Return the api.
 
     return {
-        board: {
-            draw: function () {
+        DEFAULT_FEN: default_fen,
+        draw: function () {
 
-                // Draw the chessboard.
+            // Draw the chessboard.
 
-                abBoard.createSquares();
-                abBoard.draw();
-            },
-            fen: {
-
-                // Get or set the FEN string.
-
-                get: function () {
-                    var position = abBoard.getPositionObject();
-                    return Position.objectToFEN(position);
-                },
-                set: function (fen) {
-                    abBoard.loadPosition(fen);
-                }
-            },
-            flip: function () {
-
-                // Flip the board.
-
-                abBoard.isFlipped = !abBoard.isFlipped;
-                while (abBoard.container.hasChildNodes()) {
-                    abBoard.container.removeChild(abBoard.container.lastChild);
-                }
-                abBoard.draw();
-            },
-            highlightSquares: function (array) {
-
-                // Highlight an array of squares.
-
-                abBoard.highlightSquares(array);
-            }
+            abBoard.createSquares();
+            abBoard.draw();
         },
-        game: {
+        flip: function () {
 
-            // Game data / methods.
+            // Flip the board.
 
-            getActiveColor: function () {
-
-                // Return the active color : b|w.
-
-                var lastIndex = abGame.fenPositions.length - 1;
-                var position = new Position(abGame.fenPositions[lastIndex]);
-                return position.getActiveColor();
-            },
-            getFEN: function () {
-                var lastIndex = abGame.fenPositions.length - 1;
-                return abGame.fenPositions[lastIndex];
-            },
-            getLastMoveNotation: function () {
-
-                // Return the PGN notation of the last played move.
-
-                return;
-            },
-            getLegalSquares: function (start) {
-
-                // Return an array of legal moves for the desired start square.
-
-                return abGame.getLegalSquares(start);
-            },
-            isInCheck: function () {
-
-                // Check if the active player is in check.
-
-                var activeColor = '';
-                var lastIndex = abGame.fenPositions.length - 1;
-                var position = new Position(abGame.fenPositions[lastIndex]);
-                activeColor = position.getActiveColor();
-                return position.isInCheck(activeColor);
-            },
-            isLegal: function (move) {
-
-                // Check if a move is legal.
-
-                return abGame.isLegal(move);
-            },
-            play: function (move) {
-
-                // Play the desired move and return the resulting FEN string.
-
-                return abGame.play(move);
+            abBoard.isFlipped = !abBoard.isFlipped;
+            while (abBoard.container.hasChildNodes()) {
+                abBoard.container.removeChild(abBoard.container.lastChild);
             }
+            abBoard.draw();
+        },
+        highlightSquares: function (array) {
+
+            // Highlight an array of squares.
+
+            abBoard.highlightSquares(array);
+        },
+        getActiveColor: function () {
+
+            // Return the active color : b|w.
+
+            var lastIndex = abGame.fenPositions.length - 1;
+            var position = new Position(abGame.fenPositions[lastIndex]);
+            return position.getActiveColor();
+        },
+        getFEN: function () {
+
+            // Get FEN string.
+
+            var lastIndex = abGame.fenPositions.length - 1;
+            return abGame.fenPositions[lastIndex];
+        },
+        getLastMoveNotation: function () {
+
+            // Return the PGN notation of the last played move.
+
+            return;
+        },
+        getLegalSquares: function (start) {
+
+            // Return an array of legal moves for the desired start square.
+
+            return abGame.getLegalSquares(start);
+        },
+        isCheckmated: function () {
+
+            // Check if the active player is checkmated.
+
+            var activeColor = '';
+            var lastIndex = abGame.fenPositions.length - 1;
+            var legalMoves = [];
+            var position = new Position(abGame.fenPositions[lastIndex]);
+            activeColor = position.getActiveColor();
+            return position.isInCheck(activeColor);
+        },
+        isInCheck: function () {
+
+            // Check if the active player is in check.
+
+            var activeColor = '';
+            var lastIndex = abGame.fenPositions.length - 1;
+            var position = new Position(abGame.fenPositions[lastIndex]);
+            activeColor = position.getActiveColor();
+            return position.isInCheck(activeColor);
+        },
+        isLegal: function (move) {
+
+            // Check if a move is legal.
+
+            return abGame.isLegal(move);
+        },
+        play: function (move) {
+
+            // Play the desired move and return the resulting FEN string.
+
+            return abGame.play(move);
+        },
+        setFEN: function (fen) {
+
+            // Set the FEN string.
+
+            abBoard.loadPosition(fen);
         }
     };
 };
