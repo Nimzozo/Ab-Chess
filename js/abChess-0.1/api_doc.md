@@ -17,9 +17,10 @@ var abChess = new AbChess(containerId, [config]);
 | &nbsp;&nbsp;`draggable` | Boolean | A value to set if the pieces should be draggable or not. Set to `true` by default.
 | &nbsp;&nbsp;`flipped` | Boolean | A value to set if the board should be flipped or not. Set to `false` by default.
 | &nbsp;&nbsp;`hasBorder` | Boolean | A value to set if the board should have notation borders or not. Set to `true` by default.
-| &nbsp;&nbsp;`onDragEndFunction` | Function | A function to execute when a drag operation starts.
-| &nbsp;&nbsp;`onDragStartFunction` | Function | A function to execute when a drag operation ends.
-| &nbsp;&nbsp;`onDropFunction` | Function | A function to execute when a piece is dropped on the board.
+| &nbsp;&nbsp;`onPieceDragEnd` | Function | Experimental. A function to run when a piece ends a drag operation.
+| &nbsp;&nbsp;`onPieceDragStart` | Function | Experimental. A function to run when a piece starts a drag operation.
+| &nbsp;&nbsp;`onSquareClick` | Function | Experimental. A function to run when a click is performed on a square.
+| &nbsp;&nbsp;`onSquareDrop` | Function | Experimental. A function to run when a drop is performed on a square.
 | &nbsp;&nbsp;`width` | Number | A number representing the width of the board. Set to `360` by default.
 
 ###### Constants
