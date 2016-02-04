@@ -6,11 +6,10 @@
 // click handler
 // Config object : make events cleaner
 // under-promotions
-// castle bugs
 // promotion minor bug
 
 /*global
-    window
+    window, requestAnimationFrame
 */
 
 /*jslint
@@ -88,7 +87,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             fen: fen
         };
 
-        the_position.checkLegality = function (move) {
+        the_position.checkMoveLegality = function (move) {
 
             // Check whether a move is legal or not.
             // Check : active color, kings are not in check, moves are legal.
@@ -335,11 +334,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return placements;
         };
 
-        the_position.getTargets = function (start, onlyAttack) {
+        the_position.getTargets = function (start, getOffensiveTargets) {
 
             // Return the target a specific piece can reach.
             // A target is a square that a piece controls or can move on.
-            // The onlyAttack parameter allows to filter special king moves
+            // The getOffensiveTargets parameter allows to filter king moves
             // and pawn non-attacking moves.
 
             var color = '';
@@ -360,9 +359,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     break;
                 case chess_piece.black_king:
                 case chess_piece.white_king:
-                    targets = (onlyAttack)
-                        ? the_position.getTargets_king(start, color)
-                        : the_position.getTargets_king_special(start, color);
+                    if (!getOffensiveTargets) {
+                        targets = the_position.getTargets_king_special(start, color);
+                    }
                     break;
                 case chess_piece.black_knight:
                 case chess_piece.white_knight:
@@ -370,7 +369,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     break;
                 case chess_piece.black_pawn:
                 case chess_piece.white_pawn:
-                    targets = the_position.getTargets_pawn(start, color, onlyAttack);
+                    targets = the_position.getTargets_pawn(start, color, getOffensiveTargets);
                     break;
                 case chess_piece.black_queen:
                 case chess_piece.white_queen:
@@ -579,11 +578,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return targets;
         };
 
-        the_position.getTargets_pawn = function (start, color, onlyAttack) {
+        the_position.getTargets_pawn = function (start, color, getOffensiveTargets) {
 
             // Return an array of squares a pawn on a specific square can reach.
             // Pawns can move, take (en passant), promote.
-            // Set onlyAttack to true to check only captures.
+            // Set getOffensiveTargets to true to check only captures.
 
             var alliesPlaces = the_position.getPiecesPlaces(color);
             var colDirections = [-1, 1];
@@ -607,9 +606,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 testSquare = columns[testColNumber - 1] + testRowNumber;
                 if (ennemiesPlaces.indexOf(testSquare) !== -1 || enPassantSquare === testSquare) {
                     targets.push(testSquare);
+                } else if (getOffensiveTargets) {
+                    targets.push(testSquare);
                 }
             });
-            if (!onlyAttack) {
+            if (!getOffensiveTargets) {
                 testColNumber = colNumber;
                 testSquare = columns[testColNumber - 1] + testRowNumber;
                 if (alliesPlaces.indexOf(testSquare) === -1 && ennemiesPlaces.indexOf(testSquare) === -1) {
@@ -704,8 +705,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
         the_position.isControlledBy = function (square, color) {
 
-            // Check whether the desired square is controlled
-            // by the specified color.
+            // Check if the desired square is controlled
+            // by a specified color.
 
             var ennemies = [];
             ennemies = the_position.getPiecesPlaces(color);
@@ -717,7 +718,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
         the_position.isInCheck = function (color) {
 
-            // Check whether the desired king is in check.
+            // Check if the desired king is in check.
 
             var ennemiesColor = (color === chess_piece.white)
                 ? chess_piece.black
@@ -867,20 +868,24 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             if (!square.isEmpty()) {
                 square.piece.remove();
             }
-            square.div.appendChild(the_piece.div);
-            square.piece = the_piece;
-            the_piece.square = square;
+            requestAnimationFrame(function () {
+                square.div.appendChild(the_piece.div);
+                square.piece = the_piece;
+                the_piece.square = square;
+            });
         };
 
         the_piece.remove = function () {
 
             // Remove the piece from the square.
 
-            if (the_piece.square !== null) {
-                the_piece.square.div.removeChild(the_piece.div);
-            }
-            the_piece.square.piece = null;
-            the_piece.square = null;
+            requestAnimationFrame(function () {
+                if (the_piece.square !== null) {
+                    the_piece.square.div.removeChild(the_piece.div);
+                }
+                the_piece.square.piece = null;
+                the_piece.square = null;
+            });
         };
 
         return the_piece;
@@ -960,13 +965,12 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Highlight the square.
             // Cancel if already highlighted.
 
-            if (the_square.isHighlighted) {
-                the_square.isHighlighted = false;
-                the_square.div.className = the_square.getClassName();
-            } else {
-                the_square.div.className += ' ' + css.highlighted_square;
-                the_square.isHighlighted = true;
-            }
+            var className = '';
+            the_square.isHighlighted = !the_square.isHighlighted;
+            className = the_square.getClassName();
+            requestAnimationFrame(function () {
+                the_square.div.className = className;
+            });
         };
 
         the_square.isEmpty = function () {
@@ -981,13 +985,12 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Select the square.
             // Cancel if already selected.
 
-            if (the_square.isSelected) {
-                the_square.isSelected = false;
-                the_square.div.className = the_square.getClassName();
-            } else {
-                the_square.div.className += ' ' + css.selected_square;
-                the_square.isSelected = true;
-            }
+            var className = '';
+            the_square.isSelected = !the_square.isSelected;
+            className = the_square.getClassName();
+            requestAnimationFrame(function () {
+                the_square.div.className = className;
+            });
         };
 
         return the_square;
@@ -1112,7 +1115,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     rowNumber += 1;
                 }
             }
-            the_board.container.appendChild(squaresDiv);
+            requestAnimationFrame(function () {
+                the_board.container.appendChild(squaresDiv);
+            });
             if (the_board.hasBorder) {
 
                 // Bottom border
@@ -1147,8 +1152,10 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     rightBorder.appendChild(borderFragment);
                     rowNumber += 1;
                 }
-                the_board.container.appendChild(rightBorder);
-                the_board.container.appendChild(bottomBorder);
+                requestAnimationFrame(function () {
+                    the_board.container.appendChild(rightBorder);
+                    the_board.container.appendChild(bottomBorder);
+                });
             }
         };
 
@@ -1191,7 +1198,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             });
         };
 
-        the_board.loadPosition = function (fen) {
+        the_board.loadFEN = function (fen) {
 
             // Load a position from a FEN string.
 
@@ -1309,7 +1316,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var targets = position.getTargets(start, false);
             targets.forEach(function (target) {
                 var move = start + '-' + target;
-                if (position.checkLegality(move)) {
+                if (position.checkMoveLegality(move)) {
                     legalMoves.push(target);
                 }
             });
@@ -1338,11 +1345,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
         the_game.isLegal = function (move) {
 
-            // Check if a move is legal.
+            // Check if a move is legal in the last position.
 
             var lastIndex = abGame.fenPositions.length - 1;
             var position = new Position(abGame.fenPositions[lastIndex]);
-            return position.checkLegality(move);
+            return position.checkMoveLegality(move);
         };
 
         the_game.play = function (move, promotion) {
@@ -1356,7 +1363,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var nextPosition = {};
             lastFENPosition = the_game.fenPositions[lastIndex];
             lastPosition = new Position(lastFENPosition);
-            if (lastPosition.checkLegality(move)) {
+            if (lastPosition.checkMoveLegality(move)) {
                 nextPosition = lastPosition.getNewPosition(move, promotion);
                 the_game.fenPositions.push(nextPosition.fen);
                 return nextPosition.fen;
@@ -1431,9 +1438,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Flip the board.
 
             abBoard.isFlipped = !abBoard.isFlipped;
-            while (abBoard.container.hasChildNodes()) {
-                abBoard.container.removeChild(abBoard.container.lastChild);
-            }
+            requestAnimationFrame(function () {
+                while (abBoard.container.hasChildNodes()) {
+                    abBoard.container.removeChild(abBoard.container.lastChild);
+                }
+            });
             abBoard.draw();
         },
         highlightSquares: function (array) {
@@ -1506,7 +1515,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Set the FEN string.
 
-            abBoard.loadPosition(fen);
+            abBoard.loadFEN(fen);
         }
     };
 };
