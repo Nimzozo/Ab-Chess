@@ -3,10 +3,10 @@
 // Copyright (c) 2016 Nimzozo
 
 // TODO :
-// click handler
-// Config object : make events cleaner
+// config object : make events cleaner
 // under-promotions
 // promotion minor bug
+// optimize legality loops
 
 /*global
     window, requestAnimationFrame
@@ -57,19 +57,20 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         draggable: true,
         flipped: false,
         hasBorder: true,
-        onDragEndFunction: null,
-        onDragStartFunction: null,
-        onDropFunction: null,
+        onPieceDragEnd: null,
+        onPieceDragStart: null,
+        onSquareClick: null,
+        onSquareDrop: null,
         width: 360
     };
     var default_fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
     var dragStart = null;
-    var isDragging = false;
     var error = {
         fen: 'Invalid FEN string.',
         illegal_move: 'Illegal move.'
     };
     var images_path = '../images/wikipedia/';
+    var isDragging = false;
     var png_extension = '.png';
     var regex_castle = /^e(1-c1|1-g1|8-c8|8-g8)$/;
     var regex_en_passant = /^([a-h]4-[a-h]3|[a-h]5-[a-h]6)$/;
@@ -834,14 +835,10 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             square: null
         };
 
-        the_piece.clickHandler = function () {
-
-        };
-
         the_piece.dragEndHandler = function (e) {
             isDragging = false;
-            if (typeof the_piece.square.board.onDragEndFunction === 'function') {
-                the_piece.square.board.onDragEndFunction(dragStart, e);
+            if (typeof the_piece.square.board.onPieceDragEnd === 'function') {
+                the_piece.square.board.onPieceDragEnd(dragStart, e);
             }
         };
 
@@ -850,8 +847,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 e.dataTransfer.effectAllowed = 'move';
                 isDragging = true;
                 dragStart = the_piece.square.name;
-                if (typeof the_piece.square.board.onDragStartFunction === 'function') {
-                    the_piece.square.board.onDragStartFunction(dragStart);
+                if (typeof the_piece.square.board.onPieceDragStart === 'function') {
+                    the_piece.square.board.onPieceDragStart(dragStart);
                 }
             }
         };
@@ -859,7 +856,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         the_piece.initEventListeners = function () {
             div.addEventListener('dragstart', the_piece.dragStartHandler);
             div.addEventListener('dragend', the_piece.dragEndHandler);
-            div.addEventListener('click', the_piece.clickHandler);
         };
 
         the_piece.put = function (square) {
@@ -911,7 +907,22 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         };
 
         the_square.clickHandler = function () {
-
+            var arrival = '';
+            var selectedPiece = the_square.board.selectedSquare;
+            var start = '';
+            if (!the_square.isEmpty() && selectedPiece === null) {
+                start = the_square.name;
+                the_square.select();
+                the_square.board.selectedSquare = the_square;
+            } else if (selectedPiece !== null) {
+                start = selectedPiece.name;
+                arrival = the_square.name;
+                the_square.board.selectedSquare.select();
+                the_square.board.selectedSquare = null;
+            }
+            if (typeof the_square.board.onSquareClick === 'function') {
+                    the_square.board.onSquareClick(start, arrival);
+            }
         };
 
         the_square.dragEnterHandler = function (e) {
@@ -948,8 +959,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 e.dataTransfer.dropEffect = 'move';
                 move = dragStart + '-' + the_square.name;
                 the_square.select();
-                if (typeof the_square.board.onDropFunction === 'function') {
-                    the_square.board.onDropFunction(move);
+                if (typeof the_square.board.onSquareDrop === 'function') {
+                    the_square.board.onSquareDrop(move);
                 }
             }
         };
@@ -1033,9 +1044,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             draggablePieces: config.draggable,
             hasBorder: config.hasBorder,
             isFlipped: config.flipped,
-            onDragEndFunction: config.onDragEndFunction,
-            onDragStartFunction: config.onDragStartFunction,
-            onDropFunction: config.onDropFunction,
+            onSquareClick: config.onSquareClick,
+            onPieceDragEnd: config.onPieceDragEnd,
+            onPieceDragStart: config.onPieceDragStart,
+            onSquareDrop: config.onSquareDrop,
+            selectedSquare: null,
             squares: {},
             width: config.width
         };
@@ -1076,6 +1089,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     square.drawCircle(xy, xy, radius, the_board.circleColor);
                     square.board = the_board;
                     square.div = div;
+                    div.addEventListener('click', square.clickHandler);
                     div.addEventListener('dragenter', square.dragEnterHandler);
                     div.addEventListener('dragleave', square.dragLeaveHandler);
                     div.addEventListener('dragover', square.dragOverHandler);
@@ -1435,17 +1449,29 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
     abBoard = new Chessboard(containerId, abConfig);
     abGame = new Chessgame();
-    abBoard.onDragEndFunction = function (start, e) {
+    abBoard.onPieceDragEnd = function (start, e) {
         var legalSquares = abGame.getLegalSquares(start);
         if (e.dataTransfer.dropEffect === 'none') {
             abBoard.drawCircles(legalSquares);
         }
     };
-    abBoard.onDragStartFunction = function (start) {
+    abBoard.onPieceDragStart = function (start) {
         var legalSquares = abGame.getLegalSquares(start);
         abBoard.drawCircles(legalSquares);
     };
-    abBoard.onDropFunction = function (move) {
+    abBoard.onSquareClick = function (start, arrival) {
+        var isLegalMove = false;
+        var legalSquares = [];
+        var move = start + ' ' + arrival;
+        isLegalMove = abGame.isLegal(move);
+        legalSquares = abGame.getLegalSquares(start);
+        abBoard.drawCircles(legalSquares);
+        if (isLegalMove) {
+            abBoard.play(move);
+            abGame.play(move);
+        }
+    };
+    abBoard.onSquareDrop = function (move) {
         var isLegalMove = abGame.isLegal(move);
         var legalSquares = [];
         var start = move.substr(0, 2);
