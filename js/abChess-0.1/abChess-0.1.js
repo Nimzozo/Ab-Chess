@@ -52,6 +52,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         white_square: 'whiteSquare'
     };
     var default_config = {
+        circleColor: 'steelblue',
         clickable: true,
         draggable: true,
         flipped: false,
@@ -821,7 +822,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         // to identify the chess piece.
         // The chess image is set with css backgroundImage.
 
-        var div = document.createElement("DIV");
+        var div = document.createElement('DIV');
         var the_piece;
         var url = images_path + name + png_extension;
         div.style.backgroundImage = 'url("' + url + '")';
@@ -900,7 +901,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
         var the_square = {
             board: null,
+            canvas: null,
             div: null,
+            hasCircle: false,
             isHighlighted: false,
             isSelected: false,
             name: name,
@@ -928,6 +931,14 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             if (isDragging) {
                 e.preventDefault();
             }
+        };
+
+        the_square.drawCircle = function (x, y, radius, cssColor) {
+            var context = the_square.canvas.getContext('2d');
+            context.beginPath();
+            context.arc(x, y, radius, 0, 2 * Math.PI);
+            context.fillStyle = cssColor;
+            context.fill();
         };
 
         the_square.dropHandler = function (e) {
@@ -1016,6 +1027,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         // The Chessboard class constructs an HTML chessboard.
 
         var the_board = {
+            circleColor: config.circleColor,
             clickablePieces: config.clickable,
             container: document.getElementById(containerId),
             draggablePieces: config.draggable,
@@ -1032,27 +1044,36 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Create the squares property.
 
+            var canvas;
+            var canvasWidth = the_board.width / 8 + 'px';
             var colNumber = 1;
             var column = '';
             var cssClass = '';
             var div;
             var isWhiteSquare = false;
             var name = '';
+            var radius = the_board.width / 48;
             var rowNumber = 1;
             var square = {};
             var squares = {};
+            var xy = Math.floor(the_board.width / 16);
             while (rowNumber < 9) {
                 colNumber = 1;
                 while (colNumber < 9) {
                     column = columns[colNumber - 1];
                     name = column + rowNumber;
                     isWhiteSquare = Square.isWhite(name);
-                    div = document.createElement("DIV");
+                    canvas = document.createElement('CANVAS');
+                    canvas.setAttribute('height', canvasWidth);
+                    canvas.setAttribute('width', canvasWidth);
+                    div = document.createElement('DIV');
                     cssClass = (isWhiteSquare)
                         ? css.square + ' ' + css.white_square
                         : css.square + ' ' + css.black_square;
                     div.className = cssClass;
                     square = new Square(name);
+                    square.canvas = canvas;
+                    square.drawCircle(xy, xy, radius, the_board.circleColor);
                     square.board = the_board;
                     square.div = div;
                     div.addEventListener('dragenter', square.dragEnterHandler);
@@ -1080,9 +1101,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var rowNumber = 0;
             var square;
             var squaresDiv;
-            squaresDiv = document.createElement("DIV");
-            squaresDiv.style.width = the_board.width + "px";
-            squaresDiv.style.height = the_board.width + "px";
+            squaresDiv = document.createElement('DIV');
+            squaresDiv.style.width = the_board.width + 'px';
+            squaresDiv.style.height = the_board.width + 'px';
             squaresDiv.className = css.squares_div;
             if (!the_board.isFlipped) {
 
@@ -1119,15 +1140,12 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 the_board.container.appendChild(squaresDiv);
             });
             if (the_board.hasBorder) {
-
-                // Bottom border
-
-                bottomBorder = document.createElement("DIV");
+                bottomBorder = document.createElement('DIV');
                 bottomBorder.className = css.bottom_border;
-                bottomBorder.style.width = the_board.width + "px";
+                bottomBorder.style.width = the_board.width + 'px';
                 colNumber = 1;
                 while (colNumber < 9) {
-                    borderFragment = document.createElement("DIV");
+                    borderFragment = document.createElement('DIV');
                     index = (the_board.isFlipped)
                         ? 8 - colNumber
                         : colNumber - 1;
@@ -1135,16 +1153,13 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     bottomBorder.appendChild(borderFragment);
                     colNumber += 1;
                 }
-
-                // Right border
-
-                rightBorder = document.createElement("DIV");
+                rightBorder = document.createElement('DIV');
                 rightBorder.className = css.right_border;
-                rightBorder.style.height = the_board.width + "px";
+                rightBorder.style.height = the_board.width + 'px';
                 rowNumber = 1;
                 while (rowNumber < 9) {
-                    borderFragment = document.createElement("DIV");
-                    borderFragment.style.lineHeight = (the_board.width / 8) + "px";
+                    borderFragment = document.createElement('DIV');
+                    borderFragment.style.lineHeight = (the_board.width / 8) + 'px';
                     index = (the_board.isFlipped)
                         ? rowNumber
                         : 9 - rowNumber;
@@ -1157,6 +1172,23 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     the_board.container.appendChild(bottomBorder);
                 });
             }
+        };
+
+        the_board.drawCircles = function (squares) {
+
+            // Draw circles for an array of squares.
+
+            squares.forEach(function (name) {
+                var square = the_board.squares[name];
+                requestAnimationFrame(function () {
+                    if (square.hasCircle) {
+                        square.div.removeChild(square.canvas);
+                    } else {
+                        square.div.appendChild(square.canvas);
+                    }
+                    square.hasCircle = !square.hasCircle;
+                });
+            });
         };
 
         the_board.empty = function () {
@@ -1193,6 +1225,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         };
 
         the_board.highlightSquares = function (squares) {
+
+            // Highlight an array of squares.
+
             squares.forEach(function (square) {
                 the_board.squares[square].highlight();
             });
@@ -1403,19 +1438,19 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
     abBoard.onDragEndFunction = function (start, e) {
         var legalSquares = abGame.getLegalSquares(start);
         if (e.dataTransfer.dropEffect === 'none') {
-            abBoard.highlightSquares(legalSquares);
+            abBoard.drawCircles(legalSquares);
         }
     };
     abBoard.onDragStartFunction = function (start) {
         var legalSquares = abGame.getLegalSquares(start);
-        abBoard.highlightSquares(legalSquares);
+        abBoard.drawCircles(legalSquares);
     };
     abBoard.onDropFunction = function (move) {
         var isLegalMove = abGame.isLegal(move);
         var legalSquares = [];
         var start = move.substr(0, 2);
         legalSquares = abGame.getLegalSquares(start);
-        abBoard.highlightSquares(legalSquares);
+        abBoard.drawCircles(legalSquares);
         if (isLegalMove) {
             abBoard.play(move);
             abGame.play(move);
