@@ -1,43 +1,48 @@
 window.addEventListener('load', function () {
-    var config = {};
-    var abc = new AbChess('abc', config);
-    var fenInput = document.getElementById('fenInput');
-    var lastMoveInfo = document.getElementById('lastMoveInfo');
-    var moveInput = document.getElementById('moveInput');
-    var turnInfo = document.getElementById('turnInfo');
+
+    var abChess = new AbChess('abc');
     var checkInfo = document.getElementById('checkInfo');
-    abc.board.draw();
-    abc.board.fen.set();
-    updateInfo();
-    document.getElementById('startButton').addEventListener('click', function () {
-        abc.board.fen.set();
-        fenInput.value = abc.board.fen.get();
-    });
-    document.getElementById('emptyButton').addEventListener('click', function () {
-        abc.board.fen.set('8/8/8/8/8/8/8/8');
-        fenInput.value = abc.board.fen.get();
-    });
-    document.getElementById('flipButton').addEventListener('click', function () {
-        abc.board.flip();
-    });
-    document.getElementById('abc').addEventListener('drop', function () {
-        fenInput.value = abc.game.getFEN();
+    var container = document.getElementById('abc');
+    var emptyButton = document.getElementById('emptyButton');
+    var fenInput = document.getElementById('fenInput');
+    var flipButton = document.getElementById('flipButton');
+    var lastMoveInfo = document.getElementById('lastMoveInfo');
+    var moveButton = document.getElementById('moveButton');
+    var moveInput = document.getElementById('moveInput');
+    var startButton = document.getElementById('startButton');
+    var turnInfo = document.getElementById('turnInfo');
+    function updateInfo() {
+        fenInput.value = abChess.getFEN();
+        checkInfo.innerText = (abChess.isInCheck())
+            ? 'Check !'
+            : '';
+        lastMoveInfo.innerText = 'Last move : ';
+        turnInfo.innerText = (abChess.getActiveColor() === 'w')
+            ? 'White to move.'
+            : 'Black to move.';
+    }
+    startButton.addEventListener('click', function () {
+        abChess.setFEN();
         updateInfo();
     });
-    document.getElementById('moveButton').addEventListener('click', function () {
+    emptyButton.addEventListener('click', function () {
+        abChess.setFEN('8/8/8/8/8/8/8/8');
+        updateInfo();
+    });
+    flipButton.addEventListener('click', function () {
+        abChess.flip();
+    });
+    container.addEventListener('drop', function () {
+        updateInfo();
+    });
+    moveButton.addEventListener('click', function () {
         var inputMove = moveInput.value;
-        var isLegal = abc.game.isLegal(inputMove);
+        var isLegal = abChess.isLegal(inputMove);
         if (isLegal) {
-            fenInput.value = abc.game.play(inputMove);
             updateInfo();
         }
     });
-    function updateInfo() {
-        turnInfo.innerText = (abc.game.getActiveColor() === 'w')
-            ? 'White to move.'
-            : 'Black to move.';
-        checkInfo.innerText = (abc.game.isInCheck())
-            ? 'Check !'
-            : '';
-    }
+    abChess.draw();
+    abChess.setFEN();
+    updateInfo();
 });
