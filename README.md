@@ -17,4 +17,12 @@ AbChess is an API to manage chess software. It can (it will able to) :
 * import / export FEN strings.
 * ...
 
-More features will follow. See the provisional [AbChess API documentation](https://github.com/Nimzozo/ab-chess/blob/master/js/abChess-0.1/readme.md) for more informations.
+More features will follow.
+
+## Documentation
+
+See the provisional [AbChess API documentation](https://github.com/Nimzozo/ab-chess/blob/master/js/abChess-0.1/readme.md) for more informations.
+
+## License
+
+[MIT License](https://github.com/Nimzozo/ab-chess/blob/master/LICENSE)
