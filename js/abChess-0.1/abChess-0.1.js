@@ -1551,13 +1551,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
     // -------------------------------------------------------------------------
 
-    // Main class to construct boards and games.
-    // Create the objects board and game.
-    // Initialize default behaviour.
-
-
-    // Public api.
-
     // Load default configuration.
 
     abConfig = abConfig || {};
@@ -1567,26 +1560,31 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         }
     });
 
-    // Create the objects board and game to return.
-    // Initialize default event listeners.
+    // Create the objects board and game.
 
     abBoard = new Chessboard(containerId, abConfig);
     abGame = new Chessgame();
+
+    // Initialize default behaviour.
+
     abBoard.onPieceDragEnd = function (start, e) {
         var legalSquares = abGame.getLegalSquares(start);
         if (e.dataTransfer.dropEffect === 'none') {
             abBoard.drawCircles(legalSquares);
         }
     };
+
     abBoard.onPieceDragStart = function (start) {
         var legalSquares = abGame.getLegalSquares(start);
         abBoard.drawCircles(legalSquares);
     };
+
     abBoard.onPromotionChose = function (choice) {
         var move = abBoard.pendingMove;
         abBoard.play(move, choice);
         abGame.play(move, choice);
     };
+
     abBoard.onSquareClick = function (start, arrival) {
         var color = '';
         var isLegalMove = false;
@@ -1613,6 +1611,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             }
         }
     };
+
     abBoard.onSquareDrop = function (move) {
         var arrival = move.substr(3, 2);
         var color = '';
@@ -1643,7 +1642,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         }
     };
 
-    // Return the api.
+    // Public api.
 
     return {
         DEFAULT_FEN: default_fen,
