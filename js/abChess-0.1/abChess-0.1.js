@@ -1,11 +1,10 @@
 // AbChess-0.1.js
-// 2016-02-04
+// 2016-02-05
 // Copyright (c) 2016 Nimzozo
 
 // TODO :
 // config object : make events cleaner
-// under-promotions
-// promotion minor bug
+// promotion bug
 // optimize legality loops
 
 /*global
@@ -46,6 +45,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         inline_block: 'inlineBlock',
         right_border: 'rightBorder',
         highlighted_square: 'highlightedSquare',
+        promotion_div: 'promotionDiv',
         selected_square: 'selectedSquare',
         square: 'square',
         squares_div: 'squaresDiv',
@@ -59,6 +59,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         hasBorder: true,
         onPieceDragEnd: null,
         onPieceDragStart: null,
+        onPromotionChose: null,
         onSquareClick: null,
         onSquareDrop: null,
         width: 360
@@ -836,9 +837,12 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         };
 
         the_piece.dragEndHandler = function (e) {
-            isDragging = false;
-            if (typeof the_piece.square.board.onPieceDragEnd === 'function') {
-                the_piece.square.board.onPieceDragEnd(dragStart, e);
+            if (isDragging) {
+                isDragging = false;
+                the_piece.square.highlight();
+                if (typeof the_piece.square.board.onPieceDragEnd === 'function') {
+                    the_piece.square.board.onPieceDragEnd(dragStart, e);
+                }
             }
         };
 
@@ -847,6 +851,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 e.dataTransfer.effectAllowed = 'move';
                 isDragging = true;
                 dragStart = the_piece.square.name;
+                the_piece.square.highlight();
                 if (typeof the_piece.square.board.onPieceDragStart === 'function') {
                     the_piece.square.board.onPieceDragStart(dragStart);
                 }
@@ -910,18 +915,20 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var arrival = '';
             var selectedPiece = the_square.board.selectedSquare;
             var start = '';
-            if (!the_square.isEmpty() && selectedPiece === null) {
-                start = the_square.name;
-                the_square.select();
-                the_square.board.selectedSquare = the_square;
-            } else if (selectedPiece !== null) {
-                start = selectedPiece.name;
-                arrival = the_square.name;
-                the_square.board.selectedSquare.select();
-                the_square.board.selectedSquare = null;
-            }
-            if (typeof the_square.board.onSquareClick === 'function') {
+            if (the_square.board.clickablePieces) {
+                if (!the_square.isEmpty() && selectedPiece === null) {
+                    start = the_square.name;
+                    the_square.select();
+                    the_square.board.selectedSquare = the_square;
+                } else if (selectedPiece !== null) {
+                    start = selectedPiece.name;
+                    arrival = the_square.name;
+                    the_square.board.selectedSquare.select();
+                    the_square.board.selectedSquare = null;
+                }
+                if (typeof the_square.board.onSquareClick === 'function') {
                     the_square.board.onSquareClick(start, arrival);
+                }
             }
         };
 
@@ -1044,13 +1051,26 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             draggablePieces: config.draggable,
             hasBorder: config.hasBorder,
             isFlipped: config.flipped,
-            onSquareClick: config.onSquareClick,
             onPieceDragEnd: config.onPieceDragEnd,
             onPieceDragStart: config.onPieceDragStart,
+            onPromotionChose: config.onPromotionChose,
+            onSquareClick: config.onSquareClick,
             onSquareDrop: config.onSquareDrop,
+            pendingMove: '',
+            promotionDiv: document.createElement('DIV'),
             selectedSquare: null,
             squares: {},
             width: config.width
+        };
+
+        the_board.clickPromotionHandler = function (e) {
+            var choice = e.target.name;
+            if (typeof the_board.onPromotionChose === 'function') {
+                the_board.onPromotionChose(choice);
+            }
+            requestAnimationFrame(function () {
+                the_board.promotionDiv.style.display = 'none';
+            });
         };
 
         the_board.createSquares = function () {
@@ -1115,6 +1135,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var rowNumber = 0;
             var square;
             var squaresDiv;
+            the_board.promotionDiv.className = css.promotion_div;
             squaresDiv = document.createElement('DIV');
             squaresDiv.style.width = the_board.width + 'px';
             squaresDiv.style.height = the_board.width + 'px';
@@ -1152,6 +1173,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             }
             requestAnimationFrame(function () {
                 the_board.container.appendChild(squaresDiv);
+                squaresDiv.appendChild(the_board.promotionDiv);
             });
             if (the_board.hasBorder) {
                 bottomBorder = document.createElement('DIV');
@@ -1335,6 +1357,30 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             }
         };
 
+        the_board.showPromotionDiv = function (color) {
+
+            // Display the promotion div to complete a move.
+
+            var buttons = the_board.promotionDiv.childNodes;
+            var pieces = [chess_piece.black_queen, chess_piece.black_rook, chess_piece.black_bishop, chess_piece.black_knight];
+            while (buttons.length > 0) {
+                the_board.promotionDiv.removeChild(the_board.promotionDiv.lastChild);
+            }
+            pieces.forEach(function (piece) {
+                var promotionButton;
+                var url = images_path + color + piece + png_extension;
+                promotionButton = document.createElement('INPUT');
+                promotionButton.setAttribute('type', 'button');
+                promotionButton.setAttribute('name', piece);
+                promotionButton.style.backgroundImage = 'url("' + url + '")';
+                promotionButton.addEventListener('click', the_board.clickPromotionHandler);
+                the_board.promotionDiv.appendChild(promotionButton);
+            });
+            requestAnimationFrame(function () {
+                the_board.promotionDiv.style.display = 'block';
+            });
+        };
+
         return the_board;
     }
 
@@ -1459,7 +1505,13 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         var legalSquares = abGame.getLegalSquares(start);
         abBoard.drawCircles(legalSquares);
     };
+    abBoard.onPromotionChose = function (choice) {
+        var move = abBoard.pendingMove;
+        abBoard.play(move, choice);
+        abGame.play(move, choice);
+    };
     abBoard.onSquareClick = function (start, arrival) {
+        var color = '';
         var isLegalMove = false;
         var legalSquares = [];
         var move = start + ' ' + arrival;
@@ -1467,19 +1519,37 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         legalSquares = abGame.getLegalSquares(start);
         abBoard.drawCircles(legalSquares);
         if (isLegalMove) {
-            abBoard.play(move);
-            abGame.play(move);
+            if (regex_promotion.test(move)) {
+                abBoard.pendingMove = move;
+                color = (arrival[1] === '1')
+                    ? chess_piece.white
+                    : chess_piece.black;
+                abBoard.showPromotionDiv(color);
+            } else {
+                abBoard.play(move);
+                abGame.play(move);
+            }
         }
     };
     abBoard.onSquareDrop = function (move) {
+        var arrival = move.substr(3, 2);
+        var color = '';
         var isLegalMove = abGame.isLegal(move);
         var legalSquares = [];
         var start = move.substr(0, 2);
         legalSquares = abGame.getLegalSquares(start);
         abBoard.drawCircles(legalSquares);
         if (isLegalMove) {
-            abBoard.play(move);
-            abGame.play(move);
+            if (regex_promotion.test(move)) {
+                abBoard.pendingMove = move;
+                color = (arrival[1] === '1')
+                    ? chess_piece.white
+                    : chess_piece.black;
+                abBoard.showPromotionDiv(color);
+            } else {
+                abBoard.play(move);
+                abGame.play(move);
+            }
         }
     };
 
