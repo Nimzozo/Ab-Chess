@@ -19,6 +19,7 @@ var abChess = new AbChess(containerId, [config]);
 | &nbsp;&nbsp;`hasBorder` | Boolean | A value to set if the board should have notation borders or not. Set to `true` by default.
 | &nbsp;&nbsp;`onPieceDragEnd` | Function | Experimental. A function to run when a piece ends a drag operation.
 | &nbsp;&nbsp;`onPieceDragStart` | Function | Experimental. A function to run when a piece starts a drag operation.
+| &nbsp;&nbsp;`onPromotionChose` | Function | Experimental. A function to run when a promotion choice has been done.
 | &nbsp;&nbsp;`onSquareClick` | Function | Experimental. A function to run when a click is performed on a square.
 | &nbsp;&nbsp;`onSquareDrop` | Function | Experimental. A function to run when a drop is performed on a square.
 | &nbsp;&nbsp;`width` | Number | A number representing the width of the board. Set to `360` by default.
