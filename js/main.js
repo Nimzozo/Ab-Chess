@@ -23,26 +23,29 @@ window.addEventListener('load', function () {
     }
     startButton.addEventListener('click', function () {
         abChess.setFEN();
-        updateInfo();
+        requestAnimationFrame(updateInfo);
     });
     emptyButton.addEventListener('click', function () {
         abChess.setFEN('8/8/8/8/8/8/8/8');
-        updateInfo();
+        requestAnimationFrame(updateInfo);
     });
     flipButton.addEventListener('click', function () {
         abChess.flip();
     });
-    container.addEventListener('drop', function () {
-        updateInfo();
+    container.addEventListener('click', function () {
+        requestAnimationFrame(updateInfo);
+    });
+    container.addEventListener('dragend', function () {
+        requestAnimationFrame(updateInfo);
     });
     moveButton.addEventListener('click', function () {
         var inputMove = moveInput.value;
         var isLegal = abChess.isLegal(inputMove);
         if (isLegal) {
-            updateInfo();
+            requestAnimationFrame(updateInfo);
         }
     });
     abChess.draw();
     abChess.setFEN();
-    updateInfo();
+    requestAnimationFrame(updateInfo);
 });
