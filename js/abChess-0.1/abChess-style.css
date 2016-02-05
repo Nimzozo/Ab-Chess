@@ -75,3 +75,28 @@
 .rightBorder > div {
     height: 12.5%;
 }
+
+.promotionDiv {
+    z-index: 9;
+    top: 37.5%;
+    left: 0;
+    position: absolute;
+    background-color: gainsboro;
+    height: 25%;
+    width: 100%;
+    display: none;
+}
+
+.promotionDiv input {
+    display: inline-block;
+    background-size: 100% 100%;
+    background-color: lightslategrey;
+    border: none;
+    margin: 0;
+    height: 100%;
+    width: 25%;
+}
+
+.promotionDiv input:hover {
+    background-color: skyblue;
+}
