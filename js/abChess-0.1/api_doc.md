@@ -11,17 +11,17 @@ var abChess = new AbChess(containerId[, config]);
 | Parameters | Type | Description | Default
 | :--- | :--- | :--- | :---
 | __`containerId`__ | String | The id of the HTML element to contain the chess board. |
-| __`config`__ | Object | Optional. A configuration object containing the following optional properties. |
+| __`config`__ | Object | *Optional*. A configuration object containing the following optional properties. |
 | &nbsp;&nbsp;`circleColor` | String | The CSS color value of circles drawn on the squares. | `'steelblue'`
 | &nbsp;&nbsp;`clickable` | Boolean | A value to set if the pieces should be clickable or not. | `true`
 | &nbsp;&nbsp;`draggable` | Boolean | A value to set if the pieces should be draggable or not. | `true`
 | &nbsp;&nbsp;`flipped` | Boolean | A value to set if the board should be flipped or not. | `false`
 | &nbsp;&nbsp;`hasBorder` | Boolean | A value to set if the board should have notation borders or not. | `true`
-| &nbsp;&nbsp;`onPieceDragEnd` | Function | Experimental. A function to run when a piece ends a drag operation. | `null`
-| &nbsp;&nbsp;`onPieceDragStart` | Function | Experimental. A function to run when a piece starts a drag operation. | `null`
-| &nbsp;&nbsp;`onPromotionChose` | Function | Experimental. A function to run when a promotion choice has been done. | `null`
-| &nbsp;&nbsp;`onSquareClick` | Function | Experimental. A function to run when a click is performed on a square. | `null`
-| &nbsp;&nbsp;`onSquareDrop` | Function | Experimental. A function to run when a drop is performed on a square. | `null`
+| &nbsp;&nbsp;`onPieceDragEnd` | Function | *Experimental*. A function to run when a piece ends a drag operation. | `null`
+| &nbsp;&nbsp;`onPieceDragStart` | Function | *Experimental*. A function to run when a piece starts a drag operation. | `null`
+| &nbsp;&nbsp;`onPromotionChose` | Function | *Experimental*. A function to run when a promotion choice has been done. | `null`
+| &nbsp;&nbsp;`onSquareClick` | Function | *Experimental*. A function to run when a click is performed on a square. | `null`
+| &nbsp;&nbsp;`onSquareDrop` | Function | *Experimental*. A function to run when a drop is performed on a square. | `null`
 | &nbsp;&nbsp;`showKingInCheck` | Boolean | A value to set if the king in check should be marked. | `true`
 | &nbsp;&nbsp;`showLegalMoves` | Boolean | A value to set if the legal squares should be marked. | `true`
 | &nbsp;&nbsp;`width` | Number | A number representing the width in pixels of the board. | `360`
