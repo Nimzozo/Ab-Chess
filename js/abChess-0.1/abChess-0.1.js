@@ -3,7 +3,6 @@
 // Copyright (c) 2016 Nimzozo
 
 // TODO :
-// make events cleaner + bug interference
 // optimize legality loops
 // fix sync layout
 
@@ -855,8 +854,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var activeSquare = the_piece.square.name;
             if (the_piece.square.board.isDragging) {
                 the_piece.square.board.isDragging = false;
-                the_piece.square.board.draggedSquare = null;
-                the_piece.square.highlight();
                 if (typeof the_piece.square.board.onPieceDragEnd === 'function') {
                     the_piece.square.board.onPieceDragEnd(activeSquare, e);
                 }
@@ -866,14 +863,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         the_piece.dragStartHandler = function (e) {
             var activeSquare = the_piece.square.name;
             if (the_piece.square.board.draggablePieces) {
-                if (the_piece.square.board.clickedSquare !== null) {
-
-                    the_piece.square.board.clickedSquare = null;
-                }
                 e.dataTransfer.effectAllowed = 'move';
                 the_piece.square.board.isDragging = true;
-                the_piece.square.board.draggedSquare = activeSquare;
-                the_piece.square.highlight();
                 if (typeof the_piece.square.board.onPieceDragStart === 'function') {
                     the_piece.square.board.onPieceDragStart(activeSquare);
                 }
@@ -935,22 +926,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         };
 
         the_square.clickHandler = function () {
-            var activeSquare = the_square.board.clickedSquare;
-            var arrival = '';
-            var start = '';
             if (the_square.board.clickablePieces) {
-                if (!the_square.isEmpty() && activeSquare === null) {
-                    start = the_square.name;
-                    the_square.select();
-                    the_square.board.clickedSquare = the_square.name;
-                } else if (activeSquare !== null) {
-                    start = activeSquare;
-                    arrival = the_square.name;
-                    the_square.board.squares[activeSquare].select();
-                    the_square.board.clickedSquare = null;
-                }
                 if (typeof the_square.board.onSquareClick === 'function') {
-                    the_square.board.onSquareClick(start, arrival);
+                    the_square.board.onSquareClick(the_square.name);
                 }
             }
         };
@@ -983,13 +961,12 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         };
 
         the_square.dropHandler = function (e) {
-            var activeSquare = the_square.board.draggedSquare;
             if (the_square.board.isDragging) {
                 e.preventDefault();
                 e.dataTransfer.dropEffect = 'move';
                 the_square.select();
                 if (typeof the_square.board.onSquareDrop === 'function') {
-                    the_square.board.onSquareDrop(activeSquare, the_square.name);
+                    the_square.board.onSquareDrop(the_square.name);
                 }
             }
         };
@@ -1085,10 +1062,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         var the_board = {
             circleColor: config.circleColor,
             clickablePieces: config.clickable,
-            clickedSquare: null,
             container: document.getElementById(containerId),
             draggablePieces: config.draggable,
-            draggedSquare: null,
             hasBorder: config.hasBorder,
             isDragging: false,
             isFlipped: config.flipped,
@@ -1099,6 +1074,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             onSquareDrop: config.onSquareDrop,
             pendingMove: null,
             promotionDiv: document.createElement('DIV'),
+            selectedSquare: null,
             squares: {},
             width: config.width
         };
@@ -1592,28 +1568,22 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
     abBoard = new Chessboard(containerId, abConfig);
     abGame = new Chessgame();
 
-    function showLegalSquares(start) {
-
-        // Perform the first step of a move. Show legal squares.
-
-        var legalSquares = abGame.getLegalSquares(start);
-        abBoard.drawCircles(legalSquares);
-    }
-
-    function finishMove(start, arrival) {
+    function finishMove(arrival, selectArrival) {
 
         // Perform the second step of a move once the arrival square is defined.
         // Test the legality. Show promotion div. Remove legal squares.
 
         var color = '';
-        var move = start + '-' + arrival;
+        var move = '';
         var occupiedSquares = {};
         var playedPiece = '';
         var position = abGame.getLastPosition();
+        var start = abBoard.selectedSquare;
+        move = start + '-' + arrival;
         if (!regex_move.test(move)) {
             return;
         }
-        showLegalSquares(start);
+        selectPiece(start);
         if (abGame.isLegal(move)) {
             occupiedSquares = Position.fenToObject(position.fen);
             playedPiece = occupiedSquares[start];
@@ -1626,6 +1596,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             } else {
                 playMove(move);
             }
+        } else if (selectArrival && arrival !== start && !abBoard.squares[arrival].isEmpty()) {
+            selectPiece(arrival);
         }
     }
 
@@ -1634,14 +1606,31 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         abGame.play(move, promotion);
     }
 
+    function selectPiece(square) {
+
+        // Select or deselect a piece on the board and show its legal squares.
+
+        var legalSquares = abGame.getLegalSquares(square);
+        if (abBoard.selectedSquare === null) {
+            abBoard.selectedSquare = square;
+        } else {
+            abBoard.selectedSquare = null;
+        }
+        abBoard.squares[square].highlight();
+        abBoard.drawCircles(legalSquares);
+    }
+
     abBoard.onPieceDragEnd = function (start, e) {
         if (e.dataTransfer.dropEffect === 'none') {
-            showLegalSquares(start);
+            selectPiece(start);
         }
     };
 
     abBoard.onPieceDragStart = function (start) {
-        showLegalSquares(start);
+        if (abBoard.selectedSquare !== null) {
+            selectPiece(abBoard.selectedSquare);
+        }
+        selectPiece(start);
     };
 
     abBoard.onPromotionChose = function (choice) {
@@ -1649,16 +1638,18 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         playMove(move, choice);
     };
 
-    abBoard.onSquareClick = function (start, arrival) {
-        if (arrival === '') {
-            showLegalSquares(start);
+    abBoard.onSquareClick = function (clickedSquare) {
+        if (abBoard.selectedSquare === null) {
+            if (!abBoard.squares[clickedSquare].isEmpty()) {
+                selectPiece(clickedSquare);
+            }
         } else {
-            finishMove(start, arrival);
+            finishMove(clickedSquare, true);
         }
     };
 
-    abBoard.onSquareDrop = function (start, arrival) {
-        finishMove(start, arrival);
+    abBoard.onSquareDrop = function (droppedSquare) {
+        finishMove(droppedSquare, false);
     };
 
     // Public api.
@@ -1745,7 +1736,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Play the desired move and return the resulting FEN string.
 
-            return abGame.play(move);
+            return playMove(move);
         },
         setFEN: function (fen) {
 
