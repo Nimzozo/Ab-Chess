@@ -11,7 +11,8 @@ Then I would like to make a new website to introduce the all project.
 AbChess is an API to manage chess software. It will provide functions to access awesome features :
 
 * draw chess boards
-* customizable board options
+* customizable board with CSS
+* customizable behaviour
 * draggable pieces
 * clickable pieces
 * check moves legality
