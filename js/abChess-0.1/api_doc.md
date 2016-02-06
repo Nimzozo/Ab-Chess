@@ -11,8 +11,8 @@ var abChess = new AbChess(containerId[, config]);
 | Parameters | Type | Description | Default
 | :--- | :--- | :--- | :---
 | __`containerId`__ | String | The id of the HTML element to contain the chess board. |
-| __`config`__ | Object | Optional. A configuration object containing the following optional properties. | See below.
-| &nbsp;&nbsp;`circleColor` | String | The CSS color value of circles drawn on the squares. | `steelblue`
+| __`config`__ | Object | Optional. A configuration object containing the following optional properties. |
+| &nbsp;&nbsp;`circleColor` | String | The CSS color value of circles drawn on the squares. | `'steelblue'`
 | &nbsp;&nbsp;`clickable` | Boolean | A value to set if the pieces should be clickable or not. | `true`
 | &nbsp;&nbsp;`draggable` | Boolean | A value to set if the pieces should be draggable or not. | `true`
 | &nbsp;&nbsp;`flipped` | Boolean | A value to set if the board should be flipped or not. | `false`
