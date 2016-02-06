@@ -32,3 +32,7 @@ See the provisional [AbChess API documentation](https://github.com/Nimzozo/ab-ch
 ## License
 
 [MIT License](https://github.com/Nimzozo/ab-chess/blob/master/LICENSE)
+
+## Miscellaneous
+
+Highly inspired by @douglascrockford's stuff.
