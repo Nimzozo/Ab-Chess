@@ -5,7 +5,7 @@ The AbChess class contructs an object to manage chess data as well as render a b
 ###### Syntax
 
 ```Javascript
-var abChess = new AbChess(containerId, [config]);
+var abChess = new AbChess(containerId[, config]);
 ```
 
 | Parameters | Type | Description
