@@ -9,7 +9,7 @@ var abChess = new AbChess(containerId[, config]);
 ```
 
 | Parameters | Type | Description | Default
-| :--- | :--- | :---
+| :--- | :--- | :--- | :---
 | __`containerId`__ | String | The id of the HTML element to contain the chess board. |
 | __`config`__ | Object | Optional. A configuration object containing the following optional properties. | See below.
 | &nbsp;&nbsp;`circleColor` | String | The CSS color value of circles drawn on the squares. | `steelblue`
