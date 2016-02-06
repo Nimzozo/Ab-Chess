@@ -1602,22 +1602,42 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
     }
 
     function playMove(move, promotion) {
+        var color = '';
+        var kingSquare = '';
+        var position;
+        if (abConfig.showKingInCheck) {
+            position = abGame.getLastPosition();
+            color = position.getActiveColor();
+            kingSquare = position.getKingSquare(color);
+            if (abBoard.squares[kingSquare].isMarked) {
+                abBoard.markSquares([kingSquare]);
+            }
+        }
         abBoard.play(move, promotion);
         abGame.play(move, promotion);
+        if (abConfig.showKingInCheck && abGame.isInCheck()) {
+            position = abGame.getLastPosition();
+            color = position.getActiveColor();
+            kingSquare = position.getKingSquare(color);
+            abBoard.markSquares([kingSquare]);
+        }
     }
 
     function selectPiece(square) {
 
         // Select or deselect a piece on the board and show its legal squares.
 
-        var legalSquares = abGame.getLegalSquares(square);
+        var legalSquares = [];
         if (abBoard.selectedSquare === null) {
             abBoard.selectedSquare = square;
         } else {
             abBoard.selectedSquare = null;
         }
         abBoard.squares[square].highlight();
-        abBoard.drawCircles(legalSquares);
+        if (abConfig.showLegalMoves) {
+            legalSquares = abGame.getLegalSquares(square);
+            abBoard.drawCircles(legalSquares);
+        }
     }
 
     abBoard.onPieceDragEnd = function (start, e) {
