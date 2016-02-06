@@ -26,6 +26,24 @@ var abChess = new AbChess(containerId[, config]);
 | &nbsp;&nbsp;`showLegalMoves` | Boolean | A value to set if the legal squares should be marked. | `true`
 | &nbsp;&nbsp;`width` | Number | A number representing the width in pixels of the board. | `360`
 
+###### Example
+
+```Javascript
+var abChess;
+var abConfig = {
+    circleColor: '#123456',
+    clickable: true,
+    draggable: false,
+    flipped: false,
+    hasBorder: false,
+    showKingInCheck: true,
+    showLegalMoves: false,
+    width: 180  
+};
+var containerId = 'abContainer';
+abChess = new AbChess(containerId, abConfig);
+```
+
 ###### Constants
 
 __`DEFAULT_FEN`__
