@@ -22,6 +22,8 @@ var abChess = new AbChess(containerId[, config]);
 | &nbsp;&nbsp;`onPromotionChose` | Function | Experimental. A function to run when a promotion choice has been done. | `null`
 | &nbsp;&nbsp;`onSquareClick` | Function | Experimental. A function to run when a click is performed on a square. | `null`
 | &nbsp;&nbsp;`onSquareDrop` | Function | Experimental. A function to run when a drop is performed on a square. | `null`
+| &nbsp;&nbsp;`showKingInCheck` | Boolean | A value to set if the king in check should be marked. | `true`
+| &nbsp;&nbsp;`showLegalMoves` | Boolean | A value to set if the legal squares should be marked. | `true`
 | &nbsp;&nbsp;`width` | Number | A number representing the width in pixels of the board. | `360`
 
 ###### Constants
