@@ -79,6 +79,11 @@ __`getLegalSquares(start)`__
   The `start` string should be in the format `[a-h][1-8]`.
   ---
 
+__`isCheckmated()`__
+
+  Check if the king of the active color is checkmated.
+  ---
+  
 __`isInCheck()`__
 
   Check if the king of the active color is currently in check.
