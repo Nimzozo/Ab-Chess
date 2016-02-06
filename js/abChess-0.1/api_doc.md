@@ -8,21 +8,21 @@ The AbChess class contructs an object to manage chess data as well as render a b
 var abChess = new AbChess(containerId[, config]);
 ```
 
-| Parameters | Type | Description
+| Parameters | Type | Description | Default
 | :--- | :--- | :---
-| __`containerId`__ | String | The id of the HTML element to contain the chess board.
-| __`config`__ | Object | Optional. A configuration object containing the following optional properties.
-| &nbsp;&nbsp;`circleColor` | String | The CSS color value of circles drawn on the squares. Set to `steelblue` by default.
-| &nbsp;&nbsp;`clickable` | Boolean | A value to set if the pieces should be clickable or not. Set to `true` by default.
-| &nbsp;&nbsp;`draggable` | Boolean | A value to set if the pieces should be draggable or not. Set to `true` by default.
-| &nbsp;&nbsp;`flipped` | Boolean | A value to set if the board should be flipped or not. Set to `false` by default.
-| &nbsp;&nbsp;`hasBorder` | Boolean | A value to set if the board should have notation borders or not. Set to `true` by default.
-| &nbsp;&nbsp;`onPieceDragEnd` | Function | Experimental. A function to run when a piece ends a drag operation.
-| &nbsp;&nbsp;`onPieceDragStart` | Function | Experimental. A function to run when a piece starts a drag operation.
-| &nbsp;&nbsp;`onPromotionChose` | Function | Experimental. A function to run when a promotion choice has been done.
-| &nbsp;&nbsp;`onSquareClick` | Function | Experimental. A function to run when a click is performed on a square.
-| &nbsp;&nbsp;`onSquareDrop` | Function | Experimental. A function to run when a drop is performed on a square.
-| &nbsp;&nbsp;`width` | Number | A number representing the width of the board. Set to `360` by default.
+| __`containerId`__ | String | The id of the HTML element to contain the chess board. |
+| __`config`__ | Object | Optional. A configuration object containing the following optional properties. | See below.
+| &nbsp;&nbsp;`circleColor` | String | The CSS color value of circles drawn on the squares. | `steelblue`
+| &nbsp;&nbsp;`clickable` | Boolean | A value to set if the pieces should be clickable or not. | `true`
+| &nbsp;&nbsp;`draggable` | Boolean | A value to set if the pieces should be draggable or not. | `true`
+| &nbsp;&nbsp;`flipped` | Boolean | A value to set if the board should be flipped or not. | `false`
+| &nbsp;&nbsp;`hasBorder` | Boolean | A value to set if the board should have notation borders or not. | `true`
+| &nbsp;&nbsp;`onPieceDragEnd` | Function | Experimental. A function to run when a piece ends a drag operation. | `null`
+| &nbsp;&nbsp;`onPieceDragStart` | Function | Experimental. A function to run when a piece starts a drag operation. | `null`
+| &nbsp;&nbsp;`onPromotionChose` | Function | Experimental. A function to run when a promotion choice has been done. | `null`
+| &nbsp;&nbsp;`onSquareClick` | Function | Experimental. A function to run when a click is performed on a square. | `null`
+| &nbsp;&nbsp;`onSquareDrop` | Function | Experimental. A function to run when a drop is performed on a square. | `null`
+| &nbsp;&nbsp;`width` | Number | A number representing the width in pixels of the board. | `360`
 
 ###### Constants
 
