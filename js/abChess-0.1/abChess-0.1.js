@@ -1,5 +1,5 @@
 // AbChess-0.1.js
-// 2016-02-07
+// 2016-02-08
 // Copyright (c) 2016 Nimzozo
 
 // TODO :
@@ -7,7 +7,7 @@
 // show last move
 
 /*global
-    window, requestAnimationFrame
+    window
 */
 
 /*jslint
@@ -78,6 +78,14 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
     var regex_fen_row = /^([bknpqr1]{8}|[bknpqr12]{7}|[bknpqr1-3]{6}|[bknpqr1-4]{5}|[bknpqr1-5]{4}|[bknpqr1-6]{3}|[bknpqr]7|7[bknpqr]|8)$/i;
     var regex_move = /^[a-h][1-8]-[a-h][1-8]$/;
     var regex_promotion = /^([a-h]2-[a-h]1|[a-h]7-[a-h]8)$/;
+    var requestAF = window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        function (callback) {
+            return window.setTimeout(callback, 1000 / 60);
+        };
+
 
     // -------------------------------------------------------------------------
 
@@ -890,22 +898,24 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
         the_piece.dragEndHandler = function (e) {
             var activeSquare = the_piece.square.name;
-            if (the_piece.square.board.isDragging) {
-                the_piece.square.board.isDragging = false;
-                if (typeof the_piece.square.board.onPieceDragEnd === 'function') {
-                    the_piece.square.board.onPieceDragEnd(activeSquare, e);
-                }
+            if (!the_piece.square.board.isDragging) {
+                return;
+            }
+            the_piece.square.board.isDragging = false;
+            if (typeof the_piece.square.board.onPieceDragEnd === 'function') {
+                the_piece.square.board.onPieceDragEnd(activeSquare, e);
             }
         };
 
         the_piece.dragStartHandler = function (e) {
             var activeSquare = the_piece.square.name;
-            if (the_piece.square.board.draggablePieces) {
-                e.dataTransfer.effectAllowed = 'move';
-                the_piece.square.board.isDragging = true;
-                if (typeof the_piece.square.board.onPieceDragStart === 'function') {
-                    the_piece.square.board.onPieceDragStart(activeSquare);
-                }
+            if (!the_piece.square.board.draggablePieces) {
+                return;
+            }
+            e.dataTransfer.effectAllowed = 'move';
+            the_piece.square.board.isDragging = true;
+            if (typeof the_piece.square.board.onPieceDragStart === 'function') {
+                the_piece.square.board.onPieceDragStart(activeSquare);
             }
         };
 
@@ -921,7 +931,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             if (!square.isEmpty()) {
                 square.piece.remove();
             }
-            requestAnimationFrame(function () {
+            requestAF(function () {
                 square.div.appendChild(the_piece.div);
                 square.piece = the_piece;
                 the_piece.square = square;
@@ -932,12 +942,13 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Remove the piece from the square.
 
-            requestAnimationFrame(function () {
-                if (the_piece.square !== null) {
-                    the_piece.square.div.removeChild(the_piece.div);
-                    the_piece.square.piece = null;
-                    the_piece.square = null;
+            requestAF(function () {
+                if (the_piece.square === null) {
+                    return;
                 }
+                the_piece.square.div.removeChild(the_piece.div);
+                the_piece.square.piece = null;
+                the_piece.square = null;
             });
         };
 
@@ -964,10 +975,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         };
 
         the_square.clickHandler = function () {
-            if (the_square.board.clickablePieces) {
-                if (typeof the_square.board.onSquareClick === 'function') {
-                    the_square.board.onSquareClick(the_square.name);
-                }
+            if (!the_square.board.clickablePieces) {
+                return;
+            }
+            if (typeof the_square.board.onSquareClick === 'function') {
+                the_square.board.onSquareClick(the_square.name);
             }
         };
 
@@ -999,13 +1011,14 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         };
 
         the_square.dropHandler = function (e) {
-            if (the_square.board.isDragging) {
-                e.preventDefault();
-                e.dataTransfer.dropEffect = 'move';
-                the_square.select();
-                if (typeof the_square.board.onSquareDrop === 'function') {
-                    the_square.board.onSquareDrop(the_square.name);
-                }
+            if (!the_square.board.isDragging) {
+                return;
+            }
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            the_square.select();
+            if (typeof the_square.board.onSquareDrop === 'function') {
+                the_square.board.onSquareDrop(the_square.name);
             }
         };
 
@@ -1037,7 +1050,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var className = '';
             the_square.isHighlighted = !the_square.isHighlighted;
             className = the_square.getClassName();
-            requestAnimationFrame(function () {
+            requestAF(function () {
                 the_square.div.className = className;
             });
         };
@@ -1057,7 +1070,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var className = '';
             the_square.isMarked = !the_square.isMarked;
             className = the_square.getClassName();
-            requestAnimationFrame(function () {
+            requestAF(function () {
                 the_square.div.className = className;
             });
         };
@@ -1070,7 +1083,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var className = '';
             the_square.isSelected = !the_square.isSelected;
             className = the_square.getClassName();
-            requestAnimationFrame(function () {
+            requestAF(function () {
                 the_square.div.className = className;
             });
         };
@@ -1086,11 +1099,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         var rowNumber = 0;
         colNumber = columns.indexOf(name[0]) + 1;
         rowNumber = Number(name[1]);
-        if (rowNumber % 2 === 0) {
-            return (colNumber % 2 === 1);
-        } else {
-            return (colNumber % 2 === 0);
-        }
+        return (rowNumber % 2 === 0)
+            ? (colNumber % 2 === 1)
+            : (colNumber % 2 === 0);
     };
 
     // -------------------------------------------------------------------------
@@ -1127,7 +1138,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             the_board.pendingMove = null;
             the_board.clickablePieces = config.clickable;
             the_board.draggablePieces = config.draggable;
-            requestAnimationFrame(function () {
+            requestAF(function () {
                 the_board.promotionDiv.style.display = 'none';
             });
         };
@@ -1149,8 +1160,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var square = {};
             var squares = {};
             var xy = 0;
-            canvasWidth = the_board.width / 8 + 'px';
-            radius = the_board.width / 48;
+            canvasWidth = Math.floor(the_board.width / 8) + 'px';
+            radius = Math.floor(the_board.width / 62);
             xy = Math.floor(the_board.width / 16);
             rowNumber = 1;
             while (rowNumber < 9) {
@@ -1234,7 +1245,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     rowNumber += 1;
                 }
             }
-            requestAnimationFrame(function () {
+            requestAF(function () {
                 the_board.container.appendChild(squaresDiv);
                 squaresDiv.appendChild(the_board.promotionDiv);
             });
@@ -1258,7 +1269,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 rowNumber = 1;
                 while (rowNumber < 9) {
                     borderFragment = document.createElement('DIV');
-                    borderFragment.style.lineHeight = (the_board.width / 8) + 'px';
+                    borderFragment.style.lineHeight = Math.floor(the_board.width / 8) + 'px';
                     index = (the_board.isFlipped)
                         ? rowNumber
                         : 9 - rowNumber;
@@ -1266,7 +1277,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     rightBorder.appendChild(borderFragment);
                     rowNumber += 1;
                 }
-                requestAnimationFrame(function () {
+                requestAF(function () {
                     the_board.container.appendChild(rightBorder);
                     the_board.container.appendChild(bottomBorder);
                 });
@@ -1279,7 +1290,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             squares.forEach(function (name) {
                 var square = the_board.squares[name];
-                requestAnimationFrame(function () {
+                requestAF(function () {
                     if (square.hasCircle) {
                         square.div.removeChild(square.canvas);
                     } else {
@@ -1462,7 +1473,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             });
             the_board.clickablePieces = false;
             the_board.draggablePieces = false;
-            requestAnimationFrame(function () {
+            requestAF(function () {
                 the_board.promotionDiv.style.display = 'block';
             });
         };
@@ -1749,7 +1760,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Flip the board.
 
             abBoard.isFlipped = !abBoard.isFlipped;
-            requestAnimationFrame(function () {
+            requestAF(function () {
                 while (abBoard.container.hasChildNodes()) {
                     abBoard.container.removeChild(abBoard.container.lastChild);
                 }
