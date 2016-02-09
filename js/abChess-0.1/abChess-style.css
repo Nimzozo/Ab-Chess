@@ -44,15 +44,19 @@
 }
 
 .highlightedSquare {
-    background-color: steelblue;
+     box-shadow: inset 0 0 0 2px blue;
 }
 
 .markedSquare {
-    box-shadow: inset 0 0 2px 4px red;
+    box-shadow: inset 0 0 0 4px red;
+}
+
+.overflownSquare {
+    box-shadow: inset 0 0 0 4px midnightblue;
 }
 
 .selectedSquare {
-    box-shadow: inset 0 0 2px 4px midnightblue;
+    background-color: steelblue;
 }
 
 .bottomBorder {
