@@ -1,6 +1,7 @@
-function tester(idList, test, description) {
+function tester(test, description, idList) {
     "use strict";
 
+    idList = idList || 'testList';
     var color = "";
     var index = 0;
     var li = document.createElement("li");
@@ -10,16 +11,15 @@ function tester(idList, test, description) {
     index = list.childElementCount + 1;
     if (test) {
         color = "green";
-        result = "<b>" + index + ". </b>" + description;
 
     } else {
         color = "red";
         description = "<s>" + description + "</s>";
-        result = "<b>" + index + ". </b>" + description;
     }
     li.style.margin = "8px";
     li.style.padding = "2px";
     li.style.color = color;
+    result = "<b>[" + index + "] </b>" + description;
     li.innerHTML = result;
-    list.insertBefore(li, list.childNodes[0]);
+    list.appendChild(li);
 }
