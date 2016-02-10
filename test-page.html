@@ -10,22 +10,21 @@
 <body>
 
     <div id='chessboardContainer'>
-        <h1>This is the AB-Chess test page.</h1>
         <div id="gameInfo">
             <span id="turnInfo"></span>
             <span id="checkInfo"></span>
             <span id="lastMoveInfo"></span>
         </div>
         <div id="abc"></div>
+        <div>
+            <textarea id="pgn"></textarea>
+        </div>
         <div id="commands">
             <input id="fenInput" disabled="disabled" type="text" placeholder="FEN" size="70">
             <br>
-            <input id="startButton" type="button" value="Start">
-            <input id="emptyButton" type="button" value="Empty">
             <input id="flipButton" type="button" value="Flip">
             <br>
-            <input id="moveInput" type="text" placeholder="Move" size="5">
-            <input id="moveButton" type="button" value="Test a move">
+            <input id="pgnButton" type="button" value="Test PGN">
         </div>
     </div>
     <ul id='testList'></ul>
