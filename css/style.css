@@ -27,9 +27,19 @@
 }
 
 #testList {
+    list-style: none;
     position: fixed;
     top: 0;
     left: 0;
     border: 2px solid black;
     overflow: auto;
+    height: 200px;
+    width: 350px;
+    font-size: 80%;
+    font-family: Courier New, Courier, monospace, serif;
+}
+
+textarea {
+    width: 500px;
+    height: 100px;
 }
