@@ -43,8 +43,8 @@ Parameters :
 
 | Name |     | Description | Default |
 | :--- | :--- | :--- | :--- |
-| <`String`> __containerId__ | Required | The id of the HTML element to contain the chess board. |
-| <`Object`> __config__ | Optional | A configuration object containing the following optional properties. |
+| <`String`> containerId | Required | The id of the HTML element to contain the chess board. |
+| <`Object`> config | Optional | A configuration object containing the following optional properties. |
 | __*config* properties__
 | <`String`> circleColor | Optional | The CSS color value of circles drawn on the squares. | steelblue
 | <`Boolean`> clickable | Optional | A value to set if the pieces should be clickable or not. | true
@@ -60,6 +60,26 @@ Parameters :
 | <`Boolean`> showLastMove | Optional | A value to set if the last played move should be marked. | true
 | <`Boolean`> showLegalSquares | Optional | A value to set if the legal squares should be marked. | true
 | <`Number`> width | Optional | A number representing the width in pixels of the board. | 360
+
+Sample :
+
+Create an AbChess object.
+
+```Javascript
+var abChess;
+var abConfig = {
+    circleColor: '#123456',
+    clickable: true,
+    draggable: false,
+    flipped: false,
+    hasBorder: false,
+    showKingInCheck: true,
+    showLegalMoves: false,
+    width: 180  
+};
+var containerId = 'abContainer';
+abChess = new AbChess(containerId, abConfig);
+```
 
 ### Methods details
 
@@ -168,25 +188,3 @@ Parameters :
     <td>fen</td><td>Required</td><td>The FEN string to set.</td>
   </tr>
 </table>
-
----
-
-## Sample
-
-Create an AbChess object.
-
-```Javascript
-var abChess;
-var abConfig = {
-    circleColor: '#123456',
-    clickable: true,
-    draggable: false,
-    flipped: false,
-    hasBorder: false,
-    showKingInCheck: true,
-    showLegalMoves: false,
-    width: 180  
-};
-var containerId = 'abContainer';
-abChess = new AbChess(containerId, abConfig);
-```
