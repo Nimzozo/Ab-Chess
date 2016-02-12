@@ -51,11 +51,6 @@ __Parameters :__
 | <`Boolean`> draggable | Optional | A value to set if the pieces should be draggable or not. | `true`
 | <`Boolean`> flipped | Optional | A value to set if the board should be flipped or not. | `false`
 | <`Boolean`> hasBorder | Optional | A value to set if the board should have notation borders or not. | `true`
-| <`Function`> onPieceDragEnd | Optional | **Experimental**. A function to run when a piece ends a drag operation. | `null`
-| <`Function`> onPieceDragStart | Optional | **Experimental**. A function to run when a piece starts a drag operation. | `null`
-| <`Function`> onPromotionChose | Optional | **Experimental**. A function to run when a promotion choice has been done. | `null`
-| <`Function`> onSquareClick | Optional | **Experimental**. A function to run when a click is performed on a square. | `null`
-| <`Function`> onSquareDrop | Optional | **Experimental**. A function to run when a drop is performed on a square. | `null`
 | <`Boolean`> showKingInCheck | Optional | A value to set if the king in check should be marked. | `true`
 | <`Boolean`> showLastMove | Optional | A value to set if the last played move should be marked. | `true`
 | <`Boolean`> showLegalSquares | Optional | A value to set if the legal squares should be marked. | `true`
