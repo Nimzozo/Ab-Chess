@@ -46,20 +46,20 @@ Parameters :
 | <`String`> containerId | Required | The id of the HTML element to contain the chess board. |
 | <`Object`> config | Optional | A configuration object containing the following optional properties. |
 | __*config* properties__
-| <`String`> circleColor | Optional | The CSS color value of circles drawn on the squares. | steelblue
-| <`Boolean`> clickable | Optional | A value to set if the pieces should be clickable or not. | true
-| <`Boolean`> draggable | Optional | A value to set if the pieces should be draggable or not. | true
-| <`Boolean`> flipped | Optional | A value to set if the board should be flipped or not. | false
-| <`Boolean`> hasBorder | Optional | A value to set if the board should have notation borders or not. | true
-| <`Function`> onPieceDragEnd | Optional | *Experimental*. A function to run when a piece ends a drag operation. | null
-| <`Function`> onPieceDragStart | Optional | *Experimental*. A function to run when a piece starts a drag operation. | null
-| <`Function`> onPromotionChose | Optional | *Experimental*. A function to run when a promotion choice has been done. | null
-| <`Function`> onSquareClick | Optional | *Experimental*. A function to run when a click is performed on a square. | null
-| <`Function`> onSquareDrop | Optional | *Experimental*. A function to run when a drop is performed on a square. | null
-| <`Boolean`> showKingInCheck | Optional | A value to set if the king in check should be marked. | true
-| <`Boolean`> showLastMove | Optional | A value to set if the last played move should be marked. | true
-| <`Boolean`> showLegalSquares | Optional | A value to set if the legal squares should be marked. | true
-| <`Number`> width | Optional | A number representing the width in pixels of the board. | 360
+| <`String`> circleColor | Optional | The CSS color value of circles drawn on the squares. | `"steelblue"`
+| <`Boolean`> clickable | Optional | A value to set if the pieces should be clickable or not. | `true`
+| <`Boolean`> draggable | Optional | A value to set if the pieces should be draggable or not. | `true`
+| <`Boolean`> flipped | Optional | A value to set if the board should be flipped or not. | `false`
+| <`Boolean`> hasBorder | Optional | A value to set if the board should have notation borders or not. | `true`
+| <`Function`> onPieceDragEnd | Optional | **Experimental**. A function to run when a piece ends a drag operation. | `null`
+| <`Function`> onPieceDragStart | Optional | **Experimental**. A function to run when a piece starts a drag operation. | `null`
+| <`Function`> onPromotionChose | Optional | **Experimental**. A function to run when a promotion choice has been done. | `null`
+| <`Function`> onSquareClick | Optional | **Experimental**. A function to run when a click is performed on a square. | `null`
+| <`Function`> onSquareDrop | Optional | **Experimental**. A function to run when a drop is performed on a square. | `null`
+| <`Boolean`> showKingInCheck | Optional | A value to set if the king in check should be marked. | `true`
+| <`Boolean`> showLastMove | Optional | A value to set if the last played move should be marked. | `true`
+| <`Boolean`> showLegalSquares | Optional | A value to set if the legal squares should be marked. | `true`
+| <`Number`> width | Optional | A number representing the width in pixels of the board. | `360`
 
 Sample :
 
@@ -83,19 +83,19 @@ abChess = new AbChess(containerId, abConfig);
 
 ### Methods details
 
-##### draw()
-
-Draw the chess board in the container element.
-
-Return type : `undefined`
+    - ##### draw()
+    
+    Draw the chess board in the container element.
+    
+    Return type : `undefined`
 
 ---
 
-##### flip()
-
-Change the orientation of the chess board.
-
-Return type : `undefined`
+    ##### - flip()
+    
+    Change the orientation of the chess board.
+    
+    Return type : `undefined`
 
 ---
 
