@@ -55,7 +55,7 @@ Parameters :
 | <`Function`> onPieceDragEnd | Optional | *Experimental*. A function to run when a piece ends a drag operation. | null
 | <`Function`> onPieceDragStart | Optional | *Experimental*. A function to run when a piece starts a drag operation. | null
 | <`Function`> onPromotionChose | Optional | *Experimental*. A function to run when a promotion choice has been done. | null
-| <`Function`> onSquareClick | Optional | Optional | *Experimental*. A function to run when a click is performed on a square. | null
+| <`Function`> onSquareClick | Optional | *Experimental*. A function to run when a click is performed on a square. | null
 | <`Function`> onSquareDrop | Optional | *Experimental*. A function to run when a drop is performed on a square. | null
 | <`Boolean`> showKingInCheck | Optional | A value to set if the king in check should be marked. | true
 | <`Boolean`> showLastMove | Optional | A value to set if the last played move should be marked. | true
