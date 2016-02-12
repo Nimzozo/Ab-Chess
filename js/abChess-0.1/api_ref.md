@@ -35,7 +35,7 @@ var abChess = new AbChess(containerId[, config]);
 
 ### Constructor details
 
-new AbChess(containerId[, config])
+#### new AbChess(containerId[, config])
 
 The AbChess class contructs an object to manage chess data as well as render a board.
 
@@ -82,6 +82,8 @@ abChess = new AbChess(containerId, abConfig);
 ```
 
 ### Methods details
+
+---
 
 #### draw()
 
