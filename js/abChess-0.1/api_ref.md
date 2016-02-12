@@ -16,7 +16,7 @@ var abChess = new AbChess(containerId[, config]);
 
 | Name | Description |
 | :--- | :--- | :--- |
-| <`String`>DEFAULT_FEN | The FEN string of the starting position in a classical chess game. |
+| <`String`> DEFAULT_FEN | The FEN string of the starting position in a classical chess game. |
 
 #### Methods
 
@@ -42,7 +42,7 @@ The AbChess class contructs an object to manage chess data as well as render a b
 
 Parameters :
 
-| Name | | Description | Default |
+| Name |     | Description | Default |
 | :--- | :--- | :--- | :--- |
 | <`String`> __containerId__ | Required | The id of the HTML element to contain the chess board. |
 | <`Object`> __config__ | Optional | A configuration object containing the following optional properties. |
@@ -64,7 +64,7 @@ Parameters :
 
 #### Methods details
 
-###### draw()
+##### draw()
 
 Draw the chess board in the container element.
 
@@ -72,7 +72,7 @@ Return type : `undefined`
 
 ---
 
-###### flip()
+##### flip()
 
 Change the orientation of the chess board.
 
@@ -80,7 +80,7 @@ Return type : `undefined`
 
 ---
 
-###### getActiveColor()
+##### getActiveColor()
 
 Return 'w' or 'b' to indicate if it is white or black to play a move.
 
@@ -88,7 +88,7 @@ Return type : `String`
 
 ---
 
-###### getFEN()
+##### getFEN()
 
 Get the FEN string notation of the current position.
 
@@ -96,7 +96,7 @@ Return type : `String`
 
 ---
 
-###### getLegalSquares(start)
+##### getLegalSquares(start)
 
 Return an array of string representations of the legal squares from the desired start square.
 
@@ -111,7 +111,7 @@ Parameters :
 
 ---
 
-###### isCheckmated()
+##### isCheckmated()
 
 Check if the king of the active color is checkmated.
 
@@ -119,7 +119,7 @@ Return type : `Boolean`
 
 ---
   
-###### isInCheck()
+##### isInCheck()
 
 Check if the king of the active color is currently in check.
 
@@ -127,7 +127,7 @@ Return type : `Boolean`
 
 ---
 
-###### isLegal(move)
+##### isLegal(move)
 
 Check if a move is legal.
 
@@ -142,7 +142,7 @@ Parameters :
 
 ---
 
-###### play(move)
+##### play(move)
 
 Play a move.
 
@@ -157,7 +157,7 @@ Parameters :
 
 ---
   
-###### setFEN(fen)
+##### setFEN(fen)
 
 Set the FEN string notation of the current position.
 
@@ -169,6 +169,8 @@ Parameters :
     <td>fen</td><td>Required</td><td>The FEN string to set.</td>
   </tr>
 </table>
+
+---
 
 #### Sample
 
