@@ -23,16 +23,16 @@ var abChess = new AbChess(containerId[, config]);
 
 | Name | Return type | Description |
 | :--- | :--- | :--- |
-| draw() | `void` | Draw the chess board in the container element. |
-| flip() | `void` | Change the orientation of the chess board. |
-| getActiveColor() | `String` | Return 'w' or 'b' to indicate if it is white or black to play a move. |
-| getFEN() | `String` | Get the FEN string notation of the current position. |
-| getLegalSquares(start) | `String[]` | Return an array of string representations of the legal squares from the desired start square. |
-| isCheckmated() | `Boolean` | Check if the king of the active color is checkmated. |
-| isInCheck() | `Boolean` | Check if the king of the active color is currently in check. |
-| isLegal(move) | `Boolean` | Check if a move is legal. The move string should be in the format [a-h][1-8]-[a-h][1-8]. |
-| play(move) | `void` | Play a move. The move string should be in the format [a-h][1-8]-[a-h][1-8]. |
-| setFEN(fen) | `void` | Set the FEN string notation of the current position. |
+| [draw()](#draw) | `void` | Draw the chess board in the container element. |
+| [flip()](#flip) | `void` | Change the orientation of the chess board. |
+| [getActiveColor()](#getActiveColor) | `String` | Return 'w' or 'b' to indicate if it is white or black to play a move. |
+| [getFEN()](#getFEN) | `String` | Get the FEN string notation of the current position. |
+| [getLegalSquares(start)](#getLegalSquares) | `String[]` | Return an array of string representations of the legal squares from the desired start square. |
+| [isCheckmated()](#isCheckmated) | `Boolean` | Check if the king of the active color is checkmated. |
+| [isInCheck()](#isInCheck) | `Boolean` | Check if the king of the active color is currently in check. |
+| [isLegal(move)](#isLegal) | `Boolean` | Check if a move is legal. The move string should be in the format [a-h][1-8]-[a-h][1-8]. |
+| [play(move)](#play) | `void` | Play a move. The move string should be in the format [a-h][1-8]-[a-h][1-8]. |
+| [setFEN(fen)](#setFEN) | `void` | Set the FEN string notation of the current position. |
 
 
 #### Constructor details
@@ -70,6 +70,15 @@ Parameters :
 Draw the chess board in the container element.
 
 Return type : void
+
+###### flip()
+
+Change the orientation of the chess board.
+
+Return type : void
+
+
+
 
 
 
