@@ -7,10 +7,11 @@ var abChess = new AbChess(containerId[, config]);
 ```
 
 #### Constructor
+#### Constructor
 
 | Name | Description |
 | :--- | :--- |
-| new AbChess(containerId[, config]) | The FEN string of the starting position in a classical chess game. |
+| [new AbChess(containerId[, config])](#constructor-details) | The FEN string of the starting position in a classical chess game. |
 
 #### Constants
 
