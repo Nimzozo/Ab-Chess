@@ -1,4 +1,4 @@
-#### Class AbChess
+# Class AbChess
 
 The AbChess class contructs an object to manage chess data as well as render a board.
 
@@ -6,19 +6,19 @@ The AbChess class contructs an object to manage chess data as well as render a b
 var abChess = new AbChess(containerId[, config]);
 ```
 
-#### Constructor
+## Constructor
 
 | Name | Description |
 | :--- | :--- |
 | [new AbChess(containerId\[, config\])](#constructor-details) | The FEN string of the starting position in a classical chess game. |
 
-#### Constants
+## Constants
 
 | Name | Description |
 | :--- | :--- | :--- |
 | <`String`> DEFAULT_FEN | The FEN string of the starting position in a classical chess game. |
 
-#### Methods
+## Methods
 
 | Name | Return type | Description |
 | :--- | :--- | :--- |
