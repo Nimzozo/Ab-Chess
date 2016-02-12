@@ -45,8 +45,8 @@ Parameters :
 | Name | | Description | Default |
 | :--- | :--- | :--- | :--- |
 | <`String`> __containerId__ | Required | The id of the HTML element to contain the chess board. |
-| <`Object`> __config__ | Optional | **. A configuration object containing the following optional properties. |
-| __config__ properties :
+| <`Object`> __config__ | Optional | A configuration object containing the following optional properties. |
+| __*config* properties__
 | <`String`> circleColor | Optional | The CSS color value of circles drawn on the squares. | steelblue
 | <`Boolean`> clickable | Optional | A value to set if the pieces should be clickable or not. | true
 | <`Boolean`> draggable | Optional | A value to set if the pieces should be draggable or not. | true
@@ -69,6 +69,7 @@ Parameters :
 Draw the chess board in the container element.
 
 Return type : `undefined`
+
 ---
 
 ###### flip()
@@ -99,9 +100,14 @@ Return type : `String`
 
 Return an array of string representations of the legal squares from the desired start square.
 
-The `start` string should be in the format `[a-h][1-8]`.
-
 Return type : `String[]`
+
+Parameters :
+<table>
+  <tr>
+    <td>start</td><td>Required</td><td>The starting square. It should be in the format [a-h][1-8].</td>
+  </tr>
+</table>
 
 ---
 
@@ -125,9 +131,14 @@ Return type : `Boolean`
 
 Check if a move is legal.
 
-The __`move`__ string should be in the format `[a-h][1-8]-[a-h][1-8]`.
-
 Return type : `Boolean`
+
+Parameters :
+<table>
+  <tr>
+    <td>move</td><td>Required</td><td>The move to play in format : [a-h][1-8]-[a-h][1-8].</td>
+  </tr>
+</table>
 
 ---
 
@@ -140,7 +151,7 @@ Return type : `undefined`
 Parameters :
 <table>
   <tr>
-    <td>move</td><td>Required</td><td>The move to play in format : `[a-h][1-8]-[a-h][1-8]`.</td>
+    <td>move</td><td>Required</td><td>The move to play in format : [a-h][1-8]-[a-h][1-8].</td>
   </tr>
 </table>
 
@@ -152,7 +163,12 @@ Set the FEN string notation of the current position.
 
 Return type : `undefined`
 
-
+Parameters :
+<table>
+  <tr>
+    <td>fen</td><td>Required</td><td>The FEN string to set.</td>
+  </tr>
+</table>
 
 #### Sample
 
