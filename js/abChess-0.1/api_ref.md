@@ -126,7 +126,7 @@ __Return type :__ `String[]`
 __Parameters :__
 <table>
   <tr>
-    <td>start</td><td>Required</td><td>The starting square. It should be in the format [a-h][1-8].</td>
+    <td><<code>String</code>> start</td><td>Required</td><td>The starting square. It should be in the format [a-h][1-8].</td>
   </tr>
 </table>
 
@@ -157,13 +157,13 @@ __Return type :__ `Boolean`
 __Parameters :__
 <table>
   <tr>
-    <td>move</td><td>Required</td><td>The move to play in format : [a-h][1-8]-[a-h][1-8].</td>
+    <td><<code>String</code>> move</td><td>Required</td><td>The move to play in format : [a-h][1-8]-[a-h][1-8].</td>
   </tr>
 </table>
 
 __Sample :__
 ```Javascript
-abChess.isLegal("g1-f3");
+var isLegal = abChess.isLegal("g1-f3");
 ```
 
 ---
@@ -177,7 +177,7 @@ __Return type :__ `undefined`
 __Parameters :__
 <table>
   <tr>
-    <td>move</td><td>Required</td><td>The move to play in format : [a-h][1-8]-[a-h][1-8].</td>
+    <td><<code>String</code>> move</td><td>Required</td><td>The move to play in format : [a-h][1-8]-[a-h][1-8].</td>
   </tr>
 </table>
 
@@ -197,7 +197,7 @@ __Return type :__ `undefined`
 __Parameters :__
 <table>
   <tr>
-    <td>fen</td><td>Required</td><td>The FEN string to set.</td>
+    <td><<code>String</code>> fen</td><td>Required</td><td>The FEN string to set.</td>
   </tr>
 </table>
 
