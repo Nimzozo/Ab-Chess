@@ -161,6 +161,11 @@ __Parameters :__
   </tr>
 </table>
 
+__Sample :__
+```Javascript
+abChess.isLegal("g1-f3");
+```
+
 ---
 
 #### play(move)
@@ -176,6 +181,11 @@ __Parameters :__
   </tr>
 </table>
 
+__Sample :__
+```Javascript
+abChess.play("g1-f3");
+```
+
 ---
   
 #### setFEN(fen)
@@ -190,3 +200,8 @@ __Parameters :__
     <td>fen</td><td>Required</td><td>The FEN string to set.</td>
   </tr>
 </table>
+
+__Sample :__
+```Javascript
+abChess.setFEN("8/8/8/8/8/8/8/8");
+```
