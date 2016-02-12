@@ -42,25 +42,25 @@ The AbChess class contructs an object to manage chess data as well as render a b
 
 Parameters :
 
-| Name | Description | Default | |
+| Name | | Description | Default |
 | :--- | :--- | :--- | --- |
-| <`String`> __containerId__ | The id of the HTML element to contain the chess board. | Required
-| <`Object`> __config__ | *Optional*. A configuration object containing the following optional properties. |
-| config properties :
-| <`String`> circleColor | The CSS color value of circles drawn on the squares. | steelblue
-| <`Boolean`> clickable | A value to set if the pieces should be clickable or not. | true
-| <`Boolean`> draggable | A value to set if the pieces should be draggable or not. | true
-| <`Boolean`> flipped | A value to set if the board should be flipped or not. | false
-| <`Boolean`> hasBorder | A value to set if the board should have notation borders or not. | true
-| <`Function`> onPieceDragEnd | *Experimental*. A function to run when a piece ends a drag operation. | null
-| <`Function`> onPieceDragStart | *Experimental*. A function to run when a piece starts a drag operation. | null
-| <`Function`> onPromotionChose | *Experimental*. A function to run when a promotion choice has been done. | null
-| <`Function`> onSquareClick | *Experimental*. A function to run when a click is performed on a square. | null
-| <`Function`> onSquareDrop | *Experimental*. A function to run when a drop is performed on a square. | null
-| <`Boolean`> showKingInCheck | A value to set if the king in check should be marked. | true
-| <`Boolean`> showLastMove | A value to set if the last played move should be marked. | true
-| <`Boolean`> showLegalSquares | A value to set if the legal squares should be marked. | true
-| <`Number`> width | A number representing the width in pixels of the board. | 360
+| <`String`> __containerId__ | Required | The id of the HTML element to contain the chess board. |
+| <`Object`> __config__ | Optional | **. A configuration object containing the following optional properties. |
+| __config__ properties :
+| <`String`> circleColor | Optional | The CSS color value of circles drawn on the squares. | steelblue
+| <`Boolean`> clickable | Optional | A value to set if the pieces should be clickable or not. | true
+| <`Boolean`> draggable | Optional | A value to set if the pieces should be draggable or not. | true
+| <`Boolean`> flipped | Optional | A value to set if the board should be flipped or not. | false
+| <`Boolean`> hasBorder | Optional | A value to set if the board should have notation borders or not. | true
+| <`Function`> onPieceDragEnd | Optional | *Experimental*. A function to run when a piece ends a drag operation. | null
+| <`Function`> onPieceDragStart | Optional | *Experimental*. A function to run when a piece starts a drag operation. | null
+| <`Function`> onPromotionChose | Optional | *Experimental*. A function to run when a promotion choice has been done. | null
+| <`Function`> onSquareClick | Optional | Optional | *Experimental*. A function to run when a click is performed on a square. | null
+| <`Function`> onSquareDrop | Optional | *Experimental*. A function to run when a drop is performed on a square. | null
+| <`Boolean`> showKingInCheck | Optional | A value to set if the king in check should be marked. | true
+| <`Boolean`> showLastMove | Optional | A value to set if the last played move should be marked. | true
+| <`Boolean`> showLegalSquares | Optional | A value to set if the legal squares should be marked. | true
+| <`Number`> width | Optional | A number representing the width in pixels of the board. | 360
 
 #### Methods details
 
