@@ -52,6 +52,10 @@ abChess = new AbChess(containerId, abConfig);
 __`DEFAULT_FEN`__
   
   The FEN string of the starting position in a classical chess game.
+  
+  ```Javascript
+  var defaultFEN = abChess.DEFAULT_FEN;     // rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
+  ```
 
 ###### Methods
 
