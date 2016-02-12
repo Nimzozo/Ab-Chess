@@ -7,7 +7,6 @@ var abChess = new AbChess(containerId[, config]);
 ```
 
 #### Constructor
-#### Constructor
 
 | Name | Description |
 | :--- | :--- |
