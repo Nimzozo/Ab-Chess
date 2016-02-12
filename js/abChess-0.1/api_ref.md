@@ -14,9 +14,9 @@ var abChess = new AbChess(containerId[, config]);
 
 #### Constants
 
-| Name | Type | Description |
+| Name | Description |
 | :--- | :--- | :--- |
-| DEFAULT_FEN | String | The FEN string of the starting position in a classical chess game. |
+| <`String`>DEFAULT_FEN | The FEN string of the starting position in a classical chess game. |
 
 #### Methods
 
@@ -43,7 +43,7 @@ The AbChess class contructs an object to manage chess data as well as render a b
 Parameters :
 
 | Name | | Description | Default |
-| :--- | :--- | :--- | --- |
+| :--- | :--- | :--- | :--- |
 | <`String`> __containerId__ | Required | The id of the HTML element to contain the chess board. |
 | <`Object`> __config__ | Optional | **. A configuration object containing the following optional properties. |
 | __config__ properties :
@@ -68,59 +68,82 @@ Parameters :
 
 Draw the chess board in the container element.
 
-Return type : undefined
+Return type : `undefined`
+---
 
 ###### flip()
 
 Change the orientation of the chess board.
 
-Return type : undefined
+Return type : `undefined`
+---
 
 ###### getActiveColor()
 
-  Return 'w' or 'b' to indicate if it is white or black to play a move.
-  ---
+Return 'w' or 'b' to indicate if it is white or black to play a move.
+
+Return type : `String`
+---
 
 ###### getFEN()
 
-  Get the FEN string notation of the current position.
-  ---
+Get the FEN string notation of the current position.
+
+Return type : `String`
+---
 
 ###### getLegalSquares(start)
 
-  Return an array of string representations of the legal squares from the desired start square.
+Return an array of string representations of the legal squares from the desired start square.
 
-  The `start` string should be in the format `[a-h][1-8]`.
-  ---
+The `start` string should be in the format `[a-h][1-8]`.
+
+Return type : `String[]`
+---
 
 ###### isCheckmated()
 
-  Check if the king of the active color is checkmated.
-  ---
+Check if the king of the active color is checkmated.
+
+Return type : `Boolean`
+---
   
 ###### isInCheck()
 
-  Check if the king of the active color is currently in check.
-  ---
+Check if the king of the active color is currently in check.
+
+Return type : `Boolean`
+---
 
 ###### isLegal(move)
 
-  Check if a move is legal.
+Check if a move is legal.
 
-  The __`move`__ string should be in the format `[a-h][1-8]-[a-h][1-8]`.
-  ---
+The __`move`__ string should be in the format `[a-h][1-8]-[a-h][1-8]`.
+
+Return type : `Boolean`
+---
 
 ###### play(move)
 
-  Play a move.
+Play a move.
 
-  The __`move`__ string should be in the format `[a-h][1-8]-[a-h][1-8]`.
-  ---
+Return type : `undefined`
+
+Parameters :
+<table>
+  <tr>
+    <td>move</td>Required<td></td><td>The move to play in format : `[a-h][1-8]-[a-h][1-8]`.</td>
+  </tr>
+</table>
+---
   
 ###### setFEN(fen)
 
-  Set the FEN string notation of the current position.
-  ---
+Set the FEN string notation of the current position.
+
+Return type : `undefined`
+---
 
 
 
