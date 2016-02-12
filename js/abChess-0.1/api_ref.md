@@ -1,48 +1,43 @@
-# AbChess-0.1.js
-
 #### Class AbChess
-
-The AbChess class contructs an object to manage chess data as well as render a board.
-
-###### Syntax
 
 ```Javascript
 var abChess = new AbChess(containerId[, config]);
 ```
+The AbChess class contructs an object to manage chess data as well as render a board.
+
 
 ###### Constants
 
 | Name | Type | Description |
 | :--- | :--- | :--- |
-| __`DEFAULT_FEN`__ | String | The FEN string of the starting position in a classical chess game. |
-
+| `DEFAULT_FEN` | String | The FEN string of the starting position in a classical chess game. |
 
 ###### Methods
 
 | Name | Return type | Description |
 | :--- | :--- | :--- |
-| __`draw()`__ | void | Draw the chess board in the container element. |
-| __`flip()`__ | void | Change the orientation of the chess board. |
-| __`getActiveColor()`__ | String | Return 'w' or 'b' to indicate if it is white or black to play a move. |
-| __`getFEN()`__ | String | Get the FEN string notation of the current position. |
-| __`getLegalSquares(start)`__ | Array | Return an array of string representations of the legal squares from the desired start square. |
-| __`isCheckmated()`__ | Boolean | Check if the king of the active color is checkmated. |
-| __`isInCheck()`__ | Boolean | Check if the king of the active color is currently in check. |
-| __`isLegal(move)`__ | Boolean | Check if a move is legal. The __`move`__ string should be in the format `[a-h][1-8]-[a-h][1-8]`. |
-| __`play(move)`__ | void | Play a move. The __`move`__ string should be in the format `[a-h][1-8]-[a-h][1-8]`. |
-| __`setFEN(fen)`__ | void | Set the FEN string notation of the current position. |
+| `draw()` | void | Draw the chess board in the container element. |
+| `flip()` | void | Change the orientation of the chess board. |
+| `getActiveColor()` | String | Return 'w' or 'b' to indicate if it is white or black to play a move. |
+| `getFEN()` | String | Get the FEN string notation of the current position. |
+| `getLegalSquares(start)` | Array | Return an array of string representations of the legal squares from the desired start square. |
+| `isCheckmated()` | Boolean | Check if the king of the active color is checkmated. |
+| `isInCheck()` | Boolean | Check if the king of the active color is currently in check. |
+| `isLegal(move)` | Boolean | Check if a move is legal. The `move` string should be in the format `[a-h][1-8]-[a-h][1-8]`. |
+| `play(move)` | void | Play a move. The `move` string should be in the format `[a-h][1-8]-[a-h][1-8]`. |
+| `setFEN(fen)` | void | Set the FEN string notation of the current position. |
 
 
 ###### Constructor details
 
-new AbChess(containerId, config)
+new AbChess(containerId[, config])
 
 The AbChess class contructs an object to manage chess data as well as render a board.
 
-| Parameters | Type | Description | Default
-| :--- | :--- | :--- | :---
-| __`containerId`__ | String | The id of the HTML element to contain the chess board. |
-| __`config`__ | Object | *Optional*. A configuration object containing the following optional properties. |
+| Parameters | Type | Description | Default |
+| :--- | :--- | :--- | :--- |
+| `containerId` | String | The id of the HTML element to contain the chess board. |
+| `config` | Object | *Optional*. A configuration object containing the following optional properties. |
 | &nbsp;&nbsp;`circleColor` | String | The CSS color value of circles drawn on the squares. | `'steelblue'`
 | &nbsp;&nbsp;`clickable` | Boolean | A value to set if the pieces should be clickable or not. | `true`
 | &nbsp;&nbsp;`draggable` | Boolean | A value to set if the pieces should be draggable or not. | `true`
