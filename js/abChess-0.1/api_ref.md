@@ -6,19 +6,19 @@ The AbChess class contructs an object to manage chess data as well as render a b
 var abChess = new AbChess(containerId[, config]);
 ```
 
-###### Constructor
+#### Constructor
 
 | Name | Description |
 | :--- | :--- |
 | new AbChess(containerId[, config]) | The FEN string of the starting position in a classical chess game. |
 
-###### Constants
+#### Constants
 
 | Name | Type | Description |
 | :--- | :--- | :--- |
 | DEFAULT_FEN | String | The FEN string of the starting position in a classical chess game. |
 
-###### Methods
+#### Methods
 
 | Name | Return type | Description |
 | :--- | :--- | :--- |
@@ -34,13 +34,13 @@ var abChess = new AbChess(containerId[, config]);
 | setFEN(fen) | `void` | Set the FEN string notation of the current position. |
 
 
-###### Constructor details
+#### Constructor details
 
 new AbChess(containerId[, config])
 
 The AbChess class contructs an object to manage chess data as well as render a board.
 
-__Parameters__
+Parameters :
 
 | Name | Description | Default |
 | :--- | :--- | :--- |
@@ -62,7 +62,19 @@ __Parameters__
 | <`Boolean`> showLegalSquares | A value to set if the legal squares should be marked. | true
 | <`Number`> width | A number representing the width in pixels of the board. | 360
 
-###### Sample
+#### Methods details
+
+###### draw()
+
+Draw the chess board in the container element.
+
+Return type : void
+
+
+
+#### Sample
+
+Create an AbChess object.
 
 ```Javascript
 var abChess;
