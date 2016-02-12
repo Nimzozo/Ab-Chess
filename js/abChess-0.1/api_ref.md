@@ -33,8 +33,7 @@ var abChess = new AbChess(containerId[, config]);
 | [play(move)](#play) | `undefined` | Play a move. The move string should be in the format [a-h][1-8]-[a-h][1-8]. |
 | [setFEN(fen)](#setfen) | `undefined` | Set the FEN string notation of the current position. |
 
-
-#### Constructor details
+### Constructor details
 
 new AbChess(containerId[, config])
 
@@ -62,7 +61,7 @@ Parameters :
 | <`Boolean`> showLegalSquares | Optional | A value to set if the legal squares should be marked. | true
 | <`Number`> width | Optional | A number representing the width in pixels of the board. | 360
 
-#### Methods details
+### Methods details
 
 ##### draw()
 
@@ -172,7 +171,7 @@ Parameters :
 
 ---
 
-#### Sample
+## Sample
 
 Create an AbChess object.
 
