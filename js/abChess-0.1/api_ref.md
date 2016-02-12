@@ -39,7 +39,7 @@ new AbChess(containerId[, config])
 
 The AbChess class contructs an object to manage chess data as well as render a board.
 
-Parameters :
+__Parameters :__
 
 | Name |     | Description | Default |
 | :--- | :--- | :--- | :--- |
@@ -61,7 +61,7 @@ Parameters :
 | <`Boolean`> showLegalSquares | Optional | A value to set if the legal squares should be marked. | `true`
 | <`Number`> width | Optional | A number representing the width in pixels of the board. | `360`
 
-Sample :
+__Sample :__
 
 Create an AbChess object.
 
@@ -83,45 +83,45 @@ abChess = new AbChess(containerId, abConfig);
 
 ### Methods details
 
-    - ##### draw()
-    
-    Draw the chess board in the container element.
-    
-    Return type : `undefined`
+#### draw()
+
+Draw the chess board in the container element.
+
+__Return type :__ `undefined`
 
 ---
 
-    ##### - flip()
-    
-    Change the orientation of the chess board.
-    
-    Return type : `undefined`
+#### flip()
+
+Change the orientation of the chess board.
+
+__Return type :__ `undefined`
 
 ---
 
-##### getActiveColor()
+#### getActiveColor()
 
 Return 'w' or 'b' to indicate if it is white or black to play a move.
 
-Return type : `String`
+__Return type :__ `String`
 
 ---
 
-##### getFEN()
+#### getFEN()
 
 Get the FEN string notation of the current position.
 
-Return type : `String`
+__Return type :__ `String`
 
 ---
 
-##### getLegalSquares(start)
+#### getLegalSquares(start)
 
 Return an array of string representations of the legal squares from the desired start square.
 
-Return type : `String[]`
+__Return type :__ `String[]`
 
-Parameters :
+__Parameters :__
 <table>
   <tr>
     <td>start</td><td>Required</td><td>The starting square. It should be in the format [a-h][1-8].</td>
@@ -130,29 +130,29 @@ Parameters :
 
 ---
 
-##### isCheckmated()
+#### isCheckmated()
 
 Check if the king of the active color is checkmated.
 
-Return type : `Boolean`
+__Return type :__ `Boolean`
 
 ---
   
-##### isInCheck()
+#### isInCheck()
 
 Check if the king of the active color is currently in check.
 
-Return type : `Boolean`
+__Return type :__ `Boolean`
 
 ---
 
-##### isLegal(move)
+#### isLegal(move)
 
 Check if a move is legal.
 
-Return type : `Boolean`
+__Return type :__ `Boolean`
 
-Parameters :
+__Parameters :__
 <table>
   <tr>
     <td>move</td><td>Required</td><td>The move to play in format : [a-h][1-8]-[a-h][1-8].</td>
@@ -161,13 +161,13 @@ Parameters :
 
 ---
 
-##### play(move)
+#### play(move)
 
 Play a move.
 
-Return type : `undefined`
+__Return type :__ `undefined`
 
-Parameters :
+__Parameters :__
 <table>
   <tr>
     <td>move</td><td>Required</td><td>The move to play in format : [a-h][1-8]-[a-h][1-8].</td>
@@ -176,13 +176,13 @@ Parameters :
 
 ---
   
-##### setFEN(fen)
+#### setFEN(fen)
 
 Set the FEN string notation of the current position.
 
-Return type : `undefined`
+__Return type :__ `undefined`
 
-Parameters :
+__Parameters :__
 <table>
   <tr>
     <td>fen</td><td>Required</td><td>The FEN string to set.</td>
