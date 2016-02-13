@@ -6,7 +6,6 @@
 // fix 'forced sync layout'
 // expand api
 // test many pgn
-// bug dragend
 
 /*global
     window
@@ -1089,24 +1088,26 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         };
 
         the_piece.dragEndHandler = function (e) {
-            var activeSquare = the_piece.square.name;
+            var activeSquare = '';
             if (!the_piece.square.board.isDragging) {
                 return;
             }
             the_piece.square.board.isDragging = false;
             if (typeof the_piece.square.board.onPieceDragEnd === 'function') {
+                activeSquare = the_piece.square.name;
                 the_piece.square.board.onPieceDragEnd(activeSquare, e);
             }
         };
 
         the_piece.dragStartHandler = function (e) {
-            var activeSquare = the_piece.square.name;
+            var activeSquare = '';
             if (!the_piece.square.board.draggablePieces) {
                 return;
             }
             e.dataTransfer.effectAllowed = 'move';
             the_piece.square.board.isDragging = true;
             if (typeof the_piece.square.board.onPieceDragStart === 'function') {
+                activeSquare = the_piece.square.name;
                 the_piece.square.board.onPieceDragStart(activeSquare);
             }
         };
@@ -1140,7 +1141,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 }
                 the_piece.square.div.removeChild(the_piece.div);
                 the_piece.square.piece = null;
-                the_piece.square = null;
             // });
         };
 
