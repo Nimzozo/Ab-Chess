@@ -86,7 +86,7 @@ abChess = new AbChess(containerId, abConfig);
 
 #### draw()
 
-Draw the chess board in the container element.
+Draw the chessboard in the HTML container element.
 
 __Return type :__ `undefined`
 
@@ -94,7 +94,7 @@ __Return type :__ `undefined`
 
 #### flip()
 
-Change the orientation of the chess board.
+Change the orientation of the chessboard.
 
 __Return type :__ `undefined`
 
@@ -102,51 +102,122 @@ __Return type :__ `undefined`
 
 #### getActiveColor(n)
 
-Return 'w' or 'b' to indicate if it is white or black to play a move.
+Return the active color in the nth position. It will return 'w' is it's white to move, or 'b' for black.
 
 __Return type :__ `String`
 
 __Parameters :__
 <table>
   <tr>
-    <td><<code>Number</code>> n</td><td>Required</td><td>The index of the position to check.</td>
+    <td><<code>Number</code>> n</td><td>Required</td><td>A positive integer. The index of the concerned position.</td>
   </tr>
 </table>
 
 ---
 
-#### getFEN()
+#### getFEN(n)
 
-Get the FEN string notation of the current position.
+Return the Forsyth-Edwards notation of the nth position.
 
 __Return type :__ `String`
 
----
-
-#### isCheckmated()
-
-Check if the king of the active color is checkmated.
-
-__Return type :__ `Boolean`
-
----
-  
-#### isInCheck()
-
-Check if the king of the active color is currently in check.
-
-__Return type :__ `Boolean`
+__Parameters :__
+<table>
+  <tr>
+    <td><<code>Number</code>> n</td><td>Required</td><td>A positive integer. The index of the concerned position.</td>
+  </tr>
+</table>
 
 ---
 
-#### isLegal(move)
+#### getGameInfo(info)
 
-Check if a move is legal.
+Return the desired information stored in the PGN of the game.
+
+__Return type :__ `String`
+
+__Parameters :__
+<table>
+  <tr>
+    <td><<code>String</code>> info</td><td>Required</td><td>The desired information.</td>
+  </tr>
+</table>
+
+---
+
+#### getMoves(pgnStyled)
+
+Return an array of the moves stored in the game.
+
+__Return type :__ `String[]`
+
+__Parameters :__
+<table>
+  <tr>
+    <td><<code>Boolean</code>> pgnStyled</td><td>Required</td><td>True to get moves styled like in a PGN.
+    False to get simple notation.</td>
+  </tr>
+</table>
+
+---
+
+#### getPGN(noTag)
+
+Return the portable game notation.
+
+__Return type :__ `String`
+
+__Parameters :__
+<table>
+  <tr>
+    <td><<code>Boolean</code>> noTag</td><td>Required</td><td>True to get a PGN with only the moves.
+    False to get a complete PGN.</td>
+  </tr>
+</table>
+
+---
+
+#### isCheckmated(n)
+
+Check if the king of the active color is checkmated in the nth position.
 
 __Return type :__ `Boolean`
 
 __Parameters :__
 <table>
+  <tr>
+    <td><<code>Number</code>> n</td><td>Required</td><td>A positive integer. The index of the concerned position.</td>
+  </tr>
+</table>
+
+---
+  
+#### isInCheck(n)
+
+Check if the king of the active color is in check in the nth position.
+
+__Return type :__ `Boolean`
+
+__Parameters :__
+<table>
+  <tr>
+    <td><<code>Number</code>> n</td><td>Required</td><td>A positive integer. The index of the concerned position.</td>
+  </tr>
+</table>
+
+---
+
+#### isLegal(n, move)
+
+Check if a move is legal in the nth position.
+
+__Return type :__ `Boolean`
+
+__Parameters :__
+<table>
+  <tr>
+    <td><<code>Number</code>> n</td><td>Required</td><td>A positive integer. The index of the concerned position.</td>
+  </tr>
   <tr>
     <td><<code>String</code>> move</td><td>Required</td><td>The move to play in format : [a-h][1-8]-[a-h][1-8].</td>
   </tr>
@@ -154,27 +225,47 @@ __Parameters :__
 
 __Sample :__
 ```Javascript
-var isLegal = abChess.isLegal("g1-f3");
+var isLegal = abChess.isLegal(0, "g1-f3");
 ```
 
 ---
 
-#### play(move)
+#### isStalemated(n)
 
-Play a move.
+Check if the king of the active color is stalemated in the nth position.
 
-__Return type :__ `undefined`
+__Return type :__ `Boolean`
+
+__Parameters :__
+<table>
+  <tr>
+    <td><<code>Number</code>> n</td><td>Required</td><td>A positive integer. The index of the concerned position.</td>
+  </tr>
+</table>
+
+---
+
+#### play(move, promotion)
+
+Play a move and return the resulting FEN string.
+
+__Return type :__ `String`
 
 __Parameters :__
 <table>
   <tr>
     <td><<code>String</code>> move</td><td>Required</td><td>The move to play in format : [a-h][1-8]-[a-h][1-8].</td>
+  </tr>
+  <tr>
+    <td><<code>String</code>> promotion</td><td>Optional</td><td>The piece to choose if the move is a promotion.
+    Accepted values are 'b', 'n', 'q', 'r'.</td>
   </tr>
 </table>
 
 __Sample :__
 ```Javascript
 abChess.play("g1-f3");
+abChess.play("a7-a8", "q");
 ```
 
 ---
