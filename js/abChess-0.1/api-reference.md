@@ -29,11 +29,11 @@ var abChess = new AbChess(containerId[, config]);
 | [getGameInfo(info)](#getgameinfoinfo) | `String` | Return the desired information of the game. |
 | [getMoves(pgnStyled)](#getmovespgnstyled) | `String[]` | Return an array containing the moves of the game. |
 | [getPGN(noTag)](#getpgnnotag) | `String` | Return the portable game notation. |
-| [isCheckmated(n)](#ischeckmatedn) | `Boolean` | Check if the king of the active color is checkmated in the nth position. |
+| [isCheckmate(n)](#ischeckmaten) | `Boolean` | Check if the king of the active color is checkmated in the nth position. |
 | [isInCheck(n)](#isincheckn) | `Boolean` | Check if the king of the active color is in check in the nth position. |
-| [isLegal(n, move)](#islegalnmove) | `Boolean` | Check if a move is legal in the nth position. |
+| [isLegal(n, move)](#islegaln-move) | `Boolean` | Check if a move is legal in the nth position. |
 | [isStalemate(n)](#isstalematen) | `Boolean` | Check if the king of the active color is stalemated in the nth position. |
-| [play(move, promotion)](#playmovepromotion) | `String` | Play a move and return the resulting FEN string. |
+| [play(move, promotion)](#playmove-promotion) | `String` | Play a move and return the resulting FEN string. |
 | [setFEN(fen)](#setfenfen) | `undefined` | Load the FEN position on the chessboard. |
 | [setPGN(pgn)](#setpgnpgn) | `undefined` | Load the PGN notation of the game. |
 
@@ -177,7 +177,7 @@ __Parameters :__
 
 ---
 
-#### isCheckmated(n)
+#### isCheckmate(n)
 
 Check if the king of the active color is checkmated in the nth position.
 
@@ -230,7 +230,7 @@ var isLegal = abChess.isLegal(0, "g1-f3");
 
 ---
 
-#### isStalemated(n)
+#### isStalemate(n)
 
 Check if the king of the active color is stalemated in the nth position.
 
