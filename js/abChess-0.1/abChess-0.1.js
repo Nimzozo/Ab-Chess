@@ -6,6 +6,7 @@
 // fix 'forced sync layout'
 // expand api
 // test many pgn
+// bug dragend
 
 /*global
     window
@@ -57,6 +58,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         draggable: true,
         flipped: false,
         hasBorder: true,
+        onMovePlayed: null,
         showKingInCheck: true,
         showLastMove: true,
         showLegalMoves: true,
@@ -83,13 +85,13 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
     var regex_pgn_move = /(?:[1-9][0-9]*\.{1,3}\s*)?(?:O-O(?:-O)?|(?:[BNQR][a-h]?[1-8]?|K)x?[a-h][1-8]|(?:[a-h]x)?[a-h][1-8](?:\=[BNQR])?)(?:\+|#)?/gm;
     var regex_promotion = /^[a-h]2-[a-h]1|[a-h]7-[a-h]8$/;
     var regex_tag = /^\[(.+)\s"(.+)"\]$/;
-    var requestAF = window.requestAnimationFrame ||
-        window.webkitRequestAnimationFrame ||
-        window.mozRequestAnimationFrame ||
-        window.oRequestAnimationFrame ||
-        function (callback) {
-            return window.setTimeout(callback, 1000 / 60);
-        };
+    // var requestAF = window.requestAnimationFrame ||
+    //     window.webkitRequestAnimationFrame ||
+    //     window.mozRequestAnimationFrame ||
+    //     window.oRequestAnimationFrame ||
+    //     function (callback) {
+    //         return window.setTimeout(callback, 1000 / 60);
+    //     };
 
     // -------------------------------------------------------------------------
 
@@ -2018,6 +2020,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             arrival = move.substr(3, 2);
             abBoard.highlightSquares([start, arrival]);
         }
+        if (typeof abConfig.onMovePlayed === 'function') {
+            abConfig.onMovePlayed();
+        }
     }
 
     function finishMove(arrival, selectArrival) {
@@ -2212,11 +2217,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return Chessgame.isValidPGN(pgn);
         },
 
-        play: function (move) {
+        play: function (move, promotion) {
 
             // Play the desired move and return the resulting FEN string.
 
-            return playMove(move);
+            return playMove(move, promotion);
         },
 
         setFEN: function (fen) {
@@ -2231,6 +2236,12 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Set the PGN in the game.
 
             abGame.setPGN(pgn);
+        },
+
+        onMovePlayed: function (callback) {
+            if (typeof callback === 'function') {
+                abConfig.onMovePlayed = callback;
+            }
         }
     };
 };
