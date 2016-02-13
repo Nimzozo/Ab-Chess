@@ -15,23 +15,27 @@ var abChess = new AbChess(containerId[, config]);
 ## Constants
 
 | Name | Description |
-| :--- | :--- | :--- |
+| :--- | :--- |
 | <`String`> DEFAULT_FEN | The FEN string of the starting position in a classical chess game. |
 
 ## Methods
 
 | Name | Return type | Description |
 | :--- | :--- | :--- |
-| [draw()](#draw) | `undefined` | Draw the chess board in the container element. |
-| [flip()](#flip) | `undefined` | Change the orientation of the chess board. |
-| [getActiveColor()](#getactivecolor) | `String` | Return 'w' or 'b' to indicate if it is white or black to play a move. |
-| [getFEN()](#getfen) | `String` | Get the FEN string notation of the current position. |
-| [getLegalSquares(start)](#getlegalsquares) | `String[]` | Return an array of string representations of the legal squares from the desired start square. |
-| [isCheckmated()](#ischeckmated) | `Boolean` | Check if the king of the active color is checkmated. |
-| [isInCheck()](#isincheck) | `Boolean` | Check if the king of the active color is currently in check. |
-| [isLegal(move)](#islegal) | `Boolean` | Check if a move is legal. The move string should be in the format [a-h][1-8]-[a-h][1-8]. |
-| [play(move)](#play) | `undefined` | Play a move. The move string should be in the format [a-h][1-8]-[a-h][1-8]. |
-| [setFEN(fen)](#setfen) | `undefined` | Set the FEN string notation of the current position. |
+| [draw()](#draw) | `undefined` | Draw the chessboard in the HTML container element. |
+| [flip()](#flip) | `undefined` | Change the orientation of the chessboard. |
+| [getActiveColor(n)](#getactivecolor) | `String` | Return the active color of the nth position. |
+| [getFEN(n)](#getfen) | `String` | Return the Forsyth-Edwards notation of the nth position. |
+| [getGameInfo(info)](#getgameinfo) | `String` | Return the desired information of the game. |
+| [getMoves(pgnStyled)](#getmoves) | `String[]` | Return an array containing the moves of the game. |
+| [getPGN(noTag)](#getpgn) | `String` | Return the portable game notation. |
+| [isCheckmated(n)](#ischeckmated) | `Boolean` | Check if the king of the active color is checkmated in the nth position. |
+| [isInCheck(n)](#isincheck) | `Boolean` | Check if the king of the active color is in check in the nth position. |
+| [isLegal(n, move)](#islegal) | `Boolean` | Check if a move is legal in the nth position. |
+| [isStalemate(n)](#isstalemate) | `Boolean` | Check if the king of the active color is stalemated in the nth position. |
+| [play(move, promotion)](#play) | `String` | Play a move and return the resulting FEN string. |
+| [setFEN(fen)](#setfen) | `undefined` | Load the FEN position on the chessboard. |
+| [setPGN(pgn)](#setpgn) | `undefined` | Load the PGN notation of the game. |
 
 ### Constructor details
 
@@ -96,11 +100,18 @@ __Return type :__ `undefined`
 
 ---
 
-#### getActiveColor()
+#### getActiveColor(n)
 
 Return 'w' or 'b' to indicate if it is white or black to play a move.
 
 __Return type :__ `String`
+
+__Parameters :__
+<table>
+  <tr>
+    <td><<code>Number</code>> n</td><td>Required</td><td>The index of the position to check.</td>
+  </tr>
+</table>
 
 ---
 
@@ -109,21 +120,6 @@ __Return type :__ `String`
 Get the FEN string notation of the current position.
 
 __Return type :__ `String`
-
----
-
-#### getLegalSquares(start)
-
-Return an array of string representations of the legal squares from the desired start square.
-
-__Return type :__ `String[]`
-
-__Parameters :__
-<table>
-  <tr>
-    <td><<code>String</code>> start</td><td>Required</td><td>The starting square. It should be in the format [a-h][1-8].</td>
-  </tr>
-</table>
 
 ---
 
