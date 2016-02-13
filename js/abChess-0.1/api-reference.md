@@ -24,18 +24,18 @@ var abChess = new AbChess(containerId[, config]);
 | :--- | :--- | :--- |
 | [draw()](#draw) | `undefined` | Draw the chessboard in the HTML container element. |
 | [flip()](#flip) | `undefined` | Change the orientation of the chessboard. |
-| [getActiveColor(n)](#getactivecolor) | `String` | Return the active color of the nth position. |
-| [getFEN(n)](#getfen) | `String` | Return the Forsyth-Edwards notation of the nth position. |
-| [getGameInfo(info)](#getgameinfo) | `String` | Return the desired information of the game. |
-| [getMoves(pgnStyled)](#getmoves) | `String[]` | Return an array containing the moves of the game. |
-| [getPGN(noTag)](#getpgn) | `String` | Return the portable game notation. |
-| [isCheckmated(n)](#ischeckmated) | `Boolean` | Check if the king of the active color is checkmated in the nth position. |
-| [isInCheck(n)](#isincheck) | `Boolean` | Check if the king of the active color is in check in the nth position. |
-| [isLegal(n, move)](#islegal) | `Boolean` | Check if a move is legal in the nth position. |
-| [isStalemate(n)](#isstalemate) | `Boolean` | Check if the king of the active color is stalemated in the nth position. |
-| [play(move, promotion)](#play) | `String` | Play a move and return the resulting FEN string. |
-| [setFEN(fen)](#setfen) | `undefined` | Load the FEN position on the chessboard. |
-| [setPGN(pgn)](#setpgn) | `undefined` | Load the PGN notation of the game. |
+| [getActiveColor(n)](#getactivecolorn) | `String` | Return the active color of the nth position. |
+| [getFEN(n)](#getfenn) | `String` | Return the Forsyth-Edwards notation of the nth position. |
+| [getGameInfo(info)](#getgameinfoinfo) | `String` | Return the desired information of the game. |
+| [getMoves(pgnStyled)](#getmovespgnstyled) | `String[]` | Return an array containing the moves of the game. |
+| [getPGN(noTag)](#getpgnnotag) | `String` | Return the portable game notation. |
+| [isCheckmated(n)](#ischeckmatedn) | `Boolean` | Check if the king of the active color is checkmated in the nth position. |
+| [isInCheck(n)](#isincheckn) | `Boolean` | Check if the king of the active color is in check in the nth position. |
+| [isLegal(n, move)](#islegalnmove) | `Boolean` | Check if a move is legal in the nth position. |
+| [isStalemate(n)](#isstalematen) | `Boolean` | Check if the king of the active color is stalemated in the nth position. |
+| [play(move, promotion)](#playmovepromotion) | `String` | Play a move and return the resulting FEN string. |
+| [setFEN(fen)](#setfenfen) | `undefined` | Load the FEN position on the chessboard. |
+| [setPGN(pgn)](#setpgnpgn) | `undefined` | Load the PGN notation of the game. |
 
 ### Constructor details
 
@@ -272,7 +272,7 @@ abChess.play("a7-a8", "q");
   
 #### setFEN(fen)
 
-Set the FEN string notation of the current position.
+Load the FEN position on the chessboard. 
 
 __Return type :__ `undefined`
 
@@ -287,3 +287,20 @@ __Sample :__
 ```Javascript
 abChess.setFEN("8/8/8/8/8/8/8/8");
 ```
+
+---
+
+#### setPGN(pgn)
+
+Load the PGN notation of the game. 
+
+__Return type :__ `undefined`
+
+__Parameters :__
+<table>
+  <tr>
+    <td><<code>String</code>> pgn</td><td>Required</td><td>The PGN string to set.</td>
+  </tr>
+</table>
+
+---
