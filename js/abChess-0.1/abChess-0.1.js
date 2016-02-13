@@ -2217,6 +2217,15 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return Chessgame.isValidPGN(pgn);
         },
 
+        onMovePlayed: function (callback) {
+
+            // Event fired when a move has been played.
+
+            if (typeof callback === 'function') {
+                abConfig.onMovePlayed = callback;
+            }
+        },
+
         play: function (move, promotion) {
 
             // Play the desired move and return the resulting FEN string.
@@ -2238,10 +2247,5 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             abGame.setPGN(pgn);
         },
 
-        onMovePlayed: function (callback) {
-            if (typeof callback === 'function') {
-                abConfig.onMovePlayed = callback;
-            }
-        }
     };
 };
