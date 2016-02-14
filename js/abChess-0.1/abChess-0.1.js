@@ -1,11 +1,14 @@
 // AbChess-0.1.js
-// 2016-02-13
+// 2016-02-14
 // Copyright (c) 2016 Nimzozo
 
 // TODO :
 // fix 'forced sync layout'
 // expand api
 // test many pgn
+// variations / comments
+// pieces style
+// unicode chess symbols
 
 /*global
     window
@@ -1829,13 +1832,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 promotion = promotion || '';
                 nextPosition = lastPosition.getNewPosition(move, promotion);
                 the_game.fenStrings.push(nextPosition.fenString);
-                if (the_game.isInCheck(n)) {
+                if (the_game.isInCheck(n + 1)) {
                     nextLegalMoves = nextPosition.getLegalMoves();
-                    if (nextLegalMoves.length < 1) {
-                        stringToAdd = '#';
-                    } else {
-                        stringToAdd = '+';
-                    }
+                    stringToAdd = (nextLegalMoves.length < 1)
+                        ? stringToAdd = '#'
+                        : stringToAdd = '+';
                 }
                 pgnMove = lastPosition.getPGN(move, promotion, false, stringToAdd);
                 the_game.pgnMoves.push(pgnMove);
@@ -2231,6 +2232,14 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Play the desired move and return the resulting FEN string.
 
             return playMove(move, promotion);
+        },
+
+        reset: function () {
+
+            // Reset the game and the board.
+
+            abBoard.loadFEN();
+            abGame = new Chessgame();
         },
 
         setFEN: function (fen) {
