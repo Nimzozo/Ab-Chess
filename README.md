@@ -39,4 +39,4 @@ See the provisional [AbChess API documentation](https://github.com/Nimzozo/ab-ch
 
 ## Miscellaneous
 
-Highly inspired by @douglascrockford's stuff.
+Highly inspired by [@douglascrockford](https://github.com/douglascrockford)'s stuff. ([JSLint](http://www.jslint.com) is awesome !)
