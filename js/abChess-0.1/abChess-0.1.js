@@ -1875,8 +1875,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 if (the_game.isInCheck(n + 1)) {
                     nextLegalMoves = nextPosition.getLegalMoves();
                     stringToAdd = (nextLegalMoves.length < 1)
-                        ? stringToAdd = '#'
-                        : stringToAdd = '+';
+                        ? '#'
+                        : '+';
                 }
                 pgnMove = lastPosition.getPGN(move, promotion, false, stringToAdd);
                 the_game.pgnMoves.push(pgnMove);
@@ -2301,7 +2301,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Set the PGN in the game.
 
             abGame.setPGN(pgn);
-        },
+        }
 
     };
 };
