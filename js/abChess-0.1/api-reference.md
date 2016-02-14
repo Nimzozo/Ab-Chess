@@ -270,7 +270,7 @@ abChess.play("a7-a8", "q");
 
 ---
   
-#### setFEN(fen)
+#### setFEN([fen])
 
 Load the FEN position on the chessboard. 
 
@@ -279,7 +279,7 @@ __Return type :__ `undefined`
 __Parameters :__
 <table>
   <tr>
-    <td><<code>String</code>> fen</td><td>Required</td><td>The FEN string to set.</td>
+    <td><<code>String</code>> fen</td><td>Optional</td><td>The FEN string to set. The default value is the starting position.</td>
   </tr>
 </table>
 
