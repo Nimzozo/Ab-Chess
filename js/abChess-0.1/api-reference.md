@@ -55,7 +55,10 @@ __Parameters :__
 | <`Boolean`> draggable | Optional | A value to set if the pieces should be draggable or not. | `true`
 | <`Boolean`> flipped | Optional | A value to set if the board should be flipped or not. | `false`
 | <`Boolean`> hasBorder | Optional | A value to set if the board should have notation borders or not. | `true`
+| <`String`> imagesExtension | Optional | The file extension of the chess pieces images. | `".png"`
+| <`String`> imagesPath | Optional | The relative filepath of the chess pieces images. | `"../images/wikipedia/"`
 | <`Boolean`> showKingInCheck | Optional | A value to set if the king in check should be marked. | `true`
+| <`Function`> onMovePlayed | Optional | A function to call after a move has been played. | `null`
 | <`Boolean`> showLastMove | Optional | A value to set if the last played move should be marked. | `true`
 | <`Boolean`> showLegalSquares | Optional | A value to set if the legal squares should be marked. | `true`
 | <`Number`> width | Optional | A number representing the width in pixels of the board. | `360`
