@@ -27,7 +27,8 @@ var abChess = new AbChess(containerId[, config]);
 | [getActiveColor(n)](#getactivecolorn) | `String` | Return the active color of the nth position. |
 | [getFEN(n)](#getfenn) | `String` | Return the Forsyth-Edwards notation of the nth position. |
 | [getGameInfo(info)](#getgameinfoinfo) | `String` | Return the desired information of the game. |
-| [getMoves(pgnStyled)](#getmovespgnstyled) | `String[]` | Return an array containing the moves of the game. |
+| [getGameMoves(pgnStyled)](#getgamemovespgnstyled) | `String[]` | Return an array containing the moves of the game. |
+| [getLegalMoves(n)](#getlegalmovesn) | `String[]` | Return an array containing the legal moves in a position. |
 | [getPGN(noTag)](#getpgnnotag) | `String` | Return the portable game notation. |
 | [isCheckmate(n)](#ischeckmaten) | `Boolean` | Check if the king of the active color is checkmated in the nth position. |
 | [isInCheck(n)](#isincheckn) | `Boolean` | Check if the king of the active color is in check in the nth position. |
@@ -148,7 +149,7 @@ __Parameters :__
 
 ---
 
-#### getMoves(pgnStyled)
+#### getGameMoves(pgnStyled)
 
 Return an array of the moves stored in the game.
 
@@ -159,6 +160,21 @@ __Parameters :__
   <tr>
     <td><<code>Boolean</code>> pgnStyled</td><td>Required</td><td>True to get moves styled like in a PGN.
     False to get simple notation.</td>
+  </tr>
+</table>
+
+---
+
+#### getLegalMoves(n)
+
+Return an array of the legal moves for the nth position.
+
+__Return type :__ `String[]`
+
+__Parameters :__
+<table>
+  <tr>
+    <td><<code>Number</code>> n</td><td>Required</td><td>An integer number. The index of the desired position.</td>
   </tr>
 </table>
 
