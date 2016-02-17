@@ -1,13 +1,11 @@
 // AbChess-0.1.js
-// 2016-02-15
+// 2016-02-17
 // Copyright (c) 2016 Nimzozo
 
 // TODO :
-// fix 'forced sync layout'
-// PGN validation, test many pgn
-// variations / comments
-// use unicode chess symbols ?
-// last move FIX
+// - find the best way to fix 'forced sync layout'
+// - squares highlighting to fix
+// - (import / export variations / comments) => v 0.2
 
 /*global
     window
@@ -23,6 +21,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
     var abBoard = {};
     var abGame = {};
     var columns = 'abcdefgh';
+
+    // Chess values.
+
     var chess_piece = {
         black: 'b',
         black_bishop: 'b',
@@ -39,6 +40,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         white_queen: 'Q',
         white_rook: 'R'
     };
+
+    // Css class and ids.
+
     var css = {
         black_square: 'blackSquare',
         bottom_border: 'bottomBorder',
@@ -53,6 +57,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         squares_div: 'squaresDiv',
         white_square: 'whiteSquare'
     };
+
+    // Config default values.
+
     var default_config = {
         circleColor: 'steelblue',
         clickable: true,
@@ -68,24 +75,31 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         width: 360
     };
     var default_fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+
+    // Error messages.
+
     var error = {
         illegal_move: 'Illegal move.',
         invalid_fen: 'Invalid FEN string.',
         invalid_parameter: 'Invalid parameter.',
         invalid_pgn: 'Invalid PGN.'
     };
-    var regex_braces = /\{[^{}]*\}/gm;
-    var regex_brackets = /\[[^\[\]]*\]/gm;
+
+    // Regular expressions.
+
     var regex_castle = /^e(?:1-c1|1-g1|8-c8|8-g8)$/;
+    var regex_comment = /\{[^]+?\}/gm;
     var regex_en_passant = /^[a-h]4-[a-h]3|[a-h]5-[a-h]6$/;
     var regex_fen = /^(?:[bBkKnNpPqQrR1-8]{1,8}\/){7}[bBkKnNpPqQrR1-8]{1,8}\s(w|b)\s(KQ?k?q?|K?Qk?q?|K?Q?kq?|K?Q?k?q|-)\s([a-h][36]|-)\s(0|[1-9]\d*)\s([1-9]\d*)$/;
     var regex_fen_row = /^[bknpqr1]{8}|[bknpqr12]{7}|[bknpqr1-3]{6}|[bknpqr1-4]{5}|[bknpqr1-5]{4}|[bknpqr1-6]{3}|[bknpqr]7|7[bknpqr]|8$/i;
     var regex_move = /^[a-h][1-8]-[a-h][1-8]$/;
-    var regex_parens = /\([^()]*\)/gm;
-    // var regex_pgn__ = /^(?:\[.+\s ".+"\]\n){7,}\n$/m;
     var regex_pgn_move = /(?:[1-9][0-9]*\.{1,3}\s*)?(?:O-O(?:-O)?|(?:[BNQR][a-h]?[1-8]?|K)x?[a-h][1-8]|(?:[a-h]x)?[a-h][1-8](?:\=[BNQR])?)(?:\+|#)?/gm;
     var regex_promotion = /^[a-h]2-[a-h]1|[a-h]7-[a-h]8$/;
-    var regex_tag = /^\[(.+)\s"(.+)"\]$/;
+    var regex_tagPair = /\[[A-Z][^]+?\s"[^]+?"\]/gm;
+    var regex_variation = /\([^()]*?\)/gm;
+
+    // RAF
+
     // var requestAF = window.requestAnimationFrame ||
     //     window.webkitRequestAnimationFrame ||
     //     window.mozRequestAnimationFrame ||
@@ -386,16 +400,16 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             newEnPassant = the_position.getNewEnPassant(move);
             newHalfmove = the_position.getNewHalfmoveClock(move);
             newFullmove = the_position.getNewFullmoveNumber();
-            newFEN = positionString + ' '
-            + newActiveColor + ' '
-            + newAllowedCastles + ' '
-            + newEnPassant + ' '
-            + newHalfmove + ' '
-            + newFullmove;
+            newFEN = positionString +
+            ' ' + newActiveColor +
+            ' ' + newAllowedCastles +
+            ' ' + newEnPassant +
+            ' ' + newHalfmove +
+            ' ' + newFullmove;
             return new Position(newFEN);
         };
 
-        the_position.getPGN = function (move, promotion, withNumber, stringToAdd) {
+        the_position.getPGNMove = function (move, promotion, withNumber, stringToAdd) {
 
             // Return the PGN notation for the desired move.
 
@@ -955,6 +969,31 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return targets;
         };
 
+        the_position.hasLegalMoves = function () {
+
+            // Return true if the position is playable.
+
+            var piecesPlaces = [];
+            piecesPlaces = the_position.getPiecesPlaces(activeColor);
+            return piecesPlaces.some(function (square) {
+                var legalSquares = [];
+                legalSquares = the_position.getLegalSquares(square);
+                return (legalSquares.length > 0);
+            });
+        };
+
+        the_position.isCheckmate = function () {
+
+            // Return true if the active king is checkmated.
+
+            var isCheck = false;
+            isCheck = the_position.isInCheck(activeColor);
+            if (!isCheck) {
+                return false;
+            }
+            return !the_position.hasLegalMoves();
+        };
+
         the_position.isControlledBy = function (square, color) {
 
             // Check if the desired square is controlled
@@ -999,8 +1038,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var colNumber = 1;
             var rowNumber = 8 - index;
             row.split('').forEach(function (char) {
+                var name = '';
                 if (regexPiece.test(char)) {
-                    var name = columns[colNumber - 1] + rowNumber;
+                    name = columns[colNumber - 1] + rowNumber;
                     object[name] = char;
                     colNumber += 1;
                 } else if (regexNumber.test(char)) {
@@ -1410,7 +1450,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
         the_board.draw = function () {
 
-            // Draw the chessboard.
+            // Draw the empty chessboard.
 
             var borderFragment;
             var bottomBorder;
@@ -1736,40 +1776,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             fenStrings: [default_fen],
             moves: [],
             pgnMoves: [],
-            tags: tags,
-            variations: []
-        };
-
-        the_game.addComment = function (level, moveIndex, text) {
-
-            // Add a comment in the game.
-            // A comment is an object with properties :
-            // - level
-            // - move index
-            // - text content
-
-            var comment = {
-                level: level,
-                moveIndex: moveIndex,
-                text: text
-            };
-            the_game.comments.push(comment);
-        };
-
-        the_game.addVariation = function (level, moveIndex, subMoves) {
-
-            // Add a variation in the game.
-            // A variation is an object with properties :
-            // - level
-            // - move index
-            // - array of moves
-
-            var variation = {
-                level: level,
-                moveIndex: moveIndex,
-                moves: subMoves
-            };
-            the_game.variations.push(variation);
+            tags: tags
         };
 
         the_game.getNthPosition = function (n) {
@@ -1791,15 +1798,15 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Return the PGN string.
 
             var charRowCount = 0;
-            var lf = '\n';
+            var lineFeed = '\n';
             var pgn = '';
             var result = '';
             if (!noTag) {
                 Object.keys(tags).forEach(function (tag) {
                     var value = tags[tag];
-                    pgn += '[' + tag + ' "' + value + '"]' + lf;
+                    pgn += '[' + tag + ' "' + value + '"]' + lineFeed;
                 });
-                pgn += lf;
+                pgn += lineFeed;
             }
             the_game.pgnMoves.forEach(function (move, index) {
                 var limit = 80;
@@ -1809,13 +1816,13 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 }
                 charRowCount += moveNumber.length + 1;
                 if (charRowCount > limit) {
-                    pgn += lf;
+                    pgn += lineFeed;
                     charRowCount = 0;
                 }
                 pgn += moveNumber + ' ';
                 charRowCount += move.length + 1;
                 if (charRowCount > limit) {
-                    pgn += lf;
+                    pgn += lineFeed;
                     charRowCount = 0;
                 }
                 pgn += move + ' ';
@@ -1859,7 +1866,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             var lastPosition = {};
             var n = 0;
-            var nextLegalMoves = [];
             var nextPosition = {};
             var pgnMove = '';
             var stringToAdd = '';
@@ -1873,12 +1879,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 nextPosition = lastPosition.getNewPosition(move, promotion);
                 the_game.fenStrings.push(nextPosition.fenString);
                 if (the_game.isInCheck(n + 1)) {
-                    nextLegalMoves = nextPosition.getLegalMoves();
-                    stringToAdd = (nextLegalMoves.length < 1)
-                        ? '#'
-                        : '+';
+                    stringToAdd = (nextPosition.hasLegalMoves())
+                        ? '+'
+                        : '#';
                 }
-                pgnMove = lastPosition.getPGN(move, promotion, false, stringToAdd);
+                pgnMove = lastPosition.getPGNMove(move, promotion, false, stringToAdd);
                 the_game.pgnMoves.push(pgnMove);
                 the_game.moves.push(move);
                 return nextPosition.fenString;
@@ -1889,11 +1894,16 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
         the_game.setPGN = function (pgn) {
 
-            // Load a PGN game.
+            // Load a PGN string. To proceed :
+            // - Validate.
+            // - Reset the game object.
+            // - Set game informations.
+            // - Delete comments.
+            // - Variations.
+            // - Store the pgn moves, simple moves, then fen strings.
 
             var importedMoves = [];
             var importedTags = [];
-
             if (!Chessgame.isValidPGN(pgn)) {
                 throw new SyntaxError(error.invalid_pgn);
             }
@@ -1904,21 +1914,23 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             the_game.moves = [];
             the_game.pgnMoves = [];
             the_game.tags = tags;
-            importedTags = pgn.match(regex_brackets);
-            importedTags.forEach(function (bracket) {
-                var matches = regex_tag.exec(bracket);
+            importedTags = pgn.match(regex_tagPair);
+            importedTags.forEach(function (tagPair) {
+                var matches = [];
+                var regex = /\[([^]+)\s"([^]*)"/gm;
+                matches = regex.exec(tagPair);
                 the_game.setTag(matches[1], matches[2]);
             });
-            while (regex_braces.test(pgn)) {
-                pgn = pgn.replace(regex_braces, '');
+            while (regex_comment.test(pgn)) {
+                pgn = pgn.replace(regex_comment, '');
             }
-            while (regex_parens.test(pgn)) {
-                pgn = pgn.replace(regex_parens, '');
+            while (regex_variation.test(pgn)) {
+                pgn = pgn.replace(regex_variation, '');
             }
             pgn = pgn.replace(/\s{2,}/gm, ' ');
             importedMoves = pgn.match(regex_pgn_move);
             importedMoves.forEach(function (move) {
-                move = move.replace(/[1-9][0-9]*\.(\.\.)?\s?/, '');
+                move = move.replace(/[1-9][0-9]*\.(?:\.\.)?\s?/, '');
                 the_game.pgnMoves.push(move);
             });
             the_game.pgnMoves.forEach(function (move) {
@@ -1951,37 +1963,41 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
     Chessgame.isValidPGN = function (pgn) {
 
-        // PGN string validator.
+        // Validate a PGN string.
+        // - Test and remove the tag pairs section.
+        // - Remove the comments.
+        // - Test and remove variations.
+        // - Test and remove the moves section.
+        // - Test the final result.
 
-        var isValid = true;
         var moves = [];
-        var tags = [];
-
-        tags = pgn.match(regex_brackets);
-        tags.forEach(function (value) {
-            isValid = isValid && regex_tag.test(value);
-            pgn = pgn.replace(value, '');
-        });
-
-        while (regex_brackets.test(pgn)) {
-            pgn = pgn.replace(regex_brackets, '');
+        var regex_moveSection = /(?:[1-9][0-9]*\.(?:\.\.)?\s*)?(?:O-O(?:-O)?|(?:[BNQR][a-h]?[1-8]?|K)x?[a-h][1-8]|(?:[a-h]x)?[a-h][1-8](?:\=[BNQR])?)(?:\+|#)?/gm;
+        var regex_result = /1-0|0-1|1\/2-1\/2|\*/;
+        var regex_tagPairsSection = /(?:\[[^]+?\s"[^]+?"\]\s+){7,}\s+/gm;
+        var variations = [];
+        if (!regex_tagPairsSection.test(pgn)) {
+            return false;
         }
-
-        pgn = pgn.replace(/^\s*/, '');
-        pgn = pgn.replace(/\s{2,}/, ' ');
-
-        while (regex_braces.test(pgn)) {
-            pgn = pgn.replace(regex_braces, '');
+        pgn = pgn.replace(regex_tagPairsSection, '');
+        while (regex_comment.test(pgn)) {
+            pgn = pgn.replace(regex_comment, '');
         }
-
-        while (regex_parens.test(pgn)) {
-            pgn = pgn.replace(regex_parens, '');
+        function hasMoveSection(str) {
+            return regex_moveSection.test(str);
         }
-
-        moves = pgn.match(regex_pgn_move);
-        isValid = isValid && moves.length > 0;
-
-        return isValid;
+        while (regex_variation.test(pgn)) {
+            variations = pgn.match(regex_variation);
+            if (!variations.every(hasMoveSection)) {
+                return false;
+            }
+            pgn = pgn.replace(regex_variation, '');
+        }
+        moves = pgn.match(regex_moveSection);
+        if (moves.length < 1) {
+            return false;
+        }
+        pgn = pgn.replace(regex_moveSection, '');
+        return regex_result.test(pgn);
     };
 
     // -------------------------------------------------------------------------
@@ -2188,7 +2204,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return abGame.getInfo(info);
         },
 
-        getMoves: function (pgnStyled) {
+        getGameMoves: function (pgnStyled) {
 
             // Return an array of the moves of the game.
             // If pgnStyled is set to true, the moves will be styled as PGN.
@@ -2196,6 +2212,15 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return (pgnStyled)
                 ? abGame.pgnMoves
                 : abGame.moves;
+        },
+
+        getLegalMoves: function (n) {
+
+            // Return an array of the legal moves in the n-th position.
+
+            var position = {};
+            position = abGame.getNthPosition(n);
+            return position.getLegalMoves();
         },
 
         getPGN: function (noTag) {
@@ -2211,12 +2236,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Check if the active player is checkmated in the n-th position.
 
             var activeColor = '';
-            var legalMoves = [];
             var position = {};
             position = abGame.getNthPosition(n);
-            legalMoves = position.getLegalMoves();
             activeColor = position.activeColor;
-            return (position.isInCheck(activeColor) && legalMoves.length === 0);
+            return (position.isInCheck(activeColor) &&
+                !position.hasLegalMoves());
         },
 
         isInCheck: function (n) {
@@ -2242,13 +2266,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Check if the active player is stalemated in the n-th position.
 
             var activeColor = '';
-            var legalMoves = [];
             var position = {};
             position = abGame.getNthPosition(n);
-            legalMoves = position.getLegalMoves();
             activeColor = position.activeColor;
             return (!position.isInCheck(activeColor) &&
-                legalMoves.length === 0);
+                !position.hasLegalMoves());
         },
 
         isValidPGN: function (pgn) {
