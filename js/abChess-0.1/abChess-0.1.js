@@ -22,7 +22,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
     var abGame = {};
     var columns = "abcdefgh";
 
-    // Chess values.
+    // Chess constants.
 
     var chess_value = {
         black: "b",
@@ -32,6 +32,13 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         black_pawn: "p",
         black_queen: "q",
         black_rook: "r",
+        capture_symbol: "x",
+        castle_king_symbol: "O-O",
+        castle_queen_symbol: "O-O-O",
+        check_symbol: "+",
+        checkmate_symbol: "#",
+        default_fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+        promotion_symbol: "=",
         white: "w",
         white_bishop: "B",
         white_king: "K",
@@ -74,7 +81,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         showLegalMoves: true,
         width: 360
     };
-    var default_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
     // Error messages.
 
@@ -231,6 +237,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         };
 
         the_position.getNextActiveColor = function () {
+
             var nextActiveColor = "";
             nextActiveColor = (the_position.activeColor === chess_value.white)
                 ? chess_value.black
@@ -239,6 +246,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         };
 
         the_position.getNextAllowedCastles = function (move) {
+
             var arrivalSquare = "";
             var newAllowedCastles = "";
             var playedPiece = "";
@@ -282,6 +290,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         };
 
         the_position.getNextEnPassant = function (move) {
+
             var arrivalRowNumber = 0;
             var arrivalSquare = "";
             var nextEnPassantTarget = "-";
@@ -308,6 +317,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         };
 
         the_position.getNextFullmoveNumber = function () {
+
             var nextFullmoveNumber = 0;
             nextFullmoveNumber = (the_position.activeColor === chess_value.black)
                 ? fullmoveNumber + 1
@@ -316,6 +326,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         };
 
         the_position.getNextHalfmoveClock = function (move) {
+
             var arrivalSquare = "";
             var playedPiece = "";
             var nextHalfmoveClock = 0;
@@ -435,9 +446,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             arrival = move.substr(3, 2);
             if (regex_castle.test(move)) {
                 if (arrival[0] === columns[2]) {
-                    pgnMove += "O-O-O";
+                    pgnMove += chess_value.castle_queen_symbol;
                 } else {
-                    pgnMove += "O-O";
+                    pgnMove += chess_value.castle_king_symbol;
                 }
             } else {
                 isCapture = occupiedSquares.hasOwnProperty(arrival);
@@ -485,11 +496,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 }
                 pgnMove += clue;
                 if (isCapture) {
-                    pgnMove += "x";
+                    pgnMove += chess_value.capture_symbol;
                 }
                 pgnMove += arrival;
                 if (isPromotion) {
-                    pgnMove += "=" + promotion.toUpperCase();
+                    pgnMove += chess_value.promotion_symbol + promotion.toUpperCase();
                 }
             }
             stringToAdd = stringToAdd || "";
@@ -530,12 +541,13 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var start = "";
             if (regex_king.test(pgnMove)) {
                 matches = regex_king.exec(pgnMove);
-                if (matches[1] === "O-O" || matches[1] === "O-O-O") {
+                if (matches[1] === chess_value.castle_king_symbol ||
+                    matches[1] === chess_value.castle_queen_symbol) {
                     rowNumber = (activeColor === chess_value.black)
                         ? 8
                         : 1;
                     start = "e" + rowNumber;
-                    arrival = (matches[1] === "O-O")
+                    arrival = (matches[1] === chess_value.castle_king_symbol)
                         ? "g" + rowNumber
                         : "c" + rowNumber;
                     return start + "-" + arrival;
@@ -547,7 +559,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 matches = regex_pawn.exec(pgnMove);
                 ambiguity = matches[1];
                 arrival = matches[2];
-                if (pgnMove.indexOf("=") !== -1) {
+                if (pgnMove.indexOf(chess_value.promotion_symbol) !== -1) {
                     promotion = matches[3];
                 }
             } else if (regex_piece.test(pgnMove)) {
@@ -1599,7 +1611,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Load a position from a FEN string.
 
             var squares = {};
-            fen = fen || default_fen;
+            fen = fen || chess_value.default_fen;
             if (!Position.isValidFEN(fen, true)) {
                 throw new SyntaxError(error.invalid_fen);
             }
@@ -1773,7 +1785,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         });
         the_game = {
             comments: [],
-            fenStrings: [default_fen],
+            fenStrings: [chess_value.default_fen],
             moves: [],
             pgnMoves: [],
             tags: tags
@@ -1880,8 +1892,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 the_game.fenStrings.push(nextPosition.fenString);
                 if (the_game.isInCheck(n + 1)) {
                     stringToAdd = (nextPosition.hasLegalMoves())
-                        ? "+"
-                        : "#";
+                        ? chess_value.check_symbol
+                        : chess_value.checkmate_symbol;
                 }
                 pgnMove = lastPosition.getPGNMove(move, promotion, false, stringToAdd);
                 the_game.pgnMoves.push(pgnMove);
@@ -1910,7 +1922,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             requiredTags.forEach(function (tag) {
                 tags[tag] = "";
             });
-            the_game.fenStrings = [default_fen];
+            the_game.fenStrings = [chess_value.default_fen];
             the_game.moves = [];
             the_game.pgnMoves = [];
             the_game.tags = tags;
@@ -1943,7 +1955,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 n = the_game.fenStrings.length - 1;
                 lastPosition = the_game.getNthPosition(n);
                 simpleMove = lastPosition.getSimpleNotation(move);
-                if (simpleMove.indexOf("=") !== -1) {
+                if (simpleMove.indexOf(chess_value.promotion_symbol) !== -1) {
                     promotion = simpleMove[simpleMove.length - 1];
                     simpleMove = simpleMove.replace(/\=[BNQR]$/, "");
                 }
@@ -2153,7 +2165,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
     // Public api.
 
     return {
-        DEFAULT_FEN: default_fen,
+        DEFAULT_FEN: chess_value.default_fen,
 
         draw: function () {
 
