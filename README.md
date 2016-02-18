@@ -30,7 +30,6 @@ AbChess is an API to manage chess integration easily.
 * detect draw results (threefold repetition, 50 moves rule)
 * import / export / validate PGN files
 * import / export / validate FEN strings
-* ...
 
 More features will follow.
 
