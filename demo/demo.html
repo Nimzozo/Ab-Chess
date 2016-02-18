@@ -14,8 +14,8 @@
                 <div id="boardInfo">
                     <div>
                         <span id="turnInfo"></span>
-                        <span id="checkInfo"></span>
                         <span id="lastMoveInfo">Last move : -</span>
+                        <span id="checkInfo"></span>
                     </div>
                     <input type="text" id="fenInput" placeholder="FEN" size="70">
                 </div>
@@ -38,7 +38,11 @@
                         <input type="button" id="previousButton" value="<">
                         <input type="button" id="nextButton" value=">">
                         <input type="button" id="lastButton" value=">|">
-                        <input type="button" id="flipButton" value="Flip">
+                        <input type="button" id="flipButton" value="&#8634;">
+                    </div>
+                    <div>
+                        <input type="button" id="resetButton" value="Reset">
+                        <input type="button" id="downloadButton" value="View PGN">
                     </div>
                     <div>
                         <textarea id="pgnTextarea"></textarea>
