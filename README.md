@@ -5,24 +5,29 @@ An object oriented chess program written in Javascript.
 This project is based on my previous work available on http://net-echecs.olympe.in.
 
 My main goals for the moment are :
+
 - [x] to "translate" my code from french to english.
 - [ ] to improve it.
 - [ ] to make a new website to introduce the all project.
 
 ## Features
 
-AbChess is an API to manage chess software. It will provide functions to access awesome features :
+AbChess is an API to manage chess integration easily.
 
-* draw chess boards
+* draw chessboards
 * customizable board with CSS
-* customizable behaviour
-* draggable pieces
-* clickable pieces
+* interactive board with :
+  * draggable chess pieces
+  * clickable chess pieces
 * check moves legality
-* highlight legal squares
-* highlight king in check
-* detect checkmate / stalemate
-* detect other results (draw by agreement, threefold repetition, 50 moves rule, resignation)
+* squares highlighting :
+  * legal squares
+  * king in check
+  * last move
+  * selected piece
+  * overflown square
+* detect check / checkmate / stalemate at any moment
+* detect draw results (threefold repetition, 50 moves rule)
 * import / export / validate PGN files
 * import / export / validate FEN strings
 * ...
