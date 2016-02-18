@@ -38,6 +38,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         checkmate_symbol: "#",
         default_fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
         promotion_symbol: "=",
+        result_black: "0-1",
+        result_draw: "1/2-1/2",
+        result_white: "1-0",
         white: "w",
         white_bishop: "B",
         white_king: "K",
@@ -471,7 +474,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 }
 
                 if (playedPiece.toLowerCase() !== chess_value.black_pawn &&
-                 playedPiece.toLowerCase() !== chess_value.black_king) {
+                    playedPiece.toLowerCase() !== chess_value.black_king) {
                     Object.keys(occupiedSquares).forEach(function (key) {
                         var legalSquares = [];
                         var piece = "";
@@ -1793,13 +1796,19 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         // active color, castling possibilities, en passant square,
         // halfmove clock and fullmove number.
 
-        var requiredTags = [
-            "Event", "Site", "Date", "Round", "White", "Black", "Result"
-        ];
+        var requiredTags = {
+            "Event": "?",
+            "Site": "?",
+            "Date": "????.??.??",
+            "Round": "?",
+            "White": "?",
+            "Black": "?",
+            "Result": "*"
+        };
         var tags = {};
         var the_game = {};
-        requiredTags.forEach(function (tag) {
-            tags[tag] = "";
+        Object.keys(requiredTags).forEach(function (key) {
+            tags[key] = requiredTags[key];
         });
         the_game = {
             comments: [],
@@ -1834,7 +1843,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             if (!noTag) {
                 Object.keys(tags).forEach(function (tag) {
                     var value = tags[tag];
-                    pgn += "[" + tag +  " \"" + value + "\"]" + lineFeed;
+                    pgn += "[" + tag + " \"" + value + "\"]" + lineFeed;
                 });
                 pgn += lineFeed;
             }
@@ -1894,7 +1903,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Play a move and store the new FEN in the Chessgame object
             // if it's legal. Then returns the new FEN.
 
-            var lastPosition = {};
+            var currentPosition = {};
+            var isInCheck = false;
+            var isOver = false;
             var n = 0;
             var nextPosition = {};
             var pgnMove = "";
@@ -1903,19 +1914,30 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 throw new SyntaxError(error.invalid_parameter);
             }
             n = the_game.fenStrings.length - 1;
-            lastPosition = the_game.getNthPosition(n);
-            if (lastPosition.checkMoveLegality(move)) {
+            currentPosition = the_game.getNthPosition(n);
+            if (currentPosition.checkMoveLegality(move)) {
                 promotion = promotion || "";
-                nextPosition = lastPosition.getNextPosition(move, promotion);
+                nextPosition = currentPosition.getNextPosition(move, promotion);
                 the_game.fenStrings.push(nextPosition.fenString);
-                if (the_game.isInCheck(n + 1)) {
-                    stringToAdd = (nextPosition.hasLegalMoves())
-                        ? chess_value.check_symbol
-                        : chess_value.checkmate_symbol;
-                }
-                pgnMove = lastPosition.getPGNMove(move, promotion, false, stringToAdd);
-                the_game.pgnMoves.push(pgnMove);
                 the_game.moves.push(move);
+                isInCheck = nextPosition.isInCheck(nextPosition.activeColor);
+                isOver = !nextPosition.hasLegalMoves();
+                if (isInCheck) {
+                    if (isOver) {
+                        stringToAdd = chess_value.checkmate_symbol;
+                        if (nextPosition.activeColor === chess_value.black) {
+                            the_game.setTag("Result", chess_value.result_white);
+                        } else {
+                            the_game.setTag("Result", chess_value.result_black);
+                        }
+                    } else {
+                        stringToAdd = chess_value.check_symbol;
+                    }
+                } else if (isOver) {
+                    the_game.setTag("Result", chess_value.result_draw);
+                }
+                pgnMove = currentPosition.getPGNMove(move, promotion, false, stringToAdd);
+                the_game.pgnMoves.push(pgnMove);
                 return nextPosition.fenString;
             } else {
                 throw new Error(error.illegal_move);
@@ -1937,8 +1959,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             if (!Chessgame.isValidPGN(pgn)) {
                 throw new SyntaxError(error.invalid_pgn);
             }
-            requiredTags.forEach(function (tag) {
-                tags[tag] = "";
+            Object.keys(requiredTags).forEach(function (key) {
+                tags[key] = requiredTags[key];
             });
             the_game.fenStrings = [chess_value.default_fen];
             the_game.moves = [];
