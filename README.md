@@ -5,6 +5,8 @@ An object oriented chess program written in Javascript.
 
 Available demo  : http://nimzozo.olympe.in/demo/demo.html
 
+![screenshot](https://github.com/Nimzozo/Ab-Chess/blob/master/screenshot.png)
+
 ## Planned features
 
 AbChess is an API to manage chess integration easily.
