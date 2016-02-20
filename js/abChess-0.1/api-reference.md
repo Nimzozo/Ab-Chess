@@ -38,7 +38,7 @@ var abChess = new AbChess(containerId[, config]);
 | [play(move, promotion)](#playmove-promotion) | `String` | Play a move and return the resulting FEN string. |
 | [reset()](#reset) | `undefined` | Reset the game object and reload the board to the start position. |
 | [setFEN(fen)](#setfenfen) | `undefined` | Load the FEN position on the chessboard. |
-| [setGameInfo(info, value)](#setgameinfoinfovalue) | `undefined` | Set the desired information in the game. |
+| [setGameInfo(info, value)](#setgameinfoinfo-value) | `undefined` | Set the desired information in the game. |
 | [setPGN(pgn)](#setpgnpgn) | `undefined` | Load the PGN notation of the game. |
 
 ### Constructor details
