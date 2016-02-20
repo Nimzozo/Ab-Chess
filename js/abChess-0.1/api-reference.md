@@ -35,7 +35,7 @@ var abChess = new AbChess(containerId[, config]);
 | [isLegal(n, move)](#islegaln-move) | `Boolean` | Check if a move is legal in the nth position. |
 | [isStalemate(n)](#isstalematen) | `Boolean` | Check if the king of the active color is stalemated in the nth position. |
 | [navigate(n)](#navigaten) | `undefined` | Update the board to the nth position of the game. |
-| [play(move, promotion)](#playmove-promotion) | `String` | Play a move and return the resulting FEN string. |
+| [play(move\[, promotion\])](#playmove-promotion) | `String` | Play a move and return the resulting FEN string. |
 | [reset()](#reset) | `undefined` | Reset the game object and reload the board to the start position. |
 | [setFEN(fen)](#setfenfen) | `undefined` | Load the FEN position on the chessboard. |
 | [setGameInfo(info, value)](#setgameinfoinfo-value) | `undefined` | Set the desired information in the game. |
@@ -282,7 +282,7 @@ __Parameters :__
 
 ---
 
-#### play(move, promotion)
+#### play(move[, promotion])
 
 Play a move and return the resulting FEN string.
 
