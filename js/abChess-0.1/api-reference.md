@@ -34,8 +34,11 @@ var abChess = new AbChess(containerId[, config]);
 | [isInCheck(n)](#isincheckn) | `Boolean` | Check if the king of the active color is in check in the nth position. |
 | [isLegal(n, move)](#islegaln-move) | `Boolean` | Check if a move is legal in the nth position. |
 | [isStalemate(n)](#isstalematen) | `Boolean` | Check if the king of the active color is stalemated in the nth position. |
+| [navigate(n)](#navigaten) | `undefined` | Update the board to the nth position of the game. |
 | [play(move, promotion)](#playmove-promotion) | `String` | Play a move and return the resulting FEN string. |
+| [reset()](#reset) | `undefined` | Reset the game object and reload the board to the start position. |
 | [setFEN(fen)](#setfenfen) | `undefined` | Load the FEN position on the chessboard. |
+| [setGameInfo(info, value)](#setgameinfoinfovalue) | `undefined` | Set the desired information in the game. |
 | [setPGN(pgn)](#setpgnpgn) | `undefined` | Load the PGN notation of the game. |
 
 ### Constructor details
@@ -264,6 +267,21 @@ __Parameters :__
 
 ---
 
+#### navigate(n)
+
+Update the board to the nth position of the game.
+
+__Return type :__ `undefined`
+
+__Parameters :__
+<table>
+  <tr>
+    <td><<code>Number</code>> n</td><td>Required</td><td>A positive integer. The index of the concerned position.</td>
+  </tr>
+</table>
+
+---
+
 #### play(move, promotion)
 
 Play a move and return the resulting FEN string.
@@ -288,6 +306,14 @@ abChess.play("a7-a8", "q");
 ```
 
 ---
+
+#### reset()
+
+Reset the game object and reload the board to the initial position.
+
+__Return type :__ `undefined`
+
+---
   
 #### setFEN([fen])
 
@@ -305,6 +331,29 @@ __Parameters :__
 __Sample :__
 ```Javascript
 abChess.setFEN("8/8/8/8/8/8/8/8");
+```
+
+---
+
+#### setGameInfo(info, value)
+
+Set an information and its value in the game object.
+
+__Return type :__ `undefined`
+
+__Parameters :__
+<table>
+  <tr>
+    <td><<code>String</code>> info</td><td>Required</td><td>The name of the information to set.</td>
+  </tr>
+  <tr>
+    <td><<code>String</code>> value</td><td>Required</td><td>The value of the information to set.</td>
+  </tr>
+</table>
+
+__Sample :__
+```Javascript
+abChess.setGameInfo("White", "Kasparov, Gary");
 ```
 
 ---
