@@ -43,11 +43,13 @@ The AbChess class contructs an object to manage chess data as well as render a b
 var abChess = new AbChess(containerId[, config]);
 ```
 
-| Parameter |     | Description | Default |
-| :--- | :--- | :--- | :--- |
+| Parameter |     | Description |
+| :--- | :--- | :--- |
 | <`String`> containerId | Required | The id of the HTML element to contain the chess board. |
 | <`Object`> config | Optional | A configuration object containing the following optional properties. |
-| __*config* properties__
+
+| __*config* properties__ |     | Description | Default |
+| :--- | :--- | :--- | :--- |
 | <`String`> circleColor | Optional | The CSS color value of circles drawn on the squares. | `"steelblue"`
 | <`Boolean`> clickable | Optional | A value to set if the pieces should be clickable or not. | `true`
 | <`Boolean`> draggable | Optional | A value to set if the pieces should be draggable or not. | `true`
