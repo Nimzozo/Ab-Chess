@@ -2,13 +2,11 @@
 
 An object oriented chess program written in Javascript. 
 
-This project is based on my previous work available on http://net-echecs.olympe.in.
-
 My main goals for the moment are :
 
-- [x] to "translate" my code from french to english.
+- [x] to "translate" my old code from french to english.
 - [ ] to improve it.
-- [ ] to make a new website to introduce the all project.
+- [ ] to make a new website to introduce the project.
 
 ## Features
 
