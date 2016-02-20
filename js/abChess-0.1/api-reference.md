@@ -6,21 +6,21 @@ The AbChess class contructs an object to manage chess data as well as render a b
 var abChess = new AbChess(containerId[, config]);
 ```
 
-## Constructor
 
-| Name | Description |
+
+| Constructor | Description |
 | :--- | :--- |
 | [new AbChess(containerId\[, config\])](#constructor-details) | The FEN string of the starting position in a classical chess game. |
 
-## Constants
 
-| Name | Description |
+
+| Constant | Description |
 | :--- | :--- |
 | <`String`> DEFAULT_FEN | The FEN string of the starting position in a classical chess game. |
 
-## Methods
 
-| Name | Return type | Description |
+
+| Method | Return type | Description |
 | :--- | :--- | :--- |
 | [draw()](#draw) | `undefined` | Draw the chessboard in the HTML container element. |
 | [flip()](#flip) | `undefined` | Change the orientation of the chessboard. |
