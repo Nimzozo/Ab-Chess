@@ -2,22 +2,15 @@
 
 The AbChess class contructs an object to manage chess data as well as render a board.
 
-```Javascript
-var abChess = new AbChess(containerId[, config]);
-```
-
-
 
 | Constructor | Description |
 | :--- | :--- |
 | [new AbChess(containerId\[, config\])](#constructor-details) | The FEN string of the starting position in a classical chess game. |
 
 
-
 | Constant | Description |
 | :--- | :--- |
 | <`String`> DEFAULT_FEN | The FEN string of the starting position in a classical chess game. |
-
 
 
 | Method | Return type | Description |
@@ -41,15 +34,16 @@ var abChess = new AbChess(containerId[, config]);
 | [setGameInfo(info, value)](#setgameinfoinfo-value) | `undefined` | Set the desired information in the game. |
 | [setPGN(pgn)](#setpgnpgn) | `undefined` | Load the PGN notation of the game. |
 
-### Constructor details
 
-#### new AbChess(containerId[, config])
+### Constructor details
 
 The AbChess class contructs an object to manage chess data as well as render a board.
 
-__Parameters :__
+```Javascript
+var abChess = new AbChess(containerId[, config]);
+```
 
-| Name |     | Description | Default |
+| Parameter |     | Description | Default |
 | :--- | :--- | :--- | :--- |
 | <`String`> containerId | Required | The id of the HTML element to contain the chess board. |
 | <`Object`> config | Optional | A configuration object containing the following optional properties. |
