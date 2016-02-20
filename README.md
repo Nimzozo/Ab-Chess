@@ -1,10 +1,11 @@
-# Ab-chess *[Under development]*
+# Ab-chess
+## _[Under development]_
 
 An object oriented chess program written in Javascript. 
 
 Available demo  : http://nimzozo.olympe.in/demo/demo.html
 
-## Features
+## Planned features
 
 AbChess is an API to manage chess integration easily.
 
