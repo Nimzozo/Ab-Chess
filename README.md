@@ -2,11 +2,7 @@
 
 An object oriented chess program written in Javascript. 
 
-My main goals for the moment are :
-
-- [x] to "translate" my old code from french to english.
-- [ ] to improve it.
-- [ ] to make a new website to introduce the project.
+Available demo  : http://nimzozo.olympe.in/demo/demo.html
 
 ## Features
 
