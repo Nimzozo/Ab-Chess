@@ -48,7 +48,7 @@ var abChess = new AbChess(containerId[, config]);
 | <`String`> containerId | Required | The id of the HTML element to contain the chess board. |
 | <`Object`> config | Optional | A configuration object containing the following optional properties. |
 
-| __*config* properties__ |     | Description | Default |
+| `config` property |     | Description | Default |
 | :--- | :--- | :--- | :--- |
 | <`String`> circleColor | Optional | The CSS color value of circles drawn on the squares. | `"steelblue"`
 | <`Boolean`> clickable | Optional | A value to set if the pieces should be clickable or not. | `true`
@@ -63,7 +63,7 @@ var abChess = new AbChess(containerId[, config]);
 | <`Boolean`> showLegalSquares | Optional | A value to set if the legal squares should be marked. | `true`
 | <`Number`> width | Optional | A number representing the width in pixels of the board. | `360`
 
-__Sample :__
+Sample :
 
 Create an AbChess object.
 
@@ -91,7 +91,7 @@ abChess = new AbChess(containerId, abConfig);
 
 Draw the chessboard in the HTML container element.
 
-__Return type :__ `undefined`
+Return type : `undefined`
 
 ---
 
@@ -99,7 +99,7 @@ __Return type :__ `undefined`
 
 Change the orientation of the chessboard.
 
-__Return type :__ `undefined`
+Return type : `undefined`
 
 ---
 
@@ -107,9 +107,9 @@ __Return type :__ `undefined`
 
 Return the active color in the nth position. It will return 'w' is it's white to move, or 'b' for black.
 
-__Return type :__ `String`
+Return type : `String`
 
-__Parameters :__
+Parameters :
 <table>
   <tr>
     <td><<code>Number</code>> n</td><td>Required</td><td>A positive integer. The index of the concerned position.</td>
@@ -122,9 +122,9 @@ __Parameters :__
 
 Return the Forsyth-Edwards notation of the nth position.
 
-__Return type :__ `String`
+Return type : `String`
 
-__Parameters :__
+Parameters :
 <table>
   <tr>
     <td><<code>Number</code>> n</td><td>Required</td><td>A positive integer. The index of the concerned position.</td>
@@ -137,9 +137,9 @@ __Parameters :__
 
 Return the desired information stored in the PGN of the game.
 
-__Return type :__ `String`
+Return type : `String`
 
-__Parameters :__
+Parameters :
 <table>
   <tr>
     <td><<code>String</code>> info</td><td>Required</td><td>The desired information.</td>
@@ -152,9 +152,9 @@ __Parameters :__
 
 Return an array of the moves stored in the game.
 
-__Return type :__ `String[]`
+Return type : `String[]`
 
-__Parameters :__
+Parameters :
 <table>
   <tr>
     <td><<code>Boolean</code>> pgnStyled</td><td>Required</td><td>True to get moves styled like in a PGN.
@@ -168,9 +168,9 @@ __Parameters :__
 
 Return an array of the legal moves for the nth position.
 
-__Return type :__ `String[]`
+Return type : `String[]`
 
-__Parameters :__
+Parameters :
 <table>
   <tr>
     <td><<code>Number</code>> n</td><td>Required</td><td>An integer number. The index of the desired position.</td>
@@ -183,9 +183,9 @@ __Parameters :__
 
 Return the portable game notation.
 
-__Return type :__ `String`
+Return type : `String`
 
-__Parameters :__
+Parameters :
 <table>
   <tr>
     <td><<code>Boolean</code>> noTag</td><td>Required</td><td>True to get a PGN with only the moves.
@@ -199,9 +199,9 @@ __Parameters :__
 
 Check if the king of the active color is checkmated in the nth position.
 
-__Return type :__ `Boolean`
+Return type : `Boolean`
 
-__Parameters :__
+Parameters :
 <table>
   <tr>
     <td><<code>Number</code>> n</td><td>Required</td><td>A positive integer. The index of the concerned position.</td>
@@ -214,9 +214,9 @@ __Parameters :__
 
 Check if the king of the active color is in check in the nth position.
 
-__Return type :__ `Boolean`
+Return type : `Boolean`
 
-__Parameters :__
+Parameters :
 <table>
   <tr>
     <td><<code>Number</code>> n</td><td>Required</td><td>A positive integer. The index of the concerned position.</td>
@@ -229,9 +229,9 @@ __Parameters :__
 
 Check if a move is legal in the nth position.
 
-__Return type :__ `Boolean`
+Return type : `Boolean`
 
-__Parameters :__
+Parameters :
 <table>
   <tr>
     <td><<code>Number</code>> n</td><td>Required</td><td>A positive integer. The index of the concerned position.</td>
@@ -241,7 +241,7 @@ __Parameters :__
   </tr>
 </table>
 
-__Sample :__
+Sample :
 ```Javascript
 var isLegal = abChess.isLegal(0, "g1-f3");
 ```
@@ -252,9 +252,9 @@ var isLegal = abChess.isLegal(0, "g1-f3");
 
 Check if the king of the active color is stalemated in the nth position.
 
-__Return type :__ `Boolean`
+Return type : `Boolean`
 
-__Parameters :__
+Parameters :
 <table>
   <tr>
     <td><<code>Number</code>> n</td><td>Required</td><td>A positive integer. The index of the concerned position.</td>
@@ -267,9 +267,9 @@ __Parameters :__
 
 Update the board to the nth position of the game.
 
-__Return type :__ `undefined`
+Return type : `undefined`
 
-__Parameters :__
+Parameters :
 <table>
   <tr>
     <td><<code>Number</code>> n</td><td>Required</td><td>A positive integer. The index of the concerned position.</td>
@@ -282,9 +282,9 @@ __Parameters :__
 
 Play a move and return the resulting FEN string.
 
-__Return type :__ `String`
+Return type : `String`
 
-__Parameters :__
+Parameters :
 <table>
   <tr>
     <td><<code>String</code>> move</td><td>Required</td><td>The move to play in format : [a-h][1-8]-[a-h][1-8].</td>
@@ -295,7 +295,7 @@ __Parameters :__
   </tr>
 </table>
 
-__Sample :__
+Sample :
 ```Javascript
 abChess.play("g1-f3");
 abChess.play("a7-a8", "q");
@@ -307,7 +307,7 @@ abChess.play("a7-a8", "q");
 
 Reset the game object and reload the board to the initial position.
 
-__Return type :__ `undefined`
+Return type : `undefined`
 
 ---
   
@@ -315,16 +315,16 @@ __Return type :__ `undefined`
 
 Load the FEN position on the chessboard. 
 
-__Return type :__ `undefined`
+Return type : `undefined`
 
-__Parameters :__
+Parameters :
 <table>
   <tr>
     <td><<code>String</code>> fen</td><td>Optional</td><td>The FEN string to set. The default value is the starting position.</td>
   </tr>
 </table>
 
-__Sample :__
+Sample :
 ```Javascript
 abChess.setFEN("8/8/8/8/8/8/8/8");
 ```
@@ -335,9 +335,9 @@ abChess.setFEN("8/8/8/8/8/8/8/8");
 
 Set an information and its value in the game object.
 
-__Return type :__ `undefined`
+Return type : `undefined`
 
-__Parameters :__
+Parameters :
 <table>
   <tr>
     <td><<code>String</code>> info</td><td>Required</td><td>The name of the information to set.</td>
@@ -347,7 +347,7 @@ __Parameters :__
   </tr>
 </table>
 
-__Sample :__
+Sample :
 ```Javascript
 abChess.setGameInfo("White", "Kasparov, Gary");
 ```
@@ -358,9 +358,9 @@ abChess.setGameInfo("White", "Kasparov, Gary");
 
 Load the PGN notation of the game. 
 
-__Return type :__ `undefined`
+Return type : `undefined`
 
-__Parameters :__
+Parameters :
 <table>
   <tr>
     <td><<code>String</code>> pgn</td><td>Required</td><td>The PGN string to set.</td>
