@@ -1,9 +1,10 @@
 // AbChess-0.1.js
-// 2016-02-24
+// 2016-02-25
 // Copyright (c) 2016 Nimzozo
 
 // TODO :
 // - find the best way to fix "forced sync layout"
+// - more options
 // - (import / export variations / comments) => v 0.2
 
 /*global
@@ -53,18 +54,22 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
     // Css class and ids.
 
     var css = {
-        black_square: "blackSquare",
-        bottom_border: "bottomBorder",
-        inline_block: "inlineBlock",
-        right_border: "rightBorder",
-        highlighted_square: "highlightedSquare",
-        marked_square: "markedSquare",
-        overflown_square: "overflownSquare",
-        promotion_div: "promotionDiv",
-        selected_square: "selectedSquare",
+        black_square: "square_black",
+        bottom_border: "bottom-border",
+        bottom_border_fragment: "bottom-border__fragment",
+        highlighted_square: "square_highlighted",
+        marked_square: "square_marked",
+        overflown_square: "square_overflown",
+        promotion_button: "promotion-button",
+        promotion_div: "promotion-div",
+        right_border: "right-border",
+        right_border_fragment: "right-border__fragment",
+        selected_square: "square_selected",
         square: "square",
-        squares_div: "squaresDiv",
-        white_square: "whiteSquare"
+        square_canvas: "square__canvas",
+        square_piece: "square__piece",
+        squares_div: "squares-div",
+        white_square: "square_white"
     };
 
     // Config default values.
@@ -1138,6 +1143,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         var div;
         var the_piece;
         div = document.createElement("DIV");
+        div.className = css.square_piece;
         div.style.backgroundImage = "url('" + url + "')";
         div.setAttribute("draggable", "true");
 
@@ -1464,6 +1470,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     name = column + rowNumber;
                     isWhiteSquare = Square.isWhite(name);
                     canvas = document.createElement("CANVAS");
+                    canvas.className = css.square_canvas;
                     canvas.setAttribute("height", canvasWidth);
                     canvas.setAttribute("width", canvasWidth);
                     div = document.createElement("DIV");
@@ -1549,6 +1556,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 colNumber = 1;
                 while (colNumber < 9) {
                     borderFragment = document.createElement("DIV");
+                    borderFragment.className = css.bottom_border_fragment;
                     index = (the_board.isFlipped)
                         ? 8 - colNumber
                         : colNumber - 1;
@@ -1562,6 +1570,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 rowNumber = 1;
                 while (rowNumber < 9) {
                     borderFragment = document.createElement("DIV");
+                    borderFragment.className = css.right_border_fragment;
                     borderFragment.style.lineHeight = Math.floor(the_board.width / 8) + "px";
                     index = (the_board.isFlipped)
                         ? rowNumber
@@ -1777,6 +1786,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 var promotionButton;
                 var url = the_board.imagesPath + color + piece + the_board.imagesExtension;
                 promotionButton = document.createElement("INPUT");
+                promotionButton.className = css.promotion_button;
                 promotionButton.setAttribute("type", "button");
                 promotionButton.setAttribute("name", piece);
                 promotionButton.style.backgroundImage = "url('" + url + "')";
@@ -2166,19 +2176,17 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             fen = position.fenString;
             abBoard.loadFEN(fen);
         }
-        if (index > 0) {
-            if (abConfig.showLastMove) {
-                abBoard.clearMarks();
-                lastMove = abGame.moves[index - 1];
-                lastMoveStart = lastMove.substr(0, 2);
-                lastMoveArrival = lastMove.substr(3, 2);
-                abBoard.highlightSquares([lastMoveStart, lastMoveArrival]);
-            }
-            if (abConfig.showKingInCheck && position.isInCheck(position.activeColor)) {
-                abBoard.clearMarks();
-                kingSquare = position.getKingSquare(position.activeColor);
-                abBoard.markSquares([kingSquare]);
-            }
+        if (abConfig.showLastMove) {
+            abBoard.clearMarks();
+            lastMove = abGame.moves[index - 1];
+            lastMoveStart = lastMove.substr(0, 2);
+            lastMoveArrival = lastMove.substr(3, 2);
+            abBoard.highlightSquares([lastMoveStart, lastMoveArrival]);
+        }
+        if (abConfig.showKingInCheck && position.isInCheck(position.activeColor)) {
+            abBoard.clearMarks();
+            kingSquare = position.getKingSquare(position.activeColor);
+            abBoard.markSquares([kingSquare]);
         }
         // navigationIndex = index;
     }
@@ -2371,6 +2379,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Reset the game and the board.
 
             abBoard.loadFEN();
+            abBoard.clearMarks();
             abGame = new Chessgame();
         },
 
