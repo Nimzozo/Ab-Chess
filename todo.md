@@ -9,3 +9,4 @@ Todo list
 - [ ] improve CSS
   - [ ] use BEM method
 - [ ] clean the code
+- [ ] insufficient material draws
