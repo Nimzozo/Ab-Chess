@@ -1,6 +1,6 @@
 # Ab-chess
 
-An object oriented chess API written in JavaScript, CSS, HTML.  **[Under development]**
+An object oriented chess API written in JavaScript, CSS, HTML.  **\[[Under development](https://github.com/Nimzozo/Ab-Chess/blob/master/todo.md)\]**
 
 Available demo  : http://nimzozo.olympe.in/demo/demo.html
 
