@@ -1,14 +1,17 @@
 Todo list
 
-- [ ] improve the API
+- improve the API
   - [ ] setOption method
   - [ ] more options / methods
   - [ ] improve the documentation
   - [x] add doc navigation
-- [ ] improve the examples
+- improve the examples
   - [x] comment
-- [ ] improve CSS
+  - [ ] fix
+  - [ ] add demo
+- improve CSS
   - [ ] use BEM method
-- [ ] clean the code
-- [ ] insufficient material draws / 50 moves
-- [x] fix anchors
+  - [x] fix anchors
+- code
+  - [ ] clean the code
+  - [ ] insufficient material draws / 50 moves
