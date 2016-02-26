@@ -11,4 +11,4 @@ Todo list
   - [ ] use BEM method
 - [ ] clean the code
 - [ ] insufficient material draws / 50 moves
-- [ ] fix anchors
+- [x] fix anchors
