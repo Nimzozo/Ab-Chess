@@ -1,11 +1,10 @@
 // AbChess-0.1.js
-// 2016-02-25
+// 2016-02-26
 // Copyright (c) 2016 Nimzozo
 
 // TODO :
 // - find the best way to fix "forced sync layout"
 // - more options
-// - (import / export variations / comments) => v 0.2
 
 /*global
     window
@@ -627,9 +626,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     break;
                 case chess_value.black_king:
                 case chess_value.white_king:
-                    if (!onlyOffensive) {
-                        targets = the_position.getTargets_king_special(start, color);
-                    }
+                    targets = the_position.getTargets_kingFull(start, color, onlyOffensive);
                     break;
                 case chess_value.black_knight:
                 case chess_value.white_knight:
@@ -765,10 +762,10 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return targets;
         };
 
-        the_position.getTargets_king_special = function (start, color) {
+        the_position.getTargets_kingFull = function (start, color, noCastles) {
 
             // Return an array of squares a king on a specific square can reach.
-            // Only for : castles,  filter ennemy king opposition.
+            // Add castles,  filter ennemy king opposition.
 
             var ennemiesColor = "";
             var ennemyKingSquare = "";
@@ -787,6 +784,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             targets = normalTargets.filter(function (target) {
                 return (ennemyKingTargets.indexOf(target) === -1);
             });
+            if (noCastles) {
+                return targets;
+            }
             if (start === "e1" && !the_position.isControlledBy("e1", chess_value.black)) {
                 if (allowedCastles.indexOf(chess_value.white_queen) !== -1 && !the_position.isControlledBy("d1", chess_value.black)) {
                     if (queenSideCastle.every(function (column) {
