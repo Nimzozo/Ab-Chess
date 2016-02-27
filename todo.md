@@ -10,7 +10,7 @@ Todo list
   - [ ] fix
   - [ ] add demo
 - improve CSS
-  - [ ] use BEM method
+  - [x] use BEM method
   - [x] fix anchors
 - code
   - [ ] clean the code
