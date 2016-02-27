@@ -1,7 +1,7 @@
 Todo list
 
 - improve the API
-  - [ ] setOption method
+  - [ ] ~~setOption method~~
   - [ ] more options / methods
   - [ ] improve the documentation
   - [x] add doc navigation
@@ -14,4 +14,4 @@ Todo list
   - [x] fix anchors
 - code
   - [ ] clean the code
-  - [ ] insufficient material draws / 50 moves
+  - [x] insufficient material draws / 50 moves
