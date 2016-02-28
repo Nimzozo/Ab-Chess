@@ -1,10 +1,9 @@
 // AbChess-0.1.js
-// 2016-02-26
+// 2016-02-28
 // Copyright (c) 2016 Nimzozo
 
 // TODO :
 // - find the best way to fix "forced sync layout"
-// - more options
 
 /*global
     window
@@ -74,17 +73,18 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
     // Config default values.
 
     var default_config = {
-        circleColor: "steelblue",
         clickable: true,
         draggable: true,
         flipped: false,
-        hasBorder: true,
         imagesExtension: ".png",
-        imagesPath: "../images/wikipedia/",
-        onMovePlayed: null,
-        showKingInCheck: true,
-        showLastMove: true,
-        showLegalSquares: true,
+        imagesPath: "images/wikipedia/",
+        legalMarksColor: "steelblue",
+        markKingInCheck: true,
+        markLastMove: true,
+        markLegalSquares: true,
+        markOverflownSquare: true,
+        markSelectedSquare: true,
+        notationBorder: true,
         width: 360
     };
 
@@ -95,6 +95,12 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         invalid_fen: "Invalid FEN string.",
         invalid_parameter: "Invalid parameter.",
         invalid_pgn: "Invalid PGN."
+    };
+
+    // Custom events.
+
+    var event = {
+        onMovePlayed: null
     };
 
     // var navigationIndex = 0;
@@ -982,11 +988,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             testRowNumber = rowNumber - 1;
             while (testRowNumber > 0) {
                 testSquare = columns[testColNumber - 1] + testRowNumber;
-                if (alliesPlaces.indexOf(testSquare) !== -1) {
+                if (alliesPlaces.indexOf(testSquare) > -1) {
                     break;
                 }
                 targets.push(testSquare);
-                if (ennemiesPlaces.indexOf(testSquare) !== -1) {
+                if (ennemiesPlaces.indexOf(testSquare) > -1) {
                     break;
                 }
                 testRowNumber -= 1;
@@ -1028,8 +1034,80 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             ennemies = the_position.getPiecesPlaces(color);
             return ennemies.some(function (ennemy) {
                 var targets = the_position.getTargets(ennemy, true);
-                return (targets.indexOf(square) !== -1);
+                return (targets.indexOf(square) > -1);
             });
+        };
+
+        the_position.isDrawBy50MovesRule = function () {
+
+            // Check if the position is draw by the 50 moves rule.
+
+            return (halfmoveClock > 99);
+        };
+
+        the_position.isDrawByInsufficientMaterial = function () {
+
+            // Check if the position is draw by the insufficient material rule.
+
+            var blackPieces = [];
+            var testArray = [];
+            var whitePieces = [];
+            var insufficients = [
+                ["b"],
+                ["n"],
+                ["n", "n"]
+            ];
+            var isInsufficient = false;
+            blackPieces = the_position.getPiecesPlaces(chess_value.black);
+            if (blackPieces.length > 3) {
+                return false;
+            }
+            if (blackPieces.length > 1) {
+                blackPieces.forEach(function (key) {
+                    var piece = occupiedSquares[key];
+                    if (piece !== chess_value.black_king) {
+                        testArray.push(piece);
+                    }
+                });
+                isInsufficient = insufficients.some(function (insufficient) {
+                    var sameArray = false;
+                    if (insufficient.length !== testArray.length) {
+                        return false;
+                    }
+                    sameArray = insufficient.every(function (value, index) {
+                        return (testArray[index] === value);
+                    });
+                    return sameArray;
+                });
+                if (!isInsufficient) {
+                    return false;
+                }
+            }
+            whitePieces = the_position.getPiecesPlaces(chess_value.white);
+            if (whitePieces.length > 3) {
+                return false;
+            }
+            if (whitePieces.length === 1) {
+                return true;
+            }
+            testArray = [];
+            whitePieces.forEach(function (key) {
+                var piece = occupiedSquares[key];
+                if (piece !== chess_value.white_king) {
+                    testArray.push(piece.toLowerCase());
+                }
+            });
+            isInsufficient = insufficients.some(function (insufficient) {
+                var sameArray = false;
+                if (insufficient.length !== testArray.length) {
+                    return false;
+                }
+                sameArray = insufficient.every(function (value, index) {
+                    return (testArray[index] === value);
+                });
+                return sameArray;
+            });
+            return isInsufficient;
         };
 
         the_position.isInCheck = function (color) {
@@ -1246,13 +1324,17 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         the_square.dragEnterHandler = function (e) {
             if (the_square.board.isDragging) {
                 e.preventDefault();
-                the_square.overfly();
+                if (the_square.board.markOverflownSquare) {
+                    the_square.overfly();
+                }
             }
         };
 
         the_square.dragLeaveHandler = function () {
             if (the_square.board.isDragging) {
-                the_square.overfly();
+                if (the_square.board.markOverflownSquare) {
+                    the_square.overfly();
+                }
             }
         };
 
@@ -1276,7 +1358,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             }
             e.preventDefault();
             e.dataTransfer.dropEffect = "move";
-            the_square.overfly();
+            if (the_square.board.markOverflownSquare) {
+                the_square.overfly();
+            }
             if (typeof the_square.board.onSquareDrop === "function") {
                 the_square.board.onSquareDrop(the_square.name);
             }
@@ -1387,15 +1471,16 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         // The Chessboard class constructs an HTML chessboard.
 
         var the_board = {
-            circleColor: config.circleColor,
+            legalMarksColor: config.legalMarksColor,
             clickablePieces: config.clickable,
             container: document.getElementById(containerId),
             draggablePieces: config.draggable,
-            hasBorder: config.hasBorder,
+            notationBorder: config.notationBorder,
             imagesExtension: config.imagesExtension,
             imagesPath: config.imagesPath,
             isDragging: false,
             isFlipped: config.flipped,
+            markOverflownSquare: config.markOverflownSquare,
             onPieceDragEnd: null,
             onPieceDragStart: null,
             onPromotionChose: null,
@@ -1480,7 +1565,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     div.className = cssClass;
                     square = new Square(name);
                     square.canvas = canvas;
-                    square.drawFilledCircle(xy, xy, radius, the_board.circleColor);
+                    square.drawFilledCircle(xy, xy, radius, the_board.legalMarksColor);
                     square.board = the_board;
                     square.div = div;
                     div.addEventListener("click", square.clickHandler);
@@ -1549,7 +1634,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             the_board.container.appendChild(squaresDiv);
             squaresDiv.appendChild(the_board.promotionDiv);
             // });
-            if (the_board.hasBorder) {
+            if (the_board.notationBorder) {
                 bottomBorder = document.createElement("DIV");
                 bottomBorder.className = css.bottom_border;
                 bottomBorder.style.width = the_board.width + "px";
@@ -1679,15 +1764,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             squares.forEach(function (square) {
                 the_board.squares[square].mark();
-            });
-        };
-
-        the_board.overflySquares = function (squares) {
-
-            // Overfly an array of squares.
-
-            squares.forEach(function (square) {
-                the_board.squares[square].overfly();
             });
         };
 
@@ -1922,6 +1998,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // if it's legal. Then returns the new FEN.
 
             var currentPosition = {};
+            var isDrawn = false;
             var isInCheck = false;
             var isOver = false;
             var n = 0;
@@ -1940,6 +2017,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 the_game.moves.push(move);
                 isInCheck = nextPosition.isInCheck(nextPosition.activeColor);
                 isOver = !nextPosition.hasLegalMoves();
+                isDrawn = (nextPosition.isDrawByInsufficientMaterial() ||
+                    nextPosition.isDrawBy50MovesRule());
                 if (isInCheck) {
                     if (isOver) {
                         stringToAdd = chess_value.checkmate_symbol;
@@ -1952,6 +2031,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                         stringToAdd = chess_value.check_symbol;
                     }
                 } else if (isOver) {
+                    the_game.setTag("Result", chess_value.result_draw);
+                } else if (isDrawn) {
                     the_game.setTag("Result", chess_value.result_draw);
                 }
                 pgnMove = currentPosition.getPGNMove(move, promotion, false, stringToAdd);
@@ -2087,6 +2168,40 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
     abBoard = new Chessboard(containerId, abConfig);
     abGame = new Chessgame();
 
+    function navigate(index, updatePosition) {
+
+        // Navigate through the game to the desired position.
+        // Update the board.
+
+        var fen = "";
+        var kingSquare = "";
+        var lastMove = "";
+        var lastMoveArrival = "";
+        var lastMoveStart = "";
+        var position = {};
+        if (index < 0 || index > abGame.fenStrings.length - 1) {
+            throw new Error(error.invalid_parameter);
+        }
+        position = abGame.getNthPosition(index);
+        if (updatePosition) {
+            fen = position.fenString;
+            abBoard.loadFEN(fen);
+        }
+        if (abConfig.markLastMove) {
+            abBoard.clearMarks();
+            lastMove = abGame.moves[index - 1];
+            lastMoveStart = lastMove.substr(0, 2);
+            lastMoveArrival = lastMove.substr(3, 2);
+            abBoard.highlightSquares([lastMoveStart, lastMoveArrival]);
+        }
+        if (abConfig.markKingInCheck && position.isInCheck(position.activeColor)) {
+            abBoard.clearMarks();
+            kingSquare = position.getKingSquare(position.activeColor);
+            abBoard.markSquares([kingSquare]);
+        }
+        // navigationIndex = index;
+    }
+
     function selectPiece(square) {
 
         // Select or deselect a piece on the board and show its legal squares.
@@ -2099,8 +2214,10 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         } else {
             abBoard.selectedSquare = null;
         }
-        abBoard.squares[square].select();
-        if (abConfig.showLegalSquares) {
+        if (abConfig.markSelectedSquare) {
+            abBoard.squares[square].select();
+        }
+        if (abConfig.markLegalSquares) {
             n = abGame.fenStrings.length - 1;
             lastPosition = abGame.getNthPosition(n);
             legalSquares = lastPosition.getLegalSquares(square);
@@ -2117,15 +2234,17 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         abGame.play(move, promotion);
         index = abGame.fenStrings.length - 1;
         navigate(index, false);
-        if (typeof abConfig.onMovePlayed === "function") {
-            abConfig.onMovePlayed();
+        if (typeof event.onMovePlayed === "function") {
+            setTimeout(event.onMovePlayed, 0);
         }
     }
 
     function finishMove(arrival, selectArrival) {
 
         // Perform the second step of a move once the arrival square is defined.
-        // Test the legality. Show promotion div. Remove old legal squares.
+        // Test the legality.
+        // Show promotion div.
+        // Remove old legal squares.
 
         var color = "";
         var move = "";
@@ -2155,40 +2274,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         } else if (selectArrival && arrival !== start && !abBoard.squares[arrival].isEmpty()) {
             selectPiece(arrival);
         }
-    }
-
-    function navigate(index, updatePosition) {
-
-        // Navigate through the game to the desired position.
-        // Update the board.
-
-        var fen = "";
-        var kingSquare = "";
-        var lastMove = "";
-        var lastMoveArrival = "";
-        var lastMoveStart = "";
-        var position = {};
-        if (index < 0 || index > abGame.fenStrings.length - 1) {
-            throw new Error(error.invalid_parameter);
-        }
-        position = abGame.getNthPosition(index);
-        if (updatePosition) {
-            fen = position.fenString;
-            abBoard.loadFEN(fen);
-        }
-        if (abConfig.showLastMove) {
-            abBoard.clearMarks();
-            lastMove = abGame.moves[index - 1];
-            lastMoveStart = lastMove.substr(0, 2);
-            lastMoveArrival = lastMove.substr(3, 2);
-            abBoard.highlightSquares([lastMoveStart, lastMoveArrival]);
-        }
-        if (abConfig.showKingInCheck && position.isInCheck(position.activeColor)) {
-            abBoard.clearMarks();
-            kingSquare = position.getKingSquare(position.activeColor);
-            abBoard.markSquares([kingSquare]);
-        }
-        // navigationIndex = index;
     }
 
     abBoard.onPieceDragEnd = function (start, e) {
@@ -2314,6 +2399,26 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return position.isCheckmate();
         },
 
+        is50MovesDraw: function (n) {
+
+            // Check if the draw by 50 moves rule can be claimed
+            // in the n-th position.
+
+            var position = {};
+            position = abGame.getNthPosition(n);
+            return position.isDrawBy50MovesRule();
+        },
+
+        isInsufficientMaterialDraw: function (n) {
+
+            // Check if the material is insufficient to win
+            // in the n-th position.
+
+            var position = {};
+            position = abGame.getNthPosition(n);
+            return position.isDrawByInsufficientMaterial();
+        },
+
         isInCheck: function (n) {
 
             // Check if the active player is in check in the n-th position.
@@ -2363,7 +2468,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Event fired when a move has been played.
 
             if (typeof callback === "function") {
-                abConfig.onMovePlayed = callback;
+                event.onMovePlayed = callback;
             }
         },
 
