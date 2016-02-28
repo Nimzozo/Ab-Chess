@@ -1,4 +1,4 @@
-Todo list
+## Todo list
 
 - improve the API
   - [ ] ~~setOption method~~
@@ -7,11 +7,11 @@ Todo list
   - [x] add doc navigation
 - improve the examples
   - [x] comment
-  - [ ] fix
+  - [x] fix
   - [ ] add demo
 - improve CSS
   - [x] use BEM method
   - [x] fix anchors
 - code
-  - [ ] clean the code
+  - [ ] clean the code before release
   - [x] insufficient material draws / 50 moves
