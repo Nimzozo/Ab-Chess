@@ -1,5 +1,5 @@
 // AbChess-0.1.js
-// 2016-02-28
+// 2016-02-29
 // Copyright (c) 2016 Nimzozo
 
 // TODO :
@@ -2189,10 +2189,12 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         }
         if (abConfig.markLastMove) {
             abBoard.clearMarks();
-            lastMove = abGame.moves[index - 1];
-            lastMoveStart = lastMove.substr(0, 2);
-            lastMoveArrival = lastMove.substr(3, 2);
-            abBoard.highlightSquares([lastMoveStart, lastMoveArrival]);
+            if (index > 0) {
+                lastMove = abGame.moves[index - 1];
+                lastMoveStart = lastMove.substr(0, 2);
+                lastMoveArrival = lastMove.substr(3, 2);
+                abBoard.highlightSquares([lastMoveStart, lastMoveArrival]);
+            }
         }
         if (abConfig.markKingInCheck && position.isInCheck(position.activeColor)) {
             abBoard.clearMarks();
