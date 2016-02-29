@@ -1,0 +1,36 @@
+
+.code-title {
+    border: 2px black solid;
+    padding: 4px;
+    background-color: gainsboro;
+}
+
+.code {
+    display: block;
+    margin-top: 2px;
+    margin-bottom: 8px;
+    background-color: black;
+    color: snow;
+    white-space: pre-wrap;
+    padding: 10px;
+}
+
+pre {
+    display: inline;
+}
+
+.blue {
+    color: dodgerblue
+}
+
+.number {
+    color: lightsteelblue;
+}
+
+.pink {
+    color: darksalmon;
+}
+
+.comment {
+    color: forestgreen;
+}

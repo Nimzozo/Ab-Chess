@@ -1,0 +1,87 @@
+#navigation-container {
+    width: 20%;
+}
+
+.inline-block {
+    display: inline-block;
+    vertical-align: top;
+    max-width: 80%;
+}
+
+#navigation {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    margin: 80px auto;
+    overflow: auto;
+}
+
+ul {
+    background-color: slategrey;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+.example-link {
+    display: block;
+    text-decoration: none;
+    color: white;
+    padding: 4px;
+    padding-right: 40px;
+}
+
+.example-link:hover {
+    background-color: darkslategrey;
+}
+
+
+h1, h2 {
+    color: palegoldenrod;
+    background-color: darkslategrey;
+    font-family: Cambria, Cochin, Georgia, Times, Times New Roman, serif;
+    padding: 4px;
+}
+
+table {
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+tr:hover {
+    background-color: palegreen;
+}
+
+th {
+    background-color: gainsboro;
+}
+
+th, td {
+    border: 1px black solid;
+    padding: 8px;
+    text-align: left;
+}
+
+.detail-link {
+    text-decoration: none;
+    color: blue;
+}
+
+.detail-link:hover {
+    text-decoration: underline;
+}
+
+.method {
+    border-top: 2px solid grey;
+    margin: 20px 0;
+}
+
+.method:hover {
+    background-color: beige;
+}
+
+.anchor {
+    visibility: hidden;
+    position: relative;
+    top: -80px;
+}

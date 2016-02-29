@@ -1,0 +1,55 @@
+#main-header {
+    background-color: slategrey;
+    background-image: url("../images/chess-vectors.png");
+    text-align: center;
+    padding: 20px;
+}
+
+#main-header__shorter {
+    width: 72%;
+    margin: 40px auto;
+}
+
+h1 {
+    color: palegoldenrod;
+    font-family: 'Trocchi', serif;
+    font-size: 45px;
+    line-height: 48px;
+    margin: 80px;
+}
+
+h2 {
+    color: palegoldenrod;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 28px;
+    line-height: 32px;
+    margin: 40px;
+}
+
+#button-link {
+    padding: 20px;
+    background-color: darkgoldenrod;
+    color: white;
+    text-decoration: none;
+    font-size: 20px;
+}
+
+#button-link:hover {
+    background-color: goldenrod;
+}
+
+#introduction {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+#left-container, #right-container {
+    width: 50%;
+    display: inline-block;
+    vertical-align: top;
+    position: relative;
+}
+
+.container__shorter {
+    width: 90%;
+    margin: 40px auto;
+}
