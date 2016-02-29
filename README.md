@@ -9,7 +9,7 @@ An object oriented chess API written in JavaScript, CSS, HTML.
 
 Available demo  : http://nimzozo.olympe.in/demo/demo.html
 
-![screenshot](https://github.com/Nimzozo/Ab-Chess/blob/master/screenshot.png)
+![screenshot](https://github.com/Nimzozo/Ab-Chess/blob/master/images/screenshot.png)
 
 ## Planned features
 
