@@ -36,7 +36,7 @@ More features will follow.
 
 ## Documentation
 
-See the provisional [AbChess API documentation](https://github.com/Nimzozo/ab-chess/blob/master/js/abChess-0.1/api-reference.md) for more informations.
+See the provisional [AbChess API documentation](https://github.com/Nimzozo/Ab-Chess/blob/master/api-reference.md) for more informations.
 
 ## License
 
