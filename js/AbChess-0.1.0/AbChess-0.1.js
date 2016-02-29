@@ -2342,11 +2342,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Flip the board.
 
             abBoard.isFlipped = !abBoard.isFlipped;
-            requestAF(function () {
-                while (abBoard.container.hasChildNodes()) {
-                    abBoard.container.removeChild(abBoard.container.lastChild);
-                }
-            });
+            while (abBoard.container.hasChildNodes()) {
+                abBoard.container.removeChild(abBoard.container.lastChild);
+            }
             abBoard.draw();
         },
 
