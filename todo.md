@@ -1,7 +1,7 @@
 ## Todo list
 
 - improve the API
-  - ~~setOption method~~
+  - [ ] ~~setOption method~~
   - [ ] more options / methods
   - [ ] improve the documentation
   - [x] add doc navigation
