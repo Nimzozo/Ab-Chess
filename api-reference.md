@@ -1,5 +1,7 @@
 # Class AbChess
 
+#### :warning: _Provisional doc. Many changes will be done._
+
 The AbChess class contructs an object to manage chess data as well as render a board.
 
 
