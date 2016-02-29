@@ -2,9 +2,6 @@
 // 2016-02-29
 // Copyright (c) 2016 Nimzozo
 
-// TODO :
-// - find the best way to fix "forced sync layout"
-
 /*global
     window
 */
@@ -120,13 +117,13 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
     // RAF
 
-    // var requestAF = window.requestAnimationFrame ||
-    //     window.webkitRequestAnimationFrame ||
-    //     window.mozRequestAnimationFrame ||
-    //     window.oRequestAnimationFrame ||
-    //     function (callback) {
-    //         return window.setTimeout(callback, 1000 / 60);
-    //     };
+    var requestAF = window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        function (callback) {
+            return window.setTimeout(callback, 1000 / 60);
+        };
 
     // -------------------------------------------------------------------------
 
@@ -1269,24 +1266,20 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             if (!square.isEmpty()) {
                 square.piece.remove();
             }
-            // requestAF(function () {
             square.div.appendChild(the_piece.div);
             square.piece = the_piece;
             the_piece.square = square;
-            // });
         };
 
         the_piece.remove = function () {
 
             // Remove the piece from the square.
 
-            // requestAF(function () {
             if (the_piece.square === null) {
                 return;
             }
             the_piece.square.div.removeChild(the_piece.div);
             the_piece.square.piece = null;
-            // });
         };
 
         return the_piece;
@@ -1397,9 +1390,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var className = "";
             the_square.isHighlighted = !the_square.isHighlighted;
             className = the_square.getClassName();
-            // requestAF(function () {
-            the_square.div.className = className;
-            // });
+            requestAF(function () {
+                the_square.div.className = className;
+            });
         };
 
         the_square.isEmpty = function () {
@@ -1417,9 +1410,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var className = "";
             the_square.isMarked = !the_square.isMarked;
             className = the_square.getClassName();
-            // requestAF(function () {
-            the_square.div.className = className;
-            // });
+            requestAF(function () {
+                the_square.div.className = className;
+            });
         };
 
         the_square.overfly = function () {
@@ -1430,9 +1423,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var className = "";
             the_square.isOverflown = !the_square.isOverflown;
             className = the_square.getClassName();
-            // requestAF(function () {
-            the_square.div.className = className;
-            // });
+            requestAF(function () {
+                the_square.div.className = className;
+            });
         };
 
         the_square.select = function () {
@@ -1443,9 +1436,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var className = "";
             the_square.isSelected = !the_square.isSelected;
             className = the_square.getClassName();
-            // requestAF(function () {
-            the_square.div.className = className;
-            // });
+            requestAF(function () {
+                the_square.div.className = className;
+            });
         };
 
         return the_square;
@@ -1520,11 +1513,10 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 the_board.onPromotionChose(choice);
             }
             the_board.pendingMove = null;
-            the_board.clickablePieces = config.clickable;
-            the_board.draggablePieces = config.draggable;
-            // requestAF(function () {
-            the_board.promotionDiv.style.display = "none";
-            // });
+            the_board.unlock();
+            requestAF(function () {
+                the_board.promotionDiv.style.display = "none";
+            });
         };
 
         the_board.createSquares = function () {
@@ -1630,10 +1622,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     rowNumber += 1;
                 }
             }
-            // requestAF(function () {
             the_board.container.appendChild(squaresDiv);
             squaresDiv.appendChild(the_board.promotionDiv);
-            // });
             if (the_board.notationBorder) {
                 bottomBorder = document.createElement("DIV");
                 bottomBorder.className = css.bottom_border;
@@ -1664,10 +1654,10 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     rightBorder.appendChild(borderFragment);
                     rowNumber += 1;
                 }
-                // requestAF(function () {
-                the_board.container.appendChild(rightBorder);
-                the_board.container.appendChild(bottomBorder);
-                // });
+                requestAF(function () {
+                    the_board.container.appendChild(rightBorder);
+                    the_board.container.appendChild(bottomBorder);
+                });
             }
         };
 
@@ -1677,14 +1667,14 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             squares.forEach(function (name) {
                 var square = the_board.squares[name];
-                // requestAF(function () {
-                if (square.hasCircle) {
-                    square.div.removeChild(square.canvas);
-                } else {
-                    square.div.appendChild(square.canvas);
-                }
-                square.hasCircle = !square.hasCircle;
-                // });
+                requestAF(function () {
+                    if (square.hasCircle) {
+                        square.div.removeChild(square.canvas);
+                    } else {
+                        square.div.appendChild(square.canvas);
+                    }
+                    square.hasCircle = !square.hasCircle;
+                });
             });
         };
 
@@ -1756,6 +1746,14 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 square = the_board.squares[squareName];
                 piece.put(square);
             });
+        };
+
+        the_board.lock = function () {
+
+            // Lock the pieces.
+
+            the_board.clickablePieces = false;
+            the_board.draggablePieces = false;
         };
 
         the_board.markSquares = function (squares) {
@@ -1869,11 +1867,18 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 promotionButton.addEventListener("click", the_board.clickPromotionHandler);
                 the_board.promotionDiv.appendChild(promotionButton);
             });
-            the_board.clickablePieces = false;
-            the_board.draggablePieces = false;
-            // requestAF(function () {
-            the_board.promotionDiv.style.display = "block";
-            // });
+            the_board.lock();
+            requestAF(function () {
+                the_board.promotionDiv.style.display = "block";
+            });
+        };
+
+        the_board.unlock = function () {
+
+            // Unlock the pieces.
+
+            the_board.clickablePieces = config.clickable;
+            the_board.draggablePieces = config.draggable;
         };
 
         return the_board;
@@ -2178,14 +2183,21 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         var lastMove = "";
         var lastMoveArrival = "";
         var lastMoveStart = "";
+        var maxIndex = 0;
         var position = {};
-        if (index < 0 || index > abGame.fenStrings.length - 1) {
+        maxIndex = abGame.fenStrings.length - 1;
+        if (index < 0 || index > maxIndex) {
             throw new Error(error.invalid_parameter);
         }
         position = abGame.getNthPosition(index);
         if (updatePosition) {
             fen = position.fenString;
             abBoard.loadFEN(fen);
+            if (index < maxIndex) {
+                abBoard.lock();
+            } else {
+                abBoard.unlock();
+            }
         }
         if (abConfig.markLastMove) {
             abBoard.clearMarks();
@@ -2299,6 +2311,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
     abBoard.onSquareClick = function (clickedSquare) {
         if (abBoard.selectedSquare === null) {
             if (!abBoard.squares[clickedSquare].isEmpty()) {
+
                 selectPiece(clickedSquare);
             }
         } else {
@@ -2329,11 +2342,12 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Flip the board.
 
             abBoard.isFlipped = !abBoard.isFlipped;
-            // requestAF(function () {
-            while (abBoard.container.hasChildNodes()) {
+            function removeLastChild() {
                 abBoard.container.removeChild(abBoard.container.lastChild);
             }
-            // });
+            while (abBoard.container.hasChildNodes()) {
+                requestAF(removeLastChild);
+            }
             abBoard.draw();
         },
 
