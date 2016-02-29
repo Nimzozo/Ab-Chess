@@ -1,5 +1,5 @@
 window.addEventListener("load", function () {
-    var abChess = new AbChess("chessboard");
+    var abChess;
     var blackSpan = document.getElementById("blackPlayer");
     var checkInfo = document.getElementById("checkInfo");
     var currentPositionIndex = 0;
@@ -11,6 +11,9 @@ window.addEventListener("load", function () {
     var lastMoveInfo = document.getElementById("lastMoveInfo");
     var moves = [];
     var nextButton = document.getElementById("nextButton");
+    var options = {
+        imagesPath: "../images/wikipedia/"
+    };
     var pgnButton = document.getElementById("pgnButton");
     var pgnMoves = [];
     var previousButton = document.getElementById("previousButton");
@@ -19,6 +22,8 @@ window.addEventListener("load", function () {
     var scheduled_raf = false;
     var turnInfo = document.getElementById("turnInfo");
     var whiteSpan = document.getElementById("whitePlayer");
+
+    abChess = new AbChess("chessboard", options);
 
     function addMove(pgnMove, index) {
 
