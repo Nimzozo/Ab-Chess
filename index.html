@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>AB-Chess</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="../AbChess-0.1/abChess-style.css">
+    <link rel="stylesheet" href="css/colorize.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <header id="fixed-header">
+        <div>
+            <div>
+                <a href="index.html" id="selected-tab">AB-Chess</a>
+                <a href="doc.html">Documentation</a>
+                <a href="download.html">Download</a>
+            </div>
+            <div class="right">
+                <a href="https://github.com/Nimzozo/Ab-Chess">GitHub</a>
+            </div>
+        </div>
+    </header>
+    <header id="main-header">
+        <div>
+            <h1>AB-Chess</h1>
+            <h2>A Javascript library for building chessboards</h2>
+            <div>
+                <a id="button-link" href="ab-chess/test.zip" type="application/zip">Download AbChess-0.1</a>
+            </div>
+        </div>
+    </header>
+    <div id="main-container">
+        <div id="introduction">
+            <p>
+                You want to embed a chessboard for you website ? You need to display chessgames ?
+            </p>
+            <p>
+                AbChess provides you the tools to do it easily.
+                <ul>
+                    <li>
+                        Draw a chessboard
+                    </li>
+                    <li>
+                        Make it interactive
+                    </li>
+                    <li>
+                        Get the legal moves
+                    </li>
+                    <li>
+                        Play a game and store it
+                    </li>
+                </ul>
+            </p>
+        </div>
+        <div>
+            <div id="left-container">
+                <div>
+                    <span>HTML</span>
+                    <code>
+    &lt;div id="chessboard"&gt;&lt;/div&gt;
+                    </code>
+                </div>
+                <div>
+                    <span>Javascript</span>
+                    <code>
+    var abChess;
+
+    var options = {
+
+        imagesPath: "../../images/wikipedia/"
+
+    };
+
+    abChess = new AbChess("chessboard", options);
+
+    abChess.draw();
+
+    abChess.setFEN(abChess.DEFAULT_FEN);
+                    </code>
+                </div>
+            </div><!-- width divided
+        --><div id="right-container">
+                <div>
+                    <div id="chessboard"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div id="footer-inside">
+            <div>
+                &copy; 2016 <a href="https://github.com/Nimzozo">Nimzozo</a>
+            </div><!--
+            --><div class="right">
+                Released under the <a href="https://github.com/Nimzozo/Ab-Chess/blob/master/LICENSE">MIT license</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../AbChess-0.1/AbChess-0.1.js"></script>
+    <script src="js/colorize.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>
