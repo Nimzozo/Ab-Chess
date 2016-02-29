@@ -13,5 +13,5 @@
   - [x] use BEM method
   - [x] fix anchors
 - code
-  - [ ] clean the code before release
+  - [x] clean the code before release
   - [x] insufficient material draws / 50 moves

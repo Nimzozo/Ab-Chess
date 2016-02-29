@@ -1,6 +1,6 @@
-# Ab-chess
+# Ab-Chess
 
-An object oriented chess API written in JavaScript, CSS, HTML. 
+A JavaScript chess API.
 
 :warning: **Under development**
 
