@@ -2,7 +2,7 @@
 
 - improve the API
   - [ ] ~~setOption method~~
-  - [ ] more options / methods
+  - [x] more options / methods
   - [ ] improve the documentation
   - [x] add doc navigation
 - improve the examples
