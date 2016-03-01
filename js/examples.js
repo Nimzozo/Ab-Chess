@@ -258,7 +258,7 @@ window.addEventListener("load", function () {
                 abChess.draw();
                 abChess.setFEN();
                 abChess.onMovePlayed(function () {
-                    pgnParagraph.innerText = abChess.getPGN(false);
+                    pgnParagraph.innerText = abChess.getPGN();
                 });
             },
             html: "<div id=\"chessboard\"></div>\n<div>\n  <p id=\"pgnParagraph\"></p>\n</div>",
@@ -355,7 +355,7 @@ window.addEventListener("load", function () {
                 function updateAndPlay() {
                     movesCount += 1;
                     fenParagraph.innerText = abChess.getFEN(movesCount);
-                    pgnParagraph.innerText = abChess.getPGN(true);
+                    pgnParagraph.innerText = abChess.getPGN();
                     setTimeout(function () {
                         playRandomMove(movesCount);
                     }, 500);

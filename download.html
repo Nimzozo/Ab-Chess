@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>AB-Chess- Download</title>
+    <title>AB-Chess - Download</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/download.css">
@@ -26,8 +26,12 @@
     <div id="main-container">
 
         <div id="sub-main">
-            <div>
-                <a href="">Abchess v0.2 [Under development]</a>
+
+            <div class="release">
+                <h2 class="release__title">
+                    AbChess version 0.2.0 [Under development]
+                    <!--<a class="release__link" href="#">Download</a>-->
+                </h2>
                 <p>Planned next release.</p>
                 <h4>Planned improvements :</h4>
                 <ul>
@@ -36,25 +40,42 @@
                     <li>PGN comments</li>
                 </ul>
             </div>
-            <div>
-                <a href="#">Download Abchess v0.1</a>
+
+            <div class="release">
+                <h2 class="release__title">
+                    AbChess version 0.1.0
+                    <a class="release__link" href="">Download</a>
+                </h2>
                 <p>Initial release. Date : 2016.03</p>
                 <h4>Main features :</h4>
                 <ul>
                     <li>Draw a chessboard</li>
                     <li>Flip the chessboard</li>
-                    <li>Test legal chess moves</li>
-                    <li>Highlight
+                    <li>Play a move</li>
                         <ul>
-                            <li>King when attacked</li>
+                            <li>By clicking</li>
+                            <li>By dragging</li>
+                            <li>Programmatically</li>
+                        </ul>
+                    <li>Squares highlighting
+                        <ul>
+                            <li>King in check</li>
                             <li>Last move</li>
+                            <li>Legal move possibilities</li>
                             <li>Overflown square</li>
                             <li>Selected piece</li>
-                            <li>Legal move possibilities</li>
                         </ul>
                     </li>
-                    <li>Navigate</li>
+                    <li>Test legal chess moves</li>
+                    <li>Export a position</li>
+                    <li>Import a position</li>
+                    <li>Navigate in a game</li>
+                    <li>Export a game</li>
+                    <li>Import a game</li>
                 </ul>
+                <p>
+                    See the <a href="demo/demo.html">demo</a> build during the development phase.
+                </p>
             </div>
         </div>
 

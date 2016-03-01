@@ -138,6 +138,7 @@ window.addEventListener("load", function () {
     function downloadPGN() {
 
         var black = "";
+        var body;
         var day = "";
         var month = "";
         var pgnNode;
@@ -162,7 +163,11 @@ window.addEventListener("load", function () {
         pgn = abChess.getPGN();
         pgnNode.innerText = pgn;
         pgnWindow = window.open();
-        pgnWindow.document.body.appendChild(pgnNode);
+        try {
+            pgnWindow.document.write(pgnNode.outerHTML);
+        } catch (err) {
+            alert(err.name);
+        }
     }
 
     downloadButton.addEventListener("click", downloadPGN);
