@@ -444,26 +444,29 @@ window.addEventListener("load", function () {
         example.func();
     }
 
-    var exampleLinks = document.getElementsByClassName("example-link");
-    var linksArray = Object.keys(exampleLinks).filter(function (key) {
-        var regexNumber = /\d+/;
-        return regexNumber.test(Object.keys(exampleLinks)[key]);
-    });
-    linksArray.forEach(function (key) {
-        var exampleLink = exampleLinks[key];
-        var exampleNumber = 0;
-        var index = 0;
-        index = exampleLink.id.indexOf("-");
-        exampleNumber = Number(exampleLink.id.substr(index + 1));
-        exampleLink.addEventListener("click", function () {
-            var selectedLinks = document.getElementsByClassName("example-link_selected");
+    var linkClass = "example-link";
+    var linkNumber = 0;
+    var linksCount = 15;
+    var selectedLinkClass = "example-link_selected";
+
+    function addClickHandler(linkIndex) {
+        var link;
+        link = document.getElementById("example-" + linkIndex);
+        link.addEventListener("click", function () {
+            var selectedLinks;
+            selectedLinks = document.getElementsByClassName(selectedLinkClass);
             if (selectedLinks.length > 0) {
-                selectedLinks[0].className = "example-link";
+                selectedLinks[0].className = linkClass;
             }
-            exampleLink.className += " example-link_selected";
-            loadExample(exampleNumber);
+            link.className += " " + selectedLinkClass;
+            loadExample(linkIndex);
         });
-    });
+    }
+
+    while (linkNumber < linksCount) {
+        linkNumber += 1;
+        addClickHandler(linkNumber);
+    }
 
     loadExample(1);
 });
