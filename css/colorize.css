@@ -1,21 +1,22 @@
 
 .code-title {
-    border: 2px black solid;
-    padding: 4px;
-    background-color: gainsboro;
+    display: inline-block;
+    padding: 6px;
+    background-color: lightgrey;
 }
 
 .code {
     display: block;
-    margin-top: 2px;
-    margin-bottom: 8px;
-    background-color: black;
-    color: snow;
+    background-color: lavender;
     white-space: pre-wrap;
+    font-family: Monaco, monospace;
+    font-size: 98%;
     padding: 10px;
+    margin-bottom: 10px;
 }
 
 pre {
+    font-family: Monaco, monospace;
     display: inline;
 }
 
@@ -24,7 +25,7 @@ pre {
 }
 
 .number {
-    color: lightsteelblue;
+    color: steelblue;
 }
 
 .pink {

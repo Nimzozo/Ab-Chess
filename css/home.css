@@ -12,23 +12,22 @@
 
 h1 {
     color: palegoldenrod;
-    font-family: 'Trocchi', serif;
+    font-family: Georgia, 'Times New Roman', Times, serif;
     font-size: 45px;
-    line-height: 48px;
     margin: 80px;
 }
 
 h2 {
     color: palegoldenrod;
-    font-family: 'Source Sans Pro', sans-serif;
-    font-size: 28px;
-    line-height: 32px;
-    margin: 40px;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 30px;
+    margin: 60px;
 }
 
 #button-link {
     padding: 20px;
     background-color: darkgoldenrod;
+    border: 1px solid white;
     color: white;
     text-decoration: none;
     font-size: 20px;
@@ -39,7 +38,7 @@ h2 {
 }
 
 #introduction {
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 70%;
 }
 
 #left-container, #right-container {
@@ -51,5 +50,5 @@ h2 {
 
 .container__shorter {
     width: 90%;
-    margin: 40px auto;
+    margin: 20px auto;
 }
