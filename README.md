@@ -2,9 +2,7 @@
 
 **A JavaScript chess API.**
 
-:warning: **Under development**
-
-:link: [Todo list before initial release.](https://github.com/Nimzozo/Ab-Chess/blob/master/todo.md)
+:link: [AB-Chess](http://nimzozo.olympe.in/)
 
 ## Planned features
 
