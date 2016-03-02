@@ -75,10 +75,6 @@ th, td {
     margin: 20px 0;
 }
 
-.method:hover {
-    background-color: beige;
-}
-
 .anchor {
     visibility: hidden;
     position: relative;

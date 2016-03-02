@@ -39,12 +39,25 @@ h2 {
 
 #introduction {
     margin: auto;
-    text-align: center;
 }
 
-ul {
-    list-style-type: square;
-    list-style-position: inside;
+.introduction__block {
+    width: 33%;
+}
+
+.introduction__title {
+    text-transform: uppercase;
+    margin: 24px;
+    font-family: Cambria, Cochin, Georgia, Times, Times New Roman, serif
+}
+
+.introduction__paragraph {
+    text-align: justify;
+    margin: 24px;
+}
+
+hr {
+    width: 50%;
 }
 
 #left-container, #right-container {
