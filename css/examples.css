@@ -13,6 +13,14 @@ ul {
     margin: 10px auto;
 }
 
+.list {
+    list-style-type: square;
+}
+
+.list__item {
+    list-style-position: inside;
+}
+
 .sub-item {
     list-style-type: none;
     background-color: slategrey;

@@ -38,7 +38,11 @@ h2 {
 }
 
 #introduction {
-    font-size: 70%;
+    font-size: 90%;
+}
+
+ul {
+    list-style-type: square;
 }
 
 #left-container, #right-container {

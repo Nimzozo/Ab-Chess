@@ -25,5 +25,13 @@
 
 .release__link:hover {
     text-decoration: underline;
+}
 
+.list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sub-list {
+    list-style-type: square;
 }
