@@ -20,7 +20,7 @@ h1 {
 h2 {
     color: palegoldenrod;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    font-size: 30px;
+    font-size: 24px;
     margin: 60px;
 }
 
@@ -38,11 +38,13 @@ h2 {
 }
 
 #introduction {
-    font-size: 90%;
+    margin: auto;
+    text-align: center;
 }
 
 ul {
     list-style-type: square;
+    list-style-position: inside;
 }
 
 #left-container, #right-container {
