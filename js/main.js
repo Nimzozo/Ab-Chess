@@ -3,5 +3,4 @@ window.addEventListener("load", function () {
     abChess = new AbChess("chessboard");
     abChess.draw();
     abChess.setFEN();
-
 });

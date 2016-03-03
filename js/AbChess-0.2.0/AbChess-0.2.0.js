@@ -11,7 +11,7 @@
 */
 
 // Todo :
-// - export variations : getPGN()
+// - export variations : getPGN() *
 // - import variations : setPGN()
 // - modify variations : add, delete moves in the game
 
@@ -1971,6 +1971,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Return the PGN string.
 
             var charRowCount = 0;
+            var limit = 80;
             var lineFeed = "\n";
             var pgn = "";
             var result = "";
@@ -1980,7 +1981,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             });
             pgn += lineFeed;
             the_game.pgnMoves.forEach(function (move, index) {
-                var limit = 80;
                 var moveNumber = "";
                 if (index % 2 === 0) {
                     moveNumber = (index / 2 + 1) + ".";
@@ -1997,6 +1997,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     charRowCount = 0;
                 }
                 pgn += move + " ";
+                the_game.variations.forEach(function (variation) {
+                    if (index === variation.moveIndex) {
+                        pgn += variation.toString();
+                    }
+                });
             });
             result = the_game.getInfo("Result");
             pgn += result;
@@ -2024,6 +2029,19 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             throw new Error(error.invalid_parameter);
         };
 
+        the_game.getVariations = function (moveIndex) {
+
+            // Return an array of the variations for a move index.
+
+            var variations = [];
+            the_game.variations.forEach(function (variation) {
+                if (variation.moveIndex === moveIndex) {
+                    variations.push(variation);
+                }
+            });
+            return variations;
+        };
+
         the_game.isInCheck = function (n) {
 
             // Check if the active player is in check in the n-th position.
@@ -2049,8 +2067,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
         the_game.play = function (move, promotion) {
 
-            // Play a move and store the new FEN in the Chessgame object
-            // if it's legal. Then returns the new FEN.
+            // Play a move and store the new FEN in the chessgame object
+            // if it's legal.
+            // Then return the new FEN.
 
             var currentPosition = {};
             var isDrawn = false;
@@ -2131,6 +2150,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 pgn = pgn.replace(regex_comment, "");
             }
             while (regex_variation.test(pgn)) {
+                alert(pgn.match(regex_variation));
                 pgn = pgn.replace(regex_variation, "");
             }
             pgn = pgn.replace(/\s{2,}/gm, " ");
@@ -2161,6 +2181,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         };
 
         the_game.setTag = function (tag, value) {
+
+            // Set a game tag.
+
             tags[tag] = value;
         };
 
@@ -2230,13 +2253,47 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             length: 1,
             moveIndex: moveIndex,
             moves: [firstMove],
-            pgnMoves: [firstPGN]
+            pgnMoves: [firstPGN],
+            variations: []
         };
 
-        the_variation.addMove = function (move, movePGN) {
+        the_variation.addMove = function (move, movePGN, fen) {
 
-            // Add a move to the end of the variation.
+            // Add a move to the variation.
 
+            the_variation.fenStrings.push(fen);
+            the_variation.moves.push(move);
+            the_variation.pgnMoves.push(movePGN);
+            the_variation.length += 1;
+        };
+
+        the_variation.toString = function () {
+
+            // Return the PGN string of the variation.
+
+            var pgn = "";
+            pgn += "(";
+            the_variation.pgnMoves.forEach(function (pgnMove, index) {
+                var moveIndex = 0;
+                var moveNumber = 0;
+                var strNumber = "";
+                moveIndex = the_variation.moveIndex + index;
+                if (moveIndex % 2 === 0) {
+                    moveNumber = moveIndex / 2 + 1;
+                    strNumber = moveNumber + ". ";
+                } else if (index === 0) {
+                    moveNumber = (moveIndex + 1) / 2;
+                    strNumber = moveNumber + "... ";
+                }
+                pgn += strNumber + pgnMove + " ";
+                the_variation.variations.forEach(function (variation) {
+                    if (moveIndex === variation.moveIndex) {
+                        pgn += variation.toString();
+                    }
+                });
+            });
+            pgn += ")";
+            return pgn;
         };
 
         return the_variation;
@@ -2412,6 +2469,15 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
     // -------------------------------------------------------------------------
     // Public api.
+
+    var v = new Variation("111", 11, "move", "pgn", "fen");
+    v.addMove("move", "pgn2");
+    v.addMove("move", "pgn3");
+    var v2 = new Variation("1111", 12, "move", "pgn", "fen");
+    v2.addMove("move", "pgn2");
+    v2.addMove("move", "pgn3");
+    v.variations.push(v2);
+    alert(v.toString());
 
     return {
         DEFAULT_FEN: chess_value.default_fen,

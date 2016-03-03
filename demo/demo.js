@@ -96,7 +96,7 @@ window.addEventListener("load", function () {
         } else {
             checkInfo.innerText = "";
         }
-        moves = abChess.getGameMoves(false);
+        moves = abChess.getGameMoves();
         lastMove = moves[currentPositionIndex - 1];
         if (lastMove === undefined) {
             lastMoveInfo.innerText = "Last move : -";
@@ -189,7 +189,7 @@ window.addEventListener("load", function () {
             return;
         }
         abChess.setPGN(pgn);
-        pgnMoves = abChess.getGameMoves(true);
+        pgnMoves = abChess.getGameMovesPGN();
         pgnMoves.forEach(function (move, index) {
             count += 1;
             // requestAnimationFrame(function () {
@@ -243,7 +243,7 @@ window.addEventListener("load", function () {
     abChess.onMovePlayed(function () {
         var index = 0;
         var pgnMove = "";
-        pgnMoves = abChess.getGameMoves(true);
+        pgnMoves = abChess.getGameMovesPGN();
         index = pgnMoves.length - 1;
         pgnMove = pgnMoves[index];
         addMove(pgnMove, index);
