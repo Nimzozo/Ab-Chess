@@ -8,7 +8,7 @@
 
 ## License
 
-[MIT License](https://github.com/Nimzozo/ab-chess/blob/master/LICENSE)
+[MIT License](https://github.com/Nimzozo/ab-chess/blob/master/LICENSE.txt)
 
 ## Miscellaneous
 
