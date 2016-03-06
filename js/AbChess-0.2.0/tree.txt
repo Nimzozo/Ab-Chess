@@ -7,7 +7,25 @@
 (19...Qd5 20.Qxd5 exd5 (20...Qd5 21.Qxd5 exd5) 21.Nb6 Bh3 22.Nxa8 Nf3+
  23.Kh1 Bxf1 24.Rxf1 Rxa8 25.Rd1±)
 
-
-
  (....(...)...(...(...)...(..)..)....)...(...)
  1....2...2...3...4...4...5..5..3....1...6...6
+
+[Event "Interclubs FRA"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Calistri, Tristan"]
+[Black "Bauduin, Etienne"]
+[Result "1-0"]
+
+1.e4 c5 2.Nf3 e6 3.d4 cxd4 4.Nxd4 Nc6 5.Nc3 a6 6.Be2 Qc7 7.O-O Nf6 8.Be3 Bb4
+9.Na4 O-O 10.c4 Bd6 11.g3 Nxe4 12.Bf3 f5 13.Bxe4 fxe4 14.c5 Be7 {Les Noirs ont
+un pion d'avance mais de gros problèmes pour mettre leur Fc8 et leur Ta8 en jeu}
+15.Qg4 Ne5 16.Qxe4 d5 17.cxd6 Bxd6 18.Rac1 Qa5 19.Nb3 +/- {D} { Les blancs ont
+récupéré leur pion et toutes leurs pièces sont mobilisées  }
+19...Qb4
+    (19...Qd5 (19...Nf3+ 20.Kg2 Qh5) 20.Qxd5 exd5 21.Nb6 Bh3 22.Nxa8 Nf3+ 23.Kh1 Bxf1 24.Rxf1 Rxa8 25.Rd1±)
+20.Qxb4 Bxb4 21.Nb6 $18 {Les noirs n'arriveront jamais à sortir leur Fc8}
+21...Rb8 22.Bc5 Bxc5
+    (22...Nd3 23.Bxf8 Nxc1 24.Rxc1 Bxf8 25.Rxc8 Rxc8 26.Nxc8+-)
+23.Nxc5 Rd8 24.Rfd1 Re8 25.Ne4 Nf7 26.Rc7 Kf8 27.Rdc1 1-0
