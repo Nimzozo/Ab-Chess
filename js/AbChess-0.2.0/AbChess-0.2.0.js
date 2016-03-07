@@ -1,5 +1,5 @@
 // AbChess-0.2.0.js
-// 2016-03-06
+// 2016-03-07
 // Copyright (c) 2016 Nimzozo
 
 /*global
@@ -2353,7 +2353,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
     // -------------------------------------------------------------------------
 
-    function Variation(firstFEN, firstPGN, id) {
+    function Variation(parent, firstFEN, firstPGN, id) {
 
         // Variation constructor.
         // A variation is an object with the properties :
@@ -2388,6 +2388,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             length: 1,
             startIndex: startIndex,
             moves: [firstMove],
+            parent: parent,
             pgnMoves: [firstPGN],
             variations: []
         };
@@ -2586,8 +2587,10 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                         pgnMove = currentFragment.match(regexPGNMove)[0];
                         pgnMove = pgnMove.replace(regexPGNMoveNumber, "");
                         if (startingVariation) {
-                            firstFEN = game.fenStrings[mainMovesCount - 1];
-                            currentVariation = new Variation(firstFEN, pgnMove);
+                            firstFEN = (level === 1)
+                                ? game.fenStrings[mainMovesCount - 1]
+                                : firstFEN = parentVariation.fenStrings[parentVariation.length - 1];
+                            currentVariation = new Variation(parentVariation, firstFEN, pgnMove, "no id");
                             if (level > 1) {
                                 parentVariation.variations.push(currentVariation);
                             } else {
@@ -2607,7 +2610,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                         tokenFound = true;
                     } else if (currentFragment.indexOf(")") > -1) {
                         level -= 1;
-                        currentVariation = parentVariation;
+                        currentVariation = currentVariation.parent;
                         tokenFound = true;
                     }
                 }

@@ -1,0 +1,28 @@
+#main-container {
+    width: 72%;
+    margin: auto;
+}
+
+.inline-block {
+    display: inline-block;
+    vertical-align: top;
+}
+
+#left-container, #right-container {
+    width: 50%;
+}
+
+#pgn-notation {
+    background-color: gainsboro;
+    margin: 10px;
+    padding: 10px;
+}
+
+.pgn-move:hover {
+    cursor: pointer;
+    background-color: orange;
+}
+
+#pgn-move_selected {
+    background-color: palegreen;
+}
