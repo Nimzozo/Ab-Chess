@@ -5,8 +5,11 @@ window.addEventListener("load", function () {
     var options = {
         imagesPath: "../images/wikipedia/"
     };
+    var pgnButton;
     var pgnNotation;
     var pgnSpanClass = "pgn-move";
+    var pgnText;
+    var pgnTextarea;
 
     abChess = new AbChess("chessboard", options);
     abChess.draw();
@@ -16,7 +19,7 @@ window.addEventListener("load", function () {
 
     function selectSpan(index) {
 
-        //
+        // Select a span.
 
         var selectedSpan;
         var selectedSpanClass = "pgn-move_selected";
@@ -63,6 +66,14 @@ window.addEventListener("load", function () {
         selectSpan(moveIndex);
     }
 
+    function updatePGNText() {
+
+        // Update the text PGN.
+
+        pgnText = document.getElementById("pgn-text");
+        pgnText.innerText = abChess.getPGN();
+    }
+
     abChess.onMovePlayed(function () {
         var lastIndex = 0;
         var lastMove = "";
@@ -71,8 +82,32 @@ window.addEventListener("load", function () {
         lastIndex = pgnMoves.length - 1;
         lastMove = pgnMoves[lastIndex];
         addPGNMove(lastMove, lastIndex);
-
+        updatePGNText();
     });
+
+    function importPGN(pgn) {
+
+        // Import a PGN.
+
+        var pgnMoves = [];
+        abChess.setPGN(pgn);
+        pgnMoves = abChess.getGameMovesPGN();
+        pgnMoves.forEach(function (pgnMove, index) {
+           // var variations = [];
+            addPGNMove(pgnMove, index);
+            // variations = abChess.getVariations(index);
+        });
+        updatePGNText();
+    }
+
+    pgnButton = document.getElementById("pgn-button");
+    pgnTextarea = document.getElementById("pgn-textarea");
+    pgnButton.addEventListener("click", function () {
+        var pgn = pgnTextarea.value;
+        importPGN(pgn);
+    });
+
+
 
 
 });

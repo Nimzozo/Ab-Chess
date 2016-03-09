@@ -13,13 +13,37 @@
 
         <div id="left-container" class="inline-block">
 
-            <div id="pgn-notation"></div>
+            <div id="pgn-notation" class="left-container__div"></div>
+
+            <div class="left-container__div">
+                <textarea id="pgn-textarea" placeholder="Paste a PGN here."></textarea>
+                <input type="button" id="pgn-button" value="Import PGN">
+            </div>
+
+            <div id="pgn-text" class="left-container__div"></div>
 
         </div><!-- 50% width divided
 
      --><div id="right-container" class="inline-block">
 
             <div id="chessboard"></div>
+
+            <div id="commands">
+
+                <div>
+                    <input type="button" id="firstButton" value="|<">
+                    <input type="button" id="previousButton" value="<">
+                    <input type="button" id="nextButton" value=">">
+                    <input type="button" id="lastButton" value=">|">
+                    <input type="button" id="flipButton" value="&#8634;">
+                </div>
+
+                <div>
+                    <input type="button" id="resetButton" value="Reset">
+                    <input type="button" id="downloadButton" value="View PGN">
+                </div>
+
+            </div>
 
         </div>
 

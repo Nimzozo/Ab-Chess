@@ -1,5 +1,5 @@
 // AbChess-0.2.0.js
-// 2016-03-07
+// 2016-03-09
 // Copyright (c) 2016 Nimzozo
 
 /*global
@@ -1988,7 +1988,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
     function Chessgame() {
 
         // The Chessgame class constructs a full chess game.
-        // We assume a chessgame is mainly an ordered collection
+        // We assume a chessgame is an ordered collection
         // of FEN positions.
         // A FEN position is a chess position plus some data :
         // active color, castling possibilities, en passant square,
@@ -2157,8 +2157,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var lineFeed = "\n";
             var pgn = "";
             var result = "";
-            Object.keys(tags).forEach(function (tag) {
-                var value = tags[tag];
+            Object.keys(the_game.tags).forEach(function (tag) {
+                var value = the_game.tags[tag];
                 pgn += "[" + tag + " \"" + value + "\"]" + lineFeed;
             });
             pgn += lineFeed;
@@ -2180,7 +2180,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 }
                 pgn += move + " ";
                 the_game.variations.forEach(function (variation) {
-                    if (index === variation.moveIndex) {
+                    if (index === variation.startIndex) {
                         pgn += variation.toString();
                     }
                 });
@@ -2259,36 +2259,40 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             var importedMoves = [];
             var importedTags = [];
+            var pgnObject = {};
             if (!Chessgame.isValidPGN(pgn)) {
                 throw new SyntaxError(error.invalid_pgn);
             }
-            Object.keys(requiredTags).forEach(function (key) {
-                tags[key] = requiredTags[key];
-            });
-            the_game.fenStrings = [chess_value.default_fen];
-            the_game.moves = [];
-            the_game.pgnMoves = [];
-            the_game.tags = tags;
-            importedTags = pgn.match(regexPGNTagPair);
-            importedTags.forEach(function (tagPair) {
-                var tag = "";
-                var value = "";
-                tag = regexPGNTag.exec(tagPair)[1];
-                value = regexPGNTagValue.exec(tagPair)[1];
-                the_game.setTag(tag, value);
-            });
-            while (regexPGNComment.test(pgn)) {
-                pgn = pgn.replace(regexPGNComment, "");
-            }
-            while (regexPGNVariation.test(pgn)) {
-                pgn = pgn.replace(regexPGNVariation, "");
-            }
-            pgn = pgn.replace(/\s{2,}/gm, " ");
-            importedMoves = pgn.match(regexPGNMove);
-            importedMoves.forEach(function (pgnMove) {
-                pgnMove = pgnMove.replace(regexPGNMoveNumber, "");
-                the_game.addPGNMove(pgnMove);
-            });
+            pgnObject = new Pgn(pgn);
+            pgnObject.getGame(the_game);
+
+            // Object.keys(requiredTags).forEach(function (key) {
+            //     tags[key] = requiredTags[key];
+            // });
+            // the_game.fenStrings = [chess_value.default_fen];
+            // the_game.moves = [];
+            // the_game.pgnMoves = [];
+            // the_game.tags = tags;
+            // importedTags = pgn.match(regexPGNTagPair);
+            // importedTags.forEach(function (tagPair) {
+            //     var tag = "";
+            //     var value = "";
+            //     tag = regexPGNTag.exec(tagPair)[1];
+            //     value = regexPGNTagValue.exec(tagPair)[1];
+            //     the_game.setTag(tag, value);
+            // });
+            // while (regexPGNComment.test(pgn)) {
+            //     pgn = pgn.replace(regexPGNComment, "");
+            // }
+            // while (regexPGNVariation.test(pgn)) {
+            //     pgn = pgn.replace(regexPGNVariation, "");
+            // }
+            // pgn = pgn.replace(/\s{2,}/gm, " ");
+            // importedMoves = pgn.match(regexPGNMove);
+            // importedMoves.forEach(function (pgnMove) {
+            //     pgnMove = pgnMove.replace(regexPGNMoveNumber, "");
+            //     the_game.addPGNMove(pgnMove);
+            // });
         }
 
         function setTag(tag, value) {
@@ -2429,8 +2433,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Return the PGN string of the variation.
 
-            var pgn = "";
-            pgn += "(";
+            var str = "(";
             the_variation.pgnMoves.forEach(function (pgnMove, index) {
                 var moveIndex = 0;
                 var moveNumber = 0;
@@ -2443,15 +2446,15 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     moveNumber = (moveIndex + 1) / 2;
                     strNumber = moveNumber + "... ";
                 }
-                pgn += strNumber + pgnMove + " ";
+                str += strNumber + pgnMove + " ";
                 the_variation.variations.forEach(function (variation) {
                     if (moveIndex === variation.startIndex) {
-                        pgn += variation.toString();
+                        str += variation.toString() + " ";
                     }
                 });
             });
-            pgn += ")";
-            return pgn;
+            str = str.substr(0, str.length - 1) + ") ";
+            return str;
         }
 
         the_variation.addMove = addMove;
@@ -2471,7 +2474,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             pgn: pgn
         };
 
-        function getGame() {
+        function loadPGN(game) {
 
             // Create and return the game object.
             // - Add tags
@@ -2480,13 +2483,14 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // - Add comments
 
             var comments = [];
-            var game = {};
             var pgnMoves = [];
             var tags = [];
             var variations = [];
-            game = new Chessgame();
             tags = the_pgn.getTags();
-            game.tags = tags;
+            Object.keys(tags).forEach(function (key) {
+                var value = tags[key];
+                game.setTag(key, value);
+            });
             pgnMoves = the_pgn.getMainMoves();
             pgnMoves.forEach(function (pgnMove) {
                 game.addPGNMove(pgnMove);
@@ -2619,7 +2623,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return variations;
         }
 
-        the_pgn.getGame = getGame;
+        the_pgn.getGame = loadPGN;
         the_pgn.getMainMoves = getMainMoves;
         the_pgn.getTags = getTags;
         the_pgn.getVariations = getVariations;
@@ -2863,6 +2867,15 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return abGame.pgnMoves;
         },
 
+        getGameVariationPGN: function (moveIndex) {
+
+            // Return an array of the moves in an existing variation.
+
+            var exists = abGame.getVariation(moveIndex);
+            abGame
+
+        },
+
         getLastPositionIndex: function () {
 
             // Return the index of the last position of the game.
@@ -3011,9 +3024,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Set the PGN in the game.
 
             abGame.setPGN(pgn);
-        },
-
-        pgn: Pgn
+        }
 
     };
 };

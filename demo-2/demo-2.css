@@ -12,10 +12,18 @@
     width: 50%;
 }
 
+.left-container__div {
+    width: 80%;
+    margin: auto;
+}
+
 #pgn-notation {
-    background-color: gainsboro;
-    margin: 10px;
-    padding: 10px;
+    padding: 4px;
+    margin: 10px auto;
+    border: 1px solid black;
+    font-size: 120%;
+    height: 100px;
+    overflow: auto;
 }
 
 .pgn-move:hover {
@@ -25,4 +33,19 @@
 
 #pgn-move_selected {
     background-color: palegreen;
+}
+
+#pgn-textarea {
+    display: block;
+    height: 100px;
+    width: 100%;
+    margin: 4px auto;
+    border: 1px solid black;
+}
+
+#pgn-button {
+    display: block;
+    width: 100%;
+    margin: 4px auto;
+
 }
