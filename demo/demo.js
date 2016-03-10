@@ -25,6 +25,7 @@ window.addEventListener("load", function () {
 
     abChess = new AbChess("chessboard", options);
 
+
     function addMove(pgnMove, index) {
 
         // Add a move to the scoresheet.
@@ -182,6 +183,10 @@ window.addEventListener("load", function () {
         var pgn = "";
         var pgnTextarea = document.getElementById("pgnTextarea");
         pgn = pgnTextarea.value;
+
+        var g = abChess.pgn(pgn).getGame();
+        alert(g.variations[0]);
+
         if (pgn.trim() === "") {
             return;
         }

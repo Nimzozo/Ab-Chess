@@ -1,5 +1,5 @@
 // AbChess-0.2.0.js
-// 2016-03-09
+// 2016-03-10
 // Copyright (c) 2016 Nimzozo
 
 /*global
@@ -2035,6 +2035,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var n = 0;
             var nextPosition = {};
             var pgnMove = "";
+            var resultTagName = "Result";
             var stringToAdd = "";
             if (!regexMove.test(move)) {
                 throw new SyntaxError(error.invalid_parameter);
@@ -2054,17 +2055,17 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     if (isOver) {
                         stringToAdd = chess_value.checkmate_symbol;
                         if (nextPosition.activeColor === chess_value.black) {
-                            the_game.setTag("Result", chess_value.result_white);
+                            the_game.setTag(resultTagName, chess_value.result_white);
                         } else {
-                            the_game.setTag("Result", chess_value.result_black);
+                            the_game.setTag(resultTagName, chess_value.result_black);
                         }
                     } else {
                         stringToAdd = chess_value.check_symbol;
                     }
                 } else if (isOver) {
-                    the_game.setTag("Result", chess_value.result_draw);
+                    the_game.setTag(resultTagName, chess_value.result_draw);
                 } else if (isDrawn) {
-                    the_game.setTag("Result", chess_value.result_draw);
+                    the_game.setTag(resultTagName, chess_value.result_draw);
                 }
                 pgnMove = currentPosition.getPGNMove(move, promotion, false, stringToAdd);
                 the_game.pgnMoves.push(pgnMove);
@@ -2125,12 +2126,12 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return (moveToCompare === move);
         }
 
-        function checkVariationExistence(id) {
+        function checkVariationExistence(idArray) {
 
             // Return true if a variation exists in the game.
 
             return the_game.variations.some(function (variation) {
-                return (variation.id === id);
+                return (variation.idArray === idArray);
             });
         }
 
@@ -2191,37 +2192,30 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         }
 
         function getInfo(tag) {
+
+            // Return the value of a tag.
+
             return tags[tag];
         }
 
-        function getVariation(id) {
+        function getVariationFromStartIndex(startIndex) {
 
-            // Get a variation from an id.
+            // Return a variation from a start index.
+            // Return null if not existing.
 
-            var variationObject = {};
-            if (the_game.variations.some(function (variation) {
-                if (variation.id === id) {
-                    variationObject = variation;
+            var variation = {};
+            var some = false;
+            some = the_game.variations.some(function (value) {
+                if (value.startIndex === startIndex) {
+                    variation = value;
                     return true;
                 }
                 return false;
-            })) {
-                return variationObject;
-            }
-            throw new Error(error.invalid_parameter);
-        }
-
-        function getVariations(moveIndex) {
-
-            // Return an array of the variations for a move index.
-
-            var variations = [];
-            the_game.variations.forEach(function (variation) {
-                if (variation.moveIndex === moveIndex) {
-                    variations.push(variation);
-                }
             });
-            return variations;
+            if (some) {
+                return variation;
+            }
+            return null;
         }
 
         function isInCheck(n) {
@@ -2310,8 +2304,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         the_game.getInfo = getInfo;
         the_game.getNthPosition = getNthPosition;
         the_game.getPGN = getPGN;
-        the_game.getVariation = getVariation;
-        the_game.getVariations = getVariations;
+        the_game.getVariation = getVariationFromStartIndex;
         the_game.isInCheck = isInCheck;
         the_game.isLegal = isLegal;
         the_game.setPGN = setPGN;
@@ -2357,7 +2350,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
     // -------------------------------------------------------------------------
 
-    function Variation(parent, firstFEN, firstPGN, id) {
+    function Variation(parent, firstFEN, firstPGN) {
 
         // Variation constructor.
         // A variation is an object with the properties :
@@ -2375,6 +2368,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
         var firstMove = "";
         var firstPosition = {};
+        var idArray = [];
         var secondFEN = "";
         var secondPosition = {};
         var startIndex = 0;
@@ -2386,9 +2380,15 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         startIndex = (firstPosition.activeColor === chess_value.white)
             ? firstPosition.fullmoveNumber * 2 - 2
             : firstPosition.fullmoveNumber * 2 - 1;
+        if (parent.idArray === undefined) {
+            idArray = [startIndex];
+        } else {
+            idArray = parent.idArray.slice(0);
+            idArray.push(startIndex);
+        }
         the_variation = {
             fenStrings: [firstFEN, secondFEN],
-            id: id,
+            idArray: idArray,
             length: 1,
             startIndex: startIndex,
             moves: [firstMove],
@@ -2429,6 +2429,26 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             the_variation.moves.push(simpleMove);
         }
 
+        function getVariation(startIndex) {
+
+            // Return a child variation from a start index.
+            // Return null if not existing.
+
+            var variation = {};
+            var some = false;
+            some = the_variation.variations.some(function (value) {
+                if (value.startIndex === startIndex) {
+                    variation = value;
+                    return true;
+                }
+                return false;
+            });
+            if (some) {
+                return variation;
+            }
+            return null;
+        }
+
         function toString() {
 
             // Return the PGN string of the variation.
@@ -2459,6 +2479,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
         the_variation.addMove = addMove;
         the_variation.addPGNMove = addPGNMove;
+        the_variation.getVariation = getVariation;
         the_variation.toString = toString;
         return the_variation;
     }
@@ -2594,7 +2615,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                             firstFEN = (level === 1)
                                 ? game.fenStrings[mainMovesCount - 1]
                                 : firstFEN = parentVariation.fenStrings[parentVariation.length - 1];
-                            currentVariation = new Variation(parentVariation, firstFEN, pgnMove, "no id");
+                            currentVariation = new Variation(parentVariation, firstFEN, pgnMove);
                             if (level > 1) {
                                 parentVariation.variations.push(currentVariation);
                             } else {
@@ -3024,6 +3045,27 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Set the PGN in the game.
 
             abGame.setPGN(pgn);
+        },
+
+        getVariationMovesPGN: function (indexArray) {
+
+            // Return an array of variation moves from a start indexes path.
+
+            var variation = {};
+            indexArray.forEach(function (moveIndex, arrayIndex) {
+                if (variation === null) {
+                    return;
+                }
+                if (arrayIndex === 0) {
+                    variation = abGame.getVariation(moveIndex);
+                } else {
+                    variation = variation.getVariation(moveIndex);
+                }
+            });
+            if (variation === null) {
+                return [];
+            }
+            return variation.pgnMoves;
         }
 
     };

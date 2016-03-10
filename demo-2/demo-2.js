@@ -90,12 +90,33 @@ window.addEventListener("load", function () {
         // Import a PGN.
 
         var pgnMoves = [];
+
+        function checkSubMoves(move, index, indexes) {
+            var startIndex = 0;
+            var subMoveIndex = 0;
+            var subMoves = [];
+            startIndex = indexes[indexes.length - 1];
+            subMoveIndex = startIndex + index;
+            indexes.push(subMoveIndex);
+            subMoves = abChess.getVariationMovesPGN(indexes);
+            subMoves.forEach(function (m, i) {
+                checkSubMoves(m, i, indexes);
+            });
+            indexes.pop();
+            alert((subMoveIndex) + ". move = " + move);
+        }
+
         abChess.setPGN(pgn);
         pgnMoves = abChess.getGameMovesPGN();
-        pgnMoves.forEach(function (pgnMove, index) {
-           // var variations = [];
-            addPGNMove(pgnMove, index);
-            // variations = abChess.getVariations(index);
+        pgnMoves.forEach(function (mainMove, moveIndex) {
+            var indexArray = [];
+            var variationMoves = [];
+            addPGNMove(mainMove, moveIndex);
+            indexArray.push(moveIndex);
+            variationMoves = abChess.getVariationMovesPGN(indexArray);
+            variationMoves.forEach(function (move, index) {
+                checkSubMoves(move, index, indexArray);
+            });
         });
         updatePGNText();
     }

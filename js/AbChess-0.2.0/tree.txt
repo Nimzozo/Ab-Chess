@@ -28,7 +28,7 @@ récupéré leur pion et toutes leurs pièces sont mobilisées  }
 23.Nxc5 Rd8 24.Rfd1 Re8 25.Ne4 Nf7 26.Rc7 Kf8 27.Rdc1 1-0
 
 
-1.e4 (1.d4 (1.c4 c6) 1...f5 ) 1...c5 (1...Nf6
+1.e4 (1.d4 (1.c4 c6) 1...f5) 1...c5 (1...Nf6
 
 |
 |—— e4
