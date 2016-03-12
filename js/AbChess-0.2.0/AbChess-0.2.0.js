@@ -132,6 +132,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return window.setTimeout(callback, 1000 / 60);
         };
 
+
     // -------------------------------------------------------------------------
 
     function Position(fen) {
@@ -1243,6 +1244,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         return fenPosition;
     };
 
+
     // -------------------------------------------------------------------------
 
     function Piece(name, url) {
@@ -1335,6 +1337,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         the_piece.remove = remove;
         return the_piece;
     }
+
 
     // -------------------------------------------------------------------------
 
@@ -1537,6 +1540,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             ? (colNumber % 2 === 1)
             : (colNumber % 2 === 0);
     };
+
 
     // -------------------------------------------------------------------------
 
@@ -1983,6 +1987,312 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         return the_board;
     }
 
+
+    // -------------------------------------------------------------------------
+
+    function Variation(parent, firstFEN, firstPGN) {
+
+        // Variation constructor.
+        // A variation is an object with the properties :
+        // - id : its place in the variations tree.
+        // - startIndex : where it begins.
+        // - an array of moves.
+        // - an array of PGN moves.
+        // - an array of fen strings.
+        // - length.
+        // How does the tree work :
+        // - the main game can have variations.
+        // - 1st level of variations have id : 1, ..., n
+        // - Each variation can have children with id : 11, 12, ..., n1, n2
+        // - This is infinitely recursive.
+
+        var firstMove = "";
+        var firstPosition = {};
+        var idArray = [];
+        var secondFEN = "";
+        var secondPosition = {};
+        var startIndex = 0;
+        var the_variation = {};
+        firstPosition = new Position(firstFEN);
+        firstMove = firstPosition.getSimpleNotation(firstPGN);
+        secondPosition = firstPosition.getNextPosition(firstMove);
+        secondFEN = secondPosition.fenString;
+        startIndex = (firstPosition.activeColor === chess_value.white)
+            ? firstPosition.fullmoveNumber * 2 - 2
+            : firstPosition.fullmoveNumber * 2 - 1;
+        if (parent.idArray === undefined) {
+            idArray = [startIndex];
+        } else {
+            idArray = parent.idArray.slice(0);
+            idArray.push(startIndex);
+        }
+        the_variation = {
+            fenStrings: [firstFEN, secondFEN],
+            idArray: idArray,
+            length: 1,
+            startIndex: startIndex,
+            moves: [firstMove],
+            parent: parent,
+            pgnMoves: [firstPGN],
+            variations: []
+        };
+
+        function addMove(move, pgnMove, fen) {
+
+            // Add a move to the variation.
+
+            the_variation.fenStrings.push(fen);
+            the_variation.moves.push(move);
+            the_variation.pgnMoves.push(pgnMove);
+            the_variation.length += 1;
+        }
+
+        function addPGNMove(pgnMove) {
+
+            // Add a move PGN to the variation.
+
+            var lastFEN = "";
+            var lastIndex = 0;
+            var lastPosition = {};
+            var newFEN = "";
+            var nextPosition = {};
+            var simpleMove = "";
+            lastIndex = the_variation.length;
+            lastFEN = the_variation.fenStrings[lastIndex];
+            lastPosition = new Position(lastFEN);
+            simpleMove = lastPosition.getSimpleNotation(pgnMove);
+            nextPosition = lastPosition.getNextPosition(simpleMove);
+            newFEN = nextPosition.fenString;
+            the_variation.length += 1;
+            the_variation.pgnMoves.push(pgnMove);
+            the_variation.fenStrings.push(newFEN);
+            the_variation.moves.push(simpleMove);
+        }
+
+        function getVariation(startIndex) {
+
+            // Return a child variation from a start index.
+            // Return null if not existing.
+
+            var variation = {};
+            var some = false;
+            some = the_variation.variations.some(function (value) {
+                if (value.startIndex === startIndex) {
+                    variation = value;
+                    return true;
+                }
+                return false;
+            });
+            if (some) {
+                return variation;
+            }
+            return null;
+        }
+
+        function toString() {
+
+            // Return the PGN string of the variation.
+
+            var str = "(";
+            the_variation.pgnMoves.forEach(function (pgnMove, index) {
+                var moveIndex = 0;
+                var moveNumber = 0;
+                var strNumber = "";
+                moveIndex = the_variation.startIndex + index;
+                if (moveIndex % 2 === 0) {
+                    moveNumber = moveIndex / 2 + 1;
+                    strNumber = moveNumber + ". ";
+                } else if (index === 0) {
+                    moveNumber = (moveIndex + 1) / 2;
+                    strNumber = moveNumber + "... ";
+                }
+                str += strNumber + pgnMove + " ";
+                the_variation.variations.forEach(function (variation) {
+                    if (moveIndex === variation.startIndex) {
+                        str += variation.toString() + " ";
+                    }
+                });
+            });
+            str = str.substr(0, str.length - 1) + ") ";
+            return str;
+        }
+
+        the_variation.addMove = addMove;
+        the_variation.addPGNMove = addPGNMove;
+        the_variation.getVariation = getVariation;
+        the_variation.toString = toString;
+        return the_variation;
+    }
+
+
+    // -------------------------------------------------------------------------
+
+    function Pgn(pgn) {
+
+        // Pgn parser, class to import / export a game.
+
+        var the_pgn = {};
+        the_pgn = {
+            pgn: pgn
+        };
+
+        function loadPGN(game) {
+
+            // Create and return the game object.
+            // - Add tags
+            // - Add moves
+            // - Add variations
+            // - Add comments
+
+            var comments = [];
+            var pgnMoves = [];
+            var tags = [];
+            var variations = [];
+            tags = the_pgn.getTags();
+            Object.keys(tags).forEach(function (key) {
+                var value = tags[key];
+                game.setTag(key, value);
+            });
+            pgnMoves = the_pgn.getMainMoves();
+            pgnMoves.forEach(function (pgnMove) {
+                game.addPGNMove(pgnMove);
+            });
+            variations = the_pgn.getVariations(game);
+            game.variations = variations;
+            game.comments = comments;
+            return game;
+        }
+
+        function getMainMoves() {
+
+            // Decompose the pgn string in tokens of moves.
+            // Return an array of these tokens.
+
+            var currentFragment = "";
+            var level = 0;
+            var mainMoves = [];
+            var movesSection = "";
+            var parseLength = 0;
+            var parseStartIndex = 0;
+            var pgnMove = "";
+            var tokenFound = false;
+            movesSection = pgn.replace(regexPGNTagPairsSection, "");
+            movesSection = movesSection.replace(regexPGNComment, "");
+            while (parseStartIndex < movesSection.length) {
+                parseLength = 0;
+                tokenFound = false;
+                while (!tokenFound) {
+                    parseLength += 1;
+                    currentFragment = movesSection.substr(parseStartIndex, parseLength);
+                    if (level === 0 && regexPGNMove.test(currentFragment)) {
+                        pgnMove = currentFragment.match(regexPGNMove)[0];
+                        pgnMove = pgnMove.replace(regexPGNMoveNumber, "");
+                        mainMoves.push(pgnMove);
+                        tokenFound = true;
+                    } else if (level === 0 && regexPGNResult.test(currentFragment)) {
+                        tokenFound = true;
+                    } else if (currentFragment.indexOf("(") > -1) {
+                        level += 1;
+                        tokenFound = true;
+                    } else if (currentFragment.indexOf(")") > -1) {
+                        level -= 1;
+                        tokenFound = true;
+                    }
+                }
+                parseStartIndex += parseLength;
+            }
+            return mainMoves;
+        }
+
+        function getTags() {
+
+            // Return the tags pairs.
+
+            var matches = [];
+            var tagsPairs = {};
+            matches = the_pgn.pgn.match(regexPGNTagPair);
+            matches.forEach(function (pair) {
+                var tag = "";
+                var value = "";
+                tag = regexPGNTag.exec(pair)[1];
+                value = regexPGNTagValue.exec(pair)[1];
+                tagsPairs[tag] = value;
+            });
+            return tagsPairs;
+        }
+
+        function getVariations(game) {
+
+            // Return an array of the variations moves with the tokens.
+
+            var currentFragment = "";
+            var currentVariation = {};
+            var firstFEN = "";
+            var level = 0;
+            var movesSection = "";
+            var parentVariation = {};
+            var parseLength = 0;
+            var parseStartIndex = 0;
+            var pgnMove = "";
+            var mainMovesCount = 0;
+            var startingVariation = false;
+            var tokenFound = false;
+            var variations = [];
+            movesSection = pgn.replace(regexPGNTagPairsSection, "");
+            movesSection = movesSection.replace(regexPGNComment, "");
+            while (parseStartIndex < movesSection.length) {
+                parseLength = 0;
+                tokenFound = false;
+                while (!tokenFound) {
+                    parseLength += 1;
+                    currentFragment = movesSection.substr(parseStartIndex, parseLength);
+                    if (level === 0 && regexPGNMove.test(currentFragment)) {
+                        mainMovesCount += 1;
+                        tokenFound = true;
+                    } else if (level > 0 && regexPGNMove.test(currentFragment)) {
+                        pgnMove = currentFragment.match(regexPGNMove)[0];
+                        pgnMove = pgnMove.replace(regexPGNMoveNumber, "");
+                        if (startingVariation) {
+                            firstFEN = (level === 1)
+                                ? game.fenStrings[mainMovesCount - 1]
+                                : parentVariation.fenStrings[parentVariation.length - 1];
+                            currentVariation = new Variation(parentVariation, firstFEN, pgnMove);
+                            if (level > 1) {
+                                parentVariation.variations.push(currentVariation);
+                            } else {
+                                variations.push(currentVariation);
+                            }
+                            startingVariation = false;
+                        } else {
+                            currentVariation.addPGNMove(pgnMove);
+                        }
+                        tokenFound = true;
+                    } else if (level === 0 && regexPGNResult.test(currentFragment)) {
+                        tokenFound = true;
+                    } else if (currentFragment.indexOf("(") > -1) {
+                        level += 1;
+                        startingVariation = true;
+                        parentVariation = currentVariation;
+                        tokenFound = true;
+                    } else if (currentFragment.indexOf(")") > -1) {
+                        level -= 1;
+                        currentVariation = currentVariation.parent;
+                        tokenFound = true;
+                    }
+                }
+                parseStartIndex += parseLength;
+            }
+            return variations;
+        }
+
+        the_pgn.getGame = loadPGN;
+        the_pgn.getMainMoves = getMainMoves;
+        the_pgn.getTags = getTags;
+        the_pgn.getVariations = getVariations;
+        return the_pgn;
+    }
+
+
     // -------------------------------------------------------------------------
 
     function Chessgame() {
@@ -2277,42 +2587,12 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // - Include variations.
             // - Store the pgn moves, simple moves, then fen strings.
 
-            var importedMoves = [];
-            var importedTags = [];
             var pgnObject = {};
             if (!Chessgame.isValidPGN(pgn)) {
                 throw new SyntaxError(error.invalid_pgn);
             }
             pgnObject = new Pgn(pgn);
             pgnObject.getGame(the_game);
-
-            // Object.keys(requiredTags).forEach(function (key) {
-            //     tags[key] = requiredTags[key];
-            // });
-            // the_game.fenStrings = [chess_value.default_fen];
-            // the_game.moves = [];
-            // the_game.pgnMoves = [];
-            // the_game.tags = tags;
-            // importedTags = pgn.match(regexPGNTagPair);
-            // importedTags.forEach(function (tagPair) {
-            //     var tag = "";
-            //     var value = "";
-            //     tag = regexPGNTag.exec(tagPair)[1];
-            //     value = regexPGNTagValue.exec(tagPair)[1];
-            //     the_game.setTag(tag, value);
-            // });
-            // while (regexPGNComment.test(pgn)) {
-            //     pgn = pgn.replace(regexPGNComment, "");
-            // }
-            // while (regexPGNVariation.test(pgn)) {
-            //     pgn = pgn.replace(regexPGNVariation, "");
-            // }
-            // pgn = pgn.replace(/\s{2,}/gm, " ");
-            // importedMoves = pgn.match(regexPGNMove);
-            // importedMoves.forEach(function (pgnMove) {
-            //     pgnMove = pgnMove.replace(regexPGNMoveNumber, "");
-            //     the_game.addPGNMove(pgnMove);
-            // });
         }
 
         function setTag(tag, value) {
@@ -2374,308 +2654,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         return regexPGNResult.test(pgn);
     };
 
-    // -------------------------------------------------------------------------
-
-    function Variation(parent, firstFEN, firstPGN) {
-
-        // Variation constructor.
-        // A variation is an object with the properties :
-        // - id : its place in the variations tree.
-        // - startIndex : where it begins.
-        // - an array of moves.
-        // - an array of PGN moves.
-        // - an array of fen strings.
-        // - length.
-        // How does the tree work :
-        // - the main game can have variations.
-        // - 1st level of variations have id : 1, ..., n
-        // - Each variation can have children with id : 11, 12, ..., n1, n2
-        // - This is infinitely recursive.
-
-        var firstMove = "";
-        var firstPosition = {};
-        var idArray = [];
-        var secondFEN = "";
-        var secondPosition = {};
-        var startIndex = 0;
-        var the_variation = {};
-        firstPosition = new Position(firstFEN);
-        firstMove = firstPosition.getSimpleNotation(firstPGN);
-        secondPosition = firstPosition.getNextPosition(firstMove);
-        secondFEN = secondPosition.fenString;
-        startIndex = (firstPosition.activeColor === chess_value.white)
-            ? firstPosition.fullmoveNumber * 2 - 2
-            : firstPosition.fullmoveNumber * 2 - 1;
-        if (parent.idArray === undefined) {
-            idArray = [startIndex];
-        } else {
-            idArray = parent.idArray.slice(0);
-            idArray.push(startIndex);
-        }
-        the_variation = {
-            fenStrings: [firstFEN, secondFEN],
-            idArray: idArray,
-            length: 1,
-            startIndex: startIndex,
-            moves: [firstMove],
-            parent: parent,
-            pgnMoves: [firstPGN],
-            variations: []
-        };
-
-        function addMove(move, pgnMove, fen) {
-
-            // Add a move to the variation.
-
-            the_variation.fenStrings.push(fen);
-            the_variation.moves.push(move);
-            the_variation.pgnMoves.push(pgnMove);
-            the_variation.length += 1;
-        }
-
-        function addPGNMove(pgnMove) {
-
-            // Add a move PGN to the variation.
-
-            var lastFEN = "";
-            var lastIndex = 0;
-            var lastPosition = {};
-            var newFEN = "";
-            var nextPosition = {};
-            var simpleMove = "";
-            lastIndex = the_variation.length;
-            lastFEN = the_variation.fenStrings[lastIndex];
-            lastPosition = new Position(lastFEN);
-            simpleMove = lastPosition.getSimpleNotation(pgnMove);
-            nextPosition = lastPosition.getNextPosition(simpleMove);
-            newFEN = nextPosition.fenString;
-            the_variation.length += 1;
-            the_variation.pgnMoves.push(pgnMove);
-            the_variation.fenStrings.push(newFEN);
-            the_variation.moves.push(simpleMove);
-        }
-
-        function getVariation(startIndex) {
-
-            // Return a child variation from a start index.
-            // Return null if not existing.
-
-            var variation = {};
-            var some = false;
-            some = the_variation.variations.some(function (value) {
-                if (value.startIndex === startIndex) {
-                    variation = value;
-                    return true;
-                }
-                return false;
-            });
-            if (some) {
-                return variation;
-            }
-            return null;
-        }
-
-        function toString() {
-
-            // Return the PGN string of the variation.
-
-            var str = "(";
-            the_variation.pgnMoves.forEach(function (pgnMove, index) {
-                var moveIndex = 0;
-                var moveNumber = 0;
-                var strNumber = "";
-                moveIndex = the_variation.startIndex + index;
-                if (moveIndex % 2 === 0) {
-                    moveNumber = moveIndex / 2 + 1;
-                    strNumber = moveNumber + ". ";
-                } else if (index === 0) {
-                    moveNumber = (moveIndex + 1) / 2;
-                    strNumber = moveNumber + "... ";
-                }
-                str += strNumber + pgnMove + " ";
-                the_variation.variations.forEach(function (variation) {
-                    if (moveIndex === variation.startIndex) {
-                        str += variation.toString() + " ";
-                    }
-                });
-            });
-            str = str.substr(0, str.length - 1) + ") ";
-            return str;
-        }
-
-        the_variation.addMove = addMove;
-        the_variation.addPGNMove = addPGNMove;
-        the_variation.getVariation = getVariation;
-        the_variation.toString = toString;
-        return the_variation;
-    }
-
-    // -------------------------------------------------------------------------
-
-    function Pgn(pgn) {
-
-        // Pgn parser, class to import / export a game.
-
-        var the_pgn = {};
-        the_pgn = {
-            pgn: pgn
-        };
-
-        function loadPGN(game) {
-
-            // Create and return the game object.
-            // - Add tags
-            // - Add moves
-            // - Add variations
-            // - Add comments
-
-            var comments = [];
-            var pgnMoves = [];
-            var tags = [];
-            var variations = [];
-            tags = the_pgn.getTags();
-            Object.keys(tags).forEach(function (key) {
-                var value = tags[key];
-                game.setTag(key, value);
-            });
-            pgnMoves = the_pgn.getMainMoves();
-            pgnMoves.forEach(function (pgnMove) {
-                game.addPGNMove(pgnMove);
-            });
-            variations = the_pgn.getVariations(game);
-            game.variations = variations;
-            game.comments = comments;
-            return game;
-        }
-
-        function getMainMoves() {
-
-            // Decompose the pgn string in tokens of moves.
-            // Return an array of these tokens.
-
-            var currentFragment = "";
-            var level = 0;
-            var mainMoves = [];
-            var movesSection = "";
-            var parseLength = 0;
-            var parseStartIndex = 0;
-            var pgnMove = "";
-            var tokenFound = false;
-            movesSection = pgn.replace(regexPGNTagPairsSection, "");
-            movesSection = movesSection.replace(regexPGNComment, "");
-            while (parseStartIndex < movesSection.length) {
-                parseLength = 0;
-                tokenFound = false;
-                while (!tokenFound) {
-                    parseLength += 1;
-                    currentFragment = movesSection.substr(parseStartIndex, parseLength);
-                    if (level === 0 && regexPGNMove.test(currentFragment)) {
-                        pgnMove = currentFragment.match(regexPGNMove)[0];
-                        pgnMove = pgnMove.replace(regexPGNMoveNumber, "");
-                        mainMoves.push(pgnMove);
-                        tokenFound = true;
-                    } else if (level === 0 && regexPGNResult.test(currentFragment)) {
-                        tokenFound = true;
-                    } else if (currentFragment.indexOf("(") > -1) {
-                        level += 1;
-                        tokenFound = true;
-                    } else if (currentFragment.indexOf(")") > -1) {
-                        level -= 1;
-                        tokenFound = true;
-                    }
-                }
-                parseStartIndex += parseLength;
-            }
-            return mainMoves;
-        }
-
-        function getTags() {
-
-            // Return the tags pairs.
-
-            var matches = [];
-            var tagsPairs = {};
-            matches = the_pgn.pgn.match(regexPGNTagPair);
-            matches.forEach(function (pair) {
-                var tag = "";
-                var value = "";
-                tag = regexPGNTag.exec(pair)[1];
-                value = regexPGNTagValue.exec(pair)[1];
-                tagsPairs[tag] = value;
-            });
-            return tagsPairs;
-        }
-
-        function getVariations(game) {
-
-            // Return an array of the variations moves with the tokens.
-
-            var currentFragment = "";
-            var currentVariation = {};
-            var firstFEN = "";
-            var level = 0;
-            var movesSection = "";
-            var parentVariation = {};
-            var parseLength = 0;
-            var parseStartIndex = 0;
-            var pgnMove = "";
-            var mainMovesCount = 0;
-            var startingVariation = false;
-            var tokenFound = false;
-            var variations = [];
-            movesSection = pgn.replace(regexPGNTagPairsSection, "");
-            movesSection = movesSection.replace(regexPGNComment, "");
-            while (parseStartIndex < movesSection.length) {
-                parseLength = 0;
-                tokenFound = false;
-                while (!tokenFound) {
-                    parseLength += 1;
-                    currentFragment = movesSection.substr(parseStartIndex, parseLength);
-                    if (level === 0 && regexPGNMove.test(currentFragment)) {
-                        mainMovesCount += 1;
-                        tokenFound = true;
-                    } else if (level > 0 && regexPGNMove.test(currentFragment)) {
-                        pgnMove = currentFragment.match(regexPGNMove)[0];
-                        pgnMove = pgnMove.replace(regexPGNMoveNumber, "");
-                        if (startingVariation) {
-                            firstFEN = (level === 1)
-                                ? game.fenStrings[mainMovesCount - 1]
-                                : firstFEN = parentVariation.fenStrings[parentVariation.length - 1];
-                            currentVariation = new Variation(parentVariation, firstFEN, pgnMove);
-                            if (level > 1) {
-                                parentVariation.variations.push(currentVariation);
-                            } else {
-                                variations.push(currentVariation);
-                            }
-                            startingVariation = false;
-                        } else {
-                            currentVariation.addPGNMove(pgnMove);
-                        }
-                        tokenFound = true;
-                    } else if (level === 0 && regexPGNResult.test(currentFragment)) {
-                        tokenFound = true;
-                    } else if (currentFragment.indexOf("(") > -1) {
-                        level += 1;
-                        startingVariation = true;
-                        parentVariation = currentVariation;
-                        tokenFound = true;
-                    } else if (currentFragment.indexOf(")") > -1) {
-                        level -= 1;
-                        currentVariation = currentVariation.parent;
-                        tokenFound = true;
-                    }
-                }
-                parseStartIndex += parseLength;
-            }
-            return variations;
-        }
-
-        the_pgn.getGame = loadPGN;
-        the_pgn.getMainMoves = getMainMoves;
-        the_pgn.getTags = getTags;
-        the_pgn.getVariations = getVariations;
-        return the_pgn;
-    }
 
     // -------------------------------------------------------------------------
     // Application
@@ -2920,15 +2898,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Return an array of the moves of the game in PGN notation.
 
             return abGame.pgnMoves;
-        },
-
-        getGameVariationPGN: function (moveIndex) {
-
-            // Return an array of the moves in an existing variation.
-
-            var exists = abGame.getVariation(moveIndex);
-            abGame
-
         },
 
         getLastPositionIndex: function () {
