@@ -8,52 +8,47 @@
 </head>
 
 <body>
-    <div id='mainContainer'>
-        <div id="leftContainer">
-            <div>
-                <div id="boardInfo">
-                    <div>
-                        <span id="turnInfo"></span>
-                        <span id="lastMoveInfo">Last move : -</span>
-                        <span id="checkInfo"></span>
-                    </div>
-                    <input type="text" id="fenInput" placeholder="FEN" size="70">
-                </div>
-                <div id="chessboard"></div>
-                <div id="comments"></div>
+
+    <div id='main-container'>
+
+        <div id="left-container" class="inline-block">
+
+            <div id="pgn-notation" class="left-container__div"></div>
+
+            <div class="left-container__div">
+                <textarea id="pgn-textarea" placeholder="Paste a PGN here."></textarea>
+                <input type="button" id="pgn-button" value="Import PGN">
             </div>
+
+            <div id="pgn-text" class="left-container__div"></div>
+
         </div><!-- 50% width divided
 
-     --><div id="rightContainer">
-            <div>
-                <div id="gameInfo">
-                    <span id="whitePlayer">w</span><!--
-                 --><span id="blackPlayer">b</span>
-                </div>
-                <div id="scoresheetContainer">
-                    <table id="scoresheet"></table>
+     --><div id="right-container" class="inline-block">
+
+            <div id="chessboard"></div>
+
+            <div id="commands">
+
+                <div>
+                    <input type="button" id="firstButton" value="|<">
+                    <input type="button" id="previousButton" value="<">
+                    <input type="button" id="nextButton" value=">">
+                    <input type="button" id="lastButton" value=">|">
+                    <input type="button" id="flipButton" value="&#8634;">
                 </div>
 
-                <div id="commands">
-                    <div>
-                        <input type="button" id="firstButton" value="|<">
-                        <input type="button" id="previousButton" value="<">
-                        <input type="button" id="nextButton" value=">">
-                        <input type="button" id="lastButton" value=">|">
-                        <input type="button" id="flipButton" value="&#8634;">
-                    </div>
-                    <div>
-                        <input type="button" id="resetButton" value="Reset">
-                        <input type="button" id="downloadButton" value="View PGN">
-                    </div>
-                    <div>
-                        <textarea id="pgnTextarea"></textarea>
-                        <input type="button" id="pgnButton" value="Import PGN">
-                    </div>
+                <div>
+                    <input type="button" id="resetButton" value="Reset">
+                    <input type="button" id="downloadButton" value="View PGN">
                 </div>
+
             </div>
+
         </div>
+
     </div>
+
     <script src='../js/AbChess-0.2.0/AbChess-0.2.0.js'></script>
     <script src='demo.js'></script>
 </body>

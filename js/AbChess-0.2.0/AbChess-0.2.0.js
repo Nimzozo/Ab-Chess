@@ -1,5 +1,5 @@
 // AbChess-0.2.0.js
-// 2016-03-10
+// 2016-03-12
 // Copyright (c) 2016 Nimzozo
 
 /*global
@@ -2135,17 +2135,43 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             });
         }
 
-        function getNthPosition(n) {
+        function getNthPosition(indexes) {
 
             // Return the n-th position object.
 
             var fen = "";
+            var fenIndex = 0;
             var lastIndex = 0;
-            lastIndex = the_game.fenStrings.length - 1;
-            if (typeof n !== "number" || n < 0 || n > lastIndex) {
+            var length = 0;
+            var variation = {};
+            if (!Array.isArray(indexes) && typeof indexes !== "number") {
                 throw new Error(error.invalid_parameter);
             }
-            fen = the_game.fenStrings[n];
+            if (typeof indexes === "number") {
+                lastIndex = the_game.fenStrings.length - 1;
+                if (indexes < 0 || indexes > lastIndex) {
+                    throw new Error(error.invalid_parameter);
+                }
+                fen = the_game.fenStrings[indexes];
+            } else {
+                lastIndex = indexes.pop();
+                length = indexes.length;
+                fenIndex = lastIndex - indexes[length - 1];
+                indexes.forEach(function (moveIndex, arrayIndex) {
+                if (variation === null) {
+                    return;
+                }
+                if (arrayIndex === 0) {
+                    variation = abGame.getVariation(moveIndex);
+                } else {
+                    variation = variation.getVariation(moveIndex);
+                }
+                });
+                if (variation === null) {
+                    throw new Error(error.invalid_parameter);
+                }
+                fen = variation.fenStrings[fenIndex];
+            }
             return new Position(fen);
         }
 
@@ -2668,10 +2694,15 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
     abBoard = new Chessboard(containerId, abConfig);
     abGame = new Chessgame();
 
-    function navigate(index, updatePosition) {
+    function navigate(indexes, updatePosition) {
 
         // Navigate through the game to the desired position.
         // Update the board.
+        // Version 0.2.0 :
+        // Navigate to a position. The position is determined by a path of
+        // move indexes.
+        // 0 => navigate to start position.
+        // [5, 2] => navigate to move 2 in the variation of the 5th move.
 
         var fen = "";
         var kingSquare = "";
@@ -2680,28 +2711,31 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         var lastMoveStart = "";
         var maxIndex = 0;
         var position = {};
-        maxIndex = abGame.fenStrings.length - 1;
-        if (index < 0 || index > maxIndex) {
+        if (!Array.isArray(indexes) && typeof indexes !== "number") {
             throw new Error(error.invalid_parameter);
         }
-        position = abGame.getNthPosition(index);
+        maxIndex = abGame.fenStrings.length - 1;
+        if (indexes < 0 || indexes > maxIndex) {
+            throw new Error(error.invalid_parameter);
+        }
+        position = abGame.getNthPosition(indexes);
         if (updatePosition) {
             fen = position.fenString;
             abBoard.loadFEN(fen);
-            if (index < maxIndex) {
-                abBoard.lock();
-            } else {
-                abBoard.unlock();
-            }
+            // if (indexes < maxIndex) {
+            //     abBoard.lock();
+            // } else {
+            //     abBoard.unlock();
+            // }
         }
         if (abConfig.markLastMove) {
             abBoard.clearMarks();
-            if (index > 0) {
-                lastMove = abGame.moves[index - 1];
-                lastMoveStart = lastMove.substr(0, 2);
-                lastMoveArrival = lastMove.substr(3, 2);
-                abBoard.highlightSquares([lastMoveStart, lastMoveArrival]);
-            }
+            // if (indexes > 0) {
+            //     lastMove = abGame.moves[indexes - 1];
+            //     lastMoveStart = lastMove.substr(0, 2);
+            //     lastMoveArrival = lastMove.substr(3, 2);
+            //     abBoard.highlightSquares([lastMoveStart, lastMoveArrival]);
+            // }
         }
         if (abConfig.markKingInCheck && position.isInCheck(position.activeColor)) {
             abBoard.clearMarks();
@@ -2737,11 +2771,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
         // Play a move on the board and store it in the game.
 
-        var index = 0;
+        var indexes = 0;
         abBoard.play(move, promotion);
         abGame.addMove(move, promotion);
-        index = abGame.fenStrings.length - 1;
-        navigate(index, false);
+        indexes = abGame.fenStrings.length - 1;
+        navigate(indexes, false);
         if (typeof event.onMovePlayed === "function") {
             setTimeout(event.onMovePlayed, 0);
         }
@@ -2993,11 +3027,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return Chessgame.isValidPGN(pgn);
         },
 
-        navigate: function (index) {
+        navigate: function (indexes) {
 
             // Navigate to a position.
 
-            return navigate(index, true);
+            return navigate(indexes, true);
         },
 
         onMovePlayed: function (callback) {
@@ -3047,12 +3081,12 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             abGame.setPGN(pgn);
         },
 
-        getVariationMovesPGN: function (indexArray) {
+        getVariationMovesPGN: function (indexes) {
 
             // Return an array of variation moves from a start indexes path.
 
             var variation = {};
-            indexArray.forEach(function (moveIndex, arrayIndex) {
+            indexes.forEach(function (moveIndex, arrayIndex) {
                 if (variation === null) {
                     return;
                 }
