@@ -1,5 +1,5 @@
 // AbChess-0.2.0.js
-// 2016-03-13
+// 2016-03-14
 // Copyright (c) 2016 Nimzozo
 
 /*global
@@ -2136,7 +2136,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
         var the_pgn = {};
         the_pgn = {
-            pgn: pgn
+            pgn: pgn        // PGN string
         };
 
         function loadPGN(game) {
@@ -2799,7 +2799,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         }
     }
 
-    // Board events initialization.
+    // Board events
 
     abBoard.onPieceDragEnd = function (start, e) {
         if (e.dataTransfer.dropEffect === "none") {
@@ -2836,7 +2836,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
 
     // -------------------------------------------------------------------------
-    // Public api.
+    // Public api
 
     return {
         DEFAULT_FEN: chess.defaultFEN,

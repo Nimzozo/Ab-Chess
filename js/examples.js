@@ -1,4 +1,5 @@
 window.addEventListener("load", function () {
+    "use strict";
 
     function loadExample(exampleNumber) {
         var description = document.getElementById("description");

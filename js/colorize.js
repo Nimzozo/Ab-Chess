@@ -1,5 +1,6 @@
-
 window.addEventListener("load", function () {
+    "use strict";
+
     var codes = document.getElementsByClassName("code");
 
     window.colorize = function colorize(text, trim) {
