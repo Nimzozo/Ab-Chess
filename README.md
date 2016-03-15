@@ -13,5 +13,3 @@
 ## Miscellaneous
 
 Built with the help of [JSLint](http://www.jslint.com) and [Visual Studio Code](http://code.visualstudio.com/).
-
-Music : Daft Punk, Robert Miles.
