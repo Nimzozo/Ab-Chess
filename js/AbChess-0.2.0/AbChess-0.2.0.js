@@ -135,6 +135,31 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
     // -------------------------------------------------------------------------
 
+    function Move(start, arrival, promotion) {
+
+        // Class to build moves.
+
+        var arrival = "";           // the arrival square
+        var fullmoveNumber = 0;     // move number in the game
+        var isWhite = false;        // who played the move
+        var promotion = "";         // the piece choice for promotion
+        var start = "";             // the start square
+        var the_move = {};          // object to return
+        the_move = {
+            arrival: arrival,
+            fullmoveNumber: fullmoveNumber,
+            isWhite: false,
+            promotion: promotion,
+            start: start
+        };
+
+        the_move.toString = null;
+        the_move.toPGN = null;
+    }
+
+
+    // -------------------------------------------------------------------------
+
     function Position(fen) {
 
         // A Position is constructed with a FEN string.
@@ -2321,14 +2346,13 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         Object.keys(requiredTags).forEach(function (key) {
             tags[key] = requiredTags[key];
         });
-
         the_game = {
-            comments: [],
-            fenStrings: [chess.defaultFEN],
-            moves: [],
-            pgnMoves: [],
-            tags: tags,
-            variations: []
+            comments: [],                       // array of comments
+            fenStrings: [chess.defaultFEN],     // array of FEN
+            moves: [],                          // array of moves
+            pgnMoves: [],                       // array of moves PGN
+            tags: tags,                         // tags object
+            variations: []                      // array of variations
         };
 
         function addMove(move, promotion) {
