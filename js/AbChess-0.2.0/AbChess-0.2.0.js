@@ -1,5 +1,5 @@
 // AbChess-0.2.0.js
-// 2016-03-14
+// 2016-03-18
 // Copyright (c) 2016 Nimzozo
 
 /*global
@@ -13,7 +13,7 @@
 // Todo :
 // - export variations : getPGN()
 // - import variations : setPGN()
-// - modify variations : add, delete moves in the game
+// - add, delete moves / variation in the game
 
 window.AbChess = window.AbChess || function (containerId, abConfig) {
     "use strict";
@@ -135,9 +135,10 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
     // -------------------------------------------------------------------------
 
+
     function Move(start, arrival, promotion) {
 
-        // Class to build moves.
+        // Class to build chess moves.
 
         var arrival = "";           // the arrival square
         var fullmoveNumber = 0;     // move number in the game
@@ -160,10 +161,16 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
     // -------------------------------------------------------------------------
 
+
     function Position(fen) {
 
         // A Position is constructed with a FEN string.
-        // It represents the pieces placement plus many extra data.
+        // It represents the pieces placement and some extra data :
+        // - active color
+        // - castling possibilities
+        // - en passant square
+        // - halfmove clock
+        // - fullmove number
 
         var activeColor = "";       // b|k
         var allowedCastles = "";    // KkQq
@@ -1282,6 +1289,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
     // -------------------------------------------------------------------------
 
+
     function Piece(name, url) {
 
         // The Piece class constructs an HTML DIV element.
@@ -1375,9 +1383,10 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
     // -------------------------------------------------------------------------
 
+
     function Square(name) {
 
-        // The Square class constructs a HTML DIV element
+        // Square class to construct a HTML DIV element
         // named with its coordinate.
 
         var colNumber = 0;
@@ -1574,6 +1583,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
 
     // -------------------------------------------------------------------------
+
 
     function Chessboard(containerId, config) {
 
@@ -2018,9 +2028,10 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
     // -------------------------------------------------------------------------
 
+
     function Variation(parent, firstFEN, firstPGN) {
 
-        // Variation constructor.
+        // Variation class.
         // A variation is an object with the properties :
         // - id : its place in the variations tree.
         // - startIndex : where it begins.
@@ -2154,6 +2165,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
 
     // -------------------------------------------------------------------------
+
 
     function Pgn(pgn) {
 
@@ -2320,17 +2332,50 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         return the_pgn;
     }
 
+    Pgn.isValidPGN = function (pgn) {
+
+        // Validate a PGN string.
+        // - Test and remove the tag pairs section.
+        // - Remove the comments.
+        // - Test and remove variations.
+        // - Test and remove the moves section.
+        // - Test the final result.
+
+        var moves = [];
+        var variations = [];
+        if (!regexPGNTagPairsSection.test(pgn)) {
+            return false;
+        }
+        pgn = pgn.replace(regexPGNTagPairsSection, "");
+        while (regexPGNComment.test(pgn)) {
+            pgn = pgn.replace(regexPGNComment, "");
+        }
+        function hasMoveSection(str) {
+            return regexPGNMove.test(str);
+        }
+        while (regexPGNVariation.test(pgn)) {
+            variations = pgn.match(regexPGNVariation);
+            if (!variations.every(hasMoveSection)) {
+                return false;
+            }
+            pgn = pgn.replace(regexPGNVariation, "");
+        }
+        moves = pgn.match(regexPGNMove);
+        if (moves.length < 1) {
+            return false;
+        }
+        pgn = pgn.replace(regexPGNMove, "");
+        return regexPGNResult.test(pgn);
+    };
+
 
     // -------------------------------------------------------------------------
 
+
     function Chessgame() {
 
-        // The Chessgame class constructs a full chess game.
-        // We assume a chessgame is an ordered collection
-        // of FEN positions.
-        // A FEN position is a chess position plus some data :
-        // active color, castling possibilities, en passant square,
-        // halfmove clock and fullmove number.
+        // The Chessgame class constructs a chessgame object.
+        // We assume a chessgame is an ordered collection of FEN positions.
 
         var requiredTags = {
             "Event": "?",
@@ -2615,7 +2660,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // - Store the pgn moves, simple moves, then fen strings.
 
             var pgnObject = {};
-            if (!Chessgame.isValidPGN(pgn)) {
+            if (!Pgn.isValidPGN(pgn)) {
                 throw new SyntaxError(error.invalidPGN);
             }
             pgnObject = new Pgn(pgn);
@@ -2645,47 +2690,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         return the_game;
     }
 
-    Chessgame.isValidPGN = function (pgn) {
-
-        // Validate a PGN string.
-        // - Test and remove the tag pairs section.
-        // - Remove the comments.
-        // - Test and remove variations.
-        // - Test and remove the moves section.
-        // - Test the final result.
-
-        var moves = [];
-        var variations = [];
-        if (!regexPGNTagPairsSection.test(pgn)) {
-            return false;
-        }
-        pgn = pgn.replace(regexPGNTagPairsSection, "");
-        while (regexPGNComment.test(pgn)) {
-            pgn = pgn.replace(regexPGNComment, "");
-        }
-        function hasMoveSection(str) {
-            return regexPGNMove.test(str);
-        }
-        while (regexPGNVariation.test(pgn)) {
-            variations = pgn.match(regexPGNVariation);
-            if (!variations.every(hasMoveSection)) {
-                return false;
-            }
-            pgn = pgn.replace(regexPGNVariation, "");
-        }
-        moves = pgn.match(regexPGNMove);
-        if (moves.length < 1) {
-            return false;
-        }
-        pgn = pgn.replace(regexPGNMove, "");
-        return regexPGNResult.test(pgn);
-    };
-
 
     // -------------------------------------------------------------------------
-    // Application
 
-    // Load default configuration for empty properties.
+
+    // Application
 
     abConfig = abConfig || {};
     Object.keys(defaultConfig).forEach(function (key) {
@@ -3021,7 +3030,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Check if a PGN string is valid.
 
-            return Chessgame.isValidPGN(pgn);
+            return Pgn.isValidPGN(pgn);
         },
 
         navigate: function (indexes) {
