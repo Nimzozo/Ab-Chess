@@ -1,13 +1,10 @@
 # Class AbChess
 
-#### :warning: _Provisional doc. Many changes will be done._
-
-The AbChess class contructs an object to manage chess data as well as render a board.
-
+The AbChess class provides functions to build chessboards linked to chessgames.
 
 | Constructor | Description |
 | :--- | :--- |
-| [new AbChess(containerId\[, config\])](#constructor-details) | The FEN string of the starting position in a classical chess game. |
+| [new AbChess(containerId\[, config\])](#constructor-details) | Create an AbChess instance. |
 
 
 | Constant | Description |
@@ -19,71 +16,59 @@ The AbChess class contructs an object to manage chess data as well as render a b
 | :--- | :--- | :--- |
 | [draw()](#draw) | `undefined` | Draw the chessboard in the HTML container element. |
 | [flip()](#flip) | `undefined` | Change the orientation of the chessboard. |
-| [getActiveColor(n)](#getactivecolorn) | `String` | Return the active color of the nth position. |
+| [getActiveColor(n)](#getactivecolorn) | `String` | Return a character indicating the active color in a position. |
 | [getFEN(n)](#getfenn) | `String` | Return the Forsyth-Edwards notation of the nth position. |
-| [getGameInfo(info)](#getgameinfoinfo) | `String` | Return the desired information of the game. |
-| [getGameMoves(pgnStyled)](#getgamemovespgnstyled) | `String[]` | Return an array containing the moves of the game. |
+| [getGameInfo(info)](#getgameinfoinfo) | `String` | Return an information stored in the game. |
+| [getGameMoves()](#getgamemoves) | `String[]` | Return an array containing the moves of the game. |
+| [getGameMovesPGN()](#getgamemovespgn) | `String[]` | Return an array of the moves stored in the game in PGN notation. |
+| [getLastPositionIndex()](#getlastpositionindex) | `Number` | 	Return the index of the last position of the game. |
 | [getLegalMoves(n)](#getlegalmovesn) | `String[]` | Return an array containing the legal moves in a position. |
-| [getPGN(noTag)](#getpgnnotag) | `String` | Return the portable game notation. |
+| [getPGN()](#getpgn) | `String` | Return the portable game notation. |
+| [is50MovesDraw(n)](#is50movesdrawn) | `Boolean` | Return true if a position is a draw by the 50 moves rule. |
 | [isCheckmate(n)](#ischeckmaten) | `Boolean` | Check if the king of the active color is checkmated in the nth position. |
 | [isInCheck(n)](#isincheckn) | `Boolean` | Check if the king of the active color is in check in the nth position. |
+| [isInsufficientMaterialDraw(n)](#isinsufficientmaterialdrawn) | `Boolean` | Return true if a position cannot be won anymore. |
 | [isLegal(n, move)](#islegaln-move) | `Boolean` | Check if a move is legal in the nth position. |
 | [isStalemate(n)](#isstalematen) | `Boolean` | Check if the king of the active color is stalemated in the nth position. |
+| [isValidFEN(fen, onlyCheckRows)](#isvalidfenfen-onlycheckrows) | `Boolean` | Return true if a FEN string is valid. |
+| [isValidPGN(pgn)](#isvalidpgnpgn) | `Boolean` | Return true if a PGN string is valid. |
 | [navigate(n)](#navigaten) | `undefined` | Update the board to the nth position of the game. |
+| [onMovePlayed(callback)](#onmoveplayedcallback) | `undefined` | Set a function to call each time a move is played. |
 | [play(move\[, promotion\])](#playmove-promotion) | `String` | Play a move and return the resulting FEN string. |
 | [reset()](#reset) | `undefined` | Reset the game object and reload the board to the start position. |
-| [setFEN(fen)](#setfenfen) | `undefined` | Load the FEN position on the chessboard. |
+| [setFEN(\[fen\])](#setfenfen) | `undefined` | Load the FEN position on the chessboard. |
 | [setGameInfo(info, value)](#setgameinfoinfo-value) | `undefined` | Set the desired information in the game. |
 | [setPGN(pgn)](#setpgnpgn) | `undefined` | Load the PGN notation of the game. |
 
 
 ### Constructor details
 
-The AbChess class contructs an object to manage chess data as well as render a board.
+Create an instance of the AbChess class. Define the id of the HTML element to contain the desired chessboard. An options object can be also used to configure the instance.
 
-```Javascript
-var abChess = new AbChess(containerId[, config]);
-```
+
+#### new AbChess(containerId[, config]);
+
 
 | Parameter |     | Description |
 | :--- | :--- | :--- |
 | <`String`> containerId | Required | The id of the HTML element to contain the chess board. |
-| <`Object`> config | Optional | A configuration object containing the following optional properties. |
+| <`Object`> options | Optional | A configuration object. See options properties. |
 
-| `config` property |     | Description | Default |
+| Options property |     | Description | Default value |
 | :--- | :--- | :--- | :--- |
-| <`String`> circleColor | Optional | The CSS color value of circles drawn on the squares. | `"steelblue"`
 | <`Boolean`> clickable | Optional | A value to set if the pieces should be clickable or not. | `true`
 | <`Boolean`> draggable | Optional | A value to set if the pieces should be draggable or not. | `true`
 | <`Boolean`> flipped | Optional | A value to set if the board should be flipped or not. | `false`
-| <`Boolean`> hasBorder | Optional | A value to set if the board should have notation borders or not. | `true`
 | <`String`> imagesExtension | Optional | The file extension of the chess pieces images. | `".png"`
-| <`String`> imagesPath | Optional | The relative filepath of the chess pieces images. | `"../images/wikipedia/"`
-| <`Boolean`> showKingInCheck | Optional | A value to set if the king in check should be marked. | `true`
-| <`Function`> onMovePlayed | Optional | A function to call after a move has been played. | `null`
-| <`Boolean`> showLastMove | Optional | A value to set if the last played move should be marked. | `true`
-| <`Boolean`> showLegalSquares | Optional | A value to set if the legal squares should be marked. | `true`
+| <`String`> imagesPath | Optional | The relative filepath of the chess pieces images. | `"images/wikipedia/"`
+| <`String`> legalMarksColor | Optional | The CSS color value of circles drawn on the squares. | `"steelblue"`
+| <`Boolean`> markKingInCheck | Optional | A value to set if the king in check should be marked. | `true`
+| <`Boolean`> markLastMove | Optional | A value to set if the last played move should be marked. | `true`
+| <`Boolean`> markLegalSquares | Optional | A value to set if the legal squares should be marked. | `true`
+| <`Boolean`> markOverflownSquare | Optional | 	If set to true, highlight the overflown square during a drag and drop operation. | `true`
+| <`Boolean`> markSelectedSquare | Optional | A value to set if the selected square should be marked. | `true`
+| <`Boolean`> notationBorder | Optional | A value to set if the board should have notation borders or not. | `true`
 | <`Number`> width | Optional | A number representing the width in pixels of the board. | `360`
-
-Sample :
-
-Create an AbChess object.
-
-```Javascript
-var abChess;
-var abConfig = {
-    circleColor: '#123456',
-    clickable: true,
-    draggable: false,
-    flipped: false,
-    hasBorder: false,
-    showKingInCheck: true,
-    showLegalMoves: false,
-    width: 180  
-};
-var containerId = 'abContainer';
-abChess = new AbChess(containerId, abConfig);
-```
 
 ### Methods details
 
@@ -150,19 +135,27 @@ Parameters :
 
 ---
 
-#### getGameMoves(pgnStyled)
+#### getGameMoves()
 
 Return an array of the moves stored in the game.
 
 Return type : `String[]`
 
-Parameters :
-<table>
-  <tr>
-    <td><<code>Boolean</code>> pgnStyled</td><td>Required</td><td>True to get moves styled like in a PGN.
-    False to get simple notation.</td>
-  </tr>
-</table>
+---
+
+#### getGameMovesPGN()
+
+Return an array of the moves stored in the game with the PGN notation.
+
+Return type : `String[]`
+
+---
+
+#### getLastPositionIndex()
+
+Return the index of the last position of the game.
+
+Return type : `Number`
 
 ---
 
@@ -181,17 +174,24 @@ Parameters :
 
 ---
 
-#### getPGN(noTag)
+#### getPGN()
 
-Return the portable game notation.
+Return the Portable Game Notation.
 
 Return type : `String`
+
+---
+
+#### is50MovesDraw(n)
+
+Return true if a position is a draw because of the 50 moves rule or false if it's not.
+
+Return type : `Boolean`
 
 Parameters :
 <table>
   <tr>
-    <td><<code>Boolean</code>> noTag</td><td>Required</td><td>True to get a PGN with only the moves.
-    False to get a complete PGN.</td>
+    <td><<code>Number</code>> n</td><td>Required</td><td>A positive integer. The index of the concerned position.</td>
   </tr>
 </table>
 
@@ -211,10 +211,25 @@ Parameters :
 </table>
 
 ---
-  
+
 #### isInCheck(n)
 
 Check if the king of the active color is in check in the nth position.
+
+Return type : `Boolean`
+
+Parameters :
+<table>
+  <tr>
+    <td><<code>Number</code>> n</td><td>Required</td><td>A positive integer. The index of the concerned position.</td>
+  </tr>
+</table>
+
+---
+
+#### isInsufficientMaterialDraw(n)
+
+Return true if the remaining material is insufficient to win a position or false if it's not.
 
 Return type : `Boolean`
 
@@ -265,6 +280,39 @@ Parameters :
 
 ---
 
+#### isValidFEN(fen, onlyCheckRows)
+
+Return true if a FEN string is valid or false if it's not.
+
+Return type : `Boolean`
+
+Parameters :
+<table>
+  <tr>
+    <td><<code>String</code>> fen</td><td>Required</td><td>The Forsyth-Edwards Notation string to validate.</td>
+  </tr>
+  <tr>
+    <td><<code>Boolean</code>> onlyCheckRows</td><td>Required</td><td>When set to true, the function will only check if the position rows are valid. When set to false, the function will validate the entire string.</td>
+  </tr>
+</table>
+
+---
+
+#### isValidPGN(pgn)
+
+Return true if a PGN string is valid or false if it's not.
+
+Return type : `Boolean`
+
+Parameters :
+<table>
+  <tr>
+    <td><<code>String</code>> pgn</td><td>Required</td><td>The Portable Game Notation string to validate.</td>
+  </tr>
+</table>
+
+---
+
 #### navigate(n)
 
 Update the board to the nth position of the game.
@@ -275,6 +323,21 @@ Parameters :
 <table>
   <tr>
     <td><<code>Number</code>> n</td><td>Required</td><td>A positive integer. The index of the concerned position.</td>
+  </tr>
+</table>
+
+---
+
+#### onMovePlayed(callback)
+
+Update the board to the nth position of the game.
+
+Return type : `undefined`
+
+Parameters :
+<table>
+  <tr>
+    <td><<code>Function</code>> callback</td><td>Required</td><td>The function to call after a move has been played.</td>
   </tr>
 </table>
 
@@ -312,10 +375,10 @@ Reset the game object and reload the board to the initial position.
 Return type : `undefined`
 
 ---
-  
+
 #### setFEN([fen])
 
-Load the FEN position on the chessboard. 
+Load the FEN position on the chessboard.
 
 Return type : `undefined`
 
@@ -325,11 +388,6 @@ Parameters :
     <td><<code>String</code>> fen</td><td>Optional</td><td>The FEN string to set. The default value is the starting position.</td>
   </tr>
 </table>
-
-Sample :
-```Javascript
-abChess.setFEN("8/8/8/8/8/8/8/8");
-```
 
 ---
 
@@ -358,7 +416,7 @@ abChess.setGameInfo("White", "Kasparov, Gary");
 
 #### setPGN(pgn)
 
-Load the PGN notation of the game. 
+Load the PGN notation of the game.
 
 Return type : `undefined`
 

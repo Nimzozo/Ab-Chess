@@ -232,12 +232,12 @@
                         <td>Return true if a position is a stalemate.</td>
                     </tr>
                     <tr>
-                        <td><a class="detail-link" href="#isValidFEN">isValidFEN(index)</a></td>
+                        <td><a class="detail-link" href="#isValidFEN">isValidFEN(fen, onlyCheckRows)</a></td>
                         <td>Boolean</td>
                         <td>Return true if a FEN string is valid.</td>
                     </tr>
                     <tr>
-                        <td><a class="detail-link" href="#isValidPGN">isValidPGN(index)</a></td>
+                        <td><a class="detail-link" href="#isValidPGN">isValidPGN(pgn)</a></td>
                         <td>Boolean</td>
                         <td>Return true if a PGN string is valid.</td>
                     </tr>
@@ -705,7 +705,7 @@ abChess = new AbChess(containerId, abConfig);</code>
                             <th>Description</th>
                         </tr>
                         <tr>
-                            <td>fen</td>
+                            <td>pgn</td>
                             <td>String</td>
                             <td>Required</td>
                             <td>The Portable Game Notation string to validate.</td>
