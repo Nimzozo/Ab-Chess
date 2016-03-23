@@ -4,8 +4,6 @@
 
 :link: See the [AB-Chess website](http://nimzozo.olympe.in/) for more informations.
 
-![screenshot](https://github.com/Nimzozo/Ab-Chess/blob/master/images/screenshot.png)
-
 ## License
 
 [MIT License](https://github.com/Nimzozo/ab-chess/blob/master/LICENSE.txt)
