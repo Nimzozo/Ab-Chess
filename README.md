@@ -9,10 +9,6 @@ It can be used to import a game and embed it on a website, or to play a game and
 
 Read the [API documentation](https://github.com/Nimzozo/Ab-Chess/blob/master/api-reference.md).
 
-## Website
-
-Please visit the [AB-Chess website](http://nimzozo.olympe.in/) for more informations.
-
 ## License
 
 [MIT License](https://github.com/Nimzozo/ab-chess/blob/master/LICENSE.txt)
