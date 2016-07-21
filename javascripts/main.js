@@ -1,1 +1,8 @@
-console.log('This would be the main JS file.');
+window.addEventListener("load", function () {
+    "use strict";
+
+    var abChess;
+    abChess = new AbChess("chessboard");
+    abChess.draw();
+    abChess.setFEN();
+});
