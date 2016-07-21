@@ -1,0 +1,37 @@
+.release {
+    background-color:  beige;
+    padding: 4px;
+    margin: 20px 0;
+}
+
+.release:hover {
+    background-color: gainsboro;
+}
+
+.release__title {
+    position: relative;
+    color: palegoldenrod;
+    background-color: darkslategrey;
+    font-family: Cambria, Cochin, Georgia, Times, Times New Roman, serif;
+    padding: 4px;
+}
+
+.release__link {
+    position: absolute;
+    right: 16px;
+    color: white;
+    text-decoration: none;
+}
+
+.release__link:hover {
+    text-decoration: underline;
+}
+
+.list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sub-list {
+    list-style-type: square;
+}

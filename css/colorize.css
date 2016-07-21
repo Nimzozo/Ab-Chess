@@ -1,0 +1,38 @@
+
+.code-title {
+    display: inline-block;
+    padding: 6px;
+    background-color: lightgrey;
+    color: dimgrey;
+}
+
+.code {
+    display: block;
+    background-color: lavender;
+    white-space: pre-wrap;
+    font-family: Monaco, monospace;
+    font-size: 98%;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+pre {
+    font-family: Monaco, monospace;
+    display: inline;
+}
+
+.blue {
+    color: dodgerblue
+}
+
+.number {
+    color: steelblue;
+}
+
+.pink {
+    color: darksalmon;
+}
+
+.comment {
+    color: forestgreen;
+}

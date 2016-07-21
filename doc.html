@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>AB-Chess - Documentation</title>
+    <meta charset="utf-8">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/doc.css">
+    <link rel="stylesheet" href="css/colorize.css">
+</head>
+
+<body>
+    <header id="fixed-header">
+        <div id="sub-fixed-header">
+            <div class="inline-block">
+                <a class="header__link" href="index.html">AB-Chess</a>
+                <a class="header__link" href="" id="selected-tab">Documentation</a>
+                <a class="header__link" href="examples.html">Examples</a>
+                <a class="header__link" href="download.html">Download</a>
+            </div>
+            <div class="inline-block right">
+                <a class="header__link" href="https://github.com/Nimzozo/Ab-Chess">GitHub</a>
+            </div>
+        </div>
+    </header>
+
+    <div id="main-container">
+
+        <div id="sub-main">
+
+            <div id="navigation-container" class="inline-block">
+
+                <div id="navigation">
+                    <ul>
+                        <li class="sub-item">
+                            <a href="#" class="example-link"><b>AbChess</b></a>
+                        </li>
+                        <li class="sub-item">
+                            <a href="#AbChess" class="example-link">new AbChess()</a>
+                        </li>
+                        <li class="sub-item">
+                            <a href="#draw" class="example-link">draw()</a>
+                        </li>
+                        <li class="sub-item">
+                            <a href="#flip" class="example-link">flip()</a>
+                        </li>
+                        <li class="sub-item">
+                            <a href="#getActiveColor" class="example-link">getActiveColor()</a>
+                        </li>
+                        <li class="sub-item">
+                            <a href="#getFEN" class="example-link">getFEN()</a>
+                        </li>
+                        <li class="sub-item">
+                            <a href="#getGameInfo" class="example-link">getGameInfo()</a>
+                        </li>
+                        <li class="sub-item">
+                            <a href="#getGameMoves" class="example-link">getGameMoves()</a>
+                        </li>
+                        <li class="sub-item">
+                            <a href="#getGameMovesPGN" class="example-link">getGameMovesPGN()</a>
+                        </li>
+                        <li class="sub-item">
+                            <a href="#getLastPositionIndex" class="example-link">getLastPositionIndex()</a>
+                        </li>
+                        <li class="sub-item">
+                            <a href="#getLegalMoves" class="example-link">getLegalMoves()</a>
+                        </li>
+                        <li class="sub-item">
+                            <a href="#getPGN" class="example-link">getPGN()</a>
+                        </li>
+                        <li class="sub-item">
+                            <a href="#is50MovesDraw" class="example-link">is50MovesDraw()</a>
+                        </li>
+                        <li class="sub-item">
+                            <a href="#isCheckmate" class="example-link">isCheckmate()</a>
+                        </li>
+                        <li class="sub-item">
+                            <a href="#isInCheck" class="example-link">isInCheck()</a>
+                        </li>
+                        <li class="sub-item">
+                            <a href="#isInsufficientMaterialDraw" class="example-link">isInsufficientMaterialDraw()</a>
+                        </li>
+                        <li class="sub-item">
+                            <a href="#isLegal" class="example-link">isLegal()</a>
+                        </li>
+                        <li class="sub-item">
+                            <a href="#isStalemate" class="example-link">isStalemate()</a>
+                        </li>
+                        <li class="sub-item">
+                            <a href="#isValidFEN" class="example-link">isValidFEN()</a>
+                        </li>
+                        <li class="sub-item">
+                            <a href="#isValidPGN" class="example-link">isValidPGN()</a>
+                        </li>
+                        <li class="sub-item">
+                            <a href="#navigate" class="example-link">navigate()</a>
+                        </li>
+                        <li class="sub-item">
+                            <a href="#onMovePlayed" class="example-link">onMovePlayed()</a>
+                        </li>
+                        <li class="sub-item">
+                            <a href="#play" class="example-link">play()</a>
+                        </li>
+                        <li class="sub-item">
+                            <a href="#reset" class="example-link">reset()</a>
+                        </li>
+                        <li class="sub-item">
+                            <a href="#setFEN" class="example-link">setFEN()</a>
+                        </li>
+                        <li class="sub-item">
+                            <a href="#setGameInfo" class="example-link">setGameInfo()</a>
+                        </li>
+                        <li class="sub-item">
+                            <a href="#setPGN" class="example-link">setPGN()</a>
+                        </li>
+                    </ul>
+                </div>
+            </div><!--
+
+         --><div class="inline-block">
+                <h1>Class AbChess</h1>
+                <p>The AbChess class creates an instance of an AbChess object.
+                    It provides an access to several methods. This class is mainly used to draw a chessboard and interact with it. The chess data are handled in a chessgame directly linked to the chessboard.
+                </p>
+                <table>
+                    <tr>
+                        <th>Constructor</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td><a class="detail-link" href="#AbChess">new AbChess(containerId[, options])</a></td>
+                        <td>Create an AbChess instance.</td>
+                    </tr>
+                </table>
+
+                <table>
+                    <tr>
+                        <th>Constant</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td>DEFAULT_FEN</td>
+                        <td>The FEN string of the starting position in a classical chess game.</td>
+                    </tr>
+                </table>
+
+                <table>
+                    <tr>
+                        <th>Method</th>
+                        <th>Return type</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td><a class="detail-link" href="#draw">draw()</a></td>
+                        <td>undefined</td>
+                        <td>Draw the chessboard.</td>
+                    </tr>
+                    <tr>
+                        <td><a class="detail-link" href="#flip">flip()</a></td>
+                        <td>undefined</td>
+                        <td>Flip the chessboard.</td>
+                    </tr>
+                    <tr>
+                        <td><a class="detail-link" href="#getActiveColor">getActiveColor(index)</a></td>
+                        <td>String</td>
+                        <td>Return a character indicating the active color in a position.</td>
+                    </tr>
+                    <tr>
+                        <td><a class="detail-link" href="#getFEN">getFEN(index)</a></td>
+                        <td>String</td>
+                        <td>Return the FEN string of a position.</td>
+                    </tr>
+                    <tr>
+                        <td><a class="detail-link" href="#getGameInfo">getGameInfo(info)</a></td>
+                        <td>String</td>
+                        <td>Return an information stored in the game.</td>
+                    </tr>
+                    <tr>
+                        <td><a class="detail-link" href="#getGameMoves">getGameMoves()</a></td>
+                        <td>String[]</td>
+                        <td>Return an array of the moves stored in the game.</td>
+                    </tr>
+                    <tr>
+                        <td><a class="detail-link" href="#getGameMovesPGN">getGameMovesPGN()</a></td>
+                        <td>String[]</td>
+                        <td>Return an array of the moves stored in the game in PGN notation.</td>
+                    </tr>
+                    <tr>
+                        <td><a class="detail-link" href="#getLastPositionIndex">getLastPositionIndex()</a></td>
+                        <td>Number</td>
+                        <td>Return the index of the last position of the game.</td>
+                    </tr>
+                    <tr>
+                        <td><a class="detail-link" href="#getLegalMoves">getLegalMoves(index)</a></td>
+                        <td>String[]</td>
+                        <td>Return an array of the legal moves in a position.</td>
+                    </tr>
+                    <tr>
+                        <td><a class="detail-link" href="#getPGN">getPGN()</a></td>
+                        <td>String</td>
+                        <td>Return the PGN string of the game.</td>
+                    </tr>
+                    <tr>
+                        <td><a class="detail-link" href="#is50MovesDraw">is50MovesDraw(index)</a></td>
+                        <td>Boolean</td>
+                        <td>Return true if a position is a draw by the 50 moves rule.</td>
+                    </tr>
+                    <tr>
+                        <td><a class="detail-link" href="#isCheckmate">isCheckmate(index)</a></td>
+                        <td>Boolean</td>
+                        <td>Return true if a position is a checkmate.</td>
+                    </tr>
+                    <tr>
+                        <td><a class="detail-link" href="#isInCheck">isInCheck(index)</a></td>
+                        <td>Boolean</td>
+                        <td>Return true if a position is in check.</td>
+                    </tr>
+                    <tr>
+                        <td><a class="detail-link" href="#isInsufficientMaterialDraw">isInsufficientMaterialDraw(index)</a></td>
+                        <td>Boolean</td>
+                        <td>Return true if a position cannot be won anymore.</td>
+                    </tr>
+                    <tr>
+                        <td><a class="detail-link" href="#isLegal">isLegal(index, move)</a></td>
+                        <td>Boolean</td>
+                        <td>Return true if a move is legal in a position.</td>
+                    </tr>
+                    <tr>
+                        <td><a class="detail-link" href="#isStalemate">isStalemate(index)</a></td>
+                        <td>Boolean</td>
+                        <td>Return true if a position is a stalemate.</td>
+                    </tr>
+                    <tr>
+                        <td><a class="detail-link" href="#isValidFEN">isValidFEN(fen, onlyCheckRows)</a></td>
+                        <td>Boolean</td>
+                        <td>Return true if a FEN string is valid.</td>
+                    </tr>
+                    <tr>
+                        <td><a class="detail-link" href="#isValidPGN">isValidPGN(pgn)</a></td>
+                        <td>Boolean</td>
+                        <td>Return true if a PGN string is valid.</td>
+                    </tr>
+                    <tr>
+                        <td><a class="detail-link" href="#navigate">navigate(index)</a></td>
+                        <td>undefined</td>
+                        <td>Update the chessboard to a position.</td>
+                    </tr>
+                    <tr>
+                        <td><a class="detail-link" href="#onMovePlayed">onMovePlayed(callback)</a></td>
+                        <td>undefined</td>
+                        <td>Set a function to call each time a move is played.</td>
+                    </tr>
+                    <tr>
+                        <td><a class="detail-link" href="#play">play(move[, promotion])</a></td>
+                        <td>String</td>
+                        <td>Play a move in the game and return the resulting FEN string.</td>
+                    </tr>
+                    <tr>
+                        <td><a class="detail-link" href="#reset">reset()</a></td>
+                        <td>undefined</td>
+                        <td>Create a new game and set the chessboard to the initial position.</td>
+                    </tr>
+                    <tr>
+                        <td><a class="detail-link" href="#setFEN">setFEN([fen])</a></td>
+                        <td>undefined</td>
+                        <td>Load a position on the chessboard from a FEN string.</td>
+                    </tr>
+                    <tr>
+                        <td><a class="detail-link" href="#setGameInfo">setGameInfo(info, value)</a></td>
+                        <td>undefined</td>
+                        <td>Set an information and its value in the game.</td>
+                    </tr>
+                    <tr>
+                        <td><a class="detail-link" href="#setPGN">setPGN(pgn)</a></td>
+                        <td>undefined</td>
+                        <td>Load a chessgame from a PGN string.</td>
+                    </tr>
+
+                </table>
+
+                <div class="anchor" id="AbChess"></div>
+                <h2>Constructor details</h2>
+                <p>
+                    Create an instance of the AbChess class. Define the id of the HTML element to contain the desired chessboard. An options object can be also used to configure the instance.
+                </p>
+                <h3>new AbChess(containerId[, options])</h3>
+                <table>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Type</th>
+                        <th></th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td>containerId</td>
+                        <td>String</td>
+                        <td>Required</td>
+                        <td>The id of the HTML container.</td>
+                    </tr>
+                    <tr>
+                        <td>options</td>
+                        <td>Object</td>
+                        <td>Optional</td>
+                        <td>A configuration object. See options properties.</td>
+                    </tr>
+                </table>
+
+                <table>
+                    <tr>
+                        <th>Options property</th>
+                        <th>Type</th>
+                        <th></th>
+                        <th>Description</th>
+                        <th>Default value</th>
+                    </tr>
+                    <tr>
+                        <td>clickable</td>
+                        <td>Boolean</td>
+                        <td>Optional</td>
+                        <td>If set to true, the chess pieces will be movable with a two-clicks method.</td>
+                        <td><code class="code">true</code></td>
+                    </tr>
+                    <tr>
+                        <td>draggable</td>
+                        <td>Boolean</td>
+                        <td>Optional</td>
+                        <td>If set to true, the chess pieces will be movable with a drag-and-drop method.</td>
+                        <td><code class="code">true</code></td>
+                    </tr>
+                    <tr>
+                        <td>flipped</td>
+                        <td>Boolean</td>
+                        <td>Optional</td>
+                        <td>If set to true, the chessboard will be oriented for black point of view.</td>
+                        <td><code class="code">false</code></td>
+                    </tr>
+                    <tr>
+                        <td>imagesExtension</td>
+                        <td>String</td>
+                        <td>Optional</td>
+                        <td>The extension of the chess pieces images.</td>
+                        <td><code class="code">".png"</code></td>
+                    </tr>
+                    <tr>
+                        <td>imagesPath</td>
+                        <td>String</td>
+                        <td>Optional</td>
+                        <td>The path of the chess pieces images.</td>
+                        <td><code class="code">"images/wikipedia/"</code></td>
+                    </tr>
+                    <tr>
+                        <td>legalMarksColor</td>
+                        <td>String</td>
+                        <td>Optional</td>
+                        <td>The CSS color of the legal moves indications.</td>
+                        <td><code class="code">"steelblue"</code></td>
+                    </tr>
+                    <tr>
+                        <td>markKingInCheck</td>
+                        <td>Boolean</td>
+                        <td>Optional</td>
+                        <td>If set to true, highlight the square of the king when it is attacked.</td>
+                        <td><code class="code">true</code></td>
+                    </tr>
+                    <tr>
+                        <td>markLastMove</td>
+                        <td>Boolean</td>
+                        <td>Optional</td>
+                        <td>If set to true, highlight the start and arrival squares of the last piece movement.</td>
+                        <td><code class="code">true</code></td>
+                    </tr>
+                    <tr>
+                        <td>markLegalSquares</td>
+                        <td>Boolean</td>
+                        <td>Optional</td>
+                        <td>If set to true, highlight the legal squares after a piece has been selected.</td>
+                        <td><code class="code">true</code></td>
+                    </tr>
+                    <tr>
+                        <td>markOverflownSquare</td>
+                        <td>Boolean</td>
+                        <td>Optional</td>
+                        <td>If set to true, highlight the overflown square during a drag and drop operation.</td>
+                        <td><code class="code">true</code></td>
+                    </tr>
+                    <tr>
+                        <td>markSelectedSquare</td>
+                        <td>Boolean</td>
+                        <td>Optional</td>
+                        <td>If set to true, highlight the square of a piece when it is selected.</td>
+                        <td><code class="code">true</code></td>
+                    </tr>
+                    <tr>
+                        <td>notationBorder</td>
+                        <td>Boolean</td>
+                        <td>Optional</td>
+                        <td>If set to true, the chessboard will have a notation border.</td>
+                        <td><code class="code">true</code></td>
+                    </tr>
+                    <tr>
+                        <td>width</td>
+                        <td>Number</td>
+                        <td>Optional</td>
+                        <td>The width of the chessboard in pixel.</td>
+                        <td><code class="code">360</code></td>
+                    </tr>
+                </table>
+
+                <h3>Sample</h3>
+                <p>Create an AbChess instance.</p>
+                <span class="code-title">JavaScript</span>
+                <code class="code">var abChess;
+var abConfig = {
+    clickable: true,
+    draggable: false,
+    flipped: false,
+    showKingInCheck: true,
+    showLegalMoves: false,
+    width: 180
+};
+var containerId = "abContainer";
+abChess = new AbChess(containerId, abConfig);</code>
+
+                <h2>Methods details</h2>
+
+                <div class="method">
+                    <div class="anchor" id="draw"></div>
+                    <h3>draw()</h3>
+                    <p>Draw the chessboard in the HTML container element. This method should be called right after the constructor.</p>
+                    <p>Return type : undefined</p>
+                </div>
+                <div class="method">
+                    <div class="anchor" id="flip"></div>
+                    <h3>flip()</h3>
+                    <p>Change the orientation of the chessboard.</p>
+                    <p>Return type : undefined</p>
+                </div>
+                <div class="method">
+                    <div class="anchor" id="getActiveColor"></div>
+                    <h3>getActiveColor(index)</h3>
+                    <p>Return a character ("w" for white or "b" for black) indicating the active color in a position.</p>
+                    <p>Return type : String</p>
+                    <table>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Type</th>
+                            <th></th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>index</td>
+                            <td>Number</td>
+                            <td>Required</td>
+                            <td>The index of the desired position. It should be a positive integer.</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="method">
+                    <div class="anchor" id="getFEN"></div>
+                    <h3>getFEN(index)</h3>
+                    <p>Return the FEN string of a position in the game.</p>
+                    <p>Return type : String</p>
+                    <table>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Type</th>
+                            <th></th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>index</td>
+                            <td>Number</td>
+                            <td>Required</td>
+                            <td>The index of the desired position. It should be a positive integer.</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="method">
+                    <div class="anchor" id="getGameInfo"></div>
+                    <h3>getGameInfo(info)</h3>
+                    <p>Return an information stored in the game. Seven informations should be present in a game : Event, Site, Date, Round, White, Black, Result. Some other ones can be added.</p>
+                    <p>Return type : String</p>
+                    <table>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Type</th>
+                            <th></th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>info</td>
+                            <td>String</td>
+                            <td>Required</td>
+                            <td>The name of the desired information.</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="method">
+                    <div class="anchor" id="getGameMoves"></div>
+                    <h3>getGameMoves()</h3>
+                    <p>Return an array of the moves stored in the game in a simple algebraic notation.</p>
+                    <p>Return type : String[]</p>
+                </div>
+                <div class="method">
+                    <div class="anchor" id="getGameMovesPGN"></div>
+                    <h3>getGameMovesPGN()</h3>
+                    <p>Return an array of the moves stored in the game in PGN notation.</p>
+                    <p>Return type : String[]</p>
+                </div>
+                <div class="method">
+                    <div class="anchor" id="getLastPositionIndex"></div>
+                    <h3>getLastPositionIndex()</h3>
+                    <p>Return the index of the last position of the game.</p>
+                    <p>Return type : Number</p>
+                </div>
+                <div class="method">
+                    <div class="anchor" id="getLegalMoves"></div>
+                    <h3>getLegalMoves(index)</h3>
+                    <p>Return an array of the legal moves in a position.</p>
+                    <p>Return type : String[]</p>
+                    <table>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Type</th>
+                            <th></th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>index</td>
+                            <td>Number</td>
+                            <td>Required</td>
+                            <td>The index of the desired position. It should be a positive integer.</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="method">
+                    <div class="anchor" id="getPGN"></div>
+                    <h3>getPGN()</h3>
+                    <p>Return the PGN string of the current game.</p>
+                    <p>Return type : String</p>
+                </div>
+                <div class="method">
+                    <div class="anchor" id="is50MovesDraw"></div>
+                    <h3>is50MovesDraw(index)</h3>
+                    <p>Return true if a position is a draw because of the 50 moves rule or false if it's not.</p>
+                    <p>Return type : Boolean</p>
+                    <table>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Type</th>
+                            <th></th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>index</td>
+                            <td>Number</td>
+                            <td>Required</td>
+                            <td>The index of the desired position. It should be a positive integer.</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="method">
+                    <div class="anchor" id="isCheckmate"></div>
+                    <h3>isCheckmate(index)</h3>
+                    <p>Return true if a position is a checkmate or false if it's not.</p>
+                    <p>Return type : Boolean</p>
+                    <table>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Type</th>
+                            <th></th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>index</td>
+                            <td>Number</td>
+                            <td>Required</td>
+                            <td>The index of the desired position. It should be a positive integer.</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="method">
+                    <div class="anchor" id="isInCheck"></div>
+                    <h3>isInCheck(index)</h3>
+                    <p>Return true if the king of the active color is in check in a position or false if it's not.</p>
+                    <p>Return type : Boolean</p>
+                    <table>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Type</th>
+                            <th></th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>index</td>
+                            <td>Number</td>
+                            <td>Required</td>
+                            <td>The index of the desired position. It should be a positive integer.</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="method">
+                    <div class="anchor" id="isInsufficientMaterialDraw"></div>
+                    <h3>isInsufficientMaterialDraw(index)</h3>
+                    <p>Return true if the remaining material is insufficient to win a position or false if it's not.</p>
+                    <p>Return type : Boolean</p>
+                    <table>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Type</th>
+                            <th></th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>index</td>
+                            <td>Number</td>
+                            <td>Required</td>
+                            <td>The index of the desired position. It should be a positive integer.</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="method">
+                    <div class="anchor" id="isLegal"></div>
+                    <h3>isLegal(index, move)</h3>
+                    <p>Return true if a move is legal in a position or false if it's not.</p>
+                    <p>Return type : Boolean</p>
+                    <table>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Type</th>
+                            <th></th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>index</td>
+                            <td>Number</td>
+                            <td>Required</td>
+                            <td>The index of the desired position. It should be a positive integer.</td>
+                        </tr>
+                        <tr>
+                            <td>move</td>
+                            <td>String</td>
+                            <td>Required</td>
+                            <td>The move to test. It should be in the algebraic format.</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="method">
+                    <div class="anchor" id="isStalemate"></div>
+                    <h3>isStalemate(index)</h3>
+                    <p>Return true if a position is a stalemate or false if it's not.</p>
+                    <p>Return type : Boolean</p>
+                    <table>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Type</th>
+                            <th></th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>index</td>
+                            <td>Number</td>
+                            <td>Required</td>
+                            <td>The index of the desired position. It should be a positive integer.</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="method">
+                    <div class="anchor" id="isValidFEN"></div>
+                    <h3>isValidFEN(fen, onlyCheckRows)</h3>
+                    <p>Return true if a FEN string is valid or false if it's not.</p>
+                    <p>Return type : Boolean</p>
+                    <table>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Type</th>
+                            <th></th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>fen</td>
+                            <td>String</td>
+                            <td>Required</td>
+                            <td>The Forsyth-Edwards Notation string to validate.</td>
+                        </tr>
+                        <tr>
+                            <td>onlyCheckRows</td>
+                            <td>Boolean</td>
+                            <td>Required</td>
+                            <td>When set to true, the function will only check if the position rows are valid. When set to false, the function will validate the entire string.</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="method">
+                    <div class="anchor" id="isValidPGN"></div>
+                    <h3>isValidPGN(pgn)</h3>
+                    <p>Return true if a PGN string is valid or false if it's not.</p>
+                    <p>Return type : Boolean</p>
+                    <table>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Type</th>
+                            <th></th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>pgn</td>
+                            <td>String</td>
+                            <td>Required</td>
+                            <td>The Portable Game Notation string to validate.</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="method">
+                    <div class="anchor" id="navigate"></div>
+                    <h3>navigate(index)</h3>
+                    <p>Update the chessboard to a position in the game. The pieces are automatically locked until the last position is reached again.</p>
+                    <p>Return type : undefined</p>
+                    <table>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Type</th>
+                            <th></th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>index</td>
+                            <td>Number</td>
+                            <td>Required</td>
+                            <td>The index of the desired position. It should be a positive integer.</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="method">
+                    <div class="anchor" id="onMovePlayed"></div>
+                    <h3>onMovePlayed(callback)</h3>
+                    <p>Set a function to call each time after a move is played in the game.</p>
+                    <p>Return type : undefined</p>
+                    <table>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Type</th>
+                            <th></th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>callback</td>
+                            <td>Function</td>
+                            <td>Required</td>
+                            <td>The function to call after a move has been played.</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="method">
+                    <div class="anchor" id="play"></div>
+                    <h3>play(move[, promotion])</h3>
+                    <p>Play a move in the game and return the resulting FEN string.</p>
+                    <p>Return type : String</p>
+                    <table>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Type</th>
+                            <th></th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>move</td>
+                            <td>String</td>
+                            <td>Required</td>
+                            <td>The move to play. It should be in the algebraic format.</td>
+                        </tr>
+                        <tr>
+                            <td>promotion</td>
+                            <td>String</td>
+                            <td>Optional</td>
+                            <td>The promotion choice if needed. It will be ignored if the move is not a promotion.</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="method">
+                    <div class="anchor" id="reset"></div>
+                    <h3>reset()</h3>
+                    <p>Create a new game and set the chessboard to the initial starting position.</p>
+                    <p>Return type : undefined</p>
+                </div>
+                <div class="method">
+                    <div class="anchor" id="setFEN"></div>
+                    <h3>setFEN([fen])</h3>
+                    <p>Load a position on the chessboard from a FEN string. This does not affect the game in progress.</p>
+                    <p>Return type : undefined</p>
+                    <table>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Type</th>
+                            <th></th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>fen</td>
+                            <td>String</td>
+                            <td>Optional</td>
+                            <td>The Forsyth-Edwards Notation to import. If omitted, the classical starting position will be set.</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="method">
+                    <div class="anchor" id="setGameInfo"></div>
+                    <h3>setGameInfo(info, value)</h3>
+                    <p>Set an information and its value in the game. Replace the information if it already exists. Create a new one if not.</p>
+                    <p>Return type : undefined</p>
+                    <table>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Type</th>
+                            <th></th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>info</td>
+                            <td>String</td>
+                            <td>Required</td>
+                            <td>The name of the information to set.</td>
+                        </tr>
+                        <tr>
+                            <td>value</td>
+                            <td>String</td>
+                            <td>Required</td>
+                            <td>The value of the information to set.</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="method">
+                    <div class="anchor" id="setPGN"></div>
+                    <h3>setPGN(pgn)</h3>
+                    <p>Load a chessgame from a PGN string. This will replace the game in progress.</p>
+                    <p>Return type : undefined</p>
+                    <table>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Type</th>
+                            <th></th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>pgn</td>
+                            <td>String</td>
+                            <td>Required</td>
+                            <td>The Portable Game Notation to import.</td>
+                        </tr>
+                    </table>
+                </div>
+
+            </div>
+
+        </div>
+
+        <footer>
+            <div id="footer-inside">
+                <div class="inline-block">
+                    &copy; 2016 <a class="footer__link" href="https://github.com/Nimzozo">Nimzozo</a>
+                </div><!--
+                --><div class="inline-block right">
+                    Released under the <a class="footer__link" href="https://github.com/Nimzozo/Ab-Chess/blob/master/LICENSE">MIT license</a>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <script src="js/colorize.js"></script>
+</body>
+
+</html>
