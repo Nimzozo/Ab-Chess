@@ -10,28 +10,46 @@
 
 ul {
     padding: 0;
-    margin: 10px auto;
+    margin: 0 auto;
 }
 
 .list {
     list-style-type: square;
 }
 
-.list__item {
-    list-style-position: inside;
+.list__header {
+    cursor: pointer;
+    padding: 8px;
+    margin: 0;
+}
+
+.list__header:hover {
+    background: gainsboro;
+}
+
+.list__header_active {
+    cursor: pointer;
+    padding: 8px;
+    margin: 0;
+    background: gainsboro;
 }
 
 .sub-item {
     list-style-type: none;
     background-color: slategrey;
     margin: 0;
+    display: none;
+}
+
+.sub-list_active .sub-item {
+    display: block;
 }
 
 .example-link_selected {
     background-color: darkslategrey;
 }
 
-.example-link {
+.example-link, .example-link_selected {
     display: block;
     padding: 8px;
     text-decoration: none;
