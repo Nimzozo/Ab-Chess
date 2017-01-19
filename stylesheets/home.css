@@ -1,6 +1,7 @@
 #main-header {
     background-color: slategrey;
     background-image: url("../images/chess-vectors.png");
+    background-attachment: fixed;
     text-align: center;
     padding: 20px;
 }
