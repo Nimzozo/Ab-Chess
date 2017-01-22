@@ -11,7 +11,7 @@ Read the [API documentation](https://github.com/Nimzozo/Ab-Chess/blob/master/api
 
 ## Website
 
-A GitHub page with documentation and samples is available at http://nimzozo.github.io/Ab-Chess/.
+A GitHub page with documentation and samples is available at https://nimzozo.github.io/Ab-Chess/.
 
 ## License
 
