@@ -1,6 +1,12 @@
 window.addEventListener("load", function () {
     "use strict";
 
+    var interval;
+    var linkClass = "example-link";
+    var linkNumber = 0;
+    var linksCount = 15;
+    var selectedLinkClass = "example-link_selected";
+
     function loadExample(exampleNumber) {
         var description = document.getElementById("description");
         var example = {};
@@ -337,34 +343,31 @@ window.addEventListener("load", function () {
                     var randomPromotion = "";
                     legalMoves = abChess.getLegalMoves(index);
                     if (legalMoves.length === 0) {
+                        clearInterval(interval);
                         alert("game over");
                         return;
                     }
                     if (abChess.isInsufficientMaterialDraw(index)) {
+                        clearInterval(interval);
                         alert("draw : insufficient material");
                         return;
                     }
                     if (abChess.is50MovesDraw(index)) {
+                        clearInterval(interval);
                         alert("draw : 50 moves");
                         return;
                     }
                     randomMove = chooseRandom(legalMoves);
                     randomPromotion = chooseRandom(promotions);
                     abChess.play(randomMove, randomPromotion);
-                }
-
-                function updateAndPlay() {
-                    movesCount += 1;
-                    fenParagraph.innerText = abChess.getFEN(movesCount);
+                    fenParagraph.innerText = abChess.getFEN(index + 1);
                     pgnParagraph.innerText = abChess.getPGN();
-                    setTimeout(function () {
-                        playRandomMove(movesCount);
-                    }, 500);
                 }
 
-                abChess.onMovePlayed(updateAndPlay);
-
-                playRandomMove(movesCount);
+                interval = setInterval(function () {
+                    playRandomMove(movesCount);
+                    movesCount += 1;
+                }, 500);
             },
             html: "<p id=\"fenParagraph\"></p>\n<div id=\"chessboard\"></div>\n<p id=\"pgnParagraph\"></p>",
             title: "Random moves"
@@ -445,11 +448,6 @@ window.addEventListener("load", function () {
         example.func();
     }
 
-    var linkClass = "example-link";
-    var linkNumber = 0;
-    var linksCount = 15;
-    var selectedLinkClass = "example-link_selected";
-
     function addClickHandler(linkIndex) {
         var link;
         link = document.getElementById("example-" + linkIndex);
@@ -460,6 +458,7 @@ window.addEventListener("load", function () {
                 selectedLinks[0].className = linkClass;
             }
             link.className += " " + selectedLinkClass;
+            clearInterval(interval);
             loadExample(linkIndex);
         });
     }
