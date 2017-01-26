@@ -1793,6 +1793,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             playedPiece.remove();
             arrival = move.substr(3, 2);
             arrivalSquare = the_board.squares[arrival];
+            emptyArrival = arrivalSquare.isEmpty();
             playedPiece.put(arrivalSquare);
             if (regex_castle.test(move) && playedPiece.name[1] === chess_value.black_king) {
                 switch (arrival[0]) {
@@ -1813,7 +1814,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     rook.put(the_board.squares[rookArrival]);
                 }
             } else if (playedPiece.name[1] === chess_value.black_pawn) {
-                emptyArrival = arrivalSquare.isEmpty();
                 if (regex_en_passant.test(move) && emptyArrival && start[0] !== arrival[0]) {
                     enPassant = arrival[0];
                     switch (arrival[1]) {
