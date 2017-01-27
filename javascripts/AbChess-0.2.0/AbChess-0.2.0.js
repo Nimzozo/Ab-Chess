@@ -10,6 +10,12 @@
     browser, white
 */
 
+// TODO :
+// Animations 
+// - after a DND operation
+// - during a game navigation
+// Make DND great again
+
 window.AbChess = window.AbChess || function (containerId, abConfig) {
     "use strict";
 
