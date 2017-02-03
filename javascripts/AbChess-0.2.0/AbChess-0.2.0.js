@@ -11,8 +11,9 @@
 */
 
 // TODO :
-// Animations
-// - during a game navigation
+// Animations during a game navigation
+// Unselect after click on same square
+// PromotionDiv & Promotion animation
 
 window.AbChess = window.AbChess || function (containerId, abConfig) {
     "use strict";
@@ -1507,12 +1508,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             width: config.width
         };
 
-        the_board.animateCapture = function () {
-
-            // Animate a capture.
-
-        };
-
         the_board.animateGhost = function (ghost, backSquare) {
 
             // Animate the ghost movement.
@@ -1981,7 +1976,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     newPiece = new Piece(newPieceName, url);
                     newPiece.div.addEventListener("mousedown",
                         newPiece.mouseDownHandler);
-
                     playedPiece.remove();
                     newPiece.animatePut(arrivalSquare);
                     newPiece.put(arrivalSquare);
@@ -2742,7 +2736,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Play the desired move and return the resulting FEN string.
 
-            return playMove(move, noAnimation, promotion);
+            return playMove(move, false, promotion);
         },
 
         reset: function () {
