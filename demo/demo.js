@@ -4,7 +4,7 @@ window.addEventListener("load", function () {
     var abChess;
     var options = {
         imagesPath: "../images/wikipedia/",
-        markLegalSquares: true
+        clickable: true
     };
     var pgnButton;
     var pgnNotation;
