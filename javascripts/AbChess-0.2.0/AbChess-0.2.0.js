@@ -1268,7 +1268,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Place the piece in the DOM tree.
 
-            console.log("putting " + the_piece.name + " on " + square.name);
             requestAF(function () {
                 square.div.appendChild(the_piece.div);
             });
@@ -1278,7 +1277,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Remove the piece from the DOM tree.
 
-            console.log("removing " + the_piece.name);
             requestAF(function () {
                 var parent = the_piece.div.parentElement;
                 parent.removeChild(the_piece.div);
@@ -1350,10 +1348,13 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         // The Square class constructs a HTML DIV element
         // named with its coordinate.
 
+        var cssClass = "";
+        var div = document.createElement("DIV");
+        var isWhiteSquare = Square.isWhite(name);
         var the_square = {
             board: null,
             canvas: null,
-            div: null,
+            div: div,
             hasCircle: false,
             isHighlighted: false,
             isMarked: false,
@@ -1362,6 +1363,10 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             name: name,
             piece: null
         };
+        cssClass = (isWhiteSquare)
+            ? css.square + " " + css.whiteSquare
+            : css.square + " " + css.blackSquare;
+        div.className = cssClass;
 
         the_square.clickHandler = function () {
             if (typeof the_square.board.onSquareClick === "function") {
@@ -1477,6 +1482,12 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             });
         };
 
+        the_square.div.addEventListener("click", the_square.clickHandler);
+        the_square.div.addEventListener("mouseenter",
+            the_square.mouseEnterHandler);
+        the_square.div.addEventListener("mouseleave",
+            the_square.mouseLeaveHandler);
+        the_square.div.addEventListener("mouseup", the_square.mouseUpHandler);
         return the_square;
     }
 
@@ -1510,10 +1521,14 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             legalMarksColor: config.legalMarksColor,
             markOverflownSquare: config.markOverflownSquare,
             notationBorder: config.notationBorder,
+            onMouseMove: null,
+            onMouseUp: null,
             onPieceMouseDown: null,
             onPromotionChose: null,
             onSquareClick: null,
+            onSquareEnter: null,
             onSquareMouseUp: null,
+            onSquareLeave: null,
             pendingMove: null,
             promotionDiv: document.createElement("DIV"),
             selectedSquare: null,
@@ -1537,12 +1552,12 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 var piece = animation.piece;
                 var start = animation.start;
                 if (arrival === undefined) {
-                    //start.piece = null;
-                } else if (start === undefined) {
+                    return;
+                }
+                if (start === undefined) {
                     arrival.piece = piece;
                     piece.square = arrival;
                 } else {
-                  //  start.piece = null;
                     arrival.piece = piece;
                     piece.square = arrival;
                 }
@@ -1688,13 +1703,10 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Create the squares property.
 
-            var canvas;
+            var canvas = {};
             var canvasWidth = "";
             var colNumber = 0;
             var column = "";
-            var cssClass = "";
-            var div;
-            var isWhiteSquare = false;
             var name = "";
             var radius = 0;
             var rowNumber = 0;
@@ -1710,28 +1722,15 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 while (colNumber < 9) {
                     column = columns[colNumber - 1];
                     name = column + rowNumber;
-                    isWhiteSquare = Square.isWhite(name);
                     canvas = document.createElement("CANVAS");
                     canvas.className = css.squareCanvas;
                     canvas.setAttribute("height", canvasWidth);
                     canvas.setAttribute("width", canvasWidth);
-                    div = document.createElement("DIV");
-                    cssClass = (isWhiteSquare)
-                        ? css.square + " " + css.whiteSquare
-                        : css.square + " " + css.blackSquare;
-                    div.className = cssClass;
                     square = new Square(name);
                     square.canvas = canvas;
                     square.drawFilledCircle(xy, xy, radius,
                         the_board.legalMarksColor);
                     square.board = the_board;
-                    square.div = div;
-                    div.addEventListener("click", square.clickHandler);
-                    div.addEventListener("mouseenter",
-                        square.mouseEnterHandler);
-                    div.addEventListener("mouseleave",
-                        square.mouseLeaveHandler);
-                    div.addEventListener("mouseup", square.mouseUpHandler);
                     squares[name] = square;
                     colNumber += 1;
                 }
@@ -1941,26 +1940,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 animations.push(animation);
             });
             return animations;
-        };
-
-        the_board.getPiecesToPlace = function (position) {
-
-            // Returns an array of non-similar pieces to place compared
-            // to another position.
-
-            var newPosition = position.occupiedSquares;
-            var oldPosition = the_board.getPositionObject();
-            var pieces = [];
-            Object.keys(newPosition).forEach(function (square) {
-                var newPiece = newPosition[square];
-                var oldPiece = oldPosition[square];
-                var piece = {};
-                if (oldPiece !== newPiece) {
-                    piece = the_board.squares[square].piece;
-                    pieces.push(piece);
-                }
-            });
-            return pieces;
         };
 
         the_board.getPositionObject = function () {
