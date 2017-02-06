@@ -2134,6 +2134,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     url = the_board.imagesPath + newPieceName +
                         the_board.imagesExtension;
                     newPiece = new Piece(newPieceName, url);
+                    playedPiece.fadingRemove();
                     playedPiece.remove();
                     newPiece.animatePut(arrivalSquare);
                     newPiece.put(arrivalSquare);
