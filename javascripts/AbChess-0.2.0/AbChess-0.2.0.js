@@ -20,7 +20,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
     var abBoard = {};
     var abGame = {};
-    var columns = "abcdefgh";
 
     // Chess constants.
 
@@ -37,6 +36,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         castleQueenSymbol: "O-O-O",
         checkSymbol: "+",
         checkmateSymbol: "#",
+        columns: "abcdefgh",
         defaultFEN: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
         promotionSymbol: "=",
         resultBlack: "0-1",
@@ -396,12 +396,12 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             arrivalSquare = move.substr(3, 2);
             if (playedPiece.toLowerCase() === chessValue.blackKing &&
                 regexCastle.test(move)) {
-                rookStart = (arrivalSquare[0] === columns[2])
-                    ? columns[0] + arrivalSquare[1]
-                    : columns[7] + arrivalSquare[1];
-                rookArrival = (arrivalSquare[0] === columns[2])
-                    ? columns[3] + arrivalSquare[1]
-                    : columns[5] + arrivalSquare[1];
+                rookStart = (arrivalSquare[0] === chessValue.columns[2])
+                    ? chessValue.columns[0] + arrivalSquare[1]
+                    : chessValue.columns[7] + arrivalSquare[1];
+                rookArrival = (arrivalSquare[0] === chessValue.columns[2])
+                    ? chessValue.columns[3] + arrivalSquare[1]
+                    : chessValue.columns[5] + arrivalSquare[1];
                 delete newOccupiedSquares[rookStart];
                 if (startSquare === "e1") {
                     newOccupiedSquares[rookArrival] = chessValue.whiteRook;
@@ -467,7 +467,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             playedPiece = occupiedSquares[start];
             arrival = move.substr(3, 2);
             if (regexCastle.test(move)) {
-                if (arrival[0] === columns[2]) {
+                if (arrival[0] === chessValue.columns[2]) {
                     pgnMove += chessValue.castleQueenSymbol;
                 } else {
                     pgnMove += chessValue.castleKingSymbol;
@@ -680,7 +680,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var testColNumber = 0;
             var testRowNumber = 0;
             var testSquare = "";
-            colNumber = columns.indexOf(start[0]) + 1;
+            colNumber = chessValue.columns.indexOf(start[0]) + 1;
             testColNumber = colNumber + 1;
             rowNumber = Number(start[1]);
             testRowNumber = rowNumber + 1;
@@ -690,7 +690,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 : chessValue.black;
             ennemiesPlaces = the_position.getPiecesPlaces(ennemiesColor);
             while (testColNumber < 9 && testRowNumber < 9) {
-                testSquare = columns[testColNumber - 1] + testRowNumber;
+                testSquare = chessValue.columns[testColNumber - 1] +
+                    testRowNumber;
                 if (alliesPlaces.indexOf(testSquare) !== -1) {
                     break;
                 }
@@ -704,7 +705,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             testColNumber = colNumber - 1;
             testRowNumber = rowNumber - 1;
             while (testColNumber > 0 && testRowNumber > 0) {
-                testSquare = columns[testColNumber - 1] + testRowNumber;
+                testSquare = chessValue.columns[testColNumber - 1] +
+                    testRowNumber;
                 if (alliesPlaces.indexOf(testSquare) !== -1) {
                     break;
                 }
@@ -718,7 +720,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             testColNumber = colNumber + 1;
             testRowNumber = rowNumber - 1;
             while (testColNumber < 9 && testRowNumber > 0) {
-                testSquare = columns[testColNumber - 1] + testRowNumber;
+                testSquare = chessValue.columns[testColNumber - 1] +
+                    testRowNumber;
                 if (alliesPlaces.indexOf(testSquare) !== -1) {
                     break;
                 }
@@ -732,7 +735,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             testColNumber = colNumber - 1;
             testRowNumber = rowNumber + 1;
             while (testColNumber > 0 && testRowNumber < 9) {
-                testSquare = columns[testColNumber - 1] + testRowNumber;
+                testSquare = chessValue.columns[testColNumber - 1] +
+                    testRowNumber;
                 if (alliesPlaces.indexOf(testSquare) !== -1) {
                     break;
                 }
@@ -761,7 +765,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var testRowNumber = 0;
             var testSquare = "";
             alliesPlaces = the_position.getPiecesPlaces(color);
-            colNumber = columns.indexOf(start[0]) + 1;
+            colNumber = chessValue.columns.indexOf(start[0]) + 1;
             rowNumber = Number(start[1]);
             colMoves.forEach(function (colValue) {
                 rowMoves.forEach(function (rowValue) {
@@ -770,7 +774,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                         testRowNumber = rowNumber + rowValue;
                         if (testColNumber > 0 && testColNumber < 9 &&
                             testRowNumber > 0 && testRowNumber < 9) {
-                            testSquare = columns[testColNumber - 1] +
+                            testSquare = chessValue.columns[testColNumber - 1] +
                                 testRowNumber;
                             if (alliesPlaces.indexOf(testSquare) === -1) {
                                 targets.push(testSquare);
@@ -867,7 +871,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var testRowNumber = 0;
             var testSquare = "";
             alliesPlaces = the_position.getPiecesPlaces(color);
-            colNumber = columns.indexOf(start[0]) + 1;
+            colNumber = chessValue.columns.indexOf(start[0]) + 1;
             rowNumber = Number(start[1]);
             colMoves.forEach(function (colValue) {
                 rowMoves.forEach(function (rowValue) {
@@ -876,7 +880,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                         testRowNumber = rowNumber + rowValue;
                         if (testColNumber > 0 && testColNumber < 9 &&
                             testRowNumber > 0 && testRowNumber < 9) {
-                            testSquare = columns[testColNumber - 1] +
+                            testSquare = chessValue.columns[testColNumber - 1] +
                                 testRowNumber;
                             if (alliesPlaces.indexOf(testSquare) === -1) {
                                 targets.push(testSquare);
@@ -905,7 +909,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var testColNumber = 0;
             var testRowNumber = 0;
             var testSquare = "";
-            colNumber = columns.indexOf(start[0]) + 1;
+            colNumber = chessValue.columns.indexOf(start[0]) + 1;
             rowNumber = Number(start[1]);
             direction = (color === chessValue.black)
                 ? -1
@@ -917,7 +921,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             ennemiesPlaces = the_position.getPiecesPlaces(ennemiesColor);
             colDirections.forEach(function (colDirection) {
                 testColNumber = colNumber + colDirection;
-                testSquare = columns[testColNumber - 1] + testRowNumber;
+                testSquare = chessValue.columns[testColNumber - 1] +
+                    testRowNumber;
                 if (ennemiesPlaces.indexOf(testSquare) !== -1 ||
                     enPassantSquare === testSquare) {
                     targets.push(testSquare);
@@ -927,7 +932,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             });
             if (!onlyOffensive) {
                 testColNumber = colNumber;
-                testSquare = columns[testColNumber - 1] + testRowNumber;
+                testSquare = chessValue.columns[testColNumber - 1] +
+                    testRowNumber;
                 alliesPlaces = the_position.getPiecesPlaces(color);
                 if (alliesPlaces.indexOf(testSquare) === -1 &&
                     ennemiesPlaces.indexOf(testSquare) === -1) {
@@ -935,7 +941,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     if ((rowNumber === 2 && direction === 1) ||
                         (rowNumber === 7 && direction === -1)) {
                         testRowNumber = rowNumber + 2 * direction;
-                        testSquare = columns[testColNumber - 1] + testRowNumber;
+                        testSquare = chessValue.columns[testColNumber - 1] +
+                            testRowNumber;
                         if (alliesPlaces.indexOf(testSquare) === -1 &&
                             ennemiesPlaces.indexOf(testSquare) === -1) {
                             targets.push(testSquare);
@@ -968,7 +975,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var testColNumber = 0;
             var testRowNumber = 0;
             var testSquare = "";
-            colNumber = columns.indexOf(start[0]) + 1;
+            colNumber = chessValue.columns.indexOf(start[0]) + 1;
             testColNumber = colNumber + 1;
             rowNumber = Number(start[1]);
             testRowNumber = rowNumber;
@@ -978,7 +985,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 : chessValue.black;
             ennemiesPlaces = the_position.getPiecesPlaces(ennemiesColor);
             while (testColNumber < 9) {
-                testSquare = columns[testColNumber - 1] + testRowNumber;
+                testSquare = chessValue.columns[testColNumber - 1] +
+                    testRowNumber;
                 if (alliesPlaces.indexOf(testSquare) !== -1) {
                     break;
                 }
@@ -990,7 +998,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             }
             testColNumber = colNumber - 1;
             while (testColNumber > 0) {
-                testSquare = columns[testColNumber - 1] + testRowNumber;
+                testSquare = chessValue.columns[testColNumber - 1] +
+                    testRowNumber;
                 if (alliesPlaces.indexOf(testSquare) !== -1) {
                     break;
                 }
@@ -1003,7 +1012,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             testColNumber = colNumber;
             testRowNumber = rowNumber + 1;
             while (testRowNumber < 9) {
-                testSquare = columns[testColNumber - 1] + testRowNumber;
+                testSquare = chessValue.columns[testColNumber - 1] +
+                    testRowNumber;
                 if (alliesPlaces.indexOf(testSquare) !== -1) {
                     break;
                 }
@@ -1015,7 +1025,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             }
             testRowNumber = rowNumber - 1;
             while (testRowNumber > 0) {
-                testSquare = columns[testColNumber - 1] + testRowNumber;
+                testSquare = chessValue.columns[testColNumber - 1] +
+                    testRowNumber;
                 if (alliesPlaces.indexOf(testSquare) > -1) {
                     break;
                 }
@@ -1171,7 +1182,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             row.split("").forEach(function (char) {
                 var name = "";
                 if (regexPiece.test(char)) {
-                    name = columns[colNumber - 1] + rowNumber;
+                    name = chessValue.columns[colNumber - 1] + rowNumber;
                     object[name] = char;
                     colNumber += 1;
                 } else if (regexNumber.test(char)) {
@@ -1212,7 +1223,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             colNumber = 1;
             counter = 0;
             while (colNumber < 9) {
-                square = columns[colNumber - 1] + rowNumber;
+                square = chessValue.columns[colNumber - 1] + rowNumber;
                 if (position.hasOwnProperty(square)) {
                     if (counter > 0) {
                         fenPosition += counter;
@@ -1497,7 +1508,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
         var colNumber = 0;
         var rowNumber = 0;
-        colNumber = columns.indexOf(name[0]) + 1;
+        colNumber = chessValue.columns.indexOf(name[0]) + 1;
         rowNumber = Number(name[1]);
         return (rowNumber % 2 === 0)
             ? (colNumber % 2 === 1)
@@ -1720,7 +1731,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             while (rowNumber < 9) {
                 colNumber = 1;
                 while (colNumber < 9) {
-                    column = columns[colNumber - 1];
+                    column = chessValue.columns[colNumber - 1];
                     name = column + rowNumber;
                     canvas = document.createElement("CANVAS");
                     canvas.className = css.squareCanvas;
@@ -1765,7 +1776,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 while (rowNumber > 0) {
                     colNumber = 1;
                     while (colNumber < 9) {
-                        column = columns[colNumber - 1];
+                        column = chessValue.columns[colNumber - 1];
                         square = the_board.squares[column + rowNumber];
                         squaresDiv.appendChild(square.div);
                         colNumber += 1;
@@ -1780,7 +1791,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 while (rowNumber < 9) {
                     colNumber = 8;
                     while (colNumber > 0) {
-                        column = columns[colNumber - 1];
+                        column = chessValue.columns[colNumber - 1];
                         square = the_board.squares[column + rowNumber];
                         squaresDiv.appendChild(square.div);
                         colNumber -= 1;
@@ -1801,7 +1812,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     index = (the_board.isFlipped)
                         ? 8 - colNumber
                         : colNumber - 1;
-                    borderFragment.innerHTML = columns[index].toUpperCase();
+                    borderFragment.innerHTML =
+                        chessValue.columns[index].toUpperCase();
                     bottomBorder.appendChild(borderFragment);
                     colNumber += 1;
                 }
@@ -2090,13 +2102,13 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             if (regexCastle.test(move) &&
                 playedPiece.name[1] === chessValue.blackKing) {
                 switch (arrival[0]) {
-                    case columns[2]:
-                        rookStart = columns[0];
-                        rookArrival = columns[3];
+                    case chessValue.columns[2]:
+                        rookStart = chessValue.columns[0];
+                        rookArrival = chessValue.columns[3];
                         break;
-                    case columns[6]:
-                        rookStart = columns[7];
-                        rookArrival = columns[5];
+                    case chessValue.columns[6]:
+                        rookStart = chessValue.columns[7];
+                        rookArrival = chessValue.columns[5];
                         break;
                 }
                 rookArrival += arrival[1];
