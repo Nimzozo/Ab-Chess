@@ -1,5 +1,5 @@
 // AbChess-0.2.0.js
-// 2017-02-06
+// 2017-02-07
 // Copyright (c) 2017 Nimzozo
 
 /*global
@@ -13,7 +13,7 @@
 // TODO :
 // Animations during a game navigation.
 // Unselect after click on same square.
-// PromotionDiv & Promotion animation after dnd.
+// Promotion animation.
 
 window.AbChess = window.AbChess || function (containerId, abConfig) {
     "use strict";

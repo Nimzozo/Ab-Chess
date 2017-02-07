@@ -40,7 +40,7 @@
 
 }
 
-input[type=button] {
+.commands__button {
     margin: 10px 0;
     background-color: darkslategrey;
     color: white;
@@ -49,6 +49,6 @@ input[type=button] {
     border: none;
 }
 
-input[type=button]:hover {
+.commands__button:hover {
     background-color: black;
 }
