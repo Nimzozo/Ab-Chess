@@ -11,7 +11,6 @@
 */
 
 // TODO :
-// Animations during a game navigation.
 // Unselect after click on same square.
 // Promotion animation.
 
@@ -1294,15 +1293,34 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             });
         };
 
+        the_piece.fadingPlace = function (square) {
+
+            // Fade the piece in until its opacity reaches 1.
+
+            var opacity = Number(the_piece.div.style.opacity);
+            if (opacity === 0) {
+                the_piece.animatePut(square);
+            }
+            opacity += 0.05;
+            the_piece.div.style.opacity = opacity;
+            if (opacity < 1) {
+                requestAF(function () {
+                    the_piece.fadingPlace(square);
+                });
+            }
+        };
+
         the_piece.fadingRemove = function () {
 
             // Fade the piece until its opacity reaches 0.
 
-            if (the_piece.div.style.opacity === "") {
-                the_piece.div.style.opacity = 1;
+            var opacity = the_piece.div.style.opacity;
+            if (opacity === "") {
+                opacity = 1;
             }
-            the_piece.div.style.opacity -= 0.05;
-            if (the_piece.div.style.opacity > 0) {
+            opacity -= 0.05;
+            the_piece.div.style.opacity = opacity;
+            if (opacity > 0) {
                 requestAF(the_piece.fadingRemove);
             } else {
                 the_piece.animateRemove();
@@ -1633,7 +1651,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 if (arrival === undefined) {
                     piece.fadingRemove();
                 } else if (start === undefined) {
-                    piece.animatePut(arrival);
+                    piece.fadingPlace(arrival);
                 } else {
                     the_board.animatePiece(piece, start, arrival);
                 }
@@ -2148,7 +2166,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     newPiece = new Piece(newPieceName, url);
                     playedPiece.fadingRemove();
                     playedPiece.remove();
-                    newPiece.animatePut(arrivalSquare);
+                    newPiece.fadingPlace(arrivalSquare);
                     newPiece.put(arrivalSquare);
                 }
             }
@@ -2492,7 +2510,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         // Update the board position and marks.
 
         var animations = [];
-        var fen = "";
         var kingSquare = "";
         var lastMove = "";
         var lastMoveArrival = "";
@@ -2510,8 +2527,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             similarPieces = abBoard.getSimilarPieces(position);
             abBoard.addNavigationData(animations, similarPieces);
             abBoard.animateNavigation(animations);
-            // fen = position.fenString;
-            // abBoard.loadFEN(fen);
             if (index < maxIndex) {
                 abBoard.lock();
             } else {
