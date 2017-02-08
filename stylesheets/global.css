@@ -18,11 +18,11 @@ h1, h2, h3 {
 }
 
 #fixed-header {
-    position: fixed;
+    position: absolute;
     z-index: 9;
     top: 0;
     left: 0;
-    background-color: black;
+    background-color: darkslategrey;
     width: 100%;
 }
 
@@ -40,13 +40,14 @@ h1, h2, h3 {
 .right {
     position: absolute;
     right: 0;
+    margin: 0;
 }
 
 .header__link {
     display: table-cell;
     vertical-align: middle;
     padding: 16px;
-    color: lightgrey;
+    color: white;
     text-decoration: none;
 }
 
@@ -58,7 +59,7 @@ h1, h2, h3 {
     border-top: 2px solid white;
     padding-top: 14px;
     color: white;
-    background-color: dimgrey;
+    background-color: slategrey;
 }
 
 #main-container {
@@ -74,24 +75,24 @@ h1, h2, h3 {
 footer {
     position: absolute;
     bottom: 0;
-    font-weight: bold;
+    background-color: darkslategrey;
+    color: skyblue;
     width: 100%;
+    margin-top: 50px;
 }
 
 #footer-inside {
     position: relative;
-    border-top: 1px black solid;
     width: 72%;
-    margin: 20px auto;
+    margin: auto;
+    padding: 25px 0;
 }
 
 .footer__link {
-    color: dimgrey;
+    color: white;
     text-decoration: none;
 }
 
 .footer__link:hover {
     text-decoration: underline;
 }
-
-

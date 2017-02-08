@@ -27,15 +27,24 @@ h2 {
 
 #button-link {
     padding: 20px;
-    background-color: darkgoldenrod;
+    background-color: white;
+    color: darkgoldenrod;
     border: 1px solid white;
-    color: white;
     text-decoration: none;
     font-size: 20px;
 }
 
 #button-link:hover {
-    background-color: goldenrod;
+    background-color: darkgoldenrod;
+    color: white;
+}
+
+#span-version {
+    color: white;
+    display: block;
+    margin: 24px;
+    font-style: italic;
+    font-size: 0.8em;
 }
 
 #introduction {
