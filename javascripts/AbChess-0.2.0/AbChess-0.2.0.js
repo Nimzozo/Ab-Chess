@@ -1,5 +1,5 @@
 // AbChess-0.2.0.js
-// 2017-02-07
+// 2017-02-09
 // Copyright (c) 2017 Nimzozo
 
 /*global
@@ -11,7 +11,6 @@
 */
 
 // TODO :
-// Unselect after click on same square.
 // Promotion animation.
 
 window.AbChess = window.AbChess || function (containerId, abConfig) {

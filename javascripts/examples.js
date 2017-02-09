@@ -1,17 +1,13 @@
 window.addEventListener("load", function () {
     "use strict";
 
-    var interval;
-    var linkClass = "example-link";
-    var linkNumber = 0;
-    var linksCount = 15;
-    var selectedLinkClass = "example-link_selected";
+    var interval = 0;
 
     function loadExample(exampleNumber) {
         var description = document.getElementById("description");
         var example = {};
 
-        var example1 = {
+        var example11 = {
             description: "Build a chessboard with the default options.",
             func: function () {
                 var abChess;
@@ -23,7 +19,7 @@ window.addEventListener("load", function () {
             title: "Default options"
         };
 
-        var example2 = {
+        var example12 = {
             description: "Build a chessboard with some visual changes.",
             func: function () {
                 var abChess;
@@ -40,7 +36,7 @@ window.addEventListener("load", function () {
             title: "Visual changes"
         };
 
-        var example3 = {
+        var example13 = {
             description: "Build a chessboard with the pieces locked.",
             func: function () {
                 var abChess;
@@ -56,7 +52,7 @@ window.addEventListener("load", function () {
             title: "Locked pieces"
         };
 
-        var example4 = {
+        var example14 = {
             description: "Build a flipped chessboard without the notation border.",
             func: function () {
                 var abChess;
@@ -72,7 +68,7 @@ window.addEventListener("load", function () {
             title: "Orientation / Border"
         };
 
-        var example5 = {
+        var example15 = {
             description: "Build a chessboard with disabled highlighting.",
             func: function () {
                 var abChess;
@@ -91,7 +87,7 @@ window.addEventListener("load", function () {
             title: "Disable highlighting"
         };
 
-        var example6 = {
+        var example21 = {
             description: "Build a chessboard with a flip command button.",
             func: function () {
                 var abChess;
@@ -105,7 +101,7 @@ window.addEventListener("load", function () {
             title: "Flip"
         };
 
-        var example7 = {
+        var example22 = {
             description: "Build a chessboard with two buttons. The buttons play a 3-moves serie of two different chess openings.",
             func: function () {
                 var abChess;
@@ -131,7 +127,7 @@ window.addEventListener("load", function () {
             title: "Play / Reset"
         };
 
-        var example8 = {
+        var example23 = {
             description: "Build a chessboard with an input field. Set a position on the board by pasting a FEN string.",
             func: function () {
                 var abChess;
@@ -147,7 +143,7 @@ window.addEventListener("load", function () {
             title: "Set FEN"
         };
 
-        var example9 = {
+        var example24 = {
             description: "Build a chessboard with an input field. When a move is played, get the current FEN string and display it.",
             func: function () {
                 var abChess;
@@ -166,7 +162,7 @@ window.addEventListener("load", function () {
             title: "Get FEN / On Move Played"
         };
 
-        var example10 = {
+        var example31 = {
             description: "Build a chessboard. Each time a move is played, display the active color.",
             func: function () {
                 var abChess;
@@ -188,7 +184,7 @@ window.addEventListener("load", function () {
             title: "Get Active Color"
         };
 
-        var example11 = {
+        var example32 = {
             description: "Build a chessboard with a select input. Each time a move is played, get and display the legal moves in the position.",
             func: function () {
                 var abChess;
@@ -224,7 +220,7 @@ window.addEventListener("load", function () {
             title: "Get Legal Moves"
         };
 
-        var example12 = {
+        var example33 = {
             description: "Build a chessboard with two buttons [Previous] and [Next]. Play some moves, then the buttons allow to navigate through the moves.",
             func: function () {
                 var abChess;
@@ -256,7 +252,7 @@ window.addEventListener("load", function () {
             title: "Navigate"
         };
 
-        var example13 = {
+        var example34 = {
             description: "Build a chessboard. Each time a move is played, display the current PGN string.",
             func: function () {
                 var abChess;
@@ -272,7 +268,7 @@ window.addEventListener("load", function () {
             title: "Get PGN"
         };
 
-        var example14 = {
+        var example35 = {
             description: "Build a chessboard with a textarea and two buttons. A game can be loaded by pasting a PGN in the textarea. The buttons then allow to navigate through the loaded game.",
             func: function () {
                 var abChess;
@@ -315,7 +311,7 @@ window.addEventListener("load", function () {
             title: "Set PGN"
         };
 
-        var example15 = {
+        var example36 = {
             description: "Build a chessboard and play randomly chosen legal moves.",
             func: function () {
                 var abChess;
@@ -379,36 +375,6 @@ window.addEventListener("load", function () {
         var title = document.getElementById("title");
 
         switch (exampleNumber) {
-            case 1:
-                example = example1;
-                break;
-            case 2:
-                example = example2;
-                break;
-            case 3:
-                example = example3;
-                break;
-            case 4:
-                example = example4;
-                break;
-            case 5:
-                example = example5;
-                break;
-            case 6:
-                example = example6;
-                break;
-            case 7:
-                example = example7;
-                break;
-            case 8:
-                example = example8;
-                break;
-            case 9:
-                example = example9;
-                break;
-            case 10:
-                example = example10;
-                break;
             case 11:
                 example = example11;
                 break;
@@ -423,6 +389,36 @@ window.addEventListener("load", function () {
                 break;
             case 15:
                 example = example15;
+                break;
+            case 21:
+                example = example21;
+                break;
+            case 22:
+                example = example22;
+                break;
+            case 23:
+                example = example23;
+                break;
+            case 24:
+                example = example24;
+                break;
+            case 31:
+                example = example31;
+                break;
+            case 32:
+                example = example32;
+                break;
+            case 33:
+                example = example33;
+                break;
+            case 34:
+                example = example34;
+                break;
+            case 35:
+                example = example35;
+                break;
+            case 36:
+                example = example36;
                 break;
             default:
                 throw new Error("Example does not exist.");
@@ -448,26 +444,23 @@ window.addEventListener("load", function () {
         example.func();
     }
 
-    function addClickHandler(linkIndex) {
-        var link;
-        link = document.getElementById("example-" + linkIndex);
-        link.addEventListener("click", function () {
-            var selectedLinks;
-            selectedLinks = document.getElementsByClassName(selectedLinkClass);
-            if (selectedLinks.length > 0) {
-                selectedLinks[0].className = linkClass;
-            }
-            link.className += " " + selectedLinkClass;
+    function getExampleNumber() {
+        var hash = window.location.hash;
+        if (hash === "") {
+            return 11;
+        } else {
+            return Number(hash.substr(1));
+        }
+    }
+
+    window.addEventListener("hashchange", function () {
+        var exampleNumber = getExampleNumber();
+        if (interval !== 0) {
             clearInterval(interval);
-            loadExample(linkIndex);
-        });
-    }
+        }
+        loadExample(exampleNumber);
+    });
 
-    while (linkNumber < linksCount) {
-        linkNumber += 1;
-        addClickHandler(linkNumber);
-    }
-
-    loadExample(1);
+    loadExample(getExampleNumber());
 });
 
