@@ -2,6 +2,8 @@
     background-color: slategrey;
     background-image: url("../images/chess-vectors.png");
     background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-position: center top;
     text-align: center;
     padding: 20px;
 }
