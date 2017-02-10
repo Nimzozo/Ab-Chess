@@ -369,11 +369,6 @@ window.addEventListener("load", function () {
             title: "Random moves"
         };
 
-        var htmlCode = document.getElementById("html-code");
-        var jsCode = document.getElementById("js-code");
-        var result = document.getElementById("result");
-        var title = document.getElementById("title");
-
         switch (exampleNumber) {
             case 11:
                 example = example11;
@@ -436,12 +431,18 @@ window.addEventListener("load", function () {
             return str;
         }
 
-        title.innerHTML = example.title;
-        description.innerHTML = example.description;
-        htmlCode.innerHTML = colorize(replaceSpecials(example.html));
-        jsCode.innerHTML = colorize(example.func.toString(), true);
-        result.innerHTML = example.html;
-        example.func();
+        requestAnimationFrame(function () {
+            var htmlCode = document.getElementById("html-code");
+            var jsCode = document.getElementById("js-code");
+            var result = document.getElementById("result");
+            var title = document.getElementById("title");
+            title.innerHTML = example.title;
+            description.innerHTML = example.description;
+            htmlCode.innerHTML = colorize(replaceSpecials(example.html));
+            jsCode.innerHTML = colorize(example.func.toString(), true);
+            result.innerHTML = example.html;
+            example.func();
+        });
     }
 
     function getExampleNumber() {
