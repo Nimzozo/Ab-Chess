@@ -1,13 +1,13 @@
 /*
 // AbChess-style-0.2.1.js
-// 2017-01-30
+// 2017-02-11
 // Copyright (c) 2017 Nimzozo
 */
 
 .squares-div {
     position: relative;
     display: inline-block;
-    border: 2px solid maroon;
+    border: 2px solid saddlebrown;
     vertical-align: top;
 }
 
@@ -52,11 +52,11 @@
 }
 
 .square_white {
-    background: peachpuff;
+    background: wheat;
 }
 
 .square_black {
-    background: darksalmon;
+    background: burlywood;
 }
 
 .square_highlighted {

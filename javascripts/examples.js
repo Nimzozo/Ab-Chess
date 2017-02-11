@@ -338,26 +338,20 @@ window.addEventListener("load", function () {
                     var randomMove = "";
                     var randomPromotion = "";
                     legalMoves = abChess.getLegalMoves(index);
-                    if (legalMoves.length === 0) {
-                        clearInterval(interval);
-                        alert("game over");
-                        return;
-                    }
-                    if (abChess.isInsufficientMaterialDraw(index)) {
-                        clearInterval(interval);
-                        alert("draw : insufficient material");
-                        return;
-                    }
-                    if (abChess.is50MovesDraw(index)) {
-                        clearInterval(interval);
-                        alert("draw : 50 moves");
-                        return;
-                    }
                     randomMove = chooseRandom(legalMoves);
                     randomPromotion = chooseRandom(promotions);
                     abChess.play(randomMove, randomPromotion);
-                    fenParagraph.innerText = abChess.getFEN(index + 1);
-                    pgnParagraph.innerText = abChess.getPGN();
+                    requestAnimationFrame(function () {
+                        fenParagraph.innerText = abChess.getFEN(index + 1);
+                        pgnParagraph.innerText = abChess.getPGN();
+                    });
+                    if (abChess.isInsufficientMaterialDraw(index + 1) ||
+                        abChess.is50MovesDraw(index + 1) ||
+                        abChess.isCheckmate(index + 1) ||
+                        abChess.isStalemate(index + 1)) {
+                        clearInterval(interval);
+                        return;
+                    }
                 }
 
                 interval = setInterval(function () {
@@ -365,7 +359,7 @@ window.addEventListener("load", function () {
                     movesCount += 1;
                 }, 500);
             },
-            html: "<p id=\"fenParagraph\"></p>\n<div id=\"chessboard\"></div>\n<p id=\"pgnParagraph\"></p>",
+            html: "<div id=\"chessboard\"></div>\n<p id=\"fenParagraph\"></p>\n<p id=\"pgnParagraph\"></p>",
             title: "Random moves"
         };
 
