@@ -1,5 +1,5 @@
 // AbChess-0.2.1.js
-// 2017-02-10
+// 2017-02-11
 // Copyright (c) 2017 Nimzozo
 
 /*global
@@ -71,6 +71,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
     // Config default values.
 
     var defaultConfig = {
+        animationSpeed: "normal",
         clickable: true,
         draggable: true,
         flipped: false,
@@ -116,7 +117,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
     // RAF
 
-    var requestAF = window.requestAnimationFrame ||
+    var rAF = window.requestAnimationFrame ||
         window.webkitRequestAnimationFrame ||
         window.mozRequestAnimationFrame ||
         window.oRequestAnimationFrame ||
@@ -1252,15 +1253,16 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         // to identify the chess piece.
         // The chess image is set with css backgroundImage url.
 
+        var backgroundImage = "url('" + url + "')";
         var div = {};
         var ghost = {};
         var the_piece = {};
         div = document.createElement("DIV");
         div.className = css.squarePiece;
-        div.style.backgroundImage = "url('" + url + "')";
+        div.style.backgroundImage = backgroundImage;
         ghost = document.createElement("DIV");
         ghost.className = css.ghostPiece;
-        ghost.style.backgroundImage = "url('" + url + "')";
+        ghost.style.backgroundImage = backgroundImage;
 
         the_piece = {
             div: div,
@@ -1274,7 +1276,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Place the piece in the DOM tree.
 
-            requestAF(function () {
+            rAF(function () {
                 square.div.appendChild(the_piece.div);
             });
         };
@@ -1283,7 +1285,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Remove the piece from the DOM tree.
 
-            requestAF(function () {
+            rAF(function () {
                 var parent = the_piece.div.parentElement;
                 parent.removeChild(the_piece.div);
             });
@@ -1300,7 +1302,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             opacity += 0.05;
             the_piece.div.style.opacity = opacity;
             if (opacity < 1) {
-                requestAF(function () {
+                rAF(function () {
                     the_piece.fadingPlace(square);
                 });
             }
@@ -1317,7 +1319,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             opacity -= 0.05;
             the_piece.div.style.opacity = opacity;
             if (opacity > 0) {
-                requestAF(the_piece.fadingRemove);
+                rAF(the_piece.fadingRemove);
             } else {
                 the_piece.animateRemove();
             }
@@ -1351,6 +1353,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         };
 
         div.addEventListener("mousedown", the_piece.mouseDownHandler);
+
         return the_piece;
     }
 
@@ -1436,6 +1439,17 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return initialClass;
         };
 
+        the_square.getCoordinate = function () {
+
+            // Returns an array of coordinate of the square.
+
+            var x = Math.round(the_square.div.getBoundingClientRect().left +
+                window.pageXOffset);
+            var y = Math.round(the_square.div.getBoundingClientRect().top +
+                window.pageYOffset);
+            return [x, y];
+        };
+
         the_square.highlight = function () {
 
             // Highlight the square (last move).
@@ -1444,7 +1458,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var className = "";
             the_square.isHighlighted = !the_square.isHighlighted;
             className = the_square.getClassName();
-            requestAF(function () {
+            rAF(function () {
                 the_square.div.className = className;
             });
         };
@@ -1464,7 +1478,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var className = "";
             the_square.isMarked = !the_square.isMarked;
             className = the_square.getClassName();
-            requestAF(function () {
+            rAF(function () {
                 the_square.div.className = className;
             });
         };
@@ -1477,7 +1491,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var className = "";
             the_square.isOverflown = !the_square.isOverflown;
             className = the_square.getClassName();
-            requestAF(function () {
+            rAF(function () {
                 the_square.div.className = className;
             });
         };
@@ -1490,7 +1504,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var className = "";
             the_square.isSelected = !the_square.isSelected;
             className = the_square.getClassName();
-            requestAF(function () {
+            rAF(function () {
                 the_square.div.className = className;
             });
         };
@@ -1501,6 +1515,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         the_square.div.addEventListener("mouseleave",
             the_square.mouseLeaveHandler);
         the_square.div.addEventListener("mouseup", the_square.mouseUpHandler);
+
         return the_square;
     }
 
@@ -1524,6 +1539,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         // The Chessboard class constructs an HTML chessboard.
 
         var the_board = {
+            animationSpeed: config.animationSpeed,
             clickablePieces: config.clickable,
             container: document.getElementById(containerId),
             draggablePieces: config.draggable,
@@ -1577,7 +1593,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             });
         };
 
-        the_board.animateGhost = function (piece, backSquare) {
+        the_board.animateGhost = function (piece, coordinate) {
 
             // Animate the ghost movement.
 
@@ -1590,37 +1606,50 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var ghost = piece.ghost;
             var ghostX = ghost.offsetLeft;
             var ghostY = ghost.offsetTop;
-            var speed = 0.1;
-            var squareCoordinate = the_board.getSquareCoordinate(
-                backSquare.name);
-            if (ghostX === squareCoordinate[0] &&
-                ghostY === squareCoordinate[1]) {
+            var left = 0;
+            var speed = 0;
+            var top = 0;
+            switch (the_board.animationSpeed) {
+                case "slow":
+                    speed = 0.1;
+                    break;
+                case "normal":
+                    speed = 0.25;
+                    break;
+                case "fast":
+                    speed = 0.5;
+                    break;
+                default:
+                    speed = 0.25;
+            }
+            if (ghostX === coordinate[0] &&
+                ghostY === coordinate[1]) {
                 document.body.removeChild(ghost);
-                // if (backSquare.piece !== null) {
                 piece.div.style.visibility = "visible";
-                //}
                 return;
             }
-            if (ghostX < squareCoordinate[0]) {
-                diffX = squareCoordinate[0] - ghostX;
+            if (ghostX < coordinate[0]) {
+                diffX = coordinate[0] - ghostX;
                 directionX = 1;
             } else {
-                diffX = ghostX - squareCoordinate[0];
+                diffX = ghostX - coordinate[0];
                 directionX = -1;
             }
-            if (ghostY < squareCoordinate[1]) {
-                diffY = squareCoordinate[1] - ghostY;
+            if (ghostY < coordinate[1]) {
+                diffY = coordinate[1] - ghostY;
                 directionY = 1;
             } else {
-                diffY = ghostY - squareCoordinate[1];
+                diffY = ghostY - coordinate[1];
                 directionY = -1;
             }
             coeffX = Math.ceil(diffX * speed);
             coeffY = Math.ceil(diffY * speed);
-            ghost.style.left = (ghostX + directionX * coeffX) + "px";
-            ghost.style.top = (ghostY + directionY * coeffY) + "px";
-            requestAF(function () {
-                the_board.animateGhost(piece, backSquare);
+            left = ghostX + directionX * coeffX;
+            top = ghostY + directionY * coeffY;
+            ghost.style.left = left + "px";
+            ghost.style.top = top + "px";
+            rAF(function () {
+                the_board.animateGhost(piece, coordinate);
             });
         };
 
@@ -1637,47 +1666,40 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 } else if (start === undefined) {
                     piece.fadingPlace(arrival);
                 } else {
-                    the_board.animatePiece(piece, start, arrival);
+                    the_board.movePiece(piece, start, arrival);
                 }
             });
         };
 
-        the_board.animatePiece = function (playedPiece, startSquare,
-            arrivalSquare, noAnimation, isCapture, capturedPiece) {
+        the_board.askPromotion = function (color) {
 
-            // Animate a piece movement and modify its place in the DOM tree.
+            // Display the promotion div to complete a move.
 
-            var ghostWidth = 0;
-            var startSquareLeft = 0;
-            var startSquareTop = 0;
-            if (typeof noAnimation !== "boolean") {
-                noAnimation = false;
+            var buttons = the_board.promotionDiv.childNodes;
+            var pieces = [
+                chessValue.blackQueen, chessValue.blackRook,
+                chessValue.blackBishop, chessValue.blackKnight
+            ];
+            while (buttons.length > 0) {
+                the_board.promotionDiv.removeChild(
+                    the_board.promotionDiv.lastChild);
             }
-            if (typeof isCapture !== "boolean") {
-                isCapture = false;
-            }
-            ghostWidth = Math.floor(abBoard.width / 8);
-            startSquareLeft = startSquare.div.getBoundingClientRect().left +
-                pageXOffset;
-            startSquareTop = startSquare.div.getBoundingClientRect().top +
-                pageYOffset;
-            requestAF(function () {
-                var ghost = {};
-                if (!noAnimation) {
-                    ghost = playedPiece.ghost;
-                    playedPiece.div.style.visibility = "hidden";
-                    ghost.style.height = ghostWidth + "px";
-                    ghost.style.width = ghostWidth + "px";
-                    ghost.style.left = startSquareLeft + "px";
-                    ghost.style.top = startSquareTop + "px";
-                    document.body.appendChild(ghost);
-                    the_board.animateGhost(playedPiece, arrivalSquare);
-                }
-                playedPiece.animateRemove();
-                if (isCapture) {
-                    capturedPiece.fadingRemove();
-                }
-                playedPiece.animatePut(arrivalSquare);
+            pieces.forEach(function (piece) {
+                var promotionButton;
+                var url = the_board.imagesPath + color + piece +
+                    the_board.imagesExtension;
+                promotionButton = document.createElement("INPUT");
+                promotionButton.className = css.promotionButton;
+                promotionButton.setAttribute("type", "button");
+                promotionButton.setAttribute("name", piece);
+                promotionButton.style.backgroundImage = "url('" + url + "')";
+                promotionButton.addEventListener("click",
+                    the_board.clickPromotionHandler);
+                the_board.promotionDiv.appendChild(promotionButton);
+            });
+            the_board.lock();
+            rAF(function () {
+                the_board.promotionDiv.style.display = "block";
             });
         };
 
@@ -1709,7 +1731,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             }
             the_board.pendingMove = null;
             the_board.unlock();
-            requestAF(function () {
+            rAF(function () {
                 the_board.promotionDiv.style.display = "none";
             });
         };
@@ -1754,28 +1776,43 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             the_board.squares = squares;
         };
 
+        the_board.displayCanvas = function (squares) {
+
+            // Display the circles for an array of squares.
+
+            squares.forEach(function (name) {
+                var square = the_board.squares[name];
+                rAF(function () {
+                    if (square.hasCircle) {
+                        square.div.removeChild(square.canvas);
+                    } else {
+                        square.div.appendChild(square.canvas);
+                    }
+                    square.hasCircle = !square.hasCircle;
+                });
+            });
+        };
+
         the_board.draw = function () {
 
             // Draw the empty chessboard.
 
-            var borderFragment;
-            var bottomBorder;
+            var borderFragment = {};
+            var bottomBorder = {};
             var colNumber = 0;
             var column = "";
             var index = 0;
             var rightBorder;
             var rowNumber = 0;
-            var square;
-            var squaresDiv;
+            var square = {};
+            var squaresDiv = {};
             the_board.promotionDiv.className = css.promotionDiv;
             squaresDiv = document.createElement("DIV");
             squaresDiv.style.width = the_board.width + "px";
             squaresDiv.style.height = the_board.width + "px";
             squaresDiv.className = css.squaresDiv;
             if (!the_board.isFlipped) {
-
                 // Draw the squares (the first row is from a8 to h8).
-
                 rowNumber = 8;
                 while (rowNumber > 0) {
                     colNumber = 1;
@@ -1788,9 +1825,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     rowNumber -= 1;
                 }
             } else {
-
                 // Draw the squares (the first row is from h1 to a1).
-
                 rowNumber = 1;
                 while (rowNumber < 9) {
                     colNumber = 8;
@@ -1803,7 +1838,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     rowNumber += 1;
                 }
             }
-            requestAF(function () {
+            rAF(function () {
                 squaresDiv.appendChild(the_board.promotionDiv);
                 the_board.container.appendChild(squaresDiv);
             });
@@ -1839,28 +1874,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     rightBorder.appendChild(borderFragment);
                     rowNumber += 1;
                 }
-                requestAF(function () {
+                rAF(function () {
                     the_board.container.appendChild(rightBorder);
                     the_board.container.appendChild(bottomBorder);
                 });
             }
-        };
-
-        the_board.drawCircles = function (squares) {
-
-            // Draw circles for an array of squares.
-
-            squares.forEach(function (name) {
-                var square = the_board.squares[name];
-                requestAF(function () {
-                    if (square.hasCircle) {
-                        square.div.removeChild(square.canvas);
-                    } else {
-                        square.div.appendChild(square.canvas);
-                    }
-                    square.hasCircle = !square.hasCircle;
-                });
-            });
         };
 
         the_board.empty = function () {
@@ -1999,18 +2017,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return similarPieces;
         };
 
-        the_board.getSquareCoordinate = function (square) {
-
-            // Returns an array of coordinate of a square.
-
-            var htmlSquare = the_board.squares[square];
-            var x = Math.floor(htmlSquare.div.getBoundingClientRect().left +
-                pageXOffset);
-            var y = Math.floor(htmlSquare.div.getBoundingClientRect().top +
-                pageYOffset);
-            return [x, y];
-        };
-
         the_board.highlightSquares = function (squares) {
 
             // Highlight an array of squares.
@@ -2067,6 +2073,41 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             });
         };
 
+        the_board.movePiece = function (playedPiece, startSquare,
+            arrivalSquare, noAnimation, isCapture, capturedPiece) {
+
+            // Move a piece and modify its place in the DOM tree.
+
+            var arrivalCoordinate = arrivalSquare.getCoordinate();
+            var ghostWidth = 0;
+            var squareCoordinate = startSquare.getCoordinate();
+            if (typeof noAnimation !== "boolean") {
+                noAnimation = false;
+            }
+            if (typeof isCapture !== "boolean") {
+                isCapture = false;
+            }
+            ghostWidth = Math.floor(abBoard.width / 8);
+            rAF(function () {
+                var ghost = {};
+                if (!noAnimation) {
+                    ghost = playedPiece.ghost;
+                    playedPiece.div.style.visibility = "hidden";
+                    ghost.style.height = ghostWidth + "px";
+                    ghost.style.width = ghostWidth + "px";
+                    ghost.style.left = squareCoordinate[0] + "px";
+                    ghost.style.top = squareCoordinate[1] + "px";
+                    document.body.appendChild(ghost);
+                    the_board.animateGhost(playedPiece, arrivalCoordinate);
+                }
+                if (isCapture) {
+                    capturedPiece.fadingRemove();
+                }
+                playedPiece.animateRemove();
+                playedPiece.animatePut(arrivalSquare);
+            });
+        };
+
         the_board.play = function (move, promotion, noAnimation) {
 
             // Play the desired move on the board.
@@ -2103,7 +2144,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             if (!emptyArrival) {
                 capturedPiece = arrivalSquare.piece;
             }
-            the_board.animatePiece(playedPiece, startSquare, arrivalSquare,
+            the_board.movePiece(playedPiece, startSquare, arrivalSquare,
                 noAnimation, !emptyArrival, capturedPiece);
             playedPiece.remove();
             playedPiece.put(arrivalSquare);
@@ -2123,7 +2164,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 rookStart += arrival[1];
                 if (!the_board.squares[rookStart].isEmpty()) {
                     rook = the_board.squares[rookStart].piece;
-                    the_board.animatePiece(rook, the_board.squares[rookStart],
+                    the_board.movePiece(rook, the_board.squares[rookStart],
                         the_board.squares[rookArrival]);
                     rook.remove();
                     rook.put(the_board.squares[rookArrival]);
@@ -2160,38 +2201,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     newPiece.put(arrivalSquare);
                 }
             }
-        };
-
-        the_board.showPromotionDiv = function (color) {
-
-            // Display the promotion div to complete a move.
-
-            var buttons = the_board.promotionDiv.childNodes;
-            var pieces = [
-                chessValue.blackQueen, chessValue.blackRook,
-                chessValue.blackBishop, chessValue.blackKnight
-            ];
-            while (buttons.length > 0) {
-                the_board.promotionDiv.removeChild(
-                    the_board.promotionDiv.lastChild);
-            }
-            pieces.forEach(function (piece) {
-                var promotionButton;
-                var url = the_board.imagesPath + color + piece +
-                    the_board.imagesExtension;
-                promotionButton = document.createElement("INPUT");
-                promotionButton.className = css.promotionButton;
-                promotionButton.setAttribute("type", "button");
-                promotionButton.setAttribute("name", piece);
-                promotionButton.style.backgroundImage = "url('" + url + "')";
-                promotionButton.addEventListener("click",
-                    the_board.clickPromotionHandler);
-                the_board.promotionDiv.appendChild(promotionButton);
-            });
-            the_board.lock();
-            requestAF(function () {
-                the_board.promotionDiv.style.display = "block";
-            });
         };
 
         the_board.unlock = function () {
@@ -2558,7 +2567,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             n = abGame.fenStrings.length - 1;
             lastPosition = abGame.getNthPosition(n);
             legalSquares = lastPosition.getLegalSquares(square);
-            abBoard.drawCircles(legalSquares);
+            abBoard.displayCanvas(legalSquares);
         }
     }
 
@@ -2572,7 +2581,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         index = abGame.fenStrings.length - 1;
         navigate(index, false);
         if (typeof event.onMovePlayed === "function") {
-            requestAF(event.onMovePlayed);
+            rAF(event.onMovePlayed);
         }
     }
 
@@ -2604,7 +2613,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 color = (arrival[1] === "8")
                     ? chessValue.white
                     : chessValue.black;
-                abBoard.showPromotionDiv(color);
+                abBoard.askPromotion(color);
             } else {
                 playMove(move, noAnimation);
             }
@@ -2619,23 +2628,29 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         var activeSquare = {};
         var ghost = {};
         var ghostWidth = 0;
+        var left = 0;
+        var top = 0;
         if (!abBoard.isDragging) {
             return;
         }
         activeSquare = abBoard.squares[abBoard.selectedSquare];
         ghost = activeSquare.piece.ghost;
         ghostWidth = Math.floor(abBoard.width / 8);
-        ghost.style.left = (e.clientX + pageXOffset - ghostWidth / 2) + "px";
-        ghost.style.top = (e.clientY + pageYOffset - ghostWidth / 2) + "px";
+        left = e.clientX + window.pageXOffset - ghostWidth / 2;
+        top = e.clientY + window.pageYOffset - ghostWidth / 2;
+        ghost.style.left = left + "px";
+        ghost.style.top = top + "px";
     };
 
     abBoard.onMouseUp = function () {
+        var coordinate = [];
         var selectedSquare = {};
         if (!abBoard.isDragging) {
             return;
         }
         selectedSquare = abBoard.squares[abBoard.selectedSquare];
-        abBoard.animateGhost(selectedSquare.piece, selectedSquare);
+        coordinate = selectedSquare.getCoordinate();
+        abBoard.animateGhost(selectedSquare.piece, coordinate);
         if (abBoard.selectedSquare !== null) {
             selectPiece(abBoard.selectedSquare);
         }
@@ -2644,6 +2659,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
     abBoard.onPieceMouseDown = function (e, piece) {
         var ghostWidth = 0;
+        var left = 0;
+        var top = 0;
         e.preventDefault();
         if (!abBoard.draggablePieces) {
             return;
@@ -2656,8 +2673,10 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         ghostWidth = Math.floor(abBoard.width / 8);
         piece.ghost.style.height = ghostWidth + "px";
         piece.ghost.style.width = ghostWidth + "px";
-        piece.ghost.style.left = (e.clientX + pageXOffset - ghostWidth / 2) + "px";
-        piece.ghost.style.top = (e.clientY + pageYOffset - ghostWidth / 2) + "px";
+        left = e.clientX + window.pageXOffset - ghostWidth / 2;
+        top = e.clientY + window.pageYOffset - ghostWidth / 2;
+        piece.ghost.style.left = left + "px";
+        piece.ghost.style.top = top + "px";
         document.body.appendChild(piece.ghost);
         if (abBoard.markOverflownSquare) {
             piece.square.overfly();
@@ -2712,23 +2731,27 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         }
     };
 
-    abBoard.onSquareMouseUp = function (droppedSquare) {
+    abBoard.onSquareMouseUp = function (dropSquare) {
+        var dropCoordinate = [];
         var playedPiece = {};
+        var startCoordinate = [];
         var startSquare = {};
         if (!abBoard.isDragging) {
             return;
         }
         if (abBoard.markOverflownSquare) {
-            droppedSquare.overfly();
+            dropSquare.overfly();
         }
         startSquare = abBoard.squares[abBoard.selectedSquare];
         selectPiece(startSquare.name);
         playedPiece = startSquare.piece;
-        if (droppedSquare.name !== startSquare.name &&
-            finishMove(startSquare.name, droppedSquare.name, true)) {
-            abBoard.animateGhost(playedPiece, droppedSquare);
+        if (dropSquare.name !== startSquare.name &&
+            finishMove(startSquare.name, dropSquare.name, true)) {
+            dropCoordinate = dropSquare.getCoordinate();
+            abBoard.animateGhost(playedPiece, dropCoordinate);
         } else {
-            abBoard.animateGhost(playedPiece, startSquare);
+            startCoordinate = startSquare.getCoordinate();
+            abBoard.animateGhost(playedPiece, startCoordinate);
         }
         abBoard.isDragging = false;
     };
