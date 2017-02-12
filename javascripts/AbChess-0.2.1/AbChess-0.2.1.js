@@ -1330,7 +1330,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Returns the coordinate of the ghost.
 
-            var ghost = the_piece.ghost;
             var x = Math.round(ghost.getBoundingClientRect().left +
                 window.pageXOffset);
             var y = Math.round(ghost.getBoundingClientRect().top +
