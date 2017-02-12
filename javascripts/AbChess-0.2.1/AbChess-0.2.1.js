@@ -1267,7 +1267,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         the_piece = {
             div: div,
             ghost: ghost,
-            isCurrentlyAnimated: false,
             name: name,
             square: null,
             url: url
@@ -1622,7 +1621,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var ghostY = ghostCoordinate[1];
             var speed = 0;
             the_board.isNavigating = true;
-            piece.isCurrentlyAnimated = true;
             switch (the_board.animationSpeed) {
                 case "slow":
                     speed = 0.1;
@@ -1640,8 +1638,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 if (ghost.parentElement !== null) {
                     document.body.removeChild(ghost);
                 }
-                piece.div.style.visibility = "visible";
-                piece.isCurrentlyAnimated = false;
+                piece.div.style.opacity = "1";
                 the_board.isNavigating = false;
                 return;
             }
@@ -2098,9 +2095,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var arrivalCoordinate = arrivalSquare.getCoordinate();
             var ghostWidth = 0;
             var squareCoordinate = startSquare.getCoordinate();
-            // if (playedPiece.isCurrentlyAnimated) {
-            //     return;
-            // }
             if (typeof noAnimation !== "boolean") {
                 noAnimation = false;
             }
@@ -2112,7 +2106,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 var ghost = {};
                 if (!noAnimation) {
                     ghost = playedPiece.ghost;
-                    playedPiece.div.style.visibility = "hidden";
+                    playedPiece.div.style.opacity = "0";
                     ghost.style.height = ghostWidth + "px";
                     ghost.style.width = ghostWidth + "px";
                     ghost.style.left = squareCoordinate[0] + "px";
@@ -2695,7 +2689,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return;
         }
         abBoard.isDragging = true;
-        piece.div.style.visibility = "hidden";
+        piece.div.style.opacity = "0";
         ghostWidth = Math.floor(abBoard.width / 8);
         piece.ghost.style.height = ghostWidth + "px";
         piece.ghost.style.width = ghostWidth + "px";
