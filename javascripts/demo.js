@@ -3,8 +3,9 @@ window.addEventListener("load", function () {
 
     var abChess;
     var options = {
-        imagesPath: "images/wikipedia/",
-        clickable: true
+        clickable: true,
+        draggable: true,
+        imagesPath: "images/wikipedia/"
     };
     var pgnButton;
     var pgnNotation;

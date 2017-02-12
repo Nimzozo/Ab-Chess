@@ -1,6 +1,6 @@
 /*
 // AbChess-style-0.2.1.js
-// 2017-02-11
+// 2017-02-12
 // Copyright (c) 2017 Nimzozo
 */
 
@@ -60,19 +60,19 @@
 }
 
 .square_highlighted {
-     box-shadow: inset 0 0 0 2px blue;
+     box-shadow: inset 0 0 0 2px green;
 }
 
 .square_marked {
-    box-shadow: inset 0 0 0 4px red;
+    box-shadow: inset 0 0 0 2px red;
 }
 
 .square_overflown {
-    box-shadow: inset 0 0 0 4px midnightblue;
+    background-color: lightsteelblue;
 }
 
 .square_selected {
-    background-color: steelblue;
+    box-shadow: inset 0 0 0 2px steelblue;
 }
 
 .bottom-border {

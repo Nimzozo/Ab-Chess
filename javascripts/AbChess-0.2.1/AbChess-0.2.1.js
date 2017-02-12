@@ -1,5 +1,5 @@
 // AbChess-0.2.1.js
-// 2017-02-11
+// 2017-02-12
 // Copyright (c) 2017 Nimzozo
 
 /*global
@@ -1558,6 +1558,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             draggablePieces: config.draggable,
             imagesExtension: config.imagesExtension,
             imagesPath: config.imagesPath,
+            hasDraggedClickedSquare: false,
             isDragging: false,
             isFlipped: config.flipped,
             isNavigating: false,
@@ -2708,6 +2709,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             piece.square.overfly();
         }
         if (abBoard.selectedSquare === piece.square.name) {
+            abBoard.hasDraggedClickedSquare = true;
             return;
         }
         if (abBoard.selectedSquare !== null) {
@@ -2722,21 +2724,26 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
     };
 
     abBoard.onSquareClick = function (clickedSquare) {
-        var start = abBoard.selectedSquare;
+        var isEmptySquare = abBoard.squares[clickedSquare].isEmpty();
+        var startSquare = abBoard.selectedSquare;
         if (!abBoard.clickablePieces) {
             return;
         }
-        if (start !== null && start !== clickedSquare) {
-            selectPiece(start);
-            if (!finishMove(start, clickedSquare) &&
-                !abBoard.squares[clickedSquare].isEmpty()) {
-                selectPiece(clickedSquare);
-            }
+        if (clickedSquare === startSquare) {
+            selectPiece(startSquare);
         } else {
-            if (!abBoard.squares[clickedSquare].isEmpty()) {
-                selectPiece(clickedSquare);
+            if (startSquare === null) {
+                if (!isEmptySquare && !abBoard.hasDraggedClickedSquare) {
+                    selectPiece(clickedSquare);
+                }
+            } else {
+                selectPiece(startSquare);
+                if (!finishMove(startSquare, clickedSquare) && !isEmptySquare) {
+                    selectPiece(clickedSquare);
+                }
             }
         }
+        abBoard.hasDraggedClickedSquare = false;
     };
 
     abBoard.onSquareEnter = function (square) {
