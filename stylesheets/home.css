@@ -28,16 +28,17 @@ h2 {
 }
 
 #button-link {
-    padding: 20px;
     background-color: white;
-    color: darkgoldenrod;
     border: 1px solid white;
+    color: slategrey;
+    padding: 20px;
     text-decoration: none;
     font-size: 20px;
 }
 
 #button-link:hover {
-    background-color: darkgoldenrod;
+    background-color: slategrey;
+    border: 1px solid white;
     color: white;
 }
 
