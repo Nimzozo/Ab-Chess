@@ -56,6 +56,7 @@ Create an instance of the AbChess class. Define the id of the HTML element to co
 
 | Options property |     | Description | Default value |
 | :--- | :--- | :--- | :--- |
+| <`String`> animationSpeed | Optional | The speed of pieces animation. Accepted values are `slow`, `normal`, `fast` and `instant`. | `normal`
 | <`Boolean`> clickable | Optional | A value to set if the pieces should be clickable or not. | `true`
 | <`Boolean`> draggable | Optional | A value to set if the pieces should be draggable or not. | `true`
 | <`Boolean`> flipped | Optional | A value to set if the board should be flipped or not. | `false`
