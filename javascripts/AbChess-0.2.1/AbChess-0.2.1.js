@@ -1,5 +1,5 @@
 // AbChess-0.2.1.js
-// 2017-02-12
+// 2017-02-13
 // Copyright (c) 2017 Nimzozo
 
 /*global
@@ -1630,6 +1630,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     break;
                 case "fast":
                     speed = 0.5;
+                    break;
+                case "instant":
+                    speed = 1;
                     break;
                 default:
                     speed = 0.25;

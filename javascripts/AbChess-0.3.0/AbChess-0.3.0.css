@@ -1,6 +1,6 @@
 /*
-// AbChess-style-0.2.0.js
-// 2017-01-30
+// AbChess-0.3.0.css
+// 2017-01-26
 // Copyright (c) 2017 Nimzozo
 */
 
@@ -18,7 +18,8 @@
     height: 12.5%;
     margin: 0;
     vertical-align: top;
-    z-index: 1;
+    cursor: pointer;
+    z-index: 0;
 }
 
 .square__canvas {
@@ -27,28 +28,19 @@
     left: 0;
     height: 100%;
     width: 100%;
+    z-index: 2;
     display: inline-block;
 }
 
 .square__piece {
+    height: 100%;
     background-size: 100% 100%;
     position: absolute;
     top: 0;
     left: 0;
     height: 100%;
     width: 100%;
-    cursor: pointer;
-}
-
-.ghost_piece {
-    background-size: 100% 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 50px;
-    width: 50px;
-    z-index: 9;
-    pointer-events: none;
+    z-index: 1;
 }
 
 .square_white {

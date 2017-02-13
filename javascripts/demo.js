@@ -3,6 +3,7 @@ window.addEventListener("load", function () {
 
     var abChess;
     var options = {
+        animationSpeed: "slow",
         clickable: true,
         draggable: true,
         imagesPath: "images/wikipedia/"
