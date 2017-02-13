@@ -76,7 +76,8 @@ window.addEventListener("load", function () {
 
     Object.keys(lists).forEach(function (key) {
         var list = lists[key];
-        var listHeader = list.firstElementChild;
+        var listParent = list.parentElement;
+        var listHeader = listParent.firstElementChild;
         listHeader.addEventListener("click", function () {
             if (list === activeList) {
                 closeList(listHeader, list);
