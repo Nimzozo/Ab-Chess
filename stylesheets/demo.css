@@ -34,21 +34,20 @@
 }
 
 #pgn-button {
-    display: block;
     width: 100%;
     margin: 4px auto;
-
 }
 
 .commands__button {
     margin: 10px 0;
-    background-color: darkslategrey;
-    color: white;
+    background-color: white;
+    border: 1px solid slategrey;
+    color: slategrey;
     padding: 8px;
     font-size: 1.2em;
-    border: none;
 }
 
 .commands__button:hover {
-    background-color: black;
+    background-color: slategrey;
+    color: white;
 }

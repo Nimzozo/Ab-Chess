@@ -26,7 +26,7 @@ window.addEventListener("load", function () {
                 var options = {
                     imagesPath: "images/simple/",
                     legalMarksColor: "red",
-                    width: 240
+                    width: 420
                 };
                 abChess = new AbChess("chessboard", options);
                 abChess.draw();
