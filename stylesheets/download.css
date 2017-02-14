@@ -1,35 +1,44 @@
 .release {
-    background-color:  beige;
-    padding: 4px;
-    margin: 20px 0;
-}
-
-.release:hover {
-    background-color: gainsboro;
+    background-color:  gainsboro;
+    color: black;
+    margin: 20px auto;
+    padding: 16px;
 }
 
 .release__title {
-    position: relative;
-    color: palegoldenrod;
-    background-color: darkslategrey;
+    margin: 0;
     font-family: Cambria, Cochin, Georgia, Times, Times New Roman, serif;
-    padding: 4px;
+    background-color: slategrey;
+    color: white;
+}
+
+.release__date {
+    color: grey;
+    font-size: 0.9em;
+}
+
+.release__download {
+    position: relative;
+    border-bottom: 1px solid grey;
 }
 
 .release__link {
-    position: absolute;
-    right: 16px;
-    color: white;
     text-decoration: none;
+    font-weight: bold;
+    color: steelblue;
 }
 
 .release__link:hover {
     text-decoration: underline;
 }
 
+.release__size {
+    position: absolute;
+    right: 0;
+}
+
 .list {
     list-style-type: none;
-    padding: 0;
 }
 
 .sub-list {
