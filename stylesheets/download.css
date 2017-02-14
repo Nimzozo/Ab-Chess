@@ -17,6 +17,10 @@
     font-size: 0.9em;
 }
 
+.release__header {
+    font-weight: normal;
+}
+
 .release__download {
     position: relative;
     border-bottom: 1px solid grey;
@@ -38,9 +42,10 @@
 }
 
 .list {
-    list-style-type: none;
+    padding: 0;
+    margin: 16px;
 }
 
-.sub-list {
-    list-style-type: square;
+li {
+    margin: 8px;
 }
