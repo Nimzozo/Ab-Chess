@@ -97,7 +97,7 @@ window.addEventListener("load", function () {
                 abChess.setFEN();
                 flipButton.addEventListener("click", abChess.flip);
             },
-            html: "<div id=\"chessboard\"></div>\n<div>\n  <input type=\"button\" value=\"Flip\" id=\"flipButton\">\n</div>",
+            html: "<div id=\"chessboard\"></div>\n<div>\n  <input type=\"button\" value=\"Flip\" id=\"flipButton\" class=\"commands__button\">\n</div>",
             title: "Flip"
         };
 

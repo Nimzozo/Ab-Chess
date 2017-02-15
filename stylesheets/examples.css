@@ -34,14 +34,14 @@ ul {
     background: gainsboro;
 }
 
-.sub-item {
+.sub-list__item {
     list-style-type: none;
     background-color: slategrey;
     margin: 0;
     display: none;
 }
 
-.sub-list_active .sub-item {
+.sub-list_active .sub-list__item {
     display: block;
 }
 
@@ -82,17 +82,18 @@ p {
     width: 100%;
 }
 
-input[type=button] {
+.commands__button {
     margin: 10px 0;
-    background-color: darkslategrey;
-    color: white;
+    background-color: white;
+    border: 1px solid slategrey;
+    color: slategrey;
     padding: 8px;
     font-size: 1.2em;
-    border: none;
 }
 
-input[type=button]:hover {
-    background-color: black;
+.commands__button:hover {
+    background-color: slategrey;
+    color: white;
 }
 
 input[type=text], textarea, select {

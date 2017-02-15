@@ -1,0 +1,63 @@
+{
+    "items": [
+        {
+            "name": "Basics",
+            "items": [
+                {
+                    "name": "Default options",
+                    "href": "examples/basics/default.html"
+                },
+                {
+                    "name": "Visual changes",
+                    "href": "examples/basics/visual.html"
+                },
+                {
+                    "name": "Locked pieces",
+                    "href": "examples/basics/locked.html"
+                },
+                {
+                    "name": "Orientation",
+                    "href": "examples/basics/orientation.html"
+                },
+                {
+                    "name": "Squares highlighting",
+                    "href": "examples/basics/highlighting.html"
+                }
+            ]
+        },
+        {
+            "name": "Methods",
+            "items": [
+                {
+                    "name": "Flip",
+                    "href": "examples/methods/flip.html"
+                },
+                {
+                    "name": "Play",
+                    "href": "examples/methods/play.html"
+                },
+                {
+                    "name": "Set FEN",
+                    "href": "examples/methods/set-fen.html"
+                },
+                {
+                    "name": "Get FEN",
+                    "href": "examples/methods/get-fen.html"
+                },
+                {
+                    "name": "Get active color",
+                    "href": "examples/methods/get-active-color.html"
+                }
+            ]
+        },
+        {
+            "name": "Advanced",
+            "items": [
+                {
+                    "name": "Random moves",
+                    "href": "examples/advanced/random-moves.html"
+                }
+            ]
+        }
+    ]
+}

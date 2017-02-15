@@ -3,13 +3,13 @@ window.addEventListener("load", function () {
 
     var codes = document.getElementsByClassName("code");
 
-    window.colorize = function colorize(text, trim) {
+    window.colorize = function (text, trim) {
         var regexComment = /(\/{2}[^]*?)\n/g;
         var regexHTMLAttribute = /(\w+?)\=/g;
         var regexHTMLTag = /(&lt;\/?)(div|input|label|p|select|span|textarea|ul)/g;
         var regexString = /([\[\(\s\=>])("[^"]*?")([<;:,\s\)\]&])/g;
         var regexVar = /(else|false|function|if|new|return|true|var|while)/g;
-        var regexWhite = /\ {16}/g;
+        var regexWhite = /\ {12}/g;
         var replaceAttribute = "<pre class=\"number\">$1</pre>=";
         var replaceBlue = "<pre class=\"blue\">$1</pre>";
         var replaceComment = "<pre class=\"comment\">$1</pre>";

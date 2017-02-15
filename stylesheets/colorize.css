@@ -9,11 +9,12 @@
 .code {
     display: block;
     background-color: lavender;
-    white-space: pre-wrap;
+    white-space: pre;
     font-family: Monaco, monospace;
     font-size: 98%;
     padding: 10px;
     margin-bottom: 10px;
+    overflow: auto;
 }
 
 pre {
