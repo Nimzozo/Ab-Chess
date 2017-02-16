@@ -13,9 +13,6 @@ window.addEventListener("load", function () {
             abChess = new AbChess("chessboard", options);
             abChess.draw();
             abChess.setFEN(saavedraFEN);
-            fenInput.addEventListener("change", function () {
-                abChess.setFEN(fenInput.value);
-            });
         },
         html: "<div id=\"chessboard\"></div>"
     };
