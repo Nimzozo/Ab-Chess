@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <base href="../../">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="javascripts/AbChess-0.2.1/AbChess-0.2.1-min.css">
+    <link rel="stylesheet" href="stylesheets/visual.css">
     <link rel="stylesheet" href="stylesheets/colorize.css">
     <link rel="stylesheet" href="stylesheets/global.css">
     <link rel="stylesheet" href="stylesheets/examples.css">
@@ -38,10 +38,17 @@
          --><div id="content">
                 <div class="example">
                     <h3 id="title">Visual changes</h3>
-                    <p id="description">Build a customized chessboard.</p>
+                    <p id="description">Customize the chessboard with the options object and the AbChess CSS file.</p>
                     <div id="result"></div>
                     <span class="code-title">HTML</span>
                     <code class="code" id="html-code"></code>
+                    <span class="code-title">CSS</span>
+                    <code class="code">.square_white {
+    background: peachpuff;
+}
+.square_black {
+    background: darksalmon;
+}</code>
                     <span class="code-title">JavaScript</span>
                     <code class="code" id="js-code"></code>
                 </div>

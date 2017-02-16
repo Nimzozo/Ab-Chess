@@ -6,9 +6,9 @@ window.addEventListener("load", function () {
         func: function () {
             var abChess = {};
             var options = {
-                imagesPath: "images/simple/",
-                legalMarksColor: "red",
-                width: 440
+                imagesPath: "images/alpha/",
+                legalMarksColor: "lightgreen",
+                width: 280
             };
             abChess = new AbChess("chessboard", options);
             abChess.draw();

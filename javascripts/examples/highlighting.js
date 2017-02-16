@@ -10,7 +10,7 @@ window.addEventListener("load", function () {
                 markLastMove: false,
                 markLegalSquares: false,
                 markOverflownSquare: false,
-                markSelectedSquare: false
+                markSelectedSquare: true
             };
             abChess = new AbChess("chessboard", options);
             abChess.draw();

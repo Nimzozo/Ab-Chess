@@ -36,20 +36,20 @@ window.Accordeon = window.Accordeon || function (indexes) {
                         "href": "examples/methods/flip.html"
                     },
                     {
-                        "name": "Play",
-                        "href": "examples/methods/play.html"
-                    },
-                    {
-                        "name": "Set FEN",
-                        "href": "examples/methods/set-fen.html"
+                        "name": "Get active color",
+                        "href": "examples/methods/get-active-color.html"
                     },
                     {
                         "name": "Get FEN",
                         "href": "examples/methods/get-fen.html"
                     },
                     {
-                        "name": "Get active color",
-                        "href": "examples/methods/get-active-color.html"
+                        "name": "Set FEN",
+                        "href": "examples/methods/set-fen.html"
+                    },
+                    {
+                        "name": "Play",
+                        "href": "examples/methods/play.html"
                     }
                 ]
             },

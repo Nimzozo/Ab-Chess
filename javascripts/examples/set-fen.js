@@ -1,19 +1,23 @@
 window.addEventListener("load", function () {
     "use strict";
 
-    var accordeon = new Accordeon([1, 2]);
+    var accordeon = new Accordeon([1, 3]);
     var example = {
         func: function () {
             var abChess = {};
-            var fenInput = document.getElementById("fenInput");
-            abChess = new AbChess("chessboard");
+            var options = {
+                clickable: false,
+                draggable: false
+            };
+            var saavedraFEN = "8/8/1KP5/3r4/8/8/8/k7";
+            abChess = new AbChess("chessboard", options);
             abChess.draw();
-            abChess.setFEN();
+            abChess.setFEN(saavedraFEN);
             fenInput.addEventListener("change", function () {
                 abChess.setFEN(fenInput.value);
             });
         },
-        html: "<div id=\"chessboard\"></div>\n<div>\n  <input type=\"text\" placeholder=\"Paste a FEN string here.\" id=\"fenInput\" size=\"60\">\n</div>"
+        html: "<div id=\"chessboard\"></div>"
     };
     var htmlCode = document.getElementById("html-code");
     var jsCode = document.getElementById("js-code");

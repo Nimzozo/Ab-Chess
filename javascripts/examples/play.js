@@ -1,7 +1,7 @@
 window.addEventListener("load", function () {
     "use strict";
 
-    var accordeon = new Accordeon([1, 1]);
+    var accordeon = new Accordeon([1, 4]);
     var example = {
         func: function () {
             var abChess = {};
@@ -21,9 +21,16 @@ window.addEventListener("load", function () {
                 abChess.play("e2-e4");
                 abChess.play("c7-c5");
                 abChess.play("g1-f3");
+                abChess.play("d7-d6");
+                abChess.play("d2-d4");
+                abChess.play("c5-d4");
+                abChess.play("f3-d4");
+                abChess.play("g8-f6");
+                abChess.play("b1-c3");
+                abChess.play("a7-a6");
             });
         },
-        html: "<div id=\"chessboard\"></div>\n<div>\n  <input type=\"button\" value=\"Play queen's gambit\" id=\"qGambitButton\" class=\"commands__button\">\n  <input type=\"button\" value=\"Play sicilian\" id=\"sicilianButton\" class=\"commands__button\">\n</div>"
+        html: "<div id=\"chessboard\"></div>\n<div>\n  <input type=\"button\" value=\"Queen's gambit\" id=\"qGambitButton\" class=\"commands__button\">\n  <input type=\"button\" value=\"Sicilian Najdorf\" id=\"sicilianButton\" class=\"commands__button\">\n</div>"
     };
     var htmlCode = document.getElementById("html-code");
     var jsCode = document.getElementById("js-code");

@@ -96,8 +96,12 @@ p {
     color: white;
 }
 
-input[type=text], textarea, select {
-    margin: 10px 0;
-    min-width: 50px;
-    font-size: 1.2em;
+.link {
+    text-decoration: none;
+    font-weight: bold;
+    color: steelblue;
+}
+
+.link:hover {
+    text-decoration: underline;
 }
