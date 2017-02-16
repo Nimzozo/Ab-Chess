@@ -1,6 +1,7 @@
 window.addEventListener("load", function () {
     "use strict";
 
+    var accordeon = new Accordeon([1, 1]);
     var example = {
         func: function () {
             var abChess = {};
@@ -24,6 +25,10 @@ window.addEventListener("load", function () {
         },
         html: "<div id=\"chessboard\"></div>\n<div>\n  <input type=\"button\" value=\"Play queen's gambit\" id=\"qGambitButton\" class=\"commands__button\">\n  <input type=\"button\" value=\"Play sicilian\" id=\"sicilianButton\" class=\"commands__button\">\n</div>"
     };
+    var htmlCode = document.getElementById("html-code");
+    var jsCode = document.getElementById("js-code");
+    var navigation = document.getElementById("navigation_fixed");
+    var result = document.getElementById("result");
 
     function replaceSpecials(str) {
         var specials = {
@@ -38,9 +43,7 @@ window.addEventListener("load", function () {
     }
 
     requestAnimationFrame(function () {
-        var htmlCode = document.getElementById("html-code");
-        var jsCode = document.getElementById("js-code");
-        var result = document.getElementById("result");
+        navigation.appendChild(accordeon);
         htmlCode.innerHTML = colorize(replaceSpecials(example.html));
         jsCode.innerHTML = colorize(example.func.toString(), true);
         result.innerHTML = example.html;

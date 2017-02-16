@@ -1,4 +1,4 @@
-window.addEventListener("load", function () {
+window.Accordeon = window.Accordeon || function (indexes) {
     "use strict";
 
     var accordeon = {
@@ -78,10 +78,6 @@ window.addEventListener("load", function () {
     };
     var activeHeader = document.getElementsByClassName(css.activeHeader)[0];
     var activeSubList = document.getElementsByClassName(css.activeSubList)[0];
-    var links = document.getElementsByClassName(css.link);
-    var lists = document.getElementsByClassName(css.list);
-    var navigation = document.getElementById("navigation_fixed");
-    var subLists = document.getElementsByClassName(css.subList);
 
     function changeHeight(element, step, limit) {
         var clientHeight = element.clientHeight;
@@ -96,34 +92,6 @@ window.addEventListener("load", function () {
         } else if (limit === 0) {
             element.style.display = "none";
         }
-    }
-
-    function getAccordeon() {
-        var list = document.createElement("UL");
-        list.className = css.list;
-        accordeon.items.forEach(function (item) {
-            var header = document.createElement("H4");
-            var htmlItem = document.createElement("LI");
-            var subList = document.createElement("UL");
-            htmlItem.className = css.item;
-            subList.className = css.subList;
-            header.innerHTML = item.name;
-            header.className = css.header;
-            htmlItem.appendChild(header);
-            item.items.forEach(function (subItem) {
-                var htmlSubItem = document.createElement("LI");
-                var link = document.createElement("A");
-                htmlSubItem.className = css.subItem;
-                link.innerHTML = subItem.name;
-                link.href = subItem.href;
-                link.className = css.link;
-                htmlSubItem.appendChild(link);
-                subList.appendChild(htmlSubItem);
-            });
-            htmlItem.appendChild(subList);
-            list.appendChild(htmlItem);
-        });
-        return list;
     }
 
     function getItemsFromList(list) {
@@ -165,20 +133,6 @@ window.addEventListener("load", function () {
         activeSubList = list;
     }
 
-    function selectByIndex(listIndex, itemIndex) {
-        var header = {};
-        var item = {};
-        var link = {};
-        var subList = subLists[listIndex];
-        header = subLists[listIndex].parentElement.firstElementChild;
-        item = getItemsFromList(subList)[itemIndex];
-        link = item.children[0];
-        requestAnimationFrame(function () {
-            openList(header, subList);
-            selectLink(link);
-        });
-    }
-
     function selectLink(link) {
         var selectedLink = document.getElementsByClassName(css.selectedLink);
         if (selectedLink.length > 0) {
@@ -187,30 +141,55 @@ window.addEventListener("load", function () {
         link.className = css.selectedLink;
     }
 
-    navigation.appendChild(getAccordeon());
-
-    Object.keys(subLists).forEach(function (key) {
-        var subList = subLists[key];
-        var parent = subList.parentElement;
-        var listHeader = parent.firstElementChild;
-        listHeader.addEventListener("click", function () {
-            if (subList === activeSubList) {
-                closeList(listHeader, subList);
+    function getAccordeon(indexes) {
+        var list = document.createElement("UL");
+        list.className = css.list;
+        accordeon.items.forEach(function (item, index) {
+            var header = document.createElement("H4");
+            var htmlItem = document.createElement("LI");
+            var subList = document.createElement("UL");
+            if (index === indexes[0]) {
+                activeHeader = header;
+                activeSubList = subList;
+                header.className = css.activeHeader;
+                subList.className = css.activeSubList;
             } else {
-                openList(listHeader, subList);
+                header.className = css.header;
+                subList.className = css.subList;
             }
-        });
-    });
-
-    Object.keys(links).forEach(function (key) {
-        var link = links[key];
-        if (key.search(/^\d+$/) !== -1) {
-            link.addEventListener("click", function () {
-                selectLink(link);
+            header.innerHTML = item.name;
+            header.addEventListener("click", function () {
+                if (subList === activeSubList) {
+                    closeList(header, subList);
+                } else {
+                    openList(header, subList);
+                }
             });
-        }
-    });
+            htmlItem.className = css.item;
+            htmlItem.appendChild(header);
+            item.items.forEach(function (subItem, subIndex) {
+                var htmlSubItem = document.createElement("LI");
+                var link = document.createElement("A");
+                htmlSubItem.className = css.subItem;
+                link.innerHTML = subItem.name;
+                link.href = subItem.href;
+                if (index === indexes[0] && subIndex === indexes[1]) {
+                    link.className = css.selectedLink;
+                } else {
+                    link.className = css.link;
+                }
+                link.addEventListener("click", function () {
+                    selectLink(link);
+                });
+                htmlSubItem.appendChild(link);
+                subList.appendChild(htmlSubItem);
+            });
+            htmlItem.appendChild(subList);
+            list.appendChild(htmlItem);
+        });
+        return list;
+    }
 
-    window.selectByIndex = selectByIndex;
-});
+    return getAccordeon(indexes);
+};
 
