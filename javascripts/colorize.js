@@ -20,7 +20,7 @@ window.addEventListener("load", function () {
             function removeFirstLastLines(str) {
                 var index = str.indexOf("\n");
                 var lastIndex = str.lastIndexOf("\n");
-                str = str.substring(index + 1, lastIndex - 1);
+                str = str.substring(index + 1, lastIndex);
                 return str;
             }
             text = removeFirstLastLines(text);
