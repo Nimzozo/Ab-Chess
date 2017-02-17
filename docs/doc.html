@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>AB-Chess - Documentation</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="../">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="stylesheets/global.css">
+    <link rel="stylesheet" href="stylesheets/doc.css">
+    <link rel="stylesheet" href="stylesheets/colorize.css">
+</head>
+
+<body>
+    <header id="fixed-header">
+        <div id="sub-fixed-header">
+            <div class="inline-block">
+                <a class="header__link" href="index.html">AB-Chess</a>
+                <a class="header__link" href="docs/overview.html" id="selected-tab">Documentation</a>
+                <a class="header__link" href="examples/basics/default.html">Examples</a>
+                <a class="header__link" href="download.html">Download</a>
+            </div>
+            <div class="inline-block right">
+                <a class="header__link" href="https://github.com/Nimzozo/Ab-Chess">GitHub</a>
+            </div>
+        </div>
+    </header>
+
+    <div id="main-container">
+
+        <div id="sub-main">
+
+            <h1>AbChess</h1>
+            <p><i>CLASS</i></p>
+            <p>The AbChess class creates an instance of an AbChess object. It provides an access to several methods. This class
+                is mainly used to draw a chessboard and interact with it. The chess data are handled in a chessgame directly
+                linked to the chessboard.
+            </p>
+
+            <div class="anchor" id="AbChess"></div>
+            <h2 class="big-header">Constructor</h2>
+            <h3 class="identifier-header">new AbChess(containerId, options)</h3>
+            <p class="description">Create an instance of the AbChess class. Define the id of the HTML element to contain the desired chessboard.
+                An options object can be also used to configure the instance.</p>
+            <table class="parameter-table">
+                <tr>
+                    <th class="parameter-table__header" colspan="2">Parameter</th>
+                </tr>
+                <tr>
+                    <td>containerId</td>
+                    <td>String<br>The id of the HTML container.</td>
+                </tr>
+                <tr>
+                    <td>options</td>
+                    <td>Optional<br>Object<br>A configuration object. See options properties.</td>
+                </tr>
+            </table>
+
+            <table class="parameter-table">
+                <tr>
+                    <th class="parameter-table__header" colspan="2">options</th>
+                </tr>
+                <tr>
+                    <td id="animationSpeed">animationSpeed</td>
+                    <td>Optional<br>String<br>The speed of the animated pieces. Allowed values are "slow", "normal", "fast" and
+                        "instant".The default is "normal".</td>
+                </tr>
+                <tr>
+                    <td id="clickable">clickable</td>
+                    <td>Optional<br>Boolean<br>If set to true, the chess pieces will be movable with a two-clicks method. The
+                        default is true.</td>
+                </tr>
+                <tr>
+                    <td id="draggable">draggable</td>
+                    <td>Optional<br>Boolean<br>If set to true, the chess pieces will be movable with a drag-and-drop method.
+                        The default is true.</td>
+                </tr>
+                <tr>
+                    <td id="flipped">flipped</td>
+                    <td>Optional<br>Boolean<br>If set to true, the chessboard will be oriented for black point of view. The default
+                        is false.</td>
+                </tr>
+                <tr>
+                    <td id="imagesExtension">imagesExtension</td>
+                    <td>Optional<br>String<br>The extension of the chess pieces images. The default is ".png".</td>
+                </tr>
+                <tr>
+                    <td id="imagesPath">imagesPath</td>
+                    <td>Optional<br>String<br>The path of the chess pieces images. The default is "images/wikipedia/".</td>
+                </tr>
+                <tr>
+                    <td id="legalMarksColor">legalMarksColor</td>
+                    <td>Optional<br>String<br>The CSS color of the legal moves indications. The default is "steelblue".</td>
+                </tr>
+                <tr>
+                    <td id="markKingInCheck">markKingInCheck</td>
+                    <td>Optional<br>Boolean<br>If set to true, highlight the square of the king when it is attacked. The default
+                        is true.</td>
+                </tr>
+                <tr>
+                    <td id="markLastMove">markLastMove</td>
+                    <td>Optional<br>Boolean<br>If set to true, highlight the start and arrival squares of the last piece movement.
+                        The default is true.</td>
+                </tr>
+                <tr>
+                    <td id="markLegalSquares">markLegalSquares</td>
+                    <td>Optional<br>Boolean<br>If set to true, highlight the legal squares after a piece has been selected. The
+                        default is true.</td>
+                </tr>
+                <tr>
+                    <td id="markOverflownSquare">markOverflownSquare</td>
+                    <td>Optional<br>Boolean<br>If set to true, highlight the overflown square during a drag and drop operation.
+                        The default is true.</td>
+                </tr>
+                <tr>
+                    <td id="markSelectedSquare">markSelectedSquare</td>
+                    <td>Optional<br>Boolean<br>If set to true, highlight the square of a piece when it is selected. The default
+                        is true.</td>
+                </tr>
+                <tr>
+                    <td id="notationBorder">notationBorder</td>
+                    <td>Optional<br>Boolean<br>If set to true, the chessboard will have a notation border. The default is true.</td>
+                </tr>
+                <tr>
+                    <td id="width">width</td>
+                    <td>Optional<br>Number<br>The width of the chessboard in pixel. The default is 360.</td>
+                </tr>
+            </table>
+
+            <h4 class="little-header">Example</h4>
+            <p class="description">Create an AbChess instance.</p>
+            <span class="code-title">JavaScript</span>
+            <code class="code">var abChess = {};
+var abConfig = {
+    clickable: true,
+    draggable: false,
+    flipped: false,
+    showKingInCheck: true,
+    showLegalMoves: false,
+    width: 180
+};
+var containerId = "abContainer";
+abChess = new AbChess(containerId, abConfig);</code>
+
+            <h2 class="big-header">Constant</h2>
+            <div class="anchor" id="DEFAULT_FEN"></div>
+            <h3 class="identifier-header">DEFAULT_FEN</h3>
+            <p class="description">String<br>The FEN string of the starting position in a classical chess game.</p>
+
+            <h2 class="big-header">Methods</h2>
+
+            <div class="method">
+                <div class="anchor" id="draw"></div>
+                <h3 class="identifier-header">draw()</h3>
+                <p class="description">Draw the chessboard in the HTML container element. This method should be called right after the constructor.</p>
+            </div>
+            <div class="method">
+                <div class="anchor" id="flip"></div>
+                <h3 class="identifier-header">flip()</h3>
+                <p>Change the orientation of the chessboard.</p>
+            </div>
+            <div class="method">
+                <div class="anchor" id="getActiveColor"></div>
+                <h3 class="identifier-header">getActiveColor(index)</h3>
+                <p>Return a character ("w" for white or "b" for black) indicating the active color in a position.</p>
+                <table class="parameter-table">
+                    <tr>
+                        <th class="parameter-table__header" colspan="2">Parameter</th>
+                    </tr>
+                    <tr>
+                        <td>index</td>
+                        <td>Number<br>The index of the desired position. It should be a positive integer.</td>
+                    </tr>
+                </table>
+                <p>Return type : String</p>
+            </div>
+            <div class="method">
+                <div class="anchor" id="getFEN"></div>
+                <h3 class="identifier-header">getFEN(index)</h3>
+                <p>Return the FEN string of a position in the game.</p>
+                <table class="parameter-table">
+                    <tr>
+                        <th class="parameter-table__header" colspan="2">Parameter</th>
+                    </tr>
+                    <tr>
+                        <td>index</td>
+                        <td>Number<br>The index of the desired position. It should be a positive integer.</td>
+                    </tr>
+                </table>
+                <p>Return type : String</p>
+            </div>
+            <div class="method">
+                <div class="anchor" id="getGameInfo"></div>
+                <h3 class="identifier-header">getGameInfo(name)</h3>
+                <p>Return an information stored in the game. Seven informations should be present in a game : Event, Site, Date,
+                    Round, White, Black, Result. Some other ones can be added.</p>
+                <table class="parameter-table">
+                    <tr>
+                        <th class="parameter-table__header" colspan="2">Parameter</th>
+                    </tr>
+                    <tr>
+                        <td>name</td>
+                        <td>String<br>The name of the desired information.</td>
+                    </tr>
+                </table>
+                <p>Return type : String</p>
+            </div>
+            <div class="method">
+                <div class="anchor" id="getGameMoves"></div>
+                <h3 class="identifier-header">getGameMoves()</h3>
+                <p>Return an array of the moves stored in the game in a simple algebraic notation.</p>
+                <p>Return type : String[]</p>
+            </div>
+            <div class="method">
+                <div class="anchor" id="getGameMovesPGN"></div>
+                <h3 class="identifier-header">getGameMovesPGN()</h3>
+                <p>Return an array of the moves stored in the game in PGN notation.</p>
+                <p>Return type : String[]</p>
+            </div>
+            <div class="method">
+                <div class="anchor" id="getLastPositionIndex"></div>
+                <h3 class="identifier-header">getLastPositionIndex()</h3>
+                <p>Return the index of the last position of the game.</p>
+                <p>Return type : Number</p>
+            </div>
+            <div class="method">
+                <div class="anchor" id="getLegalMoves"></div>
+                <h3 class="identifier-header">getLegalMoves(index)</h3>
+                <p>Return an array of the legal moves in a position.</p>
+                <table class="parameter-table">
+                    <tr>
+                        <th class="parameter-table__header" colspan="2">Parameter</th>
+                    </tr>
+                    <tr>
+                        <td>index</td>
+                        <td>Number<br>The index of the desired position. It should be a positive integer.</td>
+                    </tr>
+                </table>
+                <p>Return type : String[]</p>
+            </div>
+            <div class="method">
+                <div class="anchor" id="getPGN"></div>
+                <h3 class="identifier-header">getPGN()</h3>
+                <p>Return the PGN string of the current game.</p>
+                <p>Return type : String</p>
+            </div>
+            <div class="method">
+                <div class="anchor" id="is50MovesDraw"></div>
+                <h3 class="identifier-header">is50MovesDraw(index)</h3>
+                <p>Return true if a position is a draw because of the 50 moves rule or false if it's not.</p>
+                <table class="parameter-table">
+                    <tr>
+                        <th class="parameter-table__header" colspan="2">Parameter</th>
+                    </tr>
+                    <tr>
+                        <td>index</td>
+                        <td>Number<br>The index of the desired position. It should be a positive integer.</td>
+                    </tr>
+                </table>
+                <p>Return type : Boolean</p>
+            </div>
+            <div class="method">
+                <div class="anchor" id="isCheckmate"></div>
+                <h3 class="identifier-header">isCheckmate(index)</h3>
+                <p>Return true if a position is a checkmate or false if it's not.</p>
+                <table class="parameter-table">
+                    <tr>
+                        <th class="parameter-table__header" colspan="2">Parameter</th>
+                    </tr>
+                    <tr>
+                        <td>index</td>
+                        <td>Number<br>The index of the desired position. It should be a positive integer.</td>
+                    </tr>
+                </table>
+                <p>Return type : Boolean</p>
+            </div>
+            <div class="method">
+                <div class="anchor" id="isInCheck"></div>
+                <h3 class="identifier-header">isInCheck(index)</h3>
+                <p>Return true if the king of the active color is in check in a position or false if it's not.</p>
+                <table class="parameter-table">
+                    <tr>
+                        <th class="parameter-table__header" colspan="2">Parameter</th>
+                    </tr>
+                    <tr>
+                        <td>index</td>
+                        <td>Number<br>The index of the desired position. It should be a positive integer.</td>
+                    </tr>
+                </table>
+                <p>Return type : Boolean</p>
+            </div>
+            <div class="method">
+                <div class="anchor" id="isInsufficientMaterialDraw"></div>
+                <h3 class="identifier-header">isInsufficientMaterialDraw(index)</h3>
+                <p>Return true if the remaining material is insufficient to win a position or false if it's not.</p>
+                <table class="parameter-table">
+                    <tr>
+                        <th class="parameter-table__header" colspan="2">Parameter</th>
+                    </tr>
+                    <tr>
+                        <td>index</td>
+                        <td>Number<br>The index of the desired position. It should be a positive integer.</td>
+                    </tr>
+                </table>
+                <p>Return type : Boolean</p>
+            </div>
+            <div class="method">
+                <div class="anchor" id="isLegal"></div>
+                <h3 class="identifier-header">isLegal(index, move)</h3>
+                <p>Return true if a move is legal in a position or false if it's not.</p>
+                <table class="parameter-table">
+                    <tr>
+                        <th class="parameter-table__header" colspan="2">Parameter</th>
+                    </tr>
+                    <tr>
+                        <td>index</td>
+                        <td>Number<br>The index of the desired position. It should be a positive integer.</td>
+                    </tr>
+                    <tr>
+                        <td>move</td>
+                        <td>String<br>The move to test. It should be in the algebraic format.</td>
+                    </tr>
+                </table>
+                <p>Return type : Boolean</p>
+            </div>
+            <div class="method">
+                <div class="anchor" id="isStalemate"></div>
+                <h3 class="identifier-header">isStalemate(index)</h3>
+                <p>Return true if a position is a stalemate or false if it's not.</p>
+                <table class="parameter-table">
+                    <tr>
+                        <th class="parameter-table__header" colspan="2">Parameter</th>
+                    </tr>
+                    <tr>
+                        <td>index</td>
+                        <td>Number<br>The index of the desired position. It should be a positive integer.</td>
+                    </tr>
+                </table>
+                <p>Return type : Boolean</p>
+            </div>
+            <div class="method">
+                <div class="anchor" id="isValidFEN"></div>
+                <h3 class="identifier-header">isValidFEN(fen, onlyCheckRows)</h3>
+                <p>Return true if a FEN string is valid or false if it's not.</p>
+                <table class="parameter-table">
+                    <tr>
+                        <th class="parameter-table__header" colspan="2">Parameter</th>
+                    </tr>
+                    <tr>
+                        <td>fen</td>
+                        <td>String<br>The Forsyth-Edwards Notation string to validate.</td>
+                    </tr>
+                    <tr>
+                        <td>onlyCheckRows</td>
+                        <td>Optional<br>Boolean<br>When set to true, the function will only check if the position rows are valid.
+                            When set to false, the function will validate the entire string.</td>
+                    </tr>
+                </table>
+                <p>Return type : Boolean</p>
+            </div>
+            <div class="method">
+                <div class="anchor" id="isValidPGN"></div>
+                <h3 class="identifier-header">isValidPGN(pgn)</h3>
+                <p>Return true if a PGN string is valid or false if it's not.</p>
+                <table class="parameter-table">
+                    <tr>
+                        <th class="parameter-table__header" colspan="2">Parameter</th>
+                    </tr>
+                    <tr>
+                        <td>pgn</td>
+                        <td>String<br>The Portable Game Notation string to validate.</td>
+                    </tr>
+                </table>
+                <p>Return type : Boolean</p>
+            </div>
+            <div class="method">
+                <div class="anchor" id="navigate"></div>
+                <h3 class="identifier-header">navigate(index)</h3>
+                <p>Update the chessboard to a position in the game. The pieces are automatically locked until the last position
+                    is reached again.</p>
+                <table class="parameter-table">
+                    <tr>
+                        <th class="parameter-table__header" colspan="2">Parameter</th>
+                    </tr>
+                    <tr>
+                        <td>index</td>
+                        <td>Number<br>The index of the desired position. It should be a positive integer.</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="method">
+                <div class="anchor" id="onMovePlayed"></div>
+                <h3 class="identifier-header">onMovePlayed(callback)</h3>
+                <p>Set a function to call each time after a move is played in the game.</p>
+                <table class="parameter-table">
+                    <tr>
+                        <th class="parameter-table__header" colspan="2">Parameter</th>
+                    </tr>
+                    <tr>
+                        <td>callback</td>
+                        <td>Function<br>The function to call after a move has been played.</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="method">
+                <div class="anchor" id="play"></div>
+                <h3 class="identifier-header">play(move, promotion)</h3>
+                <p>Play a move in the game and return the resulting FEN string.</p>
+                <table class="parameter-table">
+                    <tr>
+                        <th class="parameter-table__header" colspan="2">Parameter</th>
+                    </tr>
+                    <tr>
+                        <td>move</td>
+                        <td>String<br>The move to play. It should be in the algebraic format.</td>
+                    </tr>
+                    <tr>
+                        <td>promotion</td>
+                        <td>Optional<br>String<br>The promotion choice if needed. It will be ignored if the move is not a promotion.</td>
+                    </tr>
+                </table>
+                <p>Return type : String</p>
+            </div>
+            <div class="method">
+                <div class="anchor" id="reset"></div>
+                <h3 class="identifier-header">reset()</h3>
+                <p>Create a new game and set the chessboard to the initial starting position.</p>
+            </div>
+            <div class="method">
+                <div class="anchor" id="setFEN"></div>
+                <h3 class="identifier-header">setFEN(fen)</h3>
+                <p>Load a position on the chessboard from a FEN string. This does not affect the game in progress.</p>
+                <table class="parameter-table">
+                    <tr>
+                        <th class="parameter-table__header" colspan="2">Parameter</th>
+                    </tr>
+                    <tr>
+                        <td>fen</td>
+                        <td>Optional<br>String<br>The Forsyth-Edwards Notation to import. If omitted, the classical starting
+                            position will be set.</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="method">
+                <div class="anchor" id="setGameInfo"></div>
+                <h3 class="identifier-header">setGameInfo(name, value)</h3>
+                <p>Set an information and its value in the game. Replace the information if it already exists. Create a new
+                    one if not.</p>
+                <table class="parameter-table">
+                    <tr>
+                        <th class="parameter-table__header" colspan="2">Parameter</th>
+                    </tr>
+                    <tr>
+                        <td>name</td>
+                        <td>String<br>The name of the information to set.</td>
+                    </tr>
+                    <tr>
+                        <td>value</td>
+                        <td>String<br>The value of the information to set.</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="method">
+                <div class="anchor" id="setPGN"></div>
+                <h3 class="identifier-header">setPGN(pgn)</h3>
+                <p>Load a chessgame from a PGN string. This will replace the game in progress.</p>
+                <table class="parameter-table">
+                    <tr>
+                        <th class="parameter-table__header" colspan="2">Parameter</th>
+                    </tr>
+                    <tr>
+                        <td>pgn</td>
+                        <td>String<br>The Portable Game Notation to import.</td>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+
+        <footer>
+            <div id="footer-inside">
+                <div class="inline-block">
+                    &copy; 2016-2017 <a class="footer__link" href="https://github.com/Nimzozo">Nimzozo</a>
+                </div><!--
+                --><div class="inline-block right">
+                    Code licensed <a class="footer__link" href="https://github.com/Nimzozo/Ab-Chess/blob/master/LICENSE.txt">MIT</a>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <script src="javascripts/colorize.js"></script>
+</body>
+
+</html>

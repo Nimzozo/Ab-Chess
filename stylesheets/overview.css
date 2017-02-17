@@ -1,0 +1,29 @@
+.overview {
+    display: inline-block;
+    vertical-align: top;
+    width: 25%;
+}
+
+.overview-header {
+    color: lightslategrey;
+    font-weight: normal;
+    border-bottom: 1px solid gainsboro;
+}
+
+.list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.list__item {
+    margin: 2px;
+}
+
+.link {
+    color: steelblue;
+    text-decoration: none;
+}
+
+.link:hover {
+    text-decoration: underline;
+}

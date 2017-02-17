@@ -37,8 +37,9 @@ window.addEventListener("load", function () {
         navigation.appendChild(accordeon);
         htmlCode.innerHTML = colorize(replaceSpecials(example.html));
         jsCode.innerHTML = colorize(example.func.toString(), true);
+    });
+    requestAnimationFrame(function () {
         result.innerHTML = example.html;
         example.func();
     });
-
 });
