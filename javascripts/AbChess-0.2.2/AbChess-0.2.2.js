@@ -462,7 +462,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             start = move.substr(0, 2);
             playedPiece = occupiedSquares[start];
             arrival = move.substr(3, 2);
-            if (regexCastle.test(move)) {
+            if (playedPiece.toLowerCase() === chessValue.blackKing &&
+                regexCastle.test(move)) {
                 if (arrival[0] === chessValue.columns[2]) {
                     pgnMove += chessValue.castleQueenSymbol;
                 } else {
@@ -2352,9 +2353,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // if it's legal. Then returns the new FEN.
 
             var currentPosition = {};
+            var hasNoMoves = false;
             var isDrawn = false;
             var isInCheck = false;
-            var isOver = false;
             var n = 0;
             var nextPosition = {};
             var pgnMove = "";
@@ -2370,11 +2371,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 the_game.fenStrings.push(nextPosition.fenString);
                 the_game.moves.push(move);
                 isInCheck = nextPosition.isInCheck(nextPosition.activeColor);
-                isOver = !nextPosition.hasLegalMoves();
+                hasNoMoves = !nextPosition.hasLegalMoves();
                 isDrawn = (nextPosition.isDrawByInsufficientMaterial() ||
                     nextPosition.isDrawBy50MovesRule());
-                if (isInCheck) {
-                    if (isOver) {
+                if (hasNoMoves) {
+                    if (isInCheck) {
                         stringToAdd = chessValue.checkmateSymbol;
                         if (nextPosition.activeColor === chessValue.black) {
                             the_game.setTag("Result", chessValue.resultWhite);
@@ -2382,12 +2383,15 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                             the_game.setTag("Result", chessValue.resultBlack);
                         }
                     } else {
+                        the_game.setTag("Result", chessValue.resultDraw);
+                    }
+                } else {
+                    if (isInCheck) {
                         stringToAdd = chessValue.checkSymbol;
                     }
-                } else if (isOver) {
-                    the_game.setTag("Result", chessValue.resultDraw);
-                } else if (isDrawn) {
-                    the_game.setTag("Result", chessValue.resultDraw);
+                    if (isDrawn) {
+                        the_game.setTag("Result", chessValue.resultDraw);
+                    }
                 }
                 pgnMove = currentPosition.getPGNMove(
                     move, promotion, false, stringToAdd);
