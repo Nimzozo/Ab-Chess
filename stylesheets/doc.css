@@ -39,3 +39,17 @@
 .parameter-table td:first-child {
     background-color: lightcyan;
 }
+
+.link {
+    color: steelblue;
+    text-decoration: none;
+}
+
+.link:hover {
+    text-decoration: underline;
+}
+
+.inline-code {
+    font-family: Monaco, monospace;
+    background-color: lavender;
+}

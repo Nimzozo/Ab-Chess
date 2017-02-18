@@ -63,68 +63,68 @@
                 </tr>
                 <tr>
                     <td id="animationSpeed">animationSpeed</td>
-                    <td>Optional<br>String<br>The speed of the animated pieces. Allowed values are "slow", "normal", "fast" and
-                        "instant".The default is "normal".</td>
+                    <td>Optional<br>String<br>The speed of the animated pieces. Allowed values are <code class="inline-code">"slow"</code>, <code class="inline-code">"normal"</code>, <code class="inline-code">"fast"</code> and
+                        <code class="inline-code">"instant"</code>.The default is <code class="inline-code">"normal"</code>.</td>
                 </tr>
                 <tr>
                     <td id="clickable">clickable</td>
                     <td>Optional<br>Boolean<br>If set to true, the chess pieces will be movable with a two-clicks method. The
-                        default is true.</td>
+                        default is <code class="inline-code">true</code>.</td>
                 </tr>
                 <tr>
                     <td id="draggable">draggable</td>
                     <td>Optional<br>Boolean<br>If set to true, the chess pieces will be movable with a drag-and-drop method.
-                        The default is true.</td>
+                        The default is <code class="inline-code">true</code>.</td>
                 </tr>
                 <tr>
                     <td id="flipped">flipped</td>
                     <td>Optional<br>Boolean<br>If set to true, the chessboard will be oriented for black point of view. The default
-                        is false.</td>
+                        is <code class="inline-code">false</code>.</td>
                 </tr>
                 <tr>
                     <td id="imagesExtension">imagesExtension</td>
-                    <td>Optional<br>String<br>The extension of the chess pieces images. The default is ".png".</td>
+                    <td>Optional<br>String<br>The extension of the chess pieces images. The default is <code class="inline-code">".png"</code>.</td>
                 </tr>
                 <tr>
                     <td id="imagesPath">imagesPath</td>
-                    <td>Optional<br>String<br>The path of the chess pieces images. The default is "images/wikipedia/".</td>
+                    <td>Optional<br>String<br>The path of the chess pieces images. The default is <code class="inline-code">"images/wikipedia/"</code>.</td>
                 </tr>
                 <tr>
                     <td id="legalMarksColor">legalMarksColor</td>
-                    <td>Optional<br>String<br>The CSS color of the legal moves indications. The default is "steelblue".</td>
+                    <td>Optional<br>String<br>The CSS color of the legal moves indications. The default is <code class="inline-code">"steelblue"</code>.</td>
                 </tr>
                 <tr>
                     <td id="markKingInCheck">markKingInCheck</td>
                     <td>Optional<br>Boolean<br>If set to true, highlight the square of the king when it is attacked. The default
-                        is true.</td>
+                        is <code class="inline-code">true</code>.</td>
                 </tr>
                 <tr>
                     <td id="markLastMove">markLastMove</td>
                     <td>Optional<br>Boolean<br>If set to true, highlight the start and arrival squares of the last piece movement.
-                        The default is true.</td>
+                        The default is <code class="inline-code">true</code>.</td>
                 </tr>
                 <tr>
                     <td id="markLegalSquares">markLegalSquares</td>
                     <td>Optional<br>Boolean<br>If set to true, highlight the legal squares after a piece has been selected. The
-                        default is true.</td>
+                        default is <code class="inline-code">true</code>.</td>
                 </tr>
                 <tr>
                     <td id="markOverflownSquare">markOverflownSquare</td>
                     <td>Optional<br>Boolean<br>If set to true, highlight the overflown square during a drag and drop operation.
-                        The default is true.</td>
+                        The default is <code class="inline-code">true</code>.</td>
                 </tr>
                 <tr>
                     <td id="markSelectedSquare">markSelectedSquare</td>
                     <td>Optional<br>Boolean<br>If set to true, highlight the square of a piece when it is selected. The default
-                        is true.</td>
+                        is <code class="inline-code">true</code>.</td>
                 </tr>
                 <tr>
                     <td id="notationBorder">notationBorder</td>
-                    <td>Optional<br>Boolean<br>If set to true, the chessboard will have a notation border. The default is true.</td>
+                    <td>Optional<br>Boolean<br>If set to true, the chessboard will have a notation border. The default is <code class="inline-code">true</code>.</td>
                 </tr>
                 <tr>
                     <td id="width">width</td>
-                    <td>Optional<br>Number<br>The width of the chessboard in pixel. The default is 360.</td>
+                    <td>Optional<br>Number<br>The width of the chessboard in pixel. The default is <code class="inline-code">360</code>.</td>
                 </tr>
             </table>
 
@@ -153,7 +153,9 @@ abChess = new AbChess(containerId, abConfig);</code>
             <div class="method">
                 <div class="anchor" id="draw"></div>
                 <h3 class="identifier-header">draw()</h3>
-                <p class="description">Draw the chessboard in the HTML container element. This method should be called right after the constructor.</p>
+                <p class="description">Draw the chessboard in the HTML container element.
+                    This method should be called right after the constructor.</p>
+                <p>See <a class="link" href="examples/basics/default.html">example</a>.</p>
             </div>
             <div class="method">
                 <div class="anchor" id="flip"></div>
@@ -163,7 +165,7 @@ abChess = new AbChess(containerId, abConfig);</code>
             <div class="method">
                 <div class="anchor" id="getActiveColor"></div>
                 <h3 class="identifier-header">getActiveColor(index)</h3>
-                <p>Return a character ("w" for white or "b" for black) indicating the active color in a position.</p>
+                <p>Return a character (<code class="inline-code">"w"</code> for white or <code class="inline-code">"b"</code> for black) indicating the active color in a position.</p>
                 <table class="parameter-table">
                     <tr>
                         <th class="parameter-table__header" colspan="2">Parameter</th>
@@ -248,7 +250,7 @@ abChess = new AbChess(containerId, abConfig);</code>
             <div class="method">
                 <div class="anchor" id="is50MovesDraw"></div>
                 <h3 class="identifier-header">is50MovesDraw(index)</h3>
-                <p>Return true if a position is a draw because of the 50 moves rule or false if it's not.</p>
+                <p>Return <code class="inline-code">true</code> if a position is a draw because of the 50 moves rule or <code class="inline-code">false</code> if it's not.</p>
                 <table class="parameter-table">
                     <tr>
                         <th class="parameter-table__header" colspan="2">Parameter</th>
@@ -263,7 +265,7 @@ abChess = new AbChess(containerId, abConfig);</code>
             <div class="method">
                 <div class="anchor" id="isCheckmate"></div>
                 <h3 class="identifier-header">isCheckmate(index)</h3>
-                <p>Return true if a position is a checkmate or false if it's not.</p>
+                <p>Return <code class="inline-code">true</code> if a position is a checkmate or <code class="inline-code">false</code> if it's not.</p>
                 <table class="parameter-table">
                     <tr>
                         <th class="parameter-table__header" colspan="2">Parameter</th>
@@ -278,7 +280,7 @@ abChess = new AbChess(containerId, abConfig);</code>
             <div class="method">
                 <div class="anchor" id="isInCheck"></div>
                 <h3 class="identifier-header">isInCheck(index)</h3>
-                <p>Return true if the king of the active color is in check in a position or false if it's not.</p>
+                <p>Return <code class="inline-code">true</code> if the king of the active color is in check in a position or <code class="inline-code">false</code> if it's not.</p>
                 <table class="parameter-table">
                     <tr>
                         <th class="parameter-table__header" colspan="2">Parameter</th>
@@ -293,7 +295,7 @@ abChess = new AbChess(containerId, abConfig);</code>
             <div class="method">
                 <div class="anchor" id="isInsufficientMaterialDraw"></div>
                 <h3 class="identifier-header">isInsufficientMaterialDraw(index)</h3>
-                <p>Return true if the remaining material is insufficient to win a position or false if it's not.</p>
+                <p>Return <code class="inline-code">true</code> if the remaining material is insufficient to win a position or <code class="inline-code">false</code> if it's not.</p>
                 <table class="parameter-table">
                     <tr>
                         <th class="parameter-table__header" colspan="2">Parameter</th>
@@ -308,7 +310,7 @@ abChess = new AbChess(containerId, abConfig);</code>
             <div class="method">
                 <div class="anchor" id="isLegal"></div>
                 <h3 class="identifier-header">isLegal(index, move)</h3>
-                <p>Return true if a move is legal in a position or false if it's not.</p>
+                <p>Return <code class="inline-code">true</code> if a move is legal in a position or <code class="inline-code">false</code> if it's not.</p>
                 <table class="parameter-table">
                     <tr>
                         <th class="parameter-table__header" colspan="2">Parameter</th>
@@ -327,7 +329,7 @@ abChess = new AbChess(containerId, abConfig);</code>
             <div class="method">
                 <div class="anchor" id="isStalemate"></div>
                 <h3 class="identifier-header">isStalemate(index)</h3>
-                <p>Return true if a position is a stalemate or false if it's not.</p>
+                <p>Return <code class="inline-code">true</code> if a position is a stalemate or <code class="inline-code">false</code> if it's not.</p>
                 <table class="parameter-table">
                     <tr>
                         <th class="parameter-table__header" colspan="2">Parameter</th>
@@ -342,7 +344,7 @@ abChess = new AbChess(containerId, abConfig);</code>
             <div class="method">
                 <div class="anchor" id="isValidFEN"></div>
                 <h3 class="identifier-header">isValidFEN(fen, onlyCheckRows)</h3>
-                <p>Return true if a FEN string is valid or false if it's not.</p>
+                <p>Return <code class="inline-code">true</code> if a FEN string is valid or <code class="inline-code">false</code> if it's not.</p>
                 <table class="parameter-table">
                     <tr>
                         <th class="parameter-table__header" colspan="2">Parameter</th>
@@ -354,7 +356,7 @@ abChess = new AbChess(containerId, abConfig);</code>
                     <tr>
                         <td>onlyCheckRows</td>
                         <td>Optional<br>Boolean<br>When set to true, the function will only check if the position rows are valid.
-                            When set to false, the function will validate the entire string.</td>
+                            When set to false, the function will validate the entire string. The default is <code class="inline-code">false</code>.</td>
                     </tr>
                 </table>
                 <p>Return type : Boolean</p>
@@ -362,7 +364,7 @@ abChess = new AbChess(containerId, abConfig);</code>
             <div class="method">
                 <div class="anchor" id="isValidPGN"></div>
                 <h3 class="identifier-header">isValidPGN(pgn)</h3>
-                <p>Return true if a PGN string is valid or false if it's not.</p>
+                <p>Return <code class="inline-code">true</code> if a PGN string is valid or <code class="inline-code">false</code> if it's not.</p>
                 <table class="parameter-table">
                     <tr>
                         <th class="parameter-table__header" colspan="2">Parameter</th>
