@@ -1,0 +1,125 @@
+/*
+// AbChess-0.2.2.css
+// 2017-02-13
+// Copyright (c) 2017 Nimzozo
+*/
+
+.squares-div {
+    position: relative;
+    display: inline-block;
+    border: 2px solid saddlebrown;
+    vertical-align: top;
+}
+
+.square {
+    display: inline-block;
+    position: relative;
+    width: 12.5%;
+    height: 12.5%;
+    margin: 0;
+    vertical-align: top;
+}
+
+.square__canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    display: inline-block;
+}
+
+.square__piece {
+    background-size: 100% 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    cursor: pointer;
+}
+
+.ghost_piece {
+    background-size: 100% 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 50px;
+    width: 50px;
+    z-index: 9;
+    pointer-events: none;
+}
+
+.square_white {
+    background: wheat;
+}
+
+.square_black {
+    background: burlywood;
+}
+
+.square_highlighted {
+     box-shadow: inset 0 0 0 2px green;
+}
+
+.square_marked {
+    box-shadow: inset 0 0 0 2px red;
+}
+
+.square_overflown {
+    background-color: lightsteelblue;
+}
+
+.square_selected {
+    box-shadow: inset 0 0 0 2px steelblue;
+}
+
+.bottom-border {
+    height: 20px;
+    text-align: center;
+    font-size: 80%;
+    line-height: 20px;
+}
+
+.bottom-border__fragment {
+    display: inline-block;
+    width: 12.5%;
+    vertical-align: top;
+}
+
+.right-border {
+    display: inline-block;
+    width: 20px;
+    text-align: center;
+    font-size: 80%;
+    vertical-align: top;
+}
+
+.right-border__fragment {
+    height: 12.5%;
+}
+
+.promotion-div {
+    z-index: 9;
+    top: 37.5%;
+    left: 0;
+    position: absolute;
+    background-color: gainsboro;
+    height: 25%;
+    width: 100%;
+    display: none;
+}
+
+.promotion-button {
+    display: inline-block;
+    background-size: 100% 100%;
+    background-color: lightslategrey;
+    border: none;
+    margin: 0;
+    height: 100%;
+    width: 25%;
+}
+
+.promotion-button:hover {
+    background-color: skyblue;
+}

@@ -1,0 +1,63 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>AB-Chess - Demo</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="javascript/AbChess-0.2.2/AbChess-0.2.2.css">
+</head>
+
+<body>
+
+    <div id='main-container'>
+
+        <div id="sub-main">
+
+            <div id="left-container" class="inline-block">
+
+                <div id="pgn-notation" class="left-container__div"></div>
+
+                <div class="left-container__div">
+                    <textarea id="pgn-textarea" placeholder="Paste a PGN here."></textarea>
+                    <input class="commands__button" type="button" id="pgn-button" value="Import PGN">
+                </div>
+
+                <div id="pgn-text" class="left-container__div"></div>
+
+            </div><!-- 50% width divided
+
+         --><div id="right-container" class="inline-block">
+
+                <div id="chessboard"></div>
+
+                <div id="commands">
+
+                    <div>
+                        <input class="commands__button" type="button" id="firstButton" value="|<">
+                        <input class="commands__button" type="button" id="previousButton" value="<">
+                        <input class="commands__button" type="button" id="nextButton" value=">">
+                        <input class="commands__button" type="button" id="lastButton" value=">|">
+                        <input class="commands__button" type="button" id="flipButton" value="&#8634;">
+                    </div>
+
+                    <div>
+                        <input class="commands__button" type="button" id="resetButton" value="Reset">
+                        <input class="commands__button" type="button" id="downloadButton" value="View PGN">
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src='javascript/AbChess-0.2.2/AbChess-0.2.2.js'></script>
+    <script src='javascript/demo.js'></script>
+</body>
+
+</html>

@@ -1,4 +1,4 @@
-// AbChess-0.1.js
+// AbChess-0.1.0.js
 // 2016-02-29
 // Copyright (c) 2016 Nimzozo
 
