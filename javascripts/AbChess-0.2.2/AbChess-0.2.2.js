@@ -1,5 +1,5 @@
 // AbChess-0.2.2.js
-// 2017-02-13
+// 2017-02-18
 // Copyright (c) 2017 Nimzozo
 
 /*global
@@ -1267,6 +1267,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         the_piece = {
             div: div,
             ghost: ghost,
+            isAnimated: false,
             name: name,
             square: null,
             url: url
@@ -1621,6 +1622,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var ghostY = ghostCoordinate[1];
             var speed = 0;
             the_board.isNavigating = true;
+            piece.isAnimated = true;
             switch (the_board.animationSpeed) {
                 case "slow":
                     speed = 0.1;
@@ -1643,6 +1645,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 }
                 piece.div.style.opacity = "1";
                 the_board.isNavigating = false;
+                piece.isAnimated = false;
                 return;
             }
             if (ghostX < coordinate[0]) {
@@ -2685,6 +2688,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         var left = 0;
         var top = 0;
         e.preventDefault();
+        if (piece.isAnimated) {
+            return;
+        }
         if (!abBoard.draggablePieces) {
             return;
         }
