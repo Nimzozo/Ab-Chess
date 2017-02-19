@@ -2950,11 +2950,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Check if the active player is in check in the n-th position.
 
-            var activeColor = "";
-            var position = {};
-            position = abGame.getNthPosition(n);
-            activeColor = position.activeColor;
-            return position.isInCheck(activeColor);
+            return abGame.isInCheck(n);
         },
 
         isInsufficientMaterialDraw: function (n) {
