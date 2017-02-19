@@ -1372,17 +1372,18 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
     // -------------------------------------------------------------------------
 
-    function Square(name) {
+    function Square(name, width) {
 
         // The Square class constructs a HTML DIV element
         // named with its coordinate.
 
+        var canvas = document.createElement("CANVAS");
         var cssClass = "";
         var div = document.createElement("DIV");
         var isWhiteSquare = Square.isWhite(name);
         var the_square = {
             board: null,
-            canvas: null,
+            canvas: canvas,
             div: div,
             hasCircle: false,
             isHighlighted: false,
@@ -1390,7 +1391,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             isOverflown: false,
             isSelected: false,
             name: name,
-            piece: null
+            piece: null,
+            width: width
         };
         cssClass = (isWhiteSquare)
             ? css.square + " " + css.whiteSquare
@@ -1403,10 +1405,15 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             }
         };
 
-        the_square.drawFilledCircle = function (x, y, radius, cssColor) {
+        the_square.drawFilledCircle = function (cssColor) {
             var context = the_square.canvas.getContext("2d");
+            var radius = Math.floor(the_square.width / 8);
+            var xy = Math.floor(the_square.width / 2);
+            the_square.canvas.className = css.squareCanvas;
+            the_square.canvas.setAttribute("height", the_square.width + "px");
+            the_square.canvas.setAttribute("width", the_square.width + "px");
             context.beginPath();
-            context.arc(x, y, radius, 0, 2 * Math.PI);
+            context.arc(xy, xy, radius, 0, 2 * Math.PI);
             context.fillStyle = cssColor;
             context.fill();
         };
@@ -1852,33 +1859,23 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Create the squares property.
 
-            var canvas = {};
-            var canvasWidth = "";
             var colNumber = 0;
             var column = "";
             var name = "";
-            var radius = 0;
             var rowNumber = 0;
             var square = {};
             var squares = {};
+            var squareWidth = 0;
             var xy = 0;
-            canvasWidth = Math.floor(the_board.width / 8) + "px";
-            radius = Math.floor(the_board.width / 62);
-            xy = Math.floor(the_board.width / 16);
+            squareWidth = Math.floor(the_board.width / 8);
             rowNumber = 1;
             while (rowNumber < 9) {
                 colNumber = 1;
                 while (colNumber < 9) {
                     column = chessValue.columns[colNumber - 1];
                     name = column + rowNumber;
-                    canvas = document.createElement("CANVAS");
-                    canvas.className = css.squareCanvas;
-                    canvas.setAttribute("height", canvasWidth);
-                    canvas.setAttribute("width", canvasWidth);
-                    square = new Square(name);
-                    square.canvas = canvas;
-                    square.drawFilledCircle(xy, xy, radius,
-                        the_board.legalMarksColor);
+                    square = new Square(name, squareWidth);
+                    square.drawFilledCircle(the_board.legalMarksColor);
                     square.board = the_board;
                     squares[name] = square;
                     colNumber += 1;
