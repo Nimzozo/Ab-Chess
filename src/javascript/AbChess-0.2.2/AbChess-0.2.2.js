@@ -1475,12 +1475,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Highlight the square (last move).
             // Cancel if already highlighted.
 
-            var className = "";
             the_square.isHighlighted = !the_square.isHighlighted;
-            className = the_square.getClassName();
-            rAF(function () {
-                the_square.div.className = className;
-            });
+            the_square.updateClass();
         };
 
         the_square.isEmpty = function () {
@@ -1495,12 +1491,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Mark the square (king in check).
             // Cancel if already marked.
 
-            var className = "";
             the_square.isMarked = !the_square.isMarked;
-            className = the_square.getClassName();
-            rAF(function () {
-                the_square.div.className = className;
-            });
+            the_square.updateClass();
         };
 
         the_square.overfly = function () {
@@ -1508,12 +1500,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Overfly the square.
             // Cancel if already overflown.
 
-            var className = "";
             the_square.isOverflown = !the_square.isOverflown;
-            className = the_square.getClassName();
-            rAF(function () {
-                the_square.div.className = className;
-            });
+            the_square.updateClass();
         };
 
         the_square.select = function () {
@@ -1521,9 +1509,15 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Select the square.
             // Cancel if already selected.
 
-            var className = "";
             the_square.isSelected = !the_square.isSelected;
-            className = the_square.getClassName();
+            the_square.updateClass();
+        };
+
+        the_square.updateClass = function () {
+
+            // Update the CSS class of the square.
+
+            var className = the_square.getClassName();
             rAF(function () {
                 the_square.div.className = className;
             });
