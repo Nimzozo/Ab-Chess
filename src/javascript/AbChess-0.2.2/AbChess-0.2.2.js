@@ -1860,7 +1860,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var square = {};
             var squares = {};
             var squareWidth = 0;
-            var xy = 0;
             squareWidth = Math.floor(the_board.width / 8);
             rowNumber = 1;
             while (rowNumber < 9) {
@@ -1996,20 +1995,23 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 var animation = {};
                 var arrivalSquare = the_board.squares[newSquare];
                 var char = newPosition[newSquare];
-                var newPiece = {};
-                var pieceName = "";
-                var url = "";
-                pieceName = (char.toLowerCase() === char)
-                    ? chessValue.black + char
-                    : chessValue.white + char.toLowerCase();
-                url = the_board.imagesPath + pieceName +
-                    the_board.imagesExtension;
-                newPiece = new Piece(pieceName, url);
                 animation.arrival = arrivalSquare;
-                animation.piece = newPiece;
+                animation.piece = the_board.getNewPiece(char);
                 animations.push(animation);
             });
             return animations;
+        };
+
+        the_board.getNewPiece = function (char) {
+
+            // Create and return a new piece object.
+
+            var pieceName = (char.toLowerCase() === char)
+                    ? chessValue.black + char
+                    : chessValue.white + char.toLowerCase();
+            var url = the_board.imagesPath + pieceName +
+                the_board.imagesExtension;
+            return new Piece(pieceName, url);
         };
 
         the_board.getPositionObject = function () {
@@ -2072,21 +2074,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             the_board.empty();
             squares = Position.fenToObject(fen);
             Object.keys(squares).forEach(function (squareName) {
-                var char = "";
-                var piece = {};
-                var pieceName = "";
-                var square = {};
-                var url = "";
-                char = squares[squareName];
-                pieceName = (char.toLowerCase() === char)
-                    ? chessValue.black + char
-                    : chessValue.white + char.toLowerCase();
-                url = the_board.imagesPath + pieceName +
-                    the_board.imagesExtension;
-                piece = new Piece(pieceName, url);
-                square = the_board.squares[squareName];
-                piece.animatePut(square);
-                piece.put(square);
+                var char = squares[squareName];
+                var newPiece = the_board.getNewPiece(char);
+                var square = the_board.squares[squareName];
+                newPiece.animatePut(square);
+                newPiece.put(square);
             });
         };
 
