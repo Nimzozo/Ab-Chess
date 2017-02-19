@@ -1,18 +1,18 @@
 window.addEventListener("load", function () {
     "use strict";
 
-    var abChess;
+    var abChess = {};
     var options = {
         animationSpeed: "slow",
         clickable: true,
         draggable: true,
         imagesPath: "images/wikipedia/"
     };
-    var pgnButton;
-    var pgnNotation;
+    var pgnButton = {};
+    var pgnNotation = {};
     var pgnSpanClass = "pgn-move";
-    var pgnText;
-    var pgnTextarea;
+    var pgnText = {};
+    var pgnTextarea = {};
 
     abChess = new AbChess("chessboard", options);
     abChess.draw();
@@ -39,7 +39,7 @@ window.addEventListener("load", function () {
 
         // Navigate on the desired move index.
 
-       // selectSpan(index);
+        // selectSpan(index);
         abChess.navigate(index);
     }
 
@@ -147,8 +147,5 @@ window.addEventListener("load", function () {
         var pgn = pgnTextarea.value;
         importPGN(pgn);
     });
-
-
-
 
 });

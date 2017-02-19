@@ -1,0 +1,9 @@
+#main-container {
+    margin: 0 10%;
+}
+
+.inline-block {
+    display: inline-block;
+    vertical-align: top;
+    width: 50%;
+}
