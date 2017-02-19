@@ -2161,18 +2161,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var arrivalSquare = {};
             var capturedPiece = {};
             var emptyArrival = false;
-            var enPassant = "";
-            var enPassantSquare = {};
-            var newPiece = {};
-            var newPieceColor = "";
-            var newPieceName = "";
             var playedPiece = {};
-            var rook = {};
-            var rookArrival = "";
-            var rookStart = "";
             var start = "";
             var startSquare = {};
-            var url = "";
             if (!regexMove.test(move)) {
                 throw new SyntaxError(error.invalidParameter);
             }
@@ -2194,57 +2185,88 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             playedPiece.put(arrivalSquare);
             if (regexCastle.test(move) &&
                 playedPiece.name[1] === chessValue.blackKing) {
-                switch (arrival[0]) {
-                    case chessValue.columns[2]:
-                        rookStart = chessValue.columns[0];
-                        rookArrival = chessValue.columns[3];
-                        break;
-                    case chessValue.columns[6]:
-                        rookStart = chessValue.columns[7];
-                        rookArrival = chessValue.columns[5];
-                        break;
-                }
-                rookArrival += arrival[1];
-                rookStart += arrival[1];
-                if (!the_board.squares[rookStart].isEmpty()) {
-                    rook = the_board.squares[rookStart].piece;
-                    the_board.movePiece(rook, the_board.squares[rookStart],
-                        the_board.squares[rookArrival]);
-                    rook.remove();
-                    rook.put(the_board.squares[rookArrival]);
-                }
+                the_board.playCastle(arrival);
             } else if (playedPiece.name[1] === chessValue.blackPawn) {
                 if (regexEnPassant.test(move) &&
                     emptyArrival && start[0] !== arrival[0]) {
-                    enPassant = arrival[0];
-                    switch (arrival[1]) {
-                        case "3":
-                            enPassant += "4";
-                            break;
-                        case "6":
-                            enPassant += "5";
-                            break;
-                    }
-                    enPassantSquare = the_board.squares[enPassant];
-                    if (!enPassantSquare.isEmpty()) {
-                        enPassantSquare.piece.fadingRemove();
-                        enPassantSquare.piece.remove();
-                    }
+                    the_board.playEnPassant(arrival);
                 } else if (regexPromotion.test(move)) {
-                    promotion = promotion || chessValue.blackQueen;
-                    newPieceColor = (arrival[1] === "1")
-                        ? chessValue.black
-                        : chessValue.white;
-                    newPieceName = newPieceColor + promotion.toLowerCase();
-                    url = the_board.imagesPath + newPieceName +
-                        the_board.imagesExtension;
-                    newPiece = new Piece(newPieceName, url);
-                    playedPiece.fadingRemove();
-                    playedPiece.remove();
-                    newPiece.fadingPlace(arrivalSquare);
-                    newPiece.put(arrivalSquare);
+                    the_board.playPromotion(playedPiece, arrival, promotion);
                 }
             }
+        };
+
+        the_board.playCastle = function (arrival) {
+
+            // Play a move if it's a castle.
+
+            var rook = {};
+            var rookArrival = "";
+            var rookStart = "";
+            switch (arrival[0]) {
+                case chessValue.columns[2]:
+                    rookStart = chessValue.columns[0];
+                    rookArrival = chessValue.columns[3];
+                    break;
+                case chessValue.columns[6]:
+                    rookStart = chessValue.columns[7];
+                    rookArrival = chessValue.columns[5];
+                    break;
+            }
+            rookArrival += arrival[1];
+            rookStart += arrival[1];
+            if (!the_board.squares[rookStart].isEmpty()) {
+                rook = the_board.squares[rookStart].piece;
+                the_board.movePiece(rook, the_board.squares[rookStart],
+                    the_board.squares[rookArrival]);
+                rook.remove();
+                rook.put(the_board.squares[rookArrival]);
+            }
+        };
+
+        the_board.playEnPassant = function (arrival) {
+
+            // Play a move if it's a move en passant.
+
+            var enPassant = "";
+            var enPassantSquare = {};
+            enPassant = arrival[0];
+            switch (arrival[1]) {
+                case "3":
+                    enPassant += "4";
+                    break;
+                case "6":
+                    enPassant += "5";
+                    break;
+            }
+            enPassantSquare = the_board.squares[enPassant];
+            if (!enPassantSquare.isEmpty()) {
+                enPassantSquare.piece.fadingRemove();
+                enPassantSquare.piece.remove();
+            }
+        };
+
+        the_board.playPromotion = function (playedPiece, arrival, promotion) {
+
+            // Play a move if it's a promotion.
+
+            var arrivalSquare = the_board.squares[arrival];
+            var newPiece = {};
+            var newPieceColor = "";
+            var newPieceName = "";
+            var url = "";
+            promotion = promotion || chessValue.blackQueen;
+            newPieceColor = (arrival[1] === "1")
+                ? chessValue.black
+                : chessValue.white;
+            newPieceName = newPieceColor + promotion.toLowerCase();
+            url = the_board.imagesPath + newPieceName +
+                the_board.imagesExtension;
+            newPiece = new Piece(newPieceName, url);
+            playedPiece.fadingRemove();
+            playedPiece.remove();
+            newPiece.fadingPlace(arrivalSquare);
+            newPiece.put(arrivalSquare);
         };
 
         the_board.unlock = function () {
