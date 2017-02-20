@@ -677,8 +677,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
         the_position.getTargets_bishop = function (start, color) {
 
-            // Return an array of squares a bishop
-            // on a specific square can reach.
+            // Return an array of squares a bishop can reach.
 
             var alliesPlaces = [];
             var colNumber = 0;
@@ -686,76 +685,39 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var ennemiesPlaces = [];
             var rowNumber = 0;
             var targets = [];
-            var testColNumber = 0;
-            var testRowNumber = 0;
-            var testSquare = "";
+            var vectors = [
+                [-1, -1],
+                [-1, 1],
+                [1, -1],
+                [1, 1]
+            ];
             colNumber = chessValue.columns.indexOf(start[0]) + 1;
-            testColNumber = colNumber + 1;
             rowNumber = Number(start[1]);
-            testRowNumber = rowNumber + 1;
             alliesPlaces = the_position.getPiecesPlaces(color);
             ennemiesColor = (color === chessValue.black)
                 ? chessValue.white
                 : chessValue.black;
             ennemiesPlaces = the_position.getPiecesPlaces(ennemiesColor);
-            while (testColNumber < 9 && testRowNumber < 9) {
-                testSquare = chessValue.columns[testColNumber - 1] +
-                    testRowNumber;
-                if (alliesPlaces.indexOf(testSquare) > -1) {
-                    break;
+            vectors.forEach(function (vector) {
+                var colVector = vector[0];
+                var rowVector = vector[1];
+                var testCol = colNumber + colVector;
+                var testRow = rowNumber + rowVector;
+                var square = "";
+                while (testCol > 0 && testRow > 0 &&
+                    testCol < 9 && testRow < 9) {
+                    square = chessValue.columns[testCol - 1] + testRow;
+                    if (alliesPlaces.indexOf(square) > -1) {
+                        break;
+                    }
+                    targets.push(square);
+                    if (ennemiesPlaces.indexOf(square) > -1) {
+                        break;
+                    }
+                    testCol += colVector;
+                    testRow += rowVector;
                 }
-                targets.push(testSquare);
-                if (ennemiesPlaces.indexOf(testSquare) > -1) {
-                    break;
-                }
-                testColNumber += 1;
-                testRowNumber += 1;
-            }
-            testColNumber = colNumber - 1;
-            testRowNumber = rowNumber - 1;
-            while (testColNumber > 0 && testRowNumber > 0) {
-                testSquare = chessValue.columns[testColNumber - 1] +
-                    testRowNumber;
-                if (alliesPlaces.indexOf(testSquare) > -1) {
-                    break;
-                }
-                targets.push(testSquare);
-                if (ennemiesPlaces.indexOf(testSquare) > -1) {
-                    break;
-                }
-                testColNumber -= 1;
-                testRowNumber -= 1;
-            }
-            testColNumber = colNumber + 1;
-            testRowNumber = rowNumber - 1;
-            while (testColNumber < 9 && testRowNumber > 0) {
-                testSquare = chessValue.columns[testColNumber - 1] +
-                    testRowNumber;
-                if (alliesPlaces.indexOf(testSquare) > -1) {
-                    break;
-                }
-                targets.push(testSquare);
-                if (ennemiesPlaces.indexOf(testSquare) > -1) {
-                    break;
-                }
-                testColNumber += 1;
-                testRowNumber -= 1;
-            }
-            testColNumber = colNumber - 1;
-            testRowNumber = rowNumber + 1;
-            while (testColNumber > 0 && testRowNumber < 9) {
-                testSquare = chessValue.columns[testColNumber - 1] +
-                    testRowNumber;
-                if (alliesPlaces.indexOf(testSquare) > -1) {
-                    break;
-                }
-                targets.push(testSquare);
-                if (ennemiesPlaces.indexOf(testSquare) > -1) {
-                    break;
-                }
-                testColNumber -= 1;
-                testRowNumber += 1;
-            }
+            });
             return targets;
         };
 
