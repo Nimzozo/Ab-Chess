@@ -623,6 +623,12 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // The onlyOffensive parameter allows to filter king moves
             // and pawn non-attacking moves.
 
+            var bishopVectors = [
+                [-1, -1],
+                [-1, 1],
+                [1, -1],
+                [1, 1]
+            ];
             var color = "";
             var piece = "";
             var targets = [];
@@ -636,6 +642,13 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 [2, -1],
                 [2, 1]
             ];
+            var queenVectors = [];
+            var rookVectors = [
+                [-1, 0],
+                [0, -1],
+                [0, 1],
+                [1, 0]
+            ];
             if (!occupiedSquares.hasOwnProperty(start)) {
                 return targets;
             }
@@ -646,7 +659,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             switch (piece) {
                 case chessValue.blackBishop:
                 case chessValue.whiteBishop:
-                    targets = the_position.getTargets_bishop(start, color);
+                    targets = the_position.getLinearTargets(start, color,
+                     bishopVectors);
                     break;
                 case chessValue.blackKing:
                 case chessValue.whiteKing:
@@ -665,19 +679,22 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     break;
                 case chessValue.blackQueen:
                 case chessValue.whiteQueen:
-                    targets = the_position.getTargets_queen(start, color);
+                    queenVectors = bishopVectors.concat(rookVectors);
+                    targets = the_position.getLinearTargets(start, color,
+                    queenVectors);
                     break;
                 case chessValue.blackRook:
                 case chessValue.whiteRook:
-                    targets = the_position.getTargets_rook(start, color);
+                    targets = the_position.getLinearTargets(start, color,
+                        rookVectors);
                     break;
             }
             return targets;
         };
 
-        the_position.getTargets_bishop = function (start, color) {
+        the_position.getLinearTargets = function (start, color, vectors) {
 
-            // Return an array of squares a bishop can reach.
+            // Return an array of linear squares without collision.
 
             var alliesPlaces = [];
             var colNumber = 0;
@@ -685,12 +702,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var ennemiesPlaces = [];
             var rowNumber = 0;
             var targets = [];
-            var vectors = [
-                [-1, -1],
-                [-1, 1],
-                [1, -1],
-                [1, 1]
-            ];
             colNumber = chessValue.columns.indexOf(start[0]) + 1;
             rowNumber = Number(start[1]);
             alliesPlaces = the_position.getPiecesPlaces(color);
@@ -904,61 +915,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     }
                 }
             }
-            return targets;
-        };
-
-        the_position.getTargets_queen = function (start, color) {
-
-            // Return an array of squares a queen
-            // on a specific square can reach.
-
-            return the_position.getTargets_bishop(start,
-                color).concat(the_position.getTargets_rook(start, color));
-        };
-
-        the_position.getTargets_rook = function (start, color) {
-
-            // Return an array of squares a rook can reach.
-
-            var alliesPlaces = [];
-            var colNumber = 0;
-            var ennemiesColor = "";
-            var ennemiesPlaces = [];
-            var rowNumber = 0;
-            var targets = [];
-            var vectors = [
-                [-1, 0],
-                [0, -1],
-                [0, 1],
-                [1, 0]
-            ];
-            colNumber = chessValue.columns.indexOf(start[0]) + 1;
-            rowNumber = Number(start[1]);
-            alliesPlaces = the_position.getPiecesPlaces(color);
-            ennemiesColor = (color === chessValue.black)
-                ? chessValue.white
-                : chessValue.black;
-            ennemiesPlaces = the_position.getPiecesPlaces(ennemiesColor);
-            vectors.forEach(function (vector) {
-                var colVector = vector[0];
-                var rowVector = vector[1];
-                var testCol = colNumber + colVector;
-                var testRow = rowNumber + rowVector;
-                var square = "";
-                while (testCol > 0 && testRow > 0 &&
-                    testCol < 9 && testRow < 9) {
-                    square = chessValue.columns[testCol - 1] + testRow;
-                    if (alliesPlaces.indexOf(square) > -1) {
-                        break;
-                    }
-                    targets.push(square);
-                    if (ennemiesPlaces.indexOf(square) > -1) {
-                        break;
-                    }
-                    testCol += colVector;
-                    testRow += rowVector;
-                }
-            });
             return targets;
         };
 
