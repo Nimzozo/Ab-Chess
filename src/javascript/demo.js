@@ -48,8 +48,8 @@ window.addEventListener("load", function () {
         // Update the PGN by adding a move.
 
         var fullmoveNumber = 0;
-        var moveSpan;
-        var textNode;
+        var moveSpan = {};
+        var textNode = {};
         fullmoveNumber = (moveIndex % 2 === 0)
             ? moveIndex / 2 + 1
             : (moveIndex + 1) / 2;
@@ -100,52 +100,52 @@ window.addEventListener("load", function () {
         updatePGNText();
     });
 
-    function importPGN(pgn) {
+    // function importPGN(pgn) {
 
-        // Import a PGN.
+    //     // Import a PGN.
 
-        var pgnMoves = [];
+    //     var pgnMoves = [];
 
-        function checkSubMoves(move, index, indexes) {
-            var startIndex = 0;
-            var subMoveIndex = 0;
-            var subMoves = [];
-            startIndex = indexes[indexes.length - 1];
-            subMoveIndex = startIndex + index;
-            indexes.push(subMoveIndex);
-            subMoves = abChess.getVariationMovesPGN(indexes);
-            subMoves.forEach(function (m, i) {
-                var isEnd = (i === subMoves.length - 1);
-                var isStart = (i === 0);
-                addPGNMove(m, subMoveIndex + i, isStart, isEnd, indexes);
-                checkSubMoves(m, i, indexes);
-            });
-            indexes.pop();
-        }
+    //     function checkSubMoves(move, index, indexes) {
+    //         var startIndex = 0;
+    //         var subMoveIndex = 0;
+    //         var subMoves = [];
+    //         startIndex = indexes[indexes.length - 1];
+    //         subMoveIndex = startIndex + index;
+    //         indexes.push(subMoveIndex);
+    //         subMoves = abChess.getVariationMovesPGN(indexes);
+    //         subMoves.forEach(function (m, i) {
+    //             var isEnd = (i === subMoves.length - 1);
+    //             var isStart = (i === 0);
+    //             addPGNMove(m, subMoveIndex + i, isStart, isEnd, indexes);
+    //             checkSubMoves(m, i, indexes);
+    //         });
+    //         indexes.pop();
+    //     }
 
-        abChess.setPGN(pgn);
-        pgnMoves = abChess.getGameMovesPGN();
-        pgnMoves.forEach(function (mainMove, moveIndex) {
-            var indexArray = [];
-            var variationMoves = [];
-            addPGNMove(mainMove, moveIndex);
-            indexArray.push(moveIndex);
-            variationMoves = abChess.getVariationMovesPGN(indexArray);
-            variationMoves.forEach(function (move, index) {
-                var isEnd = (index === variationMoves.length - 1);
-                var isStart = (index === 0);
-                addPGNMove(move, index + moveIndex, isStart, isEnd, [moveIndex, index + moveIndex]);
-                checkSubMoves(move, index, indexArray);
-            });
-        });
-        updatePGNText();
-    }
+    //     abChess.setPGN(pgn);
+    //     pgnMoves = abChess.getGameMovesPGN();
+    //     pgnMoves.forEach(function (mainMove, moveIndex) {
+    //         var indexArray = [];
+    //         var variationMoves = [];
+    //         addPGNMove(mainMove, moveIndex);
+    //         indexArray.push(moveIndex);
+    //         variationMoves = abChess.getVariationMovesPGN(indexArray);
+    //         variationMoves.forEach(function (move, index) {
+    //             var isEnd = (index === variationMoves.length - 1);
+    //             var isStart = (index === 0);
+    //             addPGNMove(move, index + moveIndex, isStart, isEnd, [moveIndex, index + moveIndex]);
+    //             checkSubMoves(move, index, indexArray);
+    //         });
+    //     });
+    //     updatePGNText();
+    // }
 
-    pgnButton = document.getElementById("pgn-button");
-    pgnTextarea = document.getElementById("pgn-textarea");
-    pgnButton.addEventListener("click", function () {
-        var pgn = pgnTextarea.value;
-        importPGN(pgn);
-    });
+    // pgnButton = document.getElementById("pgn-button");
+    // pgnTextarea = document.getElementById("pgn-textarea");
+    // pgnButton.addEventListener("click", function () {
+    //     var pgn = pgnTextarea.value;
+    //     importPGN(pgn);
+    // });
 
 });
