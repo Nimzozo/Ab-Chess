@@ -963,40 +963,38 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var ennemiesColor = "";
             var ennemiesPlaces = [];
             var rowNumber = 0;
+            var square = "";
             var targets = [];
             var testColNumber = 0;
             var testRowNumber = 0;
-            var testSquare = "";
             colNumber = chessValue.columns.indexOf(start[0]) + 1;
-            testColNumber = colNumber + 1;
             rowNumber = Number(start[1]);
-            testRowNumber = rowNumber;
             alliesPlaces = the_position.getPiecesPlaces(color);
             ennemiesColor = (color === chessValue.black)
                 ? chessValue.white
                 : chessValue.black;
             ennemiesPlaces = the_position.getPiecesPlaces(ennemiesColor);
+            testColNumber = colNumber + 1;
+            testRowNumber = rowNumber;
             while (testColNumber < 9) {
-                testSquare = chessValue.columns[testColNumber - 1] +
-                    testRowNumber;
-                if (alliesPlaces.indexOf(testSquare) !== -1) {
+                square = chessValue.columns[testColNumber - 1] + testRowNumber;
+                if (alliesPlaces.indexOf(square) !== -1) {
                     break;
                 }
-                targets.push(testSquare);
-                if (ennemiesPlaces.indexOf(testSquare) !== -1) {
+                targets.push(square);
+                if (ennemiesPlaces.indexOf(square) !== -1) {
                     break;
                 }
                 testColNumber += 1;
             }
             testColNumber = colNumber - 1;
             while (testColNumber > 0) {
-                testSquare = chessValue.columns[testColNumber - 1] +
-                    testRowNumber;
-                if (alliesPlaces.indexOf(testSquare) !== -1) {
+                square = chessValue.columns[testColNumber - 1] + testRowNumber;
+                if (alliesPlaces.indexOf(square) !== -1) {
                     break;
                 }
-                targets.push(testSquare);
-                if (ennemiesPlaces.indexOf(testSquare) !== -1) {
+                targets.push(square);
+                if (ennemiesPlaces.indexOf(square) !== -1) {
                     break;
                 }
                 testColNumber -= 1;
@@ -1004,26 +1002,24 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             testColNumber = colNumber;
             testRowNumber = rowNumber + 1;
             while (testRowNumber < 9) {
-                testSquare = chessValue.columns[testColNumber - 1] +
-                    testRowNumber;
-                if (alliesPlaces.indexOf(testSquare) !== -1) {
+                square = chessValue.columns[testColNumber - 1] + testRowNumber;
+                if (alliesPlaces.indexOf(square) !== -1) {
                     break;
                 }
-                targets.push(testSquare);
-                if (ennemiesPlaces.indexOf(testSquare) !== -1) {
+                targets.push(square);
+                if (ennemiesPlaces.indexOf(square) !== -1) {
                     break;
                 }
                 testRowNumber += 1;
             }
             testRowNumber = rowNumber - 1;
             while (testRowNumber > 0) {
-                testSquare = chessValue.columns[testColNumber - 1] +
-                    testRowNumber;
-                if (alliesPlaces.indexOf(testSquare) > -1) {
+                square = chessValue.columns[testColNumber - 1] + testRowNumber;
+                if (alliesPlaces.indexOf(square) > -1) {
                     break;
                 }
-                targets.push(testSquare);
-                if (ennemiesPlaces.indexOf(testSquare) > -1) {
+                targets.push(square);
+                if (ennemiesPlaces.indexOf(square) > -1) {
                     break;
                 }
                 testRowNumber -= 1;
@@ -1080,65 +1076,55 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Check if the position is draw by the insufficient material rule.
 
-            var blackPieces = [];
-            var testArray = [];
-            var whitePieces = [];
+            var blackPlaces = [];
+            var insufficientBlack = false;
             var insufficients = [
-                [chessValue.blackBishop],
-                [chessValue.blackKnight],
-                [chessValue.blackKnight, chessValue.blackKnight]
+                [chessValue.blackKing, chessValue.blackBishop],
+                [chessValue.blackKing, chessValue.blackKnight],
+                [chessValue.blackKing, chessValue.blackKnight,
+                chessValue.blackKnight]
             ];
-            var isInsufficient = false;
-            blackPieces = the_position.getPiecesPlaces(chessValue.black);
-            if (blackPieces.length > 3) {
+            var pieces = [];
+            var whitePlaces = [];
+            blackPlaces = the_position.getPiecesPlaces(chessValue.black);
+            if (blackPlaces.length > 3) {
                 return false;
             }
-            if (blackPieces.length > 1) {
-                blackPieces.forEach(function (key) {
-                    var piece = occupiedSquares[key];
-                    if (piece !== chessValue.blackKing) {
-                        testArray.push(piece);
-                    }
+            whitePlaces = the_position.getPiecesPlaces(chessValue.white);
+            if (whitePlaces.length > 3) {
+                return false;
+            }
+            function sameArray(array1, array2) {
+                if (array1.length !== array2.length) {
+                    return false;
+                }
+                return (array1.every(function (value, index) {
+                    return (array2[index] === value);
+                }));
+            }
+            if (blackPlaces.length > 1) {
+                blackPlaces.forEach(function (square) {
+                    var piece = occupiedSquares[square];
+                    pieces.push(piece);
                 });
-                isInsufficient = insufficients.some(function (insufficient) {
-                    var sameArray = false;
-                    if (insufficient.length !== testArray.length) {
-                        return false;
-                    }
-                    sameArray = insufficient.every(function (value, index) {
-                        return (testArray[index] === value);
-                    });
-                    return sameArray;
+                insufficientBlack = insufficients.some(function (insufficient) {
+                    return sameArray(insufficient, pieces);
                 });
-                if (!isInsufficient) {
+                if (!insufficientBlack) {
                     return false;
                 }
             }
-            whitePieces = the_position.getPiecesPlaces(chessValue.white);
-            if (whitePieces.length > 3) {
-                return false;
-            }
-            if (whitePieces.length === 1) {
+            if (whitePlaces.length === 1) {
                 return true;
             }
-            testArray = [];
-            whitePieces.forEach(function (key) {
-                var piece = occupiedSquares[key];
-                if (piece !== chessValue.whiteKing) {
-                    testArray.push(piece.toLowerCase());
-                }
+            pieces = [];
+            whitePlaces.forEach(function (square) {
+                var piece = occupiedSquares[square];
+                pieces.push(piece.toLowerCase());
             });
-            isInsufficient = insufficients.some(function (insufficient) {
-                var sameArray = false;
-                if (insufficient.length !== testArray.length) {
-                    return false;
-                }
-                sameArray = insufficient.every(function (value, index) {
-                    return (testArray[index] === value);
-                });
-                return sameArray;
-            });
-            return isInsufficient;
+            return (insufficients.some(function (insufficient) {
+                return sameArray(insufficient, pieces);
+            }));
         };
 
         the_position.isInCheck = function (color) {
