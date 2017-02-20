@@ -1,5 +1,5 @@
 // AbChess-0.2.2.js
-// 2017-02-19
+// 2017-02-20
 // Copyright (c) 2017 Nimzozo
 
 /*global
@@ -392,12 +392,13 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             arrivalSquare = move.substr(3, 2);
             if (playedPiece.toLowerCase() === chessValue.blackKing &&
                 regexCastle.test(move)) {
-                rookStart = (arrivalSquare[0] === chessValue.columns[2])
-                    ? chessValue.columns[0] + arrivalSquare[1]
-                    : chessValue.columns[7] + arrivalSquare[1];
-                rookArrival = (arrivalSquare[0] === chessValue.columns[2])
-                    ? chessValue.columns[3] + arrivalSquare[1]
-                    : chessValue.columns[5] + arrivalSquare[1];
+                if (arrivalSquare[0] === chessValue.columns[2]) {
+                    rookStart = chessValue.columns[0] + arrivalSquare[1];
+                    rookArrival = chessValue.columns[3] + arrivalSquare[1];
+                } else {
+                    rookStart = chessValue.columns[7] + arrivalSquare[1];
+                    rookArrival = chessValue.columns[5] + arrivalSquare[1];
+                }
                 delete newOccupiedSquares[rookStart];
                 if (startSquare === "e1") {
                     newOccupiedSquares[rookArrival] = chessValue.whiteRook;
@@ -753,32 +754,36 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Only for normal moves.
 
             var alliesPlaces = [];
-            var colMoves = [-1, 0, 1];
             var colNumber = 0;
-            var rowMoves = [-1, 0, 1];
             var rowNumber = 0;
             var targets = [];
             var testColNumber = 0;
             var testRowNumber = 0;
             var testSquare = "";
+            var vectors = [
+                [-1, -1],
+                [-1, 0],
+                [-1, 1],
+                [0, -1],
+                [0, 1],
+                [1, -1],
+                [1, 0],
+                [1, 1]
+            ];
             alliesPlaces = the_position.getPiecesPlaces(color);
             colNumber = chessValue.columns.indexOf(start[0]) + 1;
             rowNumber = Number(start[1]);
-            colMoves.forEach(function (colValue) {
-                rowMoves.forEach(function (rowValue) {
-                    if (colValue !== 0 || rowValue !== 0) {
-                        testColNumber = colNumber + colValue;
-                        testRowNumber = rowNumber + rowValue;
-                        if (testColNumber > 0 && testColNumber < 9 &&
-                            testRowNumber > 0 && testRowNumber < 9) {
-                            testSquare = chessValue.columns[testColNumber - 1] +
-                                testRowNumber;
-                            if (alliesPlaces.indexOf(testSquare) === -1) {
-                                targets.push(testSquare);
-                            }
-                        }
+            vectors.forEach(function (vector) {
+                testColNumber = colNumber + vector[0];
+                testRowNumber = rowNumber + vector[1];
+                if (testColNumber > 0 && testColNumber < 9 &&
+                    testRowNumber > 0 && testRowNumber < 9) {
+                    testSquare = chessValue.columns[testColNumber - 1] +
+                        testRowNumber;
+                    if (alliesPlaces.indexOf(testSquare) === -1) {
+                        targets.push(testSquare);
                     }
-                });
+                }
             });
             return targets;
         };
@@ -859,32 +864,36 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // on a specific square can reach.
 
             var alliesPlaces = [];
-            var colMoves = [-2, -1, 1, 2];
             var colNumber = 0;
-            var rowMoves = [-2, -1, 1, 2];
             var rowNumber = 0;
             var targets = [];
             var testColNumber = 0;
             var testRowNumber = 0;
             var testSquare = "";
+            var vectors = [
+                [-2, -1],
+                [-2, 1],
+                [-1, -2],
+                [-1, 2],
+                [1, -2],
+                [1, 2],
+                [2, -1],
+                [2, 1]
+            ];
             alliesPlaces = the_position.getPiecesPlaces(color);
             colNumber = chessValue.columns.indexOf(start[0]) + 1;
             rowNumber = Number(start[1]);
-            colMoves.forEach(function (colValue) {
-                rowMoves.forEach(function (rowValue) {
-                    if (Math.abs(colValue) !== Math.abs(rowValue)) {
-                        testColNumber = colNumber + colValue;
-                        testRowNumber = rowNumber + rowValue;
-                        if (testColNumber > 0 && testColNumber < 9 &&
-                            testRowNumber > 0 && testRowNumber < 9) {
-                            testSquare = chessValue.columns[testColNumber - 1] +
-                                testRowNumber;
-                            if (alliesPlaces.indexOf(testSquare) === -1) {
-                                targets.push(testSquare);
-                            }
-                        }
+            vectors.forEach(function (vector) {
+                testColNumber = colNumber + vector[0];
+                testRowNumber = rowNumber + vector[1];
+                if (testColNumber > 0 && testColNumber < 9 &&
+                    testRowNumber > 0 && testRowNumber < 9) {
+                    testSquare = chessValue.columns[testColNumber - 1] +
+                        testRowNumber;
+                    if (alliesPlaces.indexOf(testSquare) === -1) {
+                        targets.push(testSquare);
                     }
-                });
+                }
             });
             return targets;
         };
@@ -1089,9 +1098,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var testArray = [];
             var whitePieces = [];
             var insufficients = [
-                ["b"],
-                ["n"],
-                ["n", "n"]
+                [chessValue.blackBishop],
+                [chessValue.blackKnight],
+                [chessValue.blackKnight, chessValue.blackKnight]
             ];
             var isInsufficient = false;
             blackPieces = the_position.getPiecesPlaces(chessValue.black);
@@ -2007,8 +2016,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Create and return a new piece object.
 
             var pieceName = (char.toLowerCase() === char)
-                    ? chessValue.black + char
-                    : chessValue.white + char.toLowerCase();
+                ? chessValue.black + char
+                : chessValue.white + char.toLowerCase();
             var url = the_board.imagesPath + pieceName +
                 the_board.imagesExtension;
             return new Piece(pieceName, url);

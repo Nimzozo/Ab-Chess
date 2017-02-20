@@ -1,5 +1,7 @@
 # Ab-Chess
 
+[![codebeat badge](https://codebeat.co/badges/999678fa-a0fe-4af0-bade-46da967f578b)](https://codebeat.co/projects/github-com-nimzozo-ab-chess)
+
 _**A chess API written in native JavaScript**_
 
 Ab-Chess is a JavaScript API for building HTML chessboards linked to chessgames. 
