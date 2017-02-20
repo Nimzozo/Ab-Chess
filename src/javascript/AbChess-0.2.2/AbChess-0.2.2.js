@@ -273,7 +273,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             startSquare = move.substr(0, 2);
             playedPiece = occupiedSquares[startSquare];
             arrivalSquare = move.substr(3, 2);
-            if (allowedCastles.search(/[kq]/) !== -1) {
+            if (allowedCastles.search(/[kq]/) > -1) {
                 if (playedPiece === chessValue.blackKing) {
                     newAllowedCastles = allowedCastles.replace(/[kq]/g, "");
                 }
@@ -284,7 +284,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     newAllowedCastles = allowedCastles.replace(/k/, "");
                 }
             }
-            if (allowedCastles.search(/[KQ]/) !== -1) {
+            if (allowedCastles.search(/[KQ]/) > -1) {
                 if (playedPiece === chessValue.whiteKing) {
                     newAllowedCastles = allowedCastles.replace(/[KQ]/g, "");
                 }
@@ -499,7 +499,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                         piece = occupiedSquares[key];
                         if (piece === playedPiece && key !== start) {
                             legalSquares = the_position.getLegalSquares(key);
-                            if (legalSquares.indexOf(arrival) !== -1) {
+                            if (legalSquares.indexOf(arrival) > -1) {
                                 if (key[0] === start[0]) {
                                     ambiguousFile = true;
                                 } else if (key[1] === start[1]) {
@@ -585,7 +585,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 matches = regexPawn.exec(pgnMove);
                 ambiguity = matches[1];
                 arrival = matches[2];
-                if (pgnMove.indexOf(chessValue.promotionSymbol) !== -1) {
+                if (pgnMove.indexOf(chessValue.promotionSymbol) > -1) {
                     promotion = matches[3];
                 }
             } else if (regexPiece.test(pgnMove)) {
@@ -604,11 +604,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             samePieces = samePieces.filter(function (place) {
                 var legalSquares = [];
                 legalSquares = the_position.getLegalSquares(place);
-                return (legalSquares.indexOf(arrival) !== -1);
+                return (legalSquares.indexOf(arrival) > -1);
             });
             if (samePieces.length > 1) {
                 start = samePieces.find(function (place) {
-                    return (place.indexOf(ambiguity) !== -1);
+                    return (place.indexOf(ambiguity) > -1);
                 });
             } else {
                 start = samePieces[0];
@@ -701,11 +701,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             while (testColNumber < 9 && testRowNumber < 9) {
                 testSquare = chessValue.columns[testColNumber - 1] +
                     testRowNumber;
-                if (alliesPlaces.indexOf(testSquare) !== -1) {
+                if (alliesPlaces.indexOf(testSquare) > -1) {
                     break;
                 }
                 targets.push(testSquare);
-                if (ennemiesPlaces.indexOf(testSquare) !== -1) {
+                if (ennemiesPlaces.indexOf(testSquare) > -1) {
                     break;
                 }
                 testColNumber += 1;
@@ -716,11 +716,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             while (testColNumber > 0 && testRowNumber > 0) {
                 testSquare = chessValue.columns[testColNumber - 1] +
                     testRowNumber;
-                if (alliesPlaces.indexOf(testSquare) !== -1) {
+                if (alliesPlaces.indexOf(testSquare) > -1) {
                     break;
                 }
                 targets.push(testSquare);
-                if (ennemiesPlaces.indexOf(testSquare) !== -1) {
+                if (ennemiesPlaces.indexOf(testSquare) > -1) {
                     break;
                 }
                 testColNumber -= 1;
@@ -731,11 +731,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             while (testColNumber < 9 && testRowNumber > 0) {
                 testSquare = chessValue.columns[testColNumber - 1] +
                     testRowNumber;
-                if (alliesPlaces.indexOf(testSquare) !== -1) {
+                if (alliesPlaces.indexOf(testSquare) > -1) {
                     break;
                 }
                 targets.push(testSquare);
-                if (ennemiesPlaces.indexOf(testSquare) !== -1) {
+                if (ennemiesPlaces.indexOf(testSquare) > -1) {
                     break;
                 }
                 testColNumber += 1;
@@ -746,11 +746,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             while (testColNumber > 0 && testRowNumber < 9) {
                 testSquare = chessValue.columns[testColNumber - 1] +
                     testRowNumber;
-                if (alliesPlaces.indexOf(testSquare) !== -1) {
+                if (alliesPlaces.indexOf(testSquare) > -1) {
                     break;
                 }
                 targets.push(testSquare);
-                if (ennemiesPlaces.indexOf(testSquare) !== -1) {
+                if (ennemiesPlaces.indexOf(testSquare) > -1) {
                     break;
                 }
                 testColNumber -= 1;
@@ -795,7 +795,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 return !occupiedSquares.hasOwnProperty(testSquare);
             }
             queenSquare = "d" + row;
-            if (allowedCastles.indexOf(queenSide) !== -1 &&
+            if (allowedCastles.indexOf(queenSide) > -1 &&
                 !the_position.isControlledBy(queenSquare,
                     oppositeColor)) {
                 noCollision = qSideCollisions.every(hasNoCollision);
@@ -804,7 +804,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 }
             }
             bishopSquare = "f" + row;
-            if (allowedCastles.indexOf(kingSide) !== -1 &&
+            if (allowedCastles.indexOf(kingSide) > -1 &&
                 !the_position.isControlledBy(bishopSquare,
                     oppositeColor)) {
                 noCollision = kSideCollisions.every(hasNoCollision);
@@ -915,7 +915,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 testColNumber = colNumber + colDirection;
                 testSquare = chessValue.columns[testColNumber - 1] +
                     testRowNumber;
-                if (ennemiesPlaces.indexOf(testSquare) !== -1 ||
+                if (ennemiesPlaces.indexOf(testSquare) > -1 ||
                     enPassantSquare === testSquare) {
                     targets.push(testSquare);
                 } else if (onlyOffensive) {
@@ -956,17 +956,20 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
         the_position.getTargets_rook = function (start, color) {
 
-            // Return an array of squares a rook on a specific square can reach.
+            // Return an array of squares a rook can reach.
 
             var alliesPlaces = [];
             var colNumber = 0;
             var ennemiesColor = "";
             var ennemiesPlaces = [];
             var rowNumber = 0;
-            var square = "";
             var targets = [];
-            var testColNumber = 0;
-            var testRowNumber = 0;
+            var vectors = [
+                [-1, 0],
+                [0, -1],
+                [0, 1],
+                [1, 0]
+            ];
             colNumber = chessValue.columns.indexOf(start[0]) + 1;
             rowNumber = Number(start[1]);
             alliesPlaces = the_position.getPiecesPlaces(color);
@@ -974,56 +977,26 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 ? chessValue.white
                 : chessValue.black;
             ennemiesPlaces = the_position.getPiecesPlaces(ennemiesColor);
-            testColNumber = colNumber + 1;
-            testRowNumber = rowNumber;
-            while (testColNumber < 9) {
-                square = chessValue.columns[testColNumber - 1] + testRowNumber;
-                if (alliesPlaces.indexOf(square) !== -1) {
-                    break;
+            vectors.forEach(function (vector) {
+                var colVector = vector[0];
+                var rowVector = vector[1];
+                var testCol = colNumber + colVector;
+                var testRow = rowNumber + rowVector;
+                var square = "";
+                while (testCol > 0 && testRow > 0 &&
+                    testCol < 9 && testRow < 9) {
+                    square = chessValue.columns[testCol - 1] + testRow;
+                    if (alliesPlaces.indexOf(square) > -1) {
+                        break;
+                    }
+                    targets.push(square);
+                    if (ennemiesPlaces.indexOf(square) > -1) {
+                        break;
+                    }
+                    testCol += colVector;
+                    testRow += rowVector;
                 }
-                targets.push(square);
-                if (ennemiesPlaces.indexOf(square) !== -1) {
-                    break;
-                }
-                testColNumber += 1;
-            }
-            testColNumber = colNumber - 1;
-            while (testColNumber > 0) {
-                square = chessValue.columns[testColNumber - 1] + testRowNumber;
-                if (alliesPlaces.indexOf(square) !== -1) {
-                    break;
-                }
-                targets.push(square);
-                if (ennemiesPlaces.indexOf(square) !== -1) {
-                    break;
-                }
-                testColNumber -= 1;
-            }
-            testColNumber = colNumber;
-            testRowNumber = rowNumber + 1;
-            while (testRowNumber < 9) {
-                square = chessValue.columns[testColNumber - 1] + testRowNumber;
-                if (alliesPlaces.indexOf(square) !== -1) {
-                    break;
-                }
-                targets.push(square);
-                if (ennemiesPlaces.indexOf(square) !== -1) {
-                    break;
-                }
-                testRowNumber += 1;
-            }
-            testRowNumber = rowNumber - 1;
-            while (testRowNumber > 0) {
-                square = chessValue.columns[testColNumber - 1] + testRowNumber;
-                if (alliesPlaces.indexOf(square) > -1) {
-                    break;
-                }
-                targets.push(square);
-                if (ennemiesPlaces.indexOf(square) > -1) {
-                    break;
-                }
-                testRowNumber -= 1;
-            }
+            });
             return targets;
         };
 
@@ -2461,7 +2434,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 n = the_game.fenStrings.length - 1;
                 lastPosition = the_game.getNthPosition(n);
                 simpleMove = lastPosition.getSimpleNotation(move);
-                if (simpleMove.indexOf(chessValue.promotionSymbol) !== -1) {
+                if (simpleMove.indexOf(chessValue.promotionSymbol) > -1) {
                     promotion = simpleMove[simpleMove.length - 1];
                     simpleMove = simpleMove.replace(/\=[BNQR]$/, "");
                 }
