@@ -626,6 +626,16 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var color = "";
             var piece = "";
             var targets = [];
+            var knightVectors = [
+                [-2, -1],
+                [-2, 1],
+                [-1, -2],
+                [-1, 2],
+                [1, -2],
+                [1, 2],
+                [2, -1],
+                [2, 1]
+            ];
             if (!occupiedSquares.hasOwnProperty(start)) {
                 return targets;
             }
@@ -640,12 +650,13 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     break;
                 case chessValue.blackKing:
                 case chessValue.whiteKing:
-                    targets = the_position.getTargets_kingFull(start,
-                        color, onlyOffensive);
+                    targets = the_position.getTargets_king(
+                        start, color, onlyOffensive);
                     break;
                 case chessValue.blackKnight:
                 case chessValue.whiteKnight:
-                    targets = the_position.getTargets_knight(start, color);
+                    targets = the_position.getTargetsByVectors(
+                        start, color, knightVectors);
                     break;
                 case chessValue.blackPawn:
                 case chessValue.whitePawn:
@@ -804,47 +815,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return targets;
         };
 
-        the_position.getTargets_king = function (start, color) {
-
-            // Return an array of squares a king on a specific square can reach.
-            // Only for normal moves.
-
-            var alliesPlaces = [];
-            var colNumber = 0;
-            var rowNumber = 0;
-            var targets = [];
-            var testColNumber = 0;
-            var testRowNumber = 0;
-            var testSquare = "";
-            var vectors = [
-                [-1, -1],
-                [-1, 0],
-                [-1, 1],
-                [0, -1],
-                [0, 1],
-                [1, -1],
-                [1, 0],
-                [1, 1]
-            ];
-            alliesPlaces = the_position.getPiecesPlaces(color);
-            colNumber = chessValue.columns.indexOf(start[0]) + 1;
-            rowNumber = Number(start[1]);
-            vectors.forEach(function (vector) {
-                testColNumber = colNumber + vector[0];
-                testRowNumber = rowNumber + vector[1];
-                if (testColNumber > 0 && testColNumber < 9 &&
-                    testRowNumber > 0 && testRowNumber < 9) {
-                    testSquare = chessValue.columns[testColNumber - 1] +
-                        testRowNumber;
-                    if (alliesPlaces.indexOf(testSquare) === -1) {
-                        targets.push(testSquare);
-                    }
-                }
-            });
-            return targets;
-        };
-
-        the_position.getTargets_kingFull = function (start, color, noCastles) {
+        the_position.getTargets_king = function (start, color, noCastles) {
 
             // Return an array of squares a king on a specific square can reach.
             // Add castles,  filter ennemy king opposition.
@@ -855,13 +826,24 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var ennemyKingTargets = [];
             var normalTargets = [];
             var targets = [];
-            normalTargets = the_position.getTargets_king(start, color);
+            var vectors = [
+                [-1, -1],
+                [-1, 0],
+                [-1, 1],
+                [0, -1],
+                [0, 1],
+                [1, -1],
+                [1, 0],
+                [1, 1]
+            ];
+            normalTargets = the_position.getTargetsByVectors(
+                start, color, vectors);
             ennemiesColor = (color === chessValue.black)
                 ? chessValue.white
                 : chessValue.black;
             ennemyKingSquare = the_position.getKingSquare(ennemiesColor);
-            ennemyKingTargets = the_position.getTargets_king(ennemyKingSquare,
-                ennemiesColor);
+            ennemyKingTargets = the_position.getTargetsByVectors(
+                ennemyKingSquare, ennemiesColor, vectors);
             targets = normalTargets.filter(function (target) {
                 return (ennemyKingTargets.indexOf(target) === -1);
             });
@@ -873,10 +855,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return targets;
         };
 
-        the_position.getTargets_knight = function (start, color) {
+        the_position.getTargetsByVectors = function (start, color, vectors) {
 
-            // Return an array of squares a knight
-            // on a specific square can reach.
+            // Return an array of squares found with vectors.
 
             var alliesPlaces = [];
             var colNumber = 0;
@@ -885,16 +866,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var testColNumber = 0;
             var testRowNumber = 0;
             var testSquare = "";
-            var vectors = [
-                [-2, -1],
-                [-2, 1],
-                [-1, -2],
-                [-1, 2],
-                [1, -2],
-                [1, 2],
-                [2, -1],
-                [2, 1]
-            ];
             alliesPlaces = the_position.getPiecesPlaces(color);
             colNumber = chessValue.columns.indexOf(start[0]) + 1;
             rowNumber = Number(start[1]);
