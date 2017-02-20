@@ -779,14 +779,15 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 castleStart, oppositeColor)) {
                 return targets;
             }
+            function hasNoCollision(column) {
+                var testSquare = column + row;
+                return !occupiedSquares.hasOwnProperty(testSquare);
+            }
             queenSquare = "d" + row;
             if (allowedCastles.indexOf(queenSide) !== -1 &&
                 !the_position.isControlledBy(queenSquare,
                     oppositeColor)) {
-                noCollision = qSideCollisions.every(function (column) {
-                    var testSquare = column + row;
-                    return !occupiedSquares.hasOwnProperty(testSquare);
-                });
+                noCollision = qSideCollisions.every(hasNoCollision);
                 if (noCollision) {
                     targets.push("c" + row);
                 }
@@ -795,10 +796,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             if (allowedCastles.indexOf(kingSide) !== -1 &&
                 !the_position.isControlledBy(bishopSquare,
                     oppositeColor)) {
-                noCollision = kSideCollisions.every(function (column) {
-                    var testSquare = column + row;
-                    return !occupiedSquares.hasOwnProperty(testSquare);
-                });
+                noCollision = kSideCollisions.every(hasNoCollision);
                 if (noCollision) {
                     targets.push("g" + row);
                 }
