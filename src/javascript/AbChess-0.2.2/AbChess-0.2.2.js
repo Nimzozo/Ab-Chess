@@ -748,6 +748,64 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return targets;
         };
 
+        the_position.getTargets_castle = function (start, color) {
+
+            // Return an array of squares for allowed castles.
+
+            var bishopSquare = "";
+            var castleStart = "";
+            var kingSide = "";
+            var kSideCollisions = ["f", "g"];
+            var noCollision = false;
+            var oppositeColor = "";
+            var qSideCollisions = ["b", "c", "d"];
+            var queenSide = "";
+            var queenSquare = "";
+            var row = "";
+            var targets = [];
+            if (color === chessValue.white) {
+                kingSide = chessValue.whiteKing;
+                oppositeColor = chessValue.black;
+                queenSide = chessValue.whiteQueen;
+                row = "1";
+            } else {
+                kingSide = chessValue.blackKing;
+                oppositeColor = chessValue.white;
+                queenSide = chessValue.blackQueen;
+                row = "8";
+            }
+            castleStart = "e" + row;
+            if (start !== castleStart || the_position.isControlledBy(
+                castleStart, oppositeColor)) {
+                return targets;
+            }
+            queenSquare = "d" + row;
+            if (allowedCastles.indexOf(queenSide) !== -1 &&
+                !the_position.isControlledBy(queenSquare,
+                    oppositeColor)) {
+                noCollision = qSideCollisions.every(function (column) {
+                    var testSquare = column + row;
+                    return !occupiedSquares.hasOwnProperty(testSquare);
+                });
+                if (noCollision) {
+                    targets.push("c" + row);
+                }
+            }
+            bishopSquare = "f" + row;
+            if (allowedCastles.indexOf(kingSide) !== -1 &&
+                !the_position.isControlledBy(bishopSquare,
+                    oppositeColor)) {
+                noCollision = kSideCollisions.every(function (column) {
+                    var testSquare = column + row;
+                    return !occupiedSquares.hasOwnProperty(testSquare);
+                });
+                if (noCollision) {
+                    targets.push("g" + row);
+                }
+            }
+            return targets;
+        };
+
         the_position.getTargets_king = function (start, color) {
 
             // Return an array of squares a king on a specific square can reach.
@@ -793,12 +851,12 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Return an array of squares a king on a specific square can reach.
             // Add castles,  filter ennemy king opposition.
 
+            var castleTargets = [];
             var ennemiesColor = "";
             var ennemyKingSquare = "";
             var ennemyKingTargets = [];
             var normalTargets = [];
             var targets = [];
-            var testSquare = "";
             normalTargets = the_position.getTargets_king(start, color);
             ennemiesColor = (color === chessValue.black)
                 ? chessValue.white
@@ -812,58 +870,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             if (noCastles) {
                 return targets;
             }
-            function addCastleTargets(color, start, targetsArray) {
-                var bishopSquare = "";
-                var castleStart = "";
-                var kingSide = "";
-                var kSideCollisions = ["f", "g"];
-                var noCollision = false;
-                var oppositeColor = "";
-                var qSideCollisions = ["b", "c", "d"];
-                var queenSide = "";
-                var queenSquare = "";
-                var row = "";
-                if (color === chessValue.white) {
-                    kingSide = chessValue.whiteKing;
-                    oppositeColor = chessValue.black;
-                    queenSide = chessValue.whiteQueen;
-                    row = "1";
-                } else {
-                    kingSide = chessValue.blackKing;
-                    oppositeColor = chessValue.white;
-                    queenSide = chessValue.blackQueen;
-                    row = "8";
-                }
-                bishopSquare = "f" + row;
-                castleStart = "e" + row;
-                queenSquare = "d" + row;
-                if (start === castleStart && !the_position.isControlledBy(
-                    castleStart, oppositeColor)) {
-                    if (allowedCastles.indexOf(queenSide) !== -1 &&
-                        !the_position.isControlledBy(queenSquare,
-                            oppositeColor)) {
-                        noCollision = qSideCollisions.every(function (column) {
-                            testSquare = column + row;
-                            return !occupiedSquares.hasOwnProperty(testSquare);
-                        });
-                        if (noCollision) {
-                            targetsArray.push("c" + row);
-                        }
-                    }
-                    if (allowedCastles.indexOf(kingSide) !== -1 &&
-                        !the_position.isControlledBy(bishopSquare,
-                            oppositeColor)) {
-                        noCollision = kSideCollisions.every(function (column) {
-                            testSquare = column + row;
-                            return !occupiedSquares.hasOwnProperty(testSquare);
-                        });
-                        if (noCollision) {
-                            targetsArray.push("g" + row);
-                        }
-                    }
-                }
-            }
-            addCastleTargets(color, start, targets);
+            castleTargets = the_position.getTargets_castle(start, color);
+            targets = targets.concat(castleTargets);
             return targets;
         };
 
