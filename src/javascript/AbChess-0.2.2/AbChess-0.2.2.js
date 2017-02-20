@@ -438,10 +438,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return new Position(newFEN);
         };
 
-        the_position.getPGNMove = function (move, promotion, withNumber,
-            stringToAdd) {
+        the_position.getPGNMove = function (move, promotion) {
 
-            // Return the PGN notation for the desired move.
+            // Return the PGN notation for a move.
 
             var ambiguousFile = false;
             var ambiguousRow = false;
@@ -455,20 +454,15 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             if (!regexMove.test(move)) {
                 throw new SyntaxError(error.invalidParameter);
             }
-            if (withNumber) {
-                pgnMove = (activeColor === chessValue.white)
-                    ? fullmoveNumber + ". "
-                    : fullmoveNumber + "... ";
-            }
             start = move.substr(0, 2);
             playedPiece = occupiedSquares[start];
             arrival = move.substr(3, 2);
             if (playedPiece.toLowerCase() === chessValue.blackKing &&
                 regexCastle.test(move)) {
                 if (arrival[0] === chessValue.columns[2]) {
-                    pgnMove += chessValue.castleQueenSymbol;
+                    pgnMove = chessValue.castleQueenSymbol;
                 } else {
-                    pgnMove += chessValue.castleKingSymbol;
+                    pgnMove = chessValue.castleKingSymbol;
                 }
             } else {
                 isCapture = occupiedSquares.hasOwnProperty(arrival);
@@ -478,11 +472,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     case chessValue.blackKnight:
                     case chessValue.blackQueen:
                     case chessValue.blackRook:
-                        pgnMove += playedPiece.toUpperCase();
+                        pgnMove = playedPiece.toUpperCase();
                         break;
                     case chessValue.blackPawn:
                         if (isCapture || arrival === enPassantSquare) {
-                            pgnMove += start[0];
+                            pgnMove = start[0];
                             isCapture = true;
                         }
                         isPromotion = regexPromotion.test(move);
@@ -490,19 +484,19 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 }
                 if (playedPiece.toLowerCase() !== chessValue.blackPawn &&
                     playedPiece.toLowerCase() !== chessValue.blackKing) {
-                    Object.keys(occupiedSquares).forEach(function (key) {
+                    Object.keys(occupiedSquares).forEach(function (square) {
                         var legalSquares = [];
                         var piece = "";
                         if (ambiguousFile && ambiguousRow) {
                             return;
                         }
-                        piece = occupiedSquares[key];
-                        if (piece === playedPiece && key !== start) {
-                            legalSquares = the_position.getLegalSquares(key);
+                        piece = occupiedSquares[square];
+                        if (piece === playedPiece && square !== start) {
+                            legalSquares = the_position.getLegalSquares(square);
                             if (legalSquares.indexOf(arrival) > -1) {
-                                if (key[0] === start[0]) {
+                                if (square[0] === start[0]) {
                                     ambiguousFile = true;
-                                } else if (key[1] === start[1]) {
+                                } else if (square[1] === start[1]) {
                                     ambiguousRow = true;
                                 } else {
                                     clue = start[0];
@@ -527,8 +521,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                         promotion.toUpperCase();
                 }
             }
-            stringToAdd = stringToAdd || "";
-            pgnMove += stringToAdd;
             return pgnMove;
         };
 
@@ -660,7 +652,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 case chessValue.blackBishop:
                 case chessValue.whiteBishop:
                     targets = the_position.getLinearTargets(start, color,
-                     bishopVectors);
+                        bishopVectors);
                     break;
                 case chessValue.blackKing:
                 case chessValue.whiteKing:
@@ -681,7 +673,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 case chessValue.whiteQueen:
                     queenVectors = bishopVectors.concat(rookVectors);
                     targets = the_position.getLinearTargets(start, color,
-                    queenVectors);
+                        queenVectors);
                     break;
                 case chessValue.blackRook:
                 case chessValue.whiteRook:
@@ -2292,8 +2284,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                         the_game.setTag("Result", chessValue.resultDraw);
                     }
                 }
-                pgnMove = currentPosition.getPGNMove(
-                    move, promotion, false, stringToAdd);
+                pgnMove = currentPosition.getPGNMove(move, promotion);
+                pgnMove += stringToAdd;
                 the_game.pgnMoves.push(pgnMove);
                 return nextPosition.fenString;
             } else {
