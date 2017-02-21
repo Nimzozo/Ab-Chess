@@ -248,6 +248,46 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return legalSquares;
         };
 
+        the_position.getLinearTargets = function (start, color, vectors) {
+
+            // Return an array of linear squares without collision.
+
+            var alliesPlaces = [];
+            var colNumber = 0;
+            var ennemiesColor = "";
+            var ennemiesPlaces = [];
+            var rowNumber = 0;
+            var targets = [];
+            colNumber = chessValue.columns.indexOf(start[0]) + 1;
+            rowNumber = Number(start[1]);
+            alliesPlaces = the_position.getPiecesPlaces(color);
+            ennemiesColor = (color === chessValue.black)
+                ? chessValue.white
+                : chessValue.black;
+            ennemiesPlaces = the_position.getPiecesPlaces(ennemiesColor);
+            vectors.forEach(function (vector) {
+                var colVector = vector[0];
+                var rowVector = vector[1];
+                var testCol = colNumber + colVector;
+                var testRow = rowNumber + rowVector;
+                var square = "";
+                while (testCol > 0 && testRow > 0 &&
+                    testCol < 9 && testRow < 9) {
+                    square = chessValue.columns[testCol - 1] + testRow;
+                    if (alliesPlaces.indexOf(square) > -1) {
+                        break;
+                    }
+                    targets.push(square);
+                    if (ennemiesPlaces.indexOf(square) > -1) {
+                        break;
+                    }
+                    testCol += colVector;
+                    testRow += rowVector;
+                }
+            });
+            return targets;
+        };
+
         the_position.getNextActiveColor = function () {
 
             var nextActiveColor = "";
@@ -520,12 +560,12 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Return the PGN notation for a piece (non-pawn) move.
 
             var ambiguity = false;
-            var sameColumn = false;
-            var sameRow = false;
             var arrival = "";
             var clue = "";
             var pgnMove = "";
             var playedPiece = "";
+            var sameColumn = false;
+            var sameRow = false;
             var start = "";
             start = move.substr(0, 2);
             playedPiece = occupiedSquares[start];
@@ -658,11 +698,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return start + "-" + arrival + promotion;
         };
 
-        the_position.getTargets = function (start, onlyOffensive) {
+        the_position.getTargets = function (start, onlyAttack) {
 
             // Return the target a specific piece can reach.
             // A target is a square that a piece controls or can move on.
-            // The onlyOffensive parameter allows to filter king moves
+            // The onlyAttack parameter allows to filter king moves
             // and pawn non-attacking moves.
 
             var bishopVectors = [
@@ -706,8 +746,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     break;
                 case chessValue.blackKing:
                 case chessValue.whiteKing:
-                    targets = the_position.getTargets_king(
-                        start, color, onlyOffensive);
+                    targets = the_position.getTargets_king(start, color,
+                        onlyAttack);
                     break;
                 case chessValue.blackKnight:
                 case chessValue.whiteKnight:
@@ -716,8 +756,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     break;
                 case chessValue.blackPawn:
                 case chessValue.whitePawn:
-                    targets = the_position.getTargets_pawn(start,
-                        color, onlyOffensive);
+                    targets = the_position.getTargets_pawn(start, color,
+                        onlyAttack);
                     break;
                 case chessValue.blackQueen:
                 case chessValue.whiteQueen:
@@ -731,46 +771,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                         rookVectors);
                     break;
             }
-            return targets;
-        };
-
-        the_position.getLinearTargets = function (start, color, vectors) {
-
-            // Return an array of linear squares without collision.
-
-            var alliesPlaces = [];
-            var colNumber = 0;
-            var ennemiesColor = "";
-            var ennemiesPlaces = [];
-            var rowNumber = 0;
-            var targets = [];
-            colNumber = chessValue.columns.indexOf(start[0]) + 1;
-            rowNumber = Number(start[1]);
-            alliesPlaces = the_position.getPiecesPlaces(color);
-            ennemiesColor = (color === chessValue.black)
-                ? chessValue.white
-                : chessValue.black;
-            ennemiesPlaces = the_position.getPiecesPlaces(ennemiesColor);
-            vectors.forEach(function (vector) {
-                var colVector = vector[0];
-                var rowVector = vector[1];
-                var testCol = colNumber + colVector;
-                var testRow = rowNumber + rowVector;
-                var square = "";
-                while (testCol > 0 && testRow > 0 &&
-                    testCol < 9 && testRow < 9) {
-                    square = chessValue.columns[testCol - 1] + testRow;
-                    if (alliesPlaces.indexOf(square) > -1) {
-                        break;
-                    }
-                    targets.push(square);
-                    if (ennemiesPlaces.indexOf(square) > -1) {
-                        break;
-                    }
-                    testCol += colVector;
-                    testRow += rowVector;
-                }
-            });
             return targets;
         };
 
@@ -833,7 +833,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         the_position.getTargets_king = function (start, color, noCastles) {
 
             // Return an array of squares a king on a specific square can reach.
-            // Add castles,  filter ennemy king opposition.
+            // Add castles, filter ennemy king opposition.
 
             var castleTargets = [];
             var ennemiesColor = "";
@@ -899,13 +899,26 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return targets;
         };
 
-        the_position.getTargets_pawn = function (start, color, onlyOffensive) {
+        the_position.getTargets_pawn = function (start, color, onlyAttack) {
 
             // Return an array of squares a pawn on a specific square can reach.
             // Pawns can move, take (en passant), promote.
-            // Set onlyOffensive to true to check only captures.
+            // Use onlyAttack to get only attacking moves.
 
-            var alliesPlaces = [];
+            var pawnAttacks = the_position.getTargetsPawnAttack(start, color,
+                onlyAttack);
+            if (onlyAttack) {
+                return pawnAttacks;
+            }
+            return pawnAttacks.concat(the_position.getTargetsPawnMove(start,
+                color));
+        };
+
+        the_position.getTargetsPawnAttack = function (start, color,
+            onlyAttack) {
+
+            // Return an array of attacking pawn moves.
+
             var colDirections = [-1, 1];
             var colNumber = 0;
             var direction = 0;
@@ -913,48 +926,62 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var ennemiesPlaces = [];
             var rowNumber = 0;
             var targets = [];
-            var testColNumber = 0;
-            var testRowNumber = 0;
-            var testSquare = "";
+            var testRow = 0;
             colNumber = chessValue.columns.indexOf(start[0]) + 1;
             rowNumber = Number(start[1]);
-            direction = (color === chessValue.black)
-                ? -1
-                : 1;
-            testRowNumber = rowNumber + direction;
-            ennemiesColor = (color === chessValue.black)
-                ? chessValue.white
-                : chessValue.black;
+            if (color === chessValue.black) {
+                direction = -1;
+                ennemiesColor = chessValue.white;
+            } else {
+                direction = 1;
+                ennemiesColor = chessValue.black;
+            }
+            testRow = rowNumber + direction;
             ennemiesPlaces = the_position.getPiecesPlaces(ennemiesColor);
             colDirections.forEach(function (colDirection) {
-                testColNumber = colNumber + colDirection;
-                testSquare = chessValue.columns[testColNumber - 1] +
-                    testRowNumber;
+                var testCol = colNumber + colDirection;
+                var testSquare = chessValue.columns[testCol - 1] + testRow;
                 if (ennemiesPlaces.indexOf(testSquare) > -1 ||
                     enPassantSquare === testSquare) {
                     targets.push(testSquare);
-                } else if (onlyOffensive) {
+                } else if (onlyAttack) {
                     targets.push(testSquare);
                 }
             });
-            if (!onlyOffensive) {
-                testColNumber = colNumber;
-                testSquare = chessValue.columns[testColNumber - 1] +
-                    testRowNumber;
-                alliesPlaces = the_position.getPiecesPlaces(color);
-                if (alliesPlaces.indexOf(testSquare) === -1 &&
-                    ennemiesPlaces.indexOf(testSquare) === -1) {
+            return targets;
+        };
+
+        the_position.getTargetsPawnMove = function (start, color) {
+
+            // Return an array of squares a pawn can reach (no capture).
+
+            var colNumber = 0;
+            var direction = 0;
+            var rowNumber = 0;
+            var targets = [];
+            var testCol = 0;
+            var testRow = 0;
+            var testSquare = "";
+            colNumber = chessValue.columns.indexOf(start[0]) + 1;
+            rowNumber = Number(start[1]);
+            if (color === chessValue.black) {
+                direction = -1;
+            } else {
+                direction = 1;
+            }
+            testCol = colNumber;
+            testRow = rowNumber + direction;
+            testSquare = chessValue.columns[testCol - 1] + testRow;
+            if (occupiedSquares.hasOwnProperty(testSquare)) {
+                return targets;
+            }
+            targets.push(testSquare);
+            if ((rowNumber === 2 && direction === 1) ||
+                (rowNumber === 7 && direction === -1)) {
+                testRow = rowNumber + 2 * direction;
+                testSquare = chessValue.columns[testCol - 1] + testRow;
+                if (!occupiedSquares.hasOwnProperty(testSquare)) {
                     targets.push(testSquare);
-                    if ((rowNumber === 2 && direction === 1) ||
-                        (rowNumber === 7 && direction === -1)) {
-                        testRowNumber = rowNumber + 2 * direction;
-                        testSquare = chessValue.columns[testColNumber - 1] +
-                            testRowNumber;
-                        if (alliesPlaces.indexOf(testSquare) === -1 &&
-                            ennemiesPlaces.indexOf(testSquare) === -1) {
-                            targets.push(testSquare);
-                        }
-                    }
                 }
             }
             return targets;
