@@ -805,8 +805,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             }
             queenSquare = "d" + row;
             if (allowedCastles.indexOf(queenSide) > -1 &&
-                !the_position.isControlledBy(queenSquare,
-                    oppositeColor)) {
+                !the_position.isControlledBy(queenSquare, oppositeColor)) {
                 noCollision = qSideCollisions.every(hasNoCollision);
                 if (noCollision) {
                     targets.push("c" + row);
@@ -814,8 +813,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             }
             bishopSquare = "f" + row;
             if (allowedCastles.indexOf(kingSide) > -1 &&
-                !the_position.isControlledBy(bishopSquare,
-                    oppositeColor)) {
+                !the_position.isControlledBy(bishopSquare, oppositeColor)) {
                 noCollision = kSideCollisions.every(hasNoCollision);
                 if (noCollision) {
                     targets.push("g" + row);
@@ -881,13 +879,14 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             vectors.forEach(function (vector) {
                 testColNumber = colNumber + vector[0];
                 testRowNumber = rowNumber + vector[1];
-                if (testColNumber > 0 && testColNumber < 9 &&
-                    testRowNumber > 0 && testRowNumber < 9) {
-                    testSquare = chessValue.columns[testColNumber - 1] +
-                        testRowNumber;
-                    if (alliesPlaces.indexOf(testSquare) === -1) {
-                        targets.push(testSquare);
-                    }
+                if (testColNumber < 1 || testColNumber > 8 ||
+                    testRowNumber < 1 || testRowNumber > 8) {
+                    return;
+                }
+                testSquare = chessValue.columns[testColNumber - 1] +
+                    testRowNumber;
+                if (alliesPlaces.indexOf(testSquare) === -1) {
+                    targets.push(testSquare);
                 }
             });
             return targets;
@@ -1477,6 +1476,19 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             the_square.updateClass();
         };
 
+        the_square.showCanvas = function () {
+
+            // Show the square's canvas.
+            // Hide if already showed.
+
+            if (the_square.hasCircle) {
+                the_square.div.removeChild(the_square.canvas);
+            } else {
+                the_square.div.appendChild(the_square.canvas);
+            }
+            the_square.hasCircle = !the_square.hasCircle;
+        };
+
         the_square.updateClass = function () {
 
             // Update the CSS class of the square.
@@ -1706,7 +1718,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 if (config.markOverflownSquare && currentSquare.isOverflown) {
                     currentSquare.overfly();
                 }
-                if (config.markLegalSquares && currentSquare.isSelected) {
+                if (config.markSelectedSquare && currentSquare.isSelected) {
                     currentSquare.select();
                 }
             });
@@ -1843,18 +1855,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
         the_board.displayCanvas = function (squares) {
 
-            // Display the circles for an array of squares.
+            // Display or hide the circles for an array of squares.
 
             squares.forEach(function (name) {
                 var square = the_board.squares[name];
-                rAF(function () {
-                    if (square.hasCircle) {
-                        square.div.removeChild(square.canvas);
-                    } else {
-                        square.div.appendChild(square.canvas);
-                    }
-                    square.hasCircle = !square.hasCircle;
-                });
+                rAF(square.showCanvas);
             });
         };
 
