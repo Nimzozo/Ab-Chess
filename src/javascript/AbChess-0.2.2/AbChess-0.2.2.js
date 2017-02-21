@@ -1654,7 +1654,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 } else if (start === undefined) {
                     piece.fadingPlace(arrival);
                 } else {
-                    the_board.movePiece(piece, start, arrival);
+                    the_board.movePieceWithAnimation(piece, start, arrival);
                 }
             });
         };
@@ -2062,29 +2062,25 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             });
         };
 
-        the_board.movePiece = function (playedPiece, startSquare,
-            arrivalSquare, noAnimation, isCapture, capturedPiece) {
+        the_board.movePieceWithAnimation = function (playedPiece, startSquare,
+            arrivalSquare) {
 
-            // Move a piece and modify its place in the DOM tree.
+            // Move a piece and modify its place in the DOM tree with animation.
 
             var arrivalCoordinate = arrivalSquare.getCoordinate();
-            var ghostWidth = 0;
-            var squareCoordinate = startSquare.getCoordinate();
-            if (typeof noAnimation !== "boolean") {
-                noAnimation = false;
+            var capturedPiece = {};
+            var ghostWidth = Math.floor(abBoard.width / 8);
+            var isCapture = !arrivalSquare.isEmpty();
+            var startCoordinate = startSquare.getCoordinate();
+            if (isCapture) {
+                capturedPiece = arrivalSquare.piece;
             }
-            if (typeof isCapture !== "boolean") {
-                isCapture = false;
-            }
-            ghostWidth = Math.floor(abBoard.width / 8);
             rAF(function () {
-                if (!noAnimation) {
-                    playedPiece.setGhostPosition(squareCoordinate[0],
-                        squareCoordinate[1]);
-                    playedPiece.showGhost(ghostWidth);
-                    the_board.animateGhost(playedPiece, squareCoordinate,
-                        arrivalCoordinate);
-                }
+                playedPiece.setGhostPosition(startCoordinate[0],
+                    startCoordinate[1]);
+                playedPiece.showGhost(ghostWidth);
+                the_board.animateGhost(playedPiece, startCoordinate,
+                    arrivalCoordinate);
                 if (isCapture) {
                     capturedPiece.fadingRemove();
                 }
@@ -2093,14 +2089,13 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             });
         };
 
-        the_board.play = function (move, promotion, noAnimation) {
+        the_board.play = function (move, promotion) {
 
             // Play the desired move on the board.
             // Manage special moves (castle, en passant, promotion).
 
             var arrival = "";
             var arrivalSquare = {};
-            var capturedPiece = {};
             var emptyArrival = false;
             var playedPiece = {};
             var start = "";
@@ -2117,11 +2112,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             arrival = move.substr(3, 2);
             arrivalSquare = the_board.squares[arrival];
             emptyArrival = arrivalSquare.isEmpty();
-            if (!emptyArrival) {
-                capturedPiece = arrivalSquare.piece;
-            }
-            the_board.movePiece(playedPiece, startSquare, arrivalSquare,
-                noAnimation, !emptyArrival, capturedPiece);
+            the_board.movePieceWithAnimation(playedPiece, startSquare,
+                arrivalSquare);
             playedPiece.remove();
             playedPiece.put(arrivalSquare);
             if (regexCastle.test(move) &&
@@ -2158,7 +2150,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             rookStart += arrival[1];
             if (!the_board.squares[rookStart].isEmpty()) {
                 rook = the_board.squares[rookStart].piece;
-                the_board.movePiece(rook, the_board.squares[rookStart],
+                the_board.movePieceWithAnimation(rook,
+                    the_board.squares[rookStart],
                     the_board.squares[rookArrival]);
                 rook.remove();
                 rook.put(the_board.squares[rookArrival]);
@@ -2583,12 +2576,12 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         }
     }
 
-    function playMove(move, noAnimation, promotion) {
+    function playMove(move, promotion) {
 
         // Play a move on the board and store it in the game.
 
         var index = 0;
-        abBoard.play(move, promotion, noAnimation);
+        abBoard.play(move, promotion);
         abGame.play(move, promotion);
         index = abGame.fenStrings.length - 1;
         navigate(index, false);
@@ -2597,7 +2590,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         }
     }
 
-    function finishMove(start, arrival, noAnimation) {
+    function finishMove(start, arrival) {
 
         // Perform the second step of a move once the arrival square is defined.
         // Test the legality.
@@ -2608,9 +2601,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         var n = 0;
         var playedPiece = "";
         var position = {};
-        if (typeof noAnimation !== "boolean") {
-            noAnimation = false;
-        }
         move = start + "-" + arrival;
         if (!regexMove.test(move)) {
             throw new Error(error.invalidParameter);
@@ -2627,7 +2617,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     : chessValue.black;
                 abBoard.askPromotion(color);
             } else {
-                playMove(move, noAnimation);
+                playMove(move);
             }
             return true;
         }
@@ -2693,7 +2683,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
     abBoard.onPromotionChose = function (choice) {
         var move = abBoard.pendingMove;
-        playMove(move, false, choice);
+        playMove(move, choice);
     };
 
     abBoard.onSquareClick = function (clickedSquare) {
@@ -2949,7 +2939,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Play the desired move and return the resulting FEN string.
 
-            return playMove(move, false, promotion);
+            return playMove(move, promotion);
         },
 
         reset: function () {
