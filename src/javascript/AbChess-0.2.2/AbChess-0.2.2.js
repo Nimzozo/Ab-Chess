@@ -2340,6 +2340,10 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Import the moves from a PGN.
 
             var importedMoves = [];
+            var lastPosition = {};
+            the_game.fenStrings = [chessValue.defaultFEN];
+            the_game.moves = [];
+            the_game.pgnMoves = [];
             while (regexComment.test(pgn)) {
                 pgn = pgn.replace(regexComment, "");
             }
@@ -2347,33 +2351,24 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 pgn = pgn.replace(regexVariation, "");
             }
             pgn = pgn.replace(/\s{2,}/gm, " ");
-            the_game.pgnMoves = [];
             importedMoves = pgn.match(regexPGNMove);
-            importedMoves.forEach(function (move) {
-                move = move.replace(/[1-9][0-9]*\.(?:\.\.)?\s?/, "");
-                the_game.pgnMoves.push(move);
+            importedMoves.forEach(function (pgnMove) {
+                pgnMove = pgnMove.replace(/[1-9][0-9]*\.(?:\.\.)?\s?/, "");
+                the_game.pgnMoves.push(pgnMove);
             });
-            the_game.fenStrings = [chessValue.defaultFEN];
-            the_game.moves = [];
-            the_game.pgnMoves.forEach(function (move) {
-                var lastPosition = {};
-                var n = 0;
-                var nextFEN = "";
+            lastPosition = the_game.getNthPosition(0);
+            the_game.pgnMoves.forEach(function (pgnMove) {
+                var move = lastPosition.getSimpleNotation(pgnMove);
                 var nextPosition = {};
                 var promotion = "";
-                var simpleMove = "";
-                n = the_game.fenStrings.length - 1;
-                lastPosition = the_game.getNthPosition(n);
-                simpleMove = lastPosition.getSimpleNotation(move);
-                if (simpleMove.indexOf(chessValue.promotionSymbol) > -1) {
-                    promotion = simpleMove[simpleMove.length - 1];
-                    simpleMove = simpleMove.replace(/\=[BNQR]$/, "");
+                if (move.indexOf(chessValue.promotionSymbol) > -1) {
+                    promotion = move[move.length - 1];
+                    move = move.replace(/\=[BNQR]$/, "");
                 }
-                nextPosition = lastPosition.getNextPosition(simpleMove,
-                    promotion);
-                nextFEN = nextPosition.fenString;
-                the_game.moves.push(simpleMove);
-                the_game.fenStrings.push(nextFEN);
+                the_game.moves.push(move);
+                nextPosition = lastPosition.getNextPosition(move, promotion);
+                the_game.fenStrings.push(nextPosition.fenString);
+                lastPosition = nextPosition;
             });
         };
 
@@ -2396,7 +2391,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         the_game.initRequiredTags = function () {
 
             // Initialize the 7 required tag pairs.
-        
+
             var requiredTags = {
                 "Event": "?",
                 "Site": "?",
