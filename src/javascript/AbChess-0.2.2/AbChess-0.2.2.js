@@ -509,6 +509,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Return the PGN notation for a move.
 
+            var hasNoMoves = false;
+            var isInCheck = false;
+            var nextPosition = {};
             var pgnMove = "";
             var playedPiece = "";
             var start = "";
@@ -530,6 +533,17 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 case chessValue.blackPawn:
                     pgnMove = the_position.getPGNPawn(move, promotion);
                     break;
+            }
+            nextPosition = the_position.getNextPosition(move, promotion);
+            isInCheck = nextPosition.isInCheck(nextPosition.activeColor);
+            if (!isInCheck) {
+                return pgnMove;
+            }
+            hasNoMoves = !nextPosition.hasLegalMoves();
+            if (hasNoMoves) {
+                pgnMove += chessValue.checkmateSymbol;
+            } else {
+                pgnMove += chessValue.checkSymbol;
             }
             return pgnMove;
         };
@@ -2255,6 +2269,31 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             tags: tags
         };
 
+        the_game.addMove = function (move, promotion) {
+
+            // Play a move and store the new FEN string.
+
+            var currentPosition = {};
+            var n = 0;
+            var nextPosition = {};
+            var pgnMove = "";
+            if (!regexMove.test(move)) {
+                throw new SyntaxError(error.invalidParameter);
+            }
+            n = the_game.fenStrings.length - 1;
+            currentPosition = the_game.getNthPosition(n);
+            if (!currentPosition.checkMoveLegality(move)) {
+                throw new Error(error.illegalMove);
+            }
+            promotion = promotion || "";
+            nextPosition = currentPosition.getNextPosition(move, promotion);
+            the_game.fenStrings.push(nextPosition.fenString);
+            the_game.moves.push(move);
+            pgnMove = currentPosition.getPGNMove(move, promotion);
+            the_game.pgnMoves.push(pgnMove);
+            the_game.setResult(nextPosition);
+        };
+
         the_game.getNthPosition = function (n) {
 
             // Return the n-th position object.
@@ -2333,60 +2372,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return position.checkMoveLegality(move);
         };
 
-        the_game.play = function (move, promotion) {
-
-            // Play a move and store the new FEN in the Chessgame object
-            // if it's legal. Then returns the new FEN.
-
-            var currentPosition = {};
-            var hasNoMoves = false;
-            var isDrawn = false;
-            var isInCheck = false;
-            var n = 0;
-            var nextPosition = {};
-            var pgnMove = "";
-            var stringToAdd = "";
-            if (!regexMove.test(move)) {
-                throw new SyntaxError(error.invalidParameter);
-            }
-            n = the_game.fenStrings.length - 1;
-            currentPosition = the_game.getNthPosition(n);
-            if (!currentPosition.checkMoveLegality(move)) {
-                throw new Error(error.illegalMove);
-            }
-            promotion = promotion || "";
-            nextPosition = currentPosition.getNextPosition(move, promotion);
-            the_game.fenStrings.push(nextPosition.fenString);
-            the_game.moves.push(move);
-            hasNoMoves = !nextPosition.hasLegalMoves();
-            isInCheck = nextPosition.isInCheck(nextPosition.activeColor);
-            if (hasNoMoves) {
-                if (isInCheck) {
-                    stringToAdd = chessValue.checkmateSymbol;
-                    if (nextPosition.activeColor === chessValue.black) {
-                        the_game.setTag("Result", chessValue.resultWhite);
-                    } else {
-                        the_game.setTag("Result", chessValue.resultBlack);
-                    }
-                } else {
-                    the_game.setTag("Result", chessValue.resultDraw);
-                }
-            } else {
-                if (isInCheck) {
-                    stringToAdd = chessValue.checkSymbol;
-                }
-                isDrawn = (nextPosition.isDrawByInsufficientMaterial() ||
-                    nextPosition.isDrawBy50MovesRule());
-                if (isDrawn) {
-                    the_game.setTag("Result", chessValue.resultDraw);
-                }
-            }
-            pgnMove = currentPosition.getPGNMove(move, promotion);
-            pgnMove += stringToAdd;
-            the_game.pgnMoves.push(pgnMove);
-            return nextPosition.fenString;
-        };
-
         the_game.setPGN = function (pgn) {
 
             // Load a PGN string. To proceed :
@@ -2448,6 +2433,29 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 the_game.moves.push(simpleMove);
                 the_game.fenStrings.push(nextFEN);
             });
+        };
+
+        the_game.setResult = function (nextPosition) {
+
+            // Set the possible result after a move has been played.
+
+            var hasNoMoves = !nextPosition.hasLegalMoves();
+            var isInCheck = false;
+            var result = "*";
+            if (hasNoMoves) {
+                isInCheck = nextPosition.isInCheck(nextPosition.activeColor);
+                if (isInCheck) {
+                    result = (nextPosition.activeColor === chessValue.black)
+                        ? chessValue.resultWhite
+                        : chessValue.resultBlack;
+                } else {
+                    result = chessValue.resultDraw;
+                }
+            } else if (nextPosition.isDrawByInsufficientMaterial() ||
+                nextPosition.isDrawBy50MovesRule()) {
+                result = chessValue.resultDraw;
+            }
+            the_game.setTag("Result", result);
         };
 
         the_game.setTag = function (tag, value) {
@@ -2590,7 +2598,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
         var index = 0;
         abBoard.play(move, promotion);
-        abGame.play(move, promotion);
+        abGame.addMove(move, promotion);
         index = abGame.fenStrings.length - 1;
         navigate(index, false);
         if (typeof event.onMovePlayed === "function") {
