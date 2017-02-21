@@ -1,5 +1,5 @@
 // AbChess-0.2.2.js
-// 2017-02-20
+// 2017-02-21
 // Copyright (c) 2017 Nimzozo
 
 /*global
@@ -738,35 +738,29 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             color = (piece.toLowerCase() === piece)
                 ? chessValue.black
                 : chessValue.white;
-            switch (piece) {
+            switch (piece.toLowerCase()) {
                 case chessValue.blackBishop:
-                case chessValue.whiteBishop:
                     targets = the_position.getLinearTargets(start, color,
                         bishopVectors);
                     break;
                 case chessValue.blackKing:
-                case chessValue.whiteKing:
                     targets = the_position.getTargets_king(start, color,
                         onlyAttack);
                     break;
                 case chessValue.blackKnight:
-                case chessValue.whiteKnight:
                     targets = the_position.getTargetsByVectors(
                         start, color, knightVectors);
                     break;
                 case chessValue.blackPawn:
-                case chessValue.whitePawn:
                     targets = the_position.getTargets_pawn(start, color,
                         onlyAttack);
                     break;
                 case chessValue.blackQueen:
-                case chessValue.whiteQueen:
                     queenVectors = bishopVectors.concat(rookVectors);
                     targets = the_position.getLinearTargets(start, color,
                         queenVectors);
                     break;
                 case chessValue.blackRook:
-                case chessValue.whiteRook:
                     targets = the_position.getLinearTargets(start, color,
                         rookVectors);
                     break;
