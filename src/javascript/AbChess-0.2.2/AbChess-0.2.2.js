@@ -1202,6 +1202,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         the_piece = {
             div: div,
             ghost: ghost,
+            ghostWidth: 0,
             isAnimated: false,
             name: name,
             square: null,
@@ -1297,6 +1298,35 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 return;
             }
             the_piece.square.piece = null;
+        };
+
+        the_piece.showGhost = function (width) {
+
+            // Show the ghost and make the piece disappear.
+
+            the_piece.ghostWidth = width;
+            the_piece.div.style.opacity = "0";
+            the_piece.ghost.style.height = width + "px";
+            the_piece.ghost.style.width = width + "px";
+            document.body.appendChild(the_piece.ghost);
+        };
+
+        the_piece.setGhostPosition = function (left, top) {
+
+            // Set the ghost position.
+
+            the_piece.ghost.style.left = left + "px";
+            the_piece.ghost.style.top = top + "px";
+        };
+
+        the_piece.setGhostPositionCursor = function (e) {
+
+            // Attach the ghost to the cursor position.
+
+            var left = e.clientX + window.pageXOffset -
+                the_piece.ghostWidth / 2;
+            var top = e.clientY + window.pageYOffset - the_piece.ghostWidth / 2;
+            the_piece.setGhostPosition(left, top);
         };
 
         div.addEventListener("mousedown", the_piece.mouseDownHandler);
@@ -1605,8 +1635,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             coeffY = Math.ceil(diffY * speed);
             ghostCoordinate[0] = ghostX + directionX * coeffX;
             ghostCoordinate[1] = ghostY + directionY * coeffY;
-            ghost.style.left = ghostCoordinate[0] + "px";
-            ghost.style.top = ghostCoordinate[1] + "px";
+            piece.setGhostPosition(ghostCoordinate[0], ghostCoordinate[1]);
             rAF(function () {
                 the_board.animateGhost(piece, ghostCoordinate, coordinate);
             });
@@ -2049,15 +2078,10 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             }
             ghostWidth = Math.floor(abBoard.width / 8);
             rAF(function () {
-                var ghost = {};
                 if (!noAnimation) {
-                    ghost = playedPiece.ghost;
-                    playedPiece.div.style.opacity = "0";
-                    ghost.style.height = ghostWidth + "px";
-                    ghost.style.width = ghostWidth + "px";
-                    ghost.style.left = squareCoordinate[0] + "px";
-                    ghost.style.top = squareCoordinate[1] + "px";
-                    document.body.appendChild(ghost);
+                    playedPiece.setGhostPosition(squareCoordinate[0],
+                        squareCoordinate[1]);
+                    playedPiece.showGhost(ghostWidth);
                     the_board.animateGhost(playedPiece, squareCoordinate,
                         arrivalCoordinate);
                 }
@@ -2614,20 +2638,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
     abBoard.onMouseMove = function (e) {
         var activeSquare = {};
-        var ghost = {};
-        var ghostWidth = 0;
-        var left = 0;
-        var top = 0;
         if (!abBoard.isDragging) {
             return;
         }
         activeSquare = abBoard.squares[abBoard.selectedSquare];
-        ghost = activeSquare.piece.ghost;
-        ghostWidth = Math.floor(abBoard.width / 8);
-        left = e.clientX + window.pageXOffset - ghostWidth / 2;
-        top = e.clientY + window.pageYOffset - ghostWidth / 2;
-        ghost.style.left = left + "px";
-        ghost.style.top = top + "px";
+        activeSquare.piece.setGhostPositionCursor(e);
     };
 
     abBoard.onMouseUp = function () {
@@ -2649,8 +2664,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
     abBoard.onPieceMouseDown = function (e, piece) {
         var ghostWidth = 0;
-        var left = 0;
-        var top = 0;
         e.preventDefault();
         if (piece.isAnimated) {
             return;
@@ -2662,15 +2675,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return;
         }
         abBoard.isDragging = true;
-        piece.div.style.opacity = "0";
         ghostWidth = Math.floor(abBoard.width / 8);
-        piece.ghost.style.height = ghostWidth + "px";
-        piece.ghost.style.width = ghostWidth + "px";
-        left = e.clientX + window.pageXOffset - ghostWidth / 2;
-        top = e.clientY + window.pageYOffset - ghostWidth / 2;
-        piece.ghost.style.left = left + "px";
-        piece.ghost.style.top = top + "px";
-        document.body.appendChild(piece.ghost);
+        piece.showGhost(ghostWidth);
+        piece.setGhostPositionCursor(e);
         if (abBoard.markOverflownSquare) {
             piece.square.overfly();
         }
