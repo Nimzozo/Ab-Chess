@@ -37,6 +37,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         resultBlack: "0-1",
         resultDraw: "1/2-1/2",
         resultWhite: "1-0",
+        rows: "12345678",
         white: "w",
         whiteBishop: "B",
         whiteKing: "K",
@@ -1158,37 +1159,33 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
         // Convert a position to a FEN string.
 
-        var colNumber = 0;
-        var counter = 0;
+        var columns = chessValue.columns.split("");
         var fenPosition = "";
-        var rowNumber = 8;
-        var square = "";
-        while (rowNumber > 0) {
-            colNumber = 1;
-            counter = 0;
-            while (colNumber < 9) {
-                square = chessValue.columns[colNumber - 1] + rowNumber;
+        var rows = chessValue.rows.split("").reverse();
+        rows.forEach(function (row, rowIndex) {
+            var emptyCount = 0;
+            columns.forEach(function (column, columnIndex) {
+                var square = column + row;
                 if (position.hasOwnProperty(square)) {
-                    if (counter > 0) {
-                        fenPosition += counter;
-                        counter = 0;
+                    if (emptyCount > 0) {
+                        fenPosition += emptyCount;
+                        emptyCount = 0;
                     }
                     fenPosition += position[square];
                 } else {
-                    counter += 1;
+                    emptyCount += 1;
                 }
-                if (colNumber === 8) {
-                    if (counter > 0) {
-                        fenPosition += counter;
-                    }
-                    if (rowNumber > 1) {
-                        fenPosition += "/";
-                    }
+                if (columnIndex < 7) {
+                    return;
                 }
-                colNumber += 1;
-            }
-            rowNumber -= 1;
-        }
+                if (emptyCount > 0) {
+                    fenPosition += emptyCount;
+                }
+                if (rowIndex < 7) {
+                    fenPosition += "/";
+                }
+            });
+        });
         return fenPosition;
     };
 

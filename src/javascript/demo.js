@@ -70,8 +70,7 @@ window.addEventListener("load", function () {
     abChess.onMovePlayed(function () {
         var lastIndex = 0;
         var lastMove = "";
-        var pgnMoves = [];
-        pgnMoves = abChess.getGameMovesPGN();
+        var pgnMoves = abChess.getGameMovesPGN();
         lastIndex = pgnMoves.length - 1;
         lastMove = pgnMoves[lastIndex];
         addPGNMove(lastMove, lastIndex);
