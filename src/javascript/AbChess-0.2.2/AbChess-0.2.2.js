@@ -1706,7 +1706,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 if (config.markOverflownSquare && currentSquare.isOverflown) {
                     currentSquare.overfly();
                 }
-                if (currentSquare.isSelected) {
+                if (config.markLegalSquares && currentSquare.isSelected) {
                     currentSquare.select();
                 }
             });
@@ -1739,7 +1739,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             the_board.squaresDiv.style.height = the_board.width + "px";
             the_board.squaresDiv.className = css.squaresDiv;
             if (!the_board.isFlipped) {
-                // Draw the squares (the first row is from a8 to h8).
+                // From a8 to h8.
                 rowNumber = 8;
                 while (rowNumber > 0) {
                     colNumber = 1;
@@ -1752,7 +1752,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     rowNumber -= 1;
                 }
             } else {
-                // Draw the squares (the first row is from h1 to a1).
+                // From h1 to a1.
                 rowNumber = 1;
                 while (rowNumber < 9) {
                     colNumber = 8;
@@ -1867,14 +1867,15 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 the_board.squaresDiv.appendChild(the_board.promotionDiv);
                 the_board.container.appendChild(the_board.squaresDiv);
             });
-            if (the_board.notationBorder) {
-                the_board.createBottomBorder();
-                the_board.createRightBorder();
-                rAF(function () {
-                    the_board.container.appendChild(the_board.rightBorder);
-                    the_board.container.appendChild(the_board.bottomBorder);
-                });
+            if (!the_board.notationBorder) {
+                return;
             }
+            the_board.createBottomBorder();
+            the_board.createRightBorder();
+            rAF(function () {
+                the_board.container.appendChild(the_board.rightBorder);
+                the_board.container.appendChild(the_board.bottomBorder);
+            });
         };
 
         the_board.empty = function () {
@@ -1883,10 +1884,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             Object.keys(the_board.squares).forEach(function (key) {
                 var currentSquare = the_board.squares[key];
-                if (!currentSquare.isEmpty()) {
-                    currentSquare.piece.animateRemove();
-                    currentSquare.piece.remove();
+                if (currentSquare.isEmpty()) {
+                    return;
                 }
+                currentSquare.piece.animateRemove();
+                currentSquare.piece.remove();
             });
         };
 
@@ -1986,13 +1988,14 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 var pieceChar = "";
                 var pieceName = "";
                 var square = the_board.squares[key];
-                if (!square.isEmpty()) {
-                    pieceName = square.piece.name;
-                    pieceChar = (pieceName[0] === chessValue.white)
-                        ? pieceName[1].toUpperCase()
-                        : pieceName[1].toLowerCase();
-                    occupiedSquares[key] = pieceChar;
+                if (square.isEmpty()) {
+                    return;
                 }
+                pieceName = square.piece.name;
+                pieceChar = (pieceName[0] === chessValue.white)
+                    ? pieceName[1].toUpperCase()
+                    : pieceName[1].toLowerCase();
+                occupiedSquares[key] = pieceChar;
             });
             return occupiedSquares;
         };
@@ -2138,24 +2141,23 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var rookStart = "";
             switch (arrival[0]) {
                 case chessValue.columns[2]:
-                    rookStart = chessValue.columns[0];
-                    rookArrival = chessValue.columns[3];
+                    rookStart = chessValue.columns[0] + arrival[1];
+                    rookArrival = chessValue.columns[3] + arrival[1];
                     break;
                 case chessValue.columns[6]:
-                    rookStart = chessValue.columns[7];
-                    rookArrival = chessValue.columns[5];
+                    rookStart = chessValue.columns[7] + arrival[1];
+                    rookArrival = chessValue.columns[5] + arrival[1];
                     break;
             }
-            rookArrival += arrival[1];
-            rookStart += arrival[1];
-            if (!the_board.squares[rookStart].isEmpty()) {
-                rook = the_board.squares[rookStart].piece;
-                the_board.movePieceWithAnimation(rook,
-                    the_board.squares[rookStart],
-                    the_board.squares[rookArrival]);
-                rook.remove();
-                rook.put(the_board.squares[rookArrival]);
+            if (the_board.squares[rookStart].isEmpty()) {
+                throw new Error(error.illegalMove);
             }
+            rook = the_board.squares[rookStart].piece;
+            the_board.movePieceWithAnimation(rook,
+                the_board.squares[rookStart],
+                the_board.squares[rookArrival]);
+            rook.remove();
+            rook.put(the_board.squares[rookArrival]);
         };
 
         the_board.playEnPassant = function (arrival) {
@@ -2174,10 +2176,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     break;
             }
             enPassantSquare = the_board.squares[enPassant];
-            if (!enPassantSquare.isEmpty()) {
-                enPassantSquare.piece.fadingRemove();
-                enPassantSquare.piece.remove();
+            if (enPassantSquare.isEmpty()) {
+                throw new Error(error.illegalMove);
             }
+            enPassantSquare.piece.fadingRemove();
+            enPassantSquare.piece.remove();
         };
 
         the_board.playPromotion = function (playedPiece, arrival, promotion) {
