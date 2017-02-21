@@ -1148,9 +1148,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         var colNumber = 0;
         var counter = 0;
         var fenPosition = "";
-        var rowNumber = 0;
+        var rowNumber = 8;
         var square = "";
-        rowNumber = 8;
         while (rowNumber > 0) {
             colNumber = 1;
             counter = 0;
@@ -2327,41 +2326,40 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             }
             n = the_game.fenStrings.length - 1;
             currentPosition = the_game.getNthPosition(n);
-            if (currentPosition.checkMoveLegality(move)) {
-                promotion = promotion || "";
-                nextPosition = currentPosition.getNextPosition(move, promotion);
-                the_game.fenStrings.push(nextPosition.fenString);
-                the_game.moves.push(move);
-                isInCheck = nextPosition.isInCheck(nextPosition.activeColor);
-                hasNoMoves = !nextPosition.hasLegalMoves();
-                isDrawn = (nextPosition.isDrawByInsufficientMaterial() ||
-                    nextPosition.isDrawBy50MovesRule());
-                if (hasNoMoves) {
-                    if (isInCheck) {
-                        stringToAdd = chessValue.checkmateSymbol;
-                        if (nextPosition.activeColor === chessValue.black) {
-                            the_game.setTag("Result", chessValue.resultWhite);
-                        } else {
-                            the_game.setTag("Result", chessValue.resultBlack);
-                        }
-                    } else {
-                        the_game.setTag("Result", chessValue.resultDraw);
-                    }
-                } else {
-                    if (isInCheck) {
-                        stringToAdd = chessValue.checkSymbol;
-                    }
-                    if (isDrawn) {
-                        the_game.setTag("Result", chessValue.resultDraw);
-                    }
-                }
-                pgnMove = currentPosition.getPGNMove(move, promotion);
-                pgnMove += stringToAdd;
-                the_game.pgnMoves.push(pgnMove);
-                return nextPosition.fenString;
-            } else {
+            if (!currentPosition.checkMoveLegality(move)) {
                 throw new Error(error.illegalMove);
             }
+            promotion = promotion || "";
+            nextPosition = currentPosition.getNextPosition(move, promotion);
+            the_game.fenStrings.push(nextPosition.fenString);
+            the_game.moves.push(move);
+            hasNoMoves = !nextPosition.hasLegalMoves();
+            isInCheck = nextPosition.isInCheck(nextPosition.activeColor);
+            if (hasNoMoves) {
+                if (isInCheck) {
+                    stringToAdd = chessValue.checkmateSymbol;
+                    if (nextPosition.activeColor === chessValue.black) {
+                        the_game.setTag("Result", chessValue.resultWhite);
+                    } else {
+                        the_game.setTag("Result", chessValue.resultBlack);
+                    }
+                } else {
+                    the_game.setTag("Result", chessValue.resultDraw);
+                }
+            } else {
+                if (isInCheck) {
+                    stringToAdd = chessValue.checkSymbol;
+                }
+                isDrawn = (nextPosition.isDrawByInsufficientMaterial() ||
+                    nextPosition.isDrawBy50MovesRule());
+                if (isDrawn) {
+                    the_game.setTag("Result", chessValue.resultDraw);
+                }
+            }
+            pgnMove = currentPosition.getPGNMove(move, promotion);
+            pgnMove += stringToAdd;
+            the_game.pgnMoves.push(pgnMove);
+            return nextPosition.fenString;
         };
 
         the_game.setPGN = function (pgn) {
