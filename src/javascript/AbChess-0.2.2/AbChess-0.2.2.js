@@ -105,16 +105,18 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
     // Regular expressions.
 
-    var regexCastle = /^e(?:1-c1|1-g1|8-c8|8-g8)$/;
-    var regexComment = /\{[^]+?\}/gm;
-    var regexEnPassant = /^[a-h]4-[a-h]3|[a-h]5-[a-h]6$/;
-    var regexFEN = /^(?:[bBkKnNpPqQrR1-8]{1,8}\/){7}[bBkKnNpPqQrR1-8]{1,8}\s(w|b)\s(KQ?k?q?|K?Qk?q?|K?Q?kq?|K?Q?k?q|-)\s([a-h][36]|-)\s(0|[1-9]\d*)\s([1-9]\d*)$/;
-    var regexFENRow = /^[bknpqr1]{8}|[bknpqr12]{7}|[bknpqr1-3]{6}|[bknpqr1-4]{5}|[bknpqr1-5]{4}|[bknpqr1-6]{3}|[bknpqr]7|7[bknpqr]|8$/i;
-    var regexMove = /^[a-h][1-8]-[a-h][1-8]$/;
-    var regexPGNMove = /(?:[1-9][0-9]*\.{1,3}\s*)?(?:O-O(?:-O)?|(?:[BNQR][a-h]?[1-8]?|K)x?[a-h][1-8]|(?:[a-h]x)?[a-h][1-8](?:\=[BNQR])?)(?:\+|#)?/gm;
-    var regexPromotion = /^[a-h]2-[a-h]1|[a-h]7-[a-h]8$/;
-    var regexTagPair = /\[[A-Z][^]+?\s"[^]+?"\]/gm;
-    var regexVariation = /\([^()]*?\)/gm;
+    var regExp = {
+        castle: /^e(?:1-c1|1-g1|8-c8|8-g8)$/,
+        comment: /\{[^]+?\}/gm,
+        enPassant: /^[a-h]4-[a-h]3|[a-h]5-[a-h]6$/,
+        fen: /^(?:[bBkKnNpPqQrR1-8]{1,8}\/){7}[bBkKnNpPqQrR1-8]{1,8}\s(w|b)\s(KQ?k?q?|K?Qk?q?|K?Q?kq?|K?Q?k?q|-)\s([a-h][36]|-)\s(0|[1-9]\d*)\s([1-9]\d*)$/,
+        fenRow: /^[bknpqr1]{8}|[bknpqr12]{7}|[bknpqr1-3]{6}|[bknpqr1-4]{5}|[bknpqr1-5]{4}|[bknpqr1-6]{3}|[bknpqr]7|7[bknpqr]|8$/i,
+        move: /^[a-h][1-8]-[a-h][1-8]$/,
+        pgnMove: /(?:[1-9][0-9]*\.{1,3}\s*)?(?:O-O(?:-O)?|(?:[BNQR][a-h]?[1-8]?|K)x?[a-h][1-8]|(?:[a-h]x)?[a-h][1-8](?:\=[BNQR])?)(?:\+|#)?/gm,
+        promotion: /^[a-h]2-[a-h]1|[a-h]7-[a-h]8$/,
+        tagPair: /\[[A-Z][^]+?\s"[^]+?"\]/gm,
+        variation: /\([^()]*?\)/gm
+    };
 
     // RAF
 
@@ -144,7 +146,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         if (!Position.isValidFEN(fen)) {
             throw new Error(error.invalidFEN);
         }
-        fenMatches = regexFEN.exec(fen);
+        fenMatches = regExp.fen.exec(fen);
         activeColor = fenMatches[1];
         allowedCastles = fenMatches[2];
         enPassantSquare = fenMatches[3];
@@ -171,7 +173,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var start = "";
             var targets = [];
             var testPosition = {};
-            if (!regexMove.test(move)) {
+            if (!regExp.move.test(move)) {
                 return false;
             }
             start = move.substr(0, 2);
@@ -416,7 +418,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             newOccupiedSquares = Position.fenToObject(the_position.fenString);
             playedPiece = newOccupiedSquares[startSquare];
             if (playedPiece.toLowerCase() === chessValue.blackKing &&
-                regexCastle.test(move)) {
+                regExp.castle.test(move)) {
                 if (arrivalSquare[0] === chessValue.columns[2]) {
                     rookStart = chessValue.columns[0] + arrivalSquare[1];
                     rookArrival = chessValue.columns[3] + arrivalSquare[1];
@@ -432,11 +434,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 }
             } else if (playedPiece.toLowerCase() === chessValue.blackPawn) {
                 if (arrivalSquare === enPassantSquare &&
-                    regexEnPassant.test(move)) {
+                    regExp.enPassant.test(move)) {
                     enPassantCapture = enPassantSquare[0] + startSquare[1];
                     delete newOccupiedSquares[enPassantCapture];
                 }
-                if (regexPromotion.test(move)) {
+                if (regExp.promotion.test(move)) {
                     promotion = promotion || chessValue.blackQueen;
                     if (arrivalSquare[1] === "1") {
                         playedPiece = promotion.toLowerCase();
@@ -474,7 +476,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             start = move.substr(0, 2);
             playedPiece = occupiedSquares[start];
             arrival = move.substr(3, 2);
-            if (regexCastle.test(move)) {
+            if (regExp.castle.test(move)) {
                 if (arrival[0] === chessValue.columns[2]) {
                     pgnMove = chessValue.castleQueenSymbol;
                 } else {
@@ -542,7 +544,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 pgnMove = start[0] + chessValue.captureSymbol;
             }
             pgnMove += arrival;
-            if (regexPromotion.test(move)) {
+            if (regExp.promotion.test(move)) {
                 pgnMove += chessValue.promotionSymbol + promotion.toUpperCase();
             }
             return pgnMove;
@@ -1125,11 +1127,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
         var rows = fen.replace(/\s.*/, "").split("/");
         onlyRows = onlyRows || false;
-        if (!onlyRows && !regexFEN.test(fen)) {
+        if (!onlyRows && !regExp.fen.test(fen)) {
             return false;
         }
         return rows.every(function (row) {
-            return regexFENRow.test(row);
+            return regExp.fenRow.test(row);
         });
     };
 
@@ -2089,14 +2091,14 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 arrivalSquare);
             playedPiece.remove();
             playedPiece.put(arrivalSquare);
-            if (regexCastle.test(move) &&
+            if (regExp.castle.test(move) &&
                 playedPiece.name[1] === chessValue.blackKing) {
                 the_board.playCastle(arrival);
             } else if (playedPiece.name[1] === chessValue.blackPawn) {
-                if (regexEnPassant.test(move) &&
+                if (regExp.enPassant.test(move) &&
                     emptyArrival && start[0] !== arrival[0]) {
                     the_board.playEnPassant(arrival);
-                } else if (regexPromotion.test(move)) {
+                } else if (regExp.promotion.test(move)) {
                     the_board.playPromotion(playedPiece, arrival, promotion);
                 }
             }
@@ -2292,14 +2294,14 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             the_game.fenStrings = [chessValue.defaultFEN];
             the_game.moves = [];
             the_game.pgnMoves = [];
-            while (regexComment.test(pgn)) {
-                pgn = pgn.replace(regexComment, "");
+            while (regExp.comment.test(pgn)) {
+                pgn = pgn.replace(regExp.comment, "");
             }
-            while (regexVariation.test(pgn)) {
-                pgn = pgn.replace(regexVariation, "");
+            while (regExp.variation.test(pgn)) {
+                pgn = pgn.replace(regExp.variation, "");
             }
             pgn = pgn.replace(/\s{2,}/gm, " ");
-            importedMoves = pgn.match(regexPGNMove);
+            importedMoves = pgn.match(regExp.pgnMove);
             importedMoves.forEach(function (pgnMove) {
                 pgnMove = pgnMove.replace(/[1-9][0-9]*\.(?:\.\.)?\s?/, "");
                 the_game.pgnMoves.push(pgnMove);
@@ -2327,7 +2329,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var importedTags = [];
             the_game.tags = {};
             the_game.initRequiredTags();
-            importedTags = pgn.match(regexTagPair);
+            importedTags = pgn.match(regExp.tagPair);
             importedTags.forEach(function (tagPair) {
                 var matches = [];
                 var regex = /\[([^]+)\s"([^]*)"/gm;
@@ -2440,18 +2442,18 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return false;
         }
         pgn = pgn.replace(regexTagPairsSection, "");
-        while (regexComment.test(pgn)) {
-            pgn = pgn.replace(regexComment, "");
+        while (regExp.comment.test(pgn)) {
+            pgn = pgn.replace(regExp.comment, "");
         }
         function hasMoveSection(str) {
             return regexMoveSection.test(str);
         }
-        while (regexVariation.test(pgn)) {
-            variations = pgn.match(regexVariation);
+        while (regExp.variation.test(pgn)) {
+            variations = pgn.match(regExp.variation);
             if (!variations.every(hasMoveSection)) {
                 return false;
             }
-            pgn = pgn.replace(regexVariation, "");
+            pgn = pgn.replace(regExp.variation, "");
         }
         moves = pgn.match(regexMoveSection);
         if (moves.length < 1) {
@@ -2575,7 +2577,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         var playedPiece = "";
         var position = {};
         move = start + "-" + arrival;
-        if (!regexMove.test(move)) {
+        if (!regExp.move.test(move)) {
             throw new Error(error.invalidParameter);
         }
         n = abGame.fenStrings.length - 1;
@@ -2585,7 +2587,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         position = abGame.getNthPosition(n);
         playedPiece = position.occupiedSquares[start];
         if (playedPiece.toLowerCase() === chessValue.blackPawn &&
-            regexPromotion.test(move)) {
+            regExp.promotion.test(move)) {
             abBoard.pendingMove = move;
             color = (arrival[1] === "8")
                 ? chessValue.white
@@ -2866,7 +2868,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Check if a move is legal in the n-th position.
 
-            if (!regexMove.test(move)) {
+            if (!regExp.move.test(move)) {
                 throw new SyntaxError(error.invalidParameter);
             }
             return abGame.isLegal(n, move);
@@ -2919,7 +2921,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Play the desired move and return the resulting FEN string.
 
-            if (!regexMove.test(move)) {
+            if (!regExp.move.test(move)) {
                 throw new SyntaxError(error.invalidParameter);
             }
             return playMove(move, promotion);
