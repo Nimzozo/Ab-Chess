@@ -269,12 +269,12 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             vectors.forEach(function (vector) {
                 var colVector = vector[0];
                 var rowVector = vector[1];
-                var testCol = colNumber + colVector;
+                var testColumn = colNumber + colVector;
                 var testRow = rowNumber + rowVector;
                 var square = "";
-                while (testCol > 0 && testRow > 0 &&
-                    testCol < 9 && testRow < 9) {
-                    square = chessValue.columns[testCol - 1] + testRow;
+                while (testColumn > 0 && testRow > 0 &&
+                    testColumn < 9 && testRow < 9) {
+                    square = chessValue.columns[testColumn - 1] + testRow;
                     if (alliesPlaces.indexOf(square) > -1) {
                         break;
                     }
@@ -282,7 +282,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     if (ennemiesPlaces.indexOf(square) > -1) {
                         break;
                     }
-                    testCol += colVector;
+                    testColumn += colVector;
                     testRow += rowVector;
                 }
             });
@@ -1162,7 +1162,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         var columns = chessValue.columns.split("");
         var fenPosition = "";
         var rows = chessValue.rows.split("").reverse();
-        rows.forEach(function (row, rowIndex) {
+        function buildRowString(row, rowIndex) {
             var emptyCount = 0;
             columns.forEach(function (column, columnIndex) {
                 var square = column + row;
@@ -1185,7 +1185,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     fenPosition += "/";
                 }
             });
-        });
+        }
+        rows.forEach(buildRowString);
         return fenPosition;
     };
 
@@ -1686,14 +1687,13 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Display the promotion div to complete a move.
 
-            var buttons = the_board.promotionDiv.childNodes;
             var pieces = [
                 chessValue.blackQueen, chessValue.blackRook,
                 chessValue.blackBishop, chessValue.blackKnight
             ];
-            while (buttons.length > 0) {
-                the_board.promotionDiv.removeChild(
-                    the_board.promotionDiv.lastChild);
+            var promotionDiv = the_board.promotionDiv;
+            while (promotionDiv.hasChildNodes()) {
+                promotionDiv.removeChild(promotionDiv.lastChild);
             }
             pieces.forEach(function (piece) {
                 var promotionButton;
@@ -1706,11 +1706,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 promotionButton.style.backgroundImage = "url('" + url + "')";
                 promotionButton.addEventListener("click",
                     the_board.clickPromotionHandler);
-                the_board.promotionDiv.appendChild(promotionButton);
+                promotionDiv.appendChild(promotionButton);
             });
             the_board.lock();
             rAF(function () {
-                the_board.promotionDiv.style.display = "block";
+                promotionDiv.style.display = "block";
             });
         };
 
@@ -1751,43 +1751,28 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Create the HTML board.
 
-            var colNumber = 0;
-            var column = "";
-            var rowNumber = 0;
-            var square = {};
+            var columns = chessValue.columns.split("");
+            var rows = chessValue.rows.split("");
             the_board.promotionDiv = document.createElement("DIV");
             the_board.promotionDiv.className = css.promotionDiv;
             the_board.squaresDiv = document.createElement("DIV");
             the_board.squaresDiv.style.width = the_board.width + "px";
             the_board.squaresDiv.style.height = the_board.width + "px";
             the_board.squaresDiv.className = css.squaresDiv;
-            if (!the_board.isFlipped) {
-                // From a8 to h8.
-                rowNumber = 8;
-                while (rowNumber > 0) {
-                    colNumber = 1;
-                    while (colNumber < 9) {
-                        column = chessValue.columns[colNumber - 1];
-                        square = the_board.squares[column + rowNumber];
-                        the_board.squaresDiv.appendChild(square.div);
-                        colNumber += 1;
-                    }
-                    rowNumber -= 1;
-                }
-            } else {
+            if (the_board.isFlipped) {
                 // From h1 to a1.
-                rowNumber = 1;
-                while (rowNumber < 9) {
-                    colNumber = 8;
-                    while (colNumber > 0) {
-                        column = chessValue.columns[colNumber - 1];
-                        square = the_board.squares[column + rowNumber];
-                        the_board.squaresDiv.appendChild(square.div);
-                        colNumber -= 1;
-                    }
-                    rowNumber += 1;
-                }
+                columns = columns.reverse();
+            } else {
+                // From a8 to h8.
+                rows = rows.reverse();
             }
+            function buildRow(row) {
+                columns.forEach(function (column) {
+                    var square = the_board.squares[column + row];
+                    the_board.squaresDiv.appendChild(square.div);
+                });
+            }
+            rows.forEach(buildRow);
         };
 
         the_board.createBottomBorder = function () {
