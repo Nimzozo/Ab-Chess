@@ -1,5 +1,5 @@
 // AbChess-0.2.2.js
-// 2017-02-21
+// 2017-02-22
 // Copyright (c) 2017 Nimzozo
 
 /*global
@@ -51,16 +51,16 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
     var css = {
         blackSquare: "square_black",
-        bottomBorder: "bottom-border",
-        bottomBorderFragment: "bottom-border__fragment",
+        columnsBorder: "columns-border",
+        columnsBorderFragment: "columns-border__fragment",
         ghostPiece: "ghost_piece",
         highlightedSquare: "square_highlighted",
         markedSquare: "square_marked",
         overflownSquare: "square_overflown",
         promotionButton: "promotion-button",
         promotionDiv: "promotion-div",
-        rightBorder: "right-border",
-        rightBorderFragment: "right-border__fragment",
+        rowsBorder: "rows-border",
+        rowsBorderFragment: "rows-border__fragment",
         selectedSquare: "square_selected",
         square: "square",
         squareCanvas: "square__canvas",
@@ -1542,8 +1542,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
         var the_board = {
             animationSpeed: config.animationSpeed,
-            bottomBorder: {},
             clickablePieces: config.clickable,
+            columnsBorder: {},
             container: document.getElementById(containerId),
             draggablePieces: config.draggable,
             imagesExtension: config.imagesExtension,
@@ -1565,7 +1565,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             onSquareLeave: null,
             pendingMove: null,
             promotionDiv: {},
-            rightBorder: {},
+            rowsBorder: {},
             selectedSquare: null,
             squares: {},
             squaresDiv: {},
@@ -1775,49 +1775,44 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             rows.forEach(buildRow);
         };
 
-        the_board.createBottomBorder = function () {
+        the_board.createColumnsBorder = function () {
 
-            // Create the bottom border with a-h coordinate.
+            // Create the border with a-h coordinate.
 
-            var borderFragment = {};
-            var colNumber = 1;
-            var index = 0;
-            the_board.bottomBorder = document.createElement("DIV");
-            the_board.bottomBorder.className = css.bottomBorder;
-            the_board.bottomBorder.style.width = the_board.width + "px";
-            while (colNumber < 9) {
-                borderFragment = document.createElement("DIV");
-                borderFragment.className = css.bottomBorderFragment;
-                index = (the_board.isFlipped)
-                    ? 8 - colNumber
-                    : colNumber - 1;
-                borderFragment.innerHTML =
-                    chessValue.columns[index].toUpperCase();
-                the_board.bottomBorder.appendChild(borderFragment);
-                colNumber += 1;
+            var columns = chessValue.columns.split("");
+            the_board.columnsBorder = document.createElement("DIV");
+            the_board.columnsBorder.className = css.columnsBorder;
+            the_board.columnsBorder.style.width = the_board.width + "px";
+            if (the_board.isFlipped) {
+                columns = columns.reverse();
             }
+            columns.forEach(function (column) {
+                var borderFragment = document.createElement("DIV");
+                borderFragment.className = css.columnsBorderFragment;
+                borderFragment.innerHTML = column;
+                the_board.columnsBorder.appendChild(borderFragment);
+            });
         };
 
-        the_board.createRightBorder = function () {
+        the_board.createRowsBorder = function () {
 
-            // Create the right border with 1-8 coordinate.
+            // Create the border with 1-8 coordinate.
 
-            var borderFragment = {};
-            var rowNumber = 1;
-            the_board.rightBorder = document.createElement("DIV");
-            the_board.rightBorder.className = css.rightBorder;
-            the_board.rightBorder.style.height = the_board.width + "px";
-            while (rowNumber < 9) {
-                borderFragment = document.createElement("DIV");
-                borderFragment.className = css.rightBorderFragment;
-                borderFragment.style.lineHeight =
-                    Math.floor(the_board.width / 8) + "px";
-                borderFragment.innerHTML = (the_board.isFlipped)
-                    ? rowNumber
-                    : 9 - rowNumber;
-                the_board.rightBorder.appendChild(borderFragment);
-                rowNumber += 1;
+            var lineHeight = Math.floor(the_board.width / 8) + "px";
+            var rows = chessValue.rows.split("");
+            the_board.rowsBorder = document.createElement("DIV");
+            the_board.rowsBorder.className = css.rowsBorder;
+            the_board.rowsBorder.style.height = the_board.width + "px";
+            if (!the_board.isFlipped) {
+                rows = rows.reverse();
             }
+            rows.forEach(function (row) {
+                var borderFragment = document.createElement("DIV");
+                borderFragment.className = css.rowsBorderFragment;
+                borderFragment.style.lineHeight = lineHeight;
+                borderFragment.innerHTML = row;
+                the_board.rowsBorder.appendChild(borderFragment);
+            });
         };
 
         the_board.createSquares = function () {
@@ -1863,6 +1858,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Draw the empty chessboard.
 
+
             the_board.createBoard();
             rAF(function () {
                 the_board.squaresDiv.appendChild(the_board.promotionDiv);
@@ -1871,11 +1867,14 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             if (!the_board.notationBorder) {
                 return;
             }
-            the_board.createBottomBorder();
-            the_board.createRightBorder();
+            the_board.createRowsBorder();
             rAF(function () {
-                the_board.container.appendChild(the_board.rightBorder);
-                the_board.container.appendChild(the_board.bottomBorder);
+                the_board.container.insertBefore(the_board.rowsBorder,
+                    the_board.squaresDiv);
+            });
+            the_board.createColumnsBorder();
+            rAF(function () {
+                the_board.container.appendChild(the_board.columnsBorder);
             });
         };
 
