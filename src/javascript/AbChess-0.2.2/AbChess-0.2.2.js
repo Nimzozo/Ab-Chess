@@ -1819,29 +1819,18 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Create the squares property.
 
-            var colNumber = 0;
-            var column = "";
-            var name = "";
-            var rowNumber = 0;
-            var square = {};
-            var squares = {};
-            var squareWidth = 0;
-            squareWidth = Math.floor(the_board.width / 8);
-            rowNumber = 1;
-            while (rowNumber < 9) {
-                colNumber = 1;
-                while (colNumber < 9) {
-                    column = chessValue.columns[colNumber - 1];
-                    name = column + rowNumber;
-                    square = new Square(name, squareWidth);
+            var columns = chessValue.columns.split("");
+            var rows = chessValue.rows.split("");
+            var squareWidth = Math.floor(the_board.width / 8);
+            columns.forEach(function (column) {
+                rows.forEach(function (row) {
+                    var name = column + row;
+                    var square = new Square(name, squareWidth);
                     square.drawFilledCircle(the_board.legalMarksColor);
                     square.board = the_board;
-                    squares[name] = square;
-                    colNumber += 1;
-                }
-                rowNumber += 1;
-            }
-            the_board.squares = squares;
+                    the_board.squares[name] = square;
+                });
+            });
         };
 
         the_board.displayCanvas = function (squares) {
@@ -1857,7 +1846,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         the_board.draw = function () {
 
             // Draw the empty chessboard.
-
 
             the_board.createBoard();
             rAF(function () {
