@@ -399,7 +399,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // The data of FEN position are updated here.
             // The played move is assumed to be legal.
 
-            var arrivalSquare = "";
+            var arrivalSquare = move.substr(3, 2);
             var enPassantCapture = "";
             var newActiveColor = "";
             var newAllowedCastles = "";
@@ -412,14 +412,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var positionString = "";
             var rookArrival = "";
             var rookStart = "";
-            var startSquare = "";
-            if (!regexMove.test(move)) {
-                throw new SyntaxError(error.invalidParameter);
-            }
+            var startSquare = move.substr(0, 2);
             newOccupiedSquares = Position.fenToObject(the_position.fenString);
-            startSquare = move.substr(0, 2);
             playedPiece = newOccupiedSquares[startSquare];
-            arrivalSquare = move.substr(3, 2);
             if (playedPiece.toLowerCase() === chessValue.blackKing &&
                 regexCastle.test(move)) {
                 if (arrivalSquare[0] === chessValue.columns[2]) {
@@ -499,16 +494,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Return the PGN notation for a move.
 
-            var hasNoMoves = false;
             var isInCheck = false;
             var nextPosition = {};
             var pgnMove = "";
             var playedPiece = "";
-            var start = "";
-            if (!regexMove.test(move)) {
-                throw new SyntaxError(error.invalidParameter);
-            }
-            start = move.substr(0, 2);
+            var start = move.substr(0, 2);
             playedPiece = occupiedSquares[start];
             switch (playedPiece.toLowerCase()) {
                 case chessValue.blackBishop:
@@ -529,8 +519,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             if (!isInCheck) {
                 return pgnMove;
             }
-            hasNoMoves = !nextPosition.hasLegalMoves();
-            if (hasNoMoves) {
+            if (!nextPosition.hasLegalMoves()) {
                 pgnMove += chessValue.checkmateSymbol;
             } else {
                 pgnMove += chessValue.checkSymbol;
@@ -1382,6 +1371,12 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             context.fill();
         };
 
+        the_square.mouseDownHandler = function (e) {
+            if (typeof the_square.board.onSquareMouseDown === "function") {
+                the_square.board.onSquareMouseDown(e);
+            }
+        };
+
         the_square.mouseEnterHandler = function () {
             if (typeof the_square.board.onSquareEnter === "function") {
                 the_square.board.onSquareEnter(the_square);
@@ -1501,6 +1496,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         };
 
         the_square.div.addEventListener("click", the_square.clickHandler);
+        the_square.div.addEventListener("mousedown",
+            the_square.mouseDownHandler);
         the_square.div.addEventListener("mouseenter",
             the_square.mouseEnterHandler);
         the_square.div.addEventListener("mouseleave",
@@ -1550,6 +1547,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             onPromotionChose: null,
             onSquareClick: null,
             onSquareEnter: null,
+            onSquareMouseDown: null,
             onSquareMouseUp: null,
             onSquareLeave: null,
             pendingMove: null,
@@ -2078,13 +2076,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var arrivalSquare = {};
             var emptyArrival = false;
             var playedPiece = {};
-            var start = "";
-            var startSquare = {};
-            if (!regexMove.test(move)) {
-                throw new SyntaxError(error.invalidParameter);
-            }
-            start = move.substr(0, 2);
-            startSquare = the_board.squares[start];
+            var start = move.substr(0, 2);
+            var startSquare = the_board.squares[start];
             if (startSquare.isEmpty()) {
                 throw new Error(error.illegalMove);
             }
@@ -2221,9 +2214,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var n = 0;
             var nextPosition = {};
             var pgnMove = "";
-            if (!regexMove.test(move)) {
-                throw new SyntaxError(error.invalidParameter);
-            }
             n = the_game.fenStrings.length - 1;
             currentPosition = the_game.getNthPosition(n);
             if (!currentPosition.checkMoveLegality(move)) {
@@ -2379,11 +2369,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Check if a move is legal in the n-th position.
 
-            var position = {};
-            if (!regexMove.test(move)) {
-                return false;
-            }
-            position = the_game.getNthPosition(n);
+            var position = the_game.getNthPosition(n);
             return position.checkMoveLegality(move);
         };
 
@@ -2593,22 +2579,22 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             throw new Error(error.invalidParameter);
         }
         n = abGame.fenStrings.length - 1;
-        if (abGame.isLegal(n, move)) {
-            position = abGame.getNthPosition(n);
-            playedPiece = position.occupiedSquares[start];
-            if (regexPromotion.test(move) &&
-                playedPiece.toLowerCase() === chessValue.blackPawn) {
-                abBoard.pendingMove = move;
-                color = (arrival[1] === "8")
-                    ? chessValue.white
-                    : chessValue.black;
-                abBoard.askPromotion(color);
-            } else {
-                playMove(move);
-            }
-            return true;
+        if (!abGame.isLegal(n, move)) {
+            return false;
         }
-        return false;
+        position = abGame.getNthPosition(n);
+        playedPiece = position.occupiedSquares[start];
+        if (playedPiece.toLowerCase() === chessValue.blackPawn &&
+            regexPromotion.test(move)) {
+            abBoard.pendingMove = move;
+            color = (arrival[1] === "8")
+                ? chessValue.white
+                : chessValue.black;
+            abBoard.askPromotion(color);
+        } else {
+            playMove(move);
+        }
+        return true;
     }
 
     // Board events initialization.
@@ -2712,6 +2698,10 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         if (abBoard.markOverflownSquare) {
             square.overfly();
         }
+    };
+
+    abBoard.onSquareMouseDown = function (e) {
+        e.preventDefault();
     };
 
     abBoard.onSquareMouseUp = function (dropSquare) {
@@ -2876,6 +2866,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Check if a move is legal in the n-th position.
 
+            if (!regexMove.test(move)) {
+                throw new SyntaxError(error.invalidParameter);
+            }
             return abGame.isLegal(n, move);
         },
 
@@ -2926,6 +2919,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Play the desired move and return the resulting FEN string.
 
+            if (!regexMove.test(move)) {
+                throw new SyntaxError(error.invalidParameter);
+            }
             return playMove(move, promotion);
         },
 
