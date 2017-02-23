@@ -147,32 +147,14 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         // A chess Position is constructed with a FEN string.
         // It represents the pieces placement plus some extra data.
 
-        var activeColor = "";
-        var allowedCastles = "";
-        var enPassantSquare = "";
-        var fenMatches = [];
-        var fullmoveNumber = 0;
-        var halfmoveClock = 0;
-        var occupiedSquares = {};
-        var the_position = {};
-        if (!Position.isValidFEN(fen)) {
-            throw new Error(error.invalidFEN);
-        }
-        fenMatches = regExp.fen.exec(fen);
-        activeColor = fenMatches[1];
-        allowedCastles = fenMatches[2];
-        enPassantSquare = fenMatches[3];
-        fullmoveNumber = Number(fenMatches[5]);
-        halfmoveClock = Number(fenMatches[4]);
-        occupiedSquares = Position.fenToObject(fen);
-        the_position = {
-            activeColor: activeColor,
-            allowedCastles: allowedCastles,
-            enPassantSquare: enPassantSquare,
+        var the_position = {
+            activeColor: "",
+            allowedCastles: "",
+            enPassantSquare: "",
             fenString: fen,
-            fullmoveNumber: fullmoveNumber,
-            halfmoveClock: halfmoveClock,
-            occupiedSquares: occupiedSquares
+            fullmoveNumber: 0,
+            halfmoveClock: 0,
+            occupiedSquares: null
         };
 
         the_position.checkMoveLegality = function (move) {
@@ -189,18 +171,18 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 return false;
             }
             start = move.substr(0, 2);
-            if (!occupiedSquares.hasOwnProperty(start)) {
+            if (!the_position.occupiedSquares.hasOwnProperty(start)) {
                 return false;
             }
-            pieceColor = (occupiedSquares[start] ===
-                occupiedSquares[start].toLowerCase())
+            pieceColor = (the_position.occupiedSquares[start] ===
+                the_position.occupiedSquares[start].toLowerCase())
                 ? chessValue.black
                 : chessValue.white;
-            if (activeColor !== pieceColor) {
+            if (the_position.activeColor !== pieceColor) {
                 return false;
             }
             testPosition = the_position.getNextPosition(move);
-            if (testPosition.isInCheck(activeColor)) {
+            if (testPosition.isInCheck(the_position.activeColor)) {
                 return false;
             }
             targets = the_position.getTargets(start, false);
@@ -219,8 +201,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             desiredKing = (color === chessValue.black)
                 ? chessValue.blackKing
                 : chessValue.whiteKing;
-            Object.keys(occupiedSquares).every(function (key) {
-                var piece = occupiedSquares[key];
+            Object.keys(the_position.occupiedSquares).every(function (key) {
+                var piece = the_position.occupiedSquares[key];
                 if (piece === desiredKing) {
                     square = key;
                     return false;
@@ -236,7 +218,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             var legalMoves = [];
             var pieces = [];
-            pieces = the_position.getPiecesPlaces(activeColor);
+            pieces = the_position.getPiecesPlaces(the_position.activeColor);
             pieces.forEach(function (square) {
                 var legalSquares = the_position.getLegalSquares(square);
                 legalSquares.forEach(function (arrival) {
@@ -316,6 +298,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Return the new allowed castles.
 
+            var allowedCastles = the_position.allowedCastles;
             var arrivalSquare = "";
             var newAllowedCastles = "";
             var playedPiece = "";
@@ -325,7 +308,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             }
             newAllowedCastles = allowedCastles;
             startSquare = move.substr(0, 2);
-            playedPiece = occupiedSquares[startSquare];
+            playedPiece = the_position.occupiedSquares[startSquare];
             arrivalSquare = move.substr(3, 2);
             if (allowedCastles.search(/[kq]/) > -1) {
                 if (playedPiece === chessValue.blackKing) {
@@ -365,7 +348,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var playedPiece = "";
             var startRowNumber = 0;
             var startSquare = move.substr(0, 2);
-            playedPiece = occupiedSquares[startSquare];
+            playedPiece = the_position.occupiedSquares[startSquare];
             if (playedPiece.toLowerCase() !== chessValue.blackPawn) {
                 return nextEnPassantTarget;
             }
@@ -386,8 +369,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Return the new fullmove number.
 
             return (the_position.activeColor === chessValue.black)
-                ? fullmoveNumber + 1
-                : fullmoveNumber;
+                ? the_position.fullmoveNumber + 1
+                : the_position.fullmoveNumber;
         };
 
         the_position.getNextHalfmoveClock = function (move) {
@@ -398,12 +381,13 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var playedPiece = "";
             var startSquare = move.substr(0, 2);
             var takenPiece = false;
-            playedPiece = occupiedSquares[startSquare];
-            takenPiece = occupiedSquares.hasOwnProperty(arrivalSquare);
+            playedPiece = the_position.occupiedSquares[startSquare];
+            takenPiece = the_position.occupiedSquares.hasOwnProperty(
+                arrivalSquare);
             return (playedPiece.toLowerCase() === chessValue.blackPawn ||
                 takenPiece)
                 ? 0
-                : halfmoveClock + 1;
+                : the_position.halfmoveClock + 1;
         };
 
         the_position.getNextPosition = function (move, promotion) {
@@ -445,9 +429,10 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     newOccupiedSquares[rookArrival] = chessValue.blackRook;
                 }
             } else if (playedPiece.toLowerCase() === chessValue.blackPawn) {
-                if (arrivalSquare === enPassantSquare &&
+                if (arrivalSquare === the_position.enPassantSquare &&
                     regExp.enPassant.test(move)) {
-                    enPassantCapture = enPassantSquare[0] + startSquare[1];
+                    enPassantCapture = the_position.enPassantSquare[0] +
+                        startSquare[1];
                     delete newOccupiedSquares[enPassantCapture];
                 }
                 if (regExp.promotion.test(move)) {
@@ -486,7 +471,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var playedPiece = "";
             var start = "";
             start = move.substr(0, 2);
-            playedPiece = occupiedSquares[start];
+            playedPiece = the_position.occupiedSquares[start];
             arrival = move.substr(3, 2);
             if (regExp.castle.test(move)) {
                 if (arrival[0] === chessValue.columns[2]) {
@@ -496,7 +481,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 }
             } else {
                 pgnMove = playedPiece.toUpperCase();
-                if (occupiedSquares.hasOwnProperty(arrival)) {
+                if (the_position.occupiedSquares.hasOwnProperty(arrival)) {
                     pgnMove += chessValue.captureSymbol;
                 }
                 pgnMove += arrival;
@@ -513,7 +498,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var pgnMove = "";
             var playedPiece = "";
             var start = move.substr(0, 2);
-            playedPiece = occupiedSquares[start];
+            playedPiece = the_position.occupiedSquares[start];
             switch (playedPiece.toLowerCase()) {
                 case chessValue.blackBishop:
                 case chessValue.blackKnight:
@@ -551,8 +536,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var start = "";
             start = move.substr(0, 2);
             arrival = move.substr(3, 2);
-            isCapture = occupiedSquares.hasOwnProperty(arrival);
-            if (isCapture || arrival === enPassantSquare) {
+            isCapture = the_position.occupiedSquares.hasOwnProperty(arrival);
+            if (isCapture || arrival === the_position.enPassantSquare) {
                 pgnMove = start[0] + chessValue.captureSymbol;
             }
             pgnMove += arrival;
@@ -569,13 +554,14 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var ambiguity = false;
             var arrival = "";
             var clue = "";
+            var occupiedSquares = the_position.occupiedSquares;
             var pgnMove = "";
             var playedPiece = "";
             var sameColumn = false;
             var sameRow = false;
             var start = "";
             start = move.substr(0, 2);
-            playedPiece = occupiedSquares[start];
+            playedPiece = the_position.occupiedSquares[start];
             arrival = move.substr(3, 2);
             pgnMove = playedPiece.toUpperCase();
             Object.keys(occupiedSquares).forEach(function (square) {
@@ -587,7 +573,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 if (sameColumn && sameRow) {
                     return;
                 }
-                piece = occupiedSquares[square];
+                piece = the_position.occupiedSquares[square];
                 if (piece !== playedPiece) {
                     return;
                 }
@@ -626,9 +612,10 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Return an array of the names of the squares where are placed
             // the pieces of a specific color.
 
+            var occupiedSquares = the_position.occupiedSquares;
             var placements = [];
             Object.keys(occupiedSquares).forEach(function (square) {
-                var piece = occupiedSquares[square];
+                var piece = the_position.occupiedSquares[square];
                 if ((color === chessValue.white &&
                     piece === piece.toUpperCase())
                     || (color === chessValue.black &&
@@ -722,10 +709,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Return the start of a piece.
 
-            var piecesPlaces = the_position.getPiecesPlaces(activeColor);
+            var piecesPlaces = the_position.getPiecesPlaces(
+                the_position.activeColor);
             return piecesPlaces.find(function (start) {
                 var legalSquares = [];
-                var testPiece = occupiedSquares[start];
+                var testPiece = the_position.occupiedSquares[start];
                 if (testPiece.toLowerCase() !== piece.toLowerCase()) {
                     return false;
                 }
@@ -773,10 +761,10 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 [0, 1],
                 [1, 0]
             ];
-            if (!occupiedSquares.hasOwnProperty(start)) {
+            if (!the_position.occupiedSquares.hasOwnProperty(start)) {
                 return targets;
             }
-            piece = occupiedSquares[start];
+            piece = the_position.occupiedSquares[start];
             color = (piece.toLowerCase() === piece)
                 ? chessValue.black
                 : chessValue.white;
@@ -843,10 +831,10 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             }
             function hasNoCollision(column) {
                 var testSquare = column + row;
-                return !occupiedSquares.hasOwnProperty(testSquare);
+                return !the_position.occupiedSquares.hasOwnProperty(testSquare);
             }
             queenSquare = "d" + row;
-            if (allowedCastles.indexOf(queenSide) > -1 &&
+            if (the_position.allowedCastles.indexOf(queenSide) > -1 &&
                 !the_position.isControlledBy(queenSquare, oppositeColor)) {
                 noCollision = qSideCollisions.every(hasNoCollision);
                 if (noCollision) {
@@ -854,7 +842,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 }
             }
             bishopSquare = "f" + row;
-            if (allowedCastles.indexOf(kingSide) > -1 &&
+            if (the_position.allowedCastles.indexOf(kingSide) > -1 &&
                 !the_position.isControlledBy(bishopSquare, oppositeColor)) {
                 noCollision = kSideCollisions.every(hasNoCollision);
                 if (noCollision) {
@@ -977,7 +965,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 var testCol = colNumber + colDirection;
                 var testSquare = chessValue.columns[testCol - 1] + testRow;
                 if (ennemiesPlaces.indexOf(testSquare) > -1 ||
-                    enPassantSquare === testSquare) {
+                    the_position.enPassantSquare === testSquare) {
                     targets.push(testSquare);
                 } else if (onlyAttack) {
                     targets.push(testSquare);
@@ -1007,7 +995,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             testCol = colNumber;
             testRow = rowNumber + direction;
             testSquare = chessValue.columns[testCol - 1] + testRow;
-            if (occupiedSquares.hasOwnProperty(testSquare)) {
+            if (the_position.occupiedSquares.hasOwnProperty(testSquare)) {
                 return targets;
             }
             targets.push(testSquare);
@@ -1015,7 +1003,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 (rowNumber === 7 && direction === -1)) {
                 testRow = rowNumber + 2 * direction;
                 testSquare = chessValue.columns[testCol - 1] + testRow;
-                if (!occupiedSquares.hasOwnProperty(testSquare)) {
+                if (!the_position.occupiedSquares.hasOwnProperty(testSquare)) {
                     targets.push(testSquare);
                 }
             }
@@ -1026,7 +1014,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Return true if the position is playable.
 
-            var piecesPlaces = the_position.getPiecesPlaces(activeColor);
+            var piecesPlaces = the_position.getPiecesPlaces(
+                the_position.activeColor);
             return piecesPlaces.some(function (square) {
                 var legalSquares = the_position.getLegalSquares(square);
                 return legalSquares.length > 0;
@@ -1037,7 +1026,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Return true if the active king is checkmated.
 
-            var isCheck = the_position.isInCheck(activeColor);
+            var isCheck = the_position.isInCheck(the_position.activeColor);
             if (!isCheck) {
                 return false;
             }
@@ -1060,7 +1049,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Check if the position is draw by the 50 moves rule.
 
-            return halfmoveClock > 99;
+            return the_position.halfmoveClock > 99;
         };
 
         the_position.isDrawByInsufficientMaterial = function () {
@@ -1095,7 +1084,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             }
             if (blackPlaces.length > 1) {
                 blackPlaces.forEach(function (square) {
-                    var piece = occupiedSquares[square];
+                    var piece = the_position.occupiedSquares[square];
                     pieces.push(piece);
                 });
                 insufficientBlack = insufficients.some(function (insufficient) {
@@ -1110,7 +1099,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             }
             pieces = [];
             whitePlaces.forEach(function (square) {
-                var piece = occupiedSquares[square];
+                var piece = the_position.occupiedSquares[square];
                 pieces.push(piece.toLowerCase());
             });
             return insufficients.some(function (insufficient) {
@@ -1131,6 +1120,24 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return the_position.isControlledBy(kingSquare, ennemiesColor);
         };
 
+        the_position.initPosition = function () {
+
+            // Initialize the position object.
+
+            var fenMatches = [];
+            if (!Position.isValidFEN(fen)) {
+                throw new Error(error.invalidFEN);
+            }
+            fenMatches = regExp.fen.exec(fen);
+            the_position.activeColor = fenMatches[1];
+            the_position.allowedCastles = fenMatches[2];
+            the_position.enPassantSquare = fenMatches[3];
+            the_position.fullmoveNumber = Number(fenMatches[5]);
+            the_position.halfmoveClock = Number(fenMatches[4]);
+            the_position.occupiedSquares = Position.fenToObject(fen);
+        };
+
+        the_position.initPosition();
         return the_position;
     }
 
