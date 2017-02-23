@@ -1220,20 +1220,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         // to identify the chess piece.
         // The chess image is set with css backgroundImage url.
 
-        var backgroundImage = "url('" + url + "')";
-        var div = {};
-        var ghost = {};
-        var the_piece = {};
-        div = document.createElement("DIV");
-        div.className = css.squarePiece;
-        div.style.backgroundImage = backgroundImage;
-        ghost = document.createElement("DIV");
-        ghost.className = css.ghostPiece;
-        ghost.style.backgroundImage = backgroundImage;
-
-        the_piece = {
-            div: div,
-            ghost: ghost,
+        var the_piece = {
+            div: null,
+            ghost: null,
             ghostWidth: 0,
             isAnimated: false,
             name: name,
@@ -1270,11 +1259,10 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             }
             opacity += 0.05;
             the_piece.div.style.opacity = opacity;
-            if (opacity < 1) {
-                rAF(function () {
-                    the_piece.fadingPlace(square);
-                });
+            if (opacity === 1) {
+                return;
             }
+            rAF(the_piece.fadingPlace);
         };
 
         the_piece.fadingRemove = function () {
@@ -1298,11 +1286,26 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Returns the coordinate of the ghost.
 
-            var x = Math.round(ghost.getBoundingClientRect().left +
+            var x = Math.round(the_piece.ghost.getBoundingClientRect().left +
                 window.pageXOffset);
-            var y = Math.round(ghost.getBoundingClientRect().top +
+            var y = Math.round(the_piece.ghost.getBoundingClientRect().top +
                 window.pageYOffset);
             return [x, y];
+        };
+
+        the_piece.initPiece = function () {
+
+            // Initialize the piece object.
+
+            var backgroundImage = "url('" + url + "')";
+            the_piece.div = document.createElement("DIV");
+            the_piece.div.className = css.squarePiece;
+            the_piece.div.style.backgroundImage = backgroundImage;
+            the_piece.div.addEventListener("mousedown",
+            the_piece.mouseDownHandler);
+            the_piece.ghost = document.createElement("DIV");
+            the_piece.ghost.className = css.ghostPiece;
+            the_piece.ghost.style.backgroundImage = backgroundImage;
         };
 
         the_piece.mouseDownHandler = function (e) {
@@ -1361,8 +1364,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             the_piece.setGhostPosition(left, top);
         };
 
-        div.addEventListener("mousedown", the_piece.mouseDownHandler);
-
+        the_piece.initPiece();
         return the_piece;
     }
 
