@@ -1302,7 +1302,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             the_piece.div.className = css.squarePiece;
             the_piece.div.style.backgroundImage = backgroundImage;
             the_piece.div.addEventListener("mousedown",
-            the_piece.mouseDownHandler);
+                the_piece.mouseDownHandler);
             the_piece.ghost = document.createElement("DIV");
             the_piece.ghost.className = css.ghostPiece;
             the_piece.ghost.style.backgroundImage = backgroundImage;
@@ -1375,14 +1375,10 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         // The Square class constructs a HTML DIV element
         // named with its coordinate.
 
-        var canvas = document.createElement("CANVAS");
-        var cssClass = "";
-        var div = document.createElement("DIV");
-        var isWhiteSquare = Square.isWhite(name);
         var the_square = {
             board: null,
-            canvas: canvas,
-            div: div,
+            canvas: null,
+            div: null,
             hasCircle: false,
             isHighlighted: false,
             isMarked: false,
@@ -1392,10 +1388,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             piece: null,
             width: width
         };
-        cssClass = (isWhiteSquare)
-            ? css.square + " " + css.whiteSquare
-            : css.square + " " + css.blackSquare;
-        div.className = cssClass;
 
         the_square.clickHandler = function () {
             if (typeof the_square.board.onSquareClick === "function") {
@@ -1483,6 +1475,24 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             the_square.updateClass();
         };
 
+        the_square.initSquare = function () {
+
+            // Initialize the square object.
+
+            var cssClass = (Square.isWhite(name))
+                ? css.square + " " + css.whiteSquare
+                : css.square + " " + css.blackSquare;
+            var div = document.createElement("DIV");
+            the_square.canvas = document.createElement("CANVAS");
+            the_square.div = div;
+            div.className = cssClass;
+            div.addEventListener("click", the_square.clickHandler);
+            div.addEventListener("mousedown", the_square.mouseDownHandler);
+            div.addEventListener("mouseenter", the_square.mouseEnterHandler);
+            div.addEventListener("mouseleave", the_square.mouseLeaveHandler);
+            div.addEventListener("mouseup", the_square.mouseUpHandler);
+        };
+
         the_square.isEmpty = function () {
 
             // Check whether the square is empty.
@@ -1540,15 +1550,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             });
         };
 
-        the_square.div.addEventListener("click", the_square.clickHandler);
-        the_square.div.addEventListener("mousedown",
-            the_square.mouseDownHandler);
-        the_square.div.addEventListener("mouseenter",
-            the_square.mouseEnterHandler);
-        the_square.div.addEventListener("mouseleave",
-            the_square.mouseLeaveHandler);
-        the_square.div.addEventListener("mouseup", the_square.mouseUpHandler);
-
+        the_square.initSquare();
         return the_square;
     }
 
