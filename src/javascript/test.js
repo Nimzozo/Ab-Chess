@@ -2,12 +2,22 @@ window.addEventListener("load", function () {
     "use strict";
 
     var abChess = {};
+    var firstButton = document.getElementById("firstButton");
+    var index = 0;
+    var lastButton = document.getElementById("lastButton");
+    var nextButton = document.getElementById("nextButton");
     var options = {
         animationSpeed: "slow",
         clickable: true,
         draggable: true,
         imagesPath: "images/wikipedia/"
     };
+    var pgnButton = document.getElementById("pgn-button");
+    var pgnText = document.getElementById("pgn-text");
+    var pgnTextArea = document.getElementById("pgn-textarea");
+    var previousButton = document.getElementById("previousButton");
+    var resetButton = document.getElementById("resetButton");
+
     abChess = new AbChess("chessboard", options);
     abChess.draw();
     abChess.setFEN();
@@ -63,7 +73,6 @@ window.addEventListener("load", function () {
 
         // Update the text PGN.
 
-        var pgnText = document.getElementById("pgn-text");
         pgnText.innerText = abChess.getPGN();
     }
 
@@ -75,6 +84,37 @@ window.addEventListener("load", function () {
         lastMove = pgnMoves[lastIndex];
         addPGNMove(lastMove, lastIndex);
         updatePGNText();
+    });
+
+    pgnButton.addEventListener("click", function () {
+        abChess.reset();
+        abChess.setPGN(pgnTextArea.value);
+        index = abChess.getLastPositionIndex();
+        abChess.navigate(index);
+    });
+
+    resetButton.addEventListener("click", function () {
+        abChess.reset();
+    });
+
+    firstButton.addEventListener("click", function () {
+        index = 0;
+        abChess.navigate(index);
+    });
+
+    previousButton.addEventListener("click", function () {
+        index -= 1;
+        abChess.navigate(index);
+    });
+
+    nextButton.addEventListener("click", function () {
+        index += 1;
+        abChess.navigate(index);
+    });
+
+    lastButton.addEventListener("click", function () {
+        index = abChess.getLastPositionIndex();
+        abChess.navigate(index);
     });
 
 });
