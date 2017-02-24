@@ -7,7 +7,7 @@ window.addEventListener("load", function () {
     var lastButton = document.getElementById("lastButton");
     var nextButton = document.getElementById("nextButton");
     var options = {
-        animationSpeed: "slow",
+        animationSpeed: "normal",
         clickable: true,
         draggable: true,
         imagesPath: "images/wikipedia/"

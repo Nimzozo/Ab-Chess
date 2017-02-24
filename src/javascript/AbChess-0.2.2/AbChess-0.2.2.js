@@ -1578,8 +1578,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         var the_board = {
             animationSpeed: config.animationSpeed,
             clickablePieces: config.clickable,
-            columnsBorder: {},
-            container: document.getElementById(containerId),
+            columnsBorder: null,
+            container: null,
             draggablePieces: config.draggable,
             imagesExtension: config.imagesExtension,
             imagesPath: config.imagesPath,
@@ -1600,11 +1600,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             onSquareMouseUp: null,
             onSquareLeave: null,
             pendingMove: null,
-            promotionDiv: {},
-            rowsBorder: {},
+            promotionDiv: null,
+            rowsBorder: null,
             selectedSquare: null,
             squares: {},
-            squaresDiv: {},
+            squaresDiv: null,
             width: config.width
         };
 
@@ -2016,6 +2016,29 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             });
         };
 
+        the_board.initBoard = function () {
+
+            // Initialize the board object.
+
+            the_board.container = document.getElementById(containerId);
+            switch (the_board.animationSpeed) {
+                case "slow":
+                    the_board.animationSpeed = 20;
+                    break;
+                case "normal":
+                    the_board.animationSpeed = 10;
+                    break;
+                case "fast":
+                    the_board.animationSpeed = 5;
+                    break;
+                case "instant":
+                    the_board.animationSpeed = Infinity;
+                    break;
+                default:
+                    the_board.animationSpeed = 10;
+            }
+        };
+
         the_board.loadFEN = function (fen) {
 
             // Load a position from a FEN string.
@@ -2193,26 +2216,10 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var directions = [];
             var distances = [];
             var rests = [];
-            var speed = 0;
+            var speed = the_board.animationSpeed;
             var vectors = [];
             the_board.isNavigating = true;
             piece.isAnimated = true;
-            switch (the_board.animationSpeed) {
-                case "slow":
-                    speed = 10;
-                    break;
-                case "normal":
-                    speed = 5;
-                    break;
-                case "fast":
-                    speed = 2;
-                    break;
-                case "instant":
-                    animation.instant = true;
-                    break;
-                default:
-                    speed = 5;
-            }
             distances[0] = Math.abs(ghostCoordinate[0] - coordinate[0]);
             distances[1] = Math.abs(ghostCoordinate[1] - coordinate[1]);
             if (Math.max(distances[0], distances[1]) < speed) {
@@ -2246,6 +2253,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             the_board.draggablePieces = config.draggable;
         };
 
+        the_board.initBoard();
         return the_board;
     }
 
