@@ -10,5 +10,16 @@
 
 #pgn-textarea {
     height: 200px;
-    width: 80%;
+    width: 90%;
+}
+
+.commands__button {
+    background-color: white;
+    color: lightslategrey;
+    font-size: 1.2em;
+}
+
+.commands__button:hover {
+    background-color: lightslategrey;
+    color: white;
 }

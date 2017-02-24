@@ -3,6 +3,7 @@ window.addEventListener("load", function () {
 
     var abChess = {};
     var firstButton = document.getElementById("firstButton");
+    var flipButton = document.getElementById("flipButton");
     var index = 0;
     var lastButton = document.getElementById("lastButton");
     var nextButton = document.getElementById("nextButton");
@@ -95,6 +96,10 @@ window.addEventListener("load", function () {
 
     resetButton.addEventListener("click", function () {
         abChess.reset();
+    });
+
+    flipButton.addEventListener("click", function () {
+        abChess.flip();
     });
 
     firstButton.addEventListener("click", function () {
