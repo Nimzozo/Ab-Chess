@@ -15,11 +15,11 @@
 
 .commands__button {
     background-color: white;
-    color: lightslategrey;
+    color: slategrey;
     font-size: 1.2em;
 }
 
 .commands__button:hover {
-    background-color: lightslategrey;
+    background-color: slategrey;
     color: white;
 }

@@ -2357,27 +2357,13 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return new Position(fen);
         };
 
-        the_game.importMoves = function (pgn) {
+        the_game.importMoves = function () {
 
-            // Import the moves from a PGN.
+            // Generate the moves and the FEN strings from the PGN moves.
 
-            var importedMoves = [];
             var lastPosition = {};
             the_game.fenStrings = [chessValue.defaultFEN];
             the_game.moves = [];
-            the_game.pgnMoves = [];
-            while (regExp.comment.test(pgn)) {
-                pgn = pgn.replace(regExp.comment, "");
-            }
-            while (regExp.variation.test(pgn)) {
-                pgn = pgn.replace(regExp.variation, "");
-            }
-            pgn = pgn.replace(/\s{2,}/gm, " ");
-            importedMoves = pgn.match(regExp.pgnMove);
-            importedMoves.forEach(function (pgnMove) {
-                pgnMove = pgnMove.replace(regExp.pgnMoveNumber, "");
-                the_game.pgnMoves.push(pgnMove);
-            });
             lastPosition = the_game.getNthPosition(0);
             the_game.pgnMoves.forEach(function (pgnMove) {
                 var move = lastPosition.getSimpleMove(pgnMove);
@@ -2391,6 +2377,26 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 nextPosition = lastPosition.getNextPosition(move, promotion);
                 the_game.fenStrings.push(nextPosition.fenString);
                 lastPosition = nextPosition;
+            });
+        };
+
+        the_game.importPGNMoves = function (pgn) {
+
+            // Import the PGN moves from a PGN string.
+
+            var importedPGNMoves = [];
+            the_game.pgnMoves = [];
+            while (regExp.comment.test(pgn)) {
+                pgn = pgn.replace(regExp.comment, "");
+            }
+            while (regExp.variation.test(pgn)) {
+                pgn = pgn.replace(regExp.variation, "");
+            }
+            pgn = pgn.replace(/\s{2,}/gm, " ");
+            importedPGNMoves = pgn.match(regExp.pgnMove);
+            importedPGNMoves.forEach(function (pgnMove) {
+                pgnMove = pgnMove.replace(regExp.pgnMoveNumber, "");
+                the_game.pgnMoves.push(pgnMove);
             });
         };
 
@@ -2459,7 +2465,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 throw new SyntaxError(error.invalidPGN);
             }
             the_game.importTags(pgn);
-            the_game.importMoves(pgn);
+            the_game.importPGNMoves(pgn);
+            the_game.importMoves();
         };
 
         the_game.setResult = function (nextPosition) {
