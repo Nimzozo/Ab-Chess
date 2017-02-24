@@ -1535,9 +1535,13 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Hide if already showed.
 
             if (the_square.hasCircle) {
-                the_square.div.removeChild(the_square.canvas);
+                rAF(function () {
+                    the_square.div.removeChild(the_square.canvas);
+                });
             } else {
-                the_square.div.appendChild(the_square.canvas);
+                rAF(function () {
+                    the_square.div.appendChild(the_square.canvas);
+                });
             }
             the_square.hasCircle = !the_square.hasCircle;
         };
@@ -1733,6 +1737,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 if (config.markSelectedSquare && currentSquare.isSelected) {
                     currentSquare.select();
                 }
+                if (config.markLegalSquares && currentSquare.hasCircle) {
+                    currentSquare.showCanvas();
+                }
             });
         };
 
@@ -1840,7 +1847,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             squares.forEach(function (name) {
                 var square = the_board.squares[name];
-                rAF(square.showCanvas);
+                square.showCanvas();
             });
         };
 
@@ -2572,13 +2579,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             }
         }
         abBoard.clearMarks();
-        if (abConfig.markLastMove) {
-            if (index > 0) {
-                lastMove = abGame.moves[index - 1];
-                lastMoveStart = lastMove.substr(0, 2);
-                lastMoveArrival = lastMove.substr(3, 2);
-                abBoard.highlightSquares([lastMoveStart, lastMoveArrival]);
-            }
+        if (abConfig.markLastMove && index > 0) {
+            lastMove = abGame.moves[index - 1];
+            lastMoveStart = lastMove.substr(0, 2);
+            lastMoveArrival = lastMove.substr(3, 2);
+            abBoard.highlightSquares([lastMoveStart, lastMoveArrival]);
         }
         if (abConfig.markKingInCheck &&
             position.isInCheck(position.activeColor)) {
@@ -2591,8 +2596,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
         // Select or deselect a piece on the board and show its legal squares.
 
-        var legalSquares = [];
         var lastPosition = {};
+        var legalSquares = [];
         var n = 0;
         if (abBoard.selectedSquare === null) {
             abBoard.selectedSquare = square;
@@ -2994,6 +2999,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             abBoard.loadFEN();
             abBoard.clearMarks();
+            abBoard.unlock();
             abGame = new Chessgame();
         },
 
