@@ -1336,17 +1336,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             the_piece.square.piece = null;
         };
 
-        the_piece.showGhost = function (width) {
-
-            // Show the ghost and make the piece disappear.
-
-            the_piece.ghostWidth = width;
-            the_piece.div.style.opacity = "0";
-            the_piece.ghost.style.height = width + "px";
-            the_piece.ghost.style.width = width + "px";
-            document.body.appendChild(the_piece.ghost);
-        };
-
         the_piece.setGhostPosition = function (left, top) {
 
             // Set the ghost position.
@@ -1363,6 +1352,17 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 the_piece.ghostWidth / 2;
             var top = e.clientY + window.pageYOffset - the_piece.ghostWidth / 2;
             the_piece.setGhostPosition(left, top);
+        };
+
+        the_piece.showGhost = function (width) {
+
+            // Show the ghost and make the piece disappear.
+
+            the_piece.ghostWidth = width;
+            the_piece.div.style.opacity = "0";
+            the_piece.ghost.style.height = width + "px";
+            the_piece.ghost.style.width = width + "px";
+            document.body.appendChild(the_piece.ghost);
         };
 
         the_piece.initPiece();
@@ -1632,70 +1632,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     arrival.piece = piece;
                     piece.square = arrival;
                 }
-            });
-        };
-
-        the_board.startGhostAnimation = function (piece, ghostCoordinate,
-            coordinate) {
-
-            // Start the ghost animation.
-
-            var animation = {};
-            var directionX = 0;
-            var directionY = 0;
-            var distanceX = 0;
-            var distanceY = 0;
-            var ghostX = ghostCoordinate[0];
-            var ghostY = ghostCoordinate[1];
-            var normX = 0;
-            var normY = 0;
-            var restX = 0;
-            var restY = 0;
-            var speed = 0;
-            var vectors = [];
-            the_board.isNavigating = true;
-            piece.isAnimated = true;
-            switch (the_board.animationSpeed) {
-                case "slow":
-                    speed = 10;
-                    break;
-                case "normal":
-                    speed = 5;
-                    break;
-                case "fast":
-                    speed = 2;
-                    break;
-                case "instant":
-                    animation.instant = true;
-                    break;
-                default:
-                    speed = 5;
-            }
-            directionX = (ghostX < coordinate[0])
-                ? 1
-                : -1;
-            directionY = (ghostY < coordinate[1])
-                ? 1
-                : -1;
-            distanceX = Math.abs(ghostX - coordinate[0]);
-            distanceY = Math.abs(ghostY - coordinate[1]);
-            if (Math.max(distanceX, distanceY) < speed) {
-                animation.instant = true;
-            } else {
-                restX = distanceX % speed;
-                restY = distanceY % speed;
-                normX = (distanceX - restX) / speed;
-                normY = (distanceY - restY) / speed;
-                vectors[0] = directionX * normX;
-                vectors[1] = directionY * normY;
-            }
-            animation.arrival = coordinate;
-            animation.piece = piece;
-            animation.rest = [restX, restY];
-            animation.start = ghostCoordinate;
-            animation.vectors = vectors;
-            rAF(function () {
-                the_board.animateGhost(animation);
             });
         };
 
@@ -2245,6 +2181,60 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             playedPiece.remove();
             newPiece.fadingPlace(arrivalSquare);
             newPiece.put(arrivalSquare);
+        };
+
+        the_board.startGhostAnimation = function (piece, ghostCoordinate,
+            coordinate) {
+
+            // Start the ghost animation.
+
+            var animation = {};
+            var directions = [];
+            var distances = [];
+            var rests = [];
+            var speed = 0;
+            var vectors = [];
+            the_board.isNavigating = true;
+            piece.isAnimated = true;
+            switch (the_board.animationSpeed) {
+                case "slow":
+                    speed = 10;
+                    break;
+                case "normal":
+                    speed = 5;
+                    break;
+                case "fast":
+                    speed = 2;
+                    break;
+                case "instant":
+                    animation.instant = true;
+                    break;
+                default:
+                    speed = 5;
+            }
+            distances[0] = Math.abs(ghostCoordinate[0] - coordinate[0]);
+            distances[1] = Math.abs(ghostCoordinate[1] - coordinate[1]);
+            if (Math.max(distances[0], distances[1]) < speed) {
+                animation.instant = true;
+            } else {
+                distances.forEach(function (distance, index) {
+                    rests[index] = distance % speed;
+                    directions[index] =
+                        (ghostCoordinate[index] < coordinate[index])
+                            ? 1
+                            : -1;
+                    vectors[index] = directions[index] *
+                        (distance - rests[index]) / speed;
+                });
+            }
+            animation.arrival = coordinate;
+            animation.piece = piece;
+            animation.rest = rests;
+            animation.start = ghostCoordinate;
+            animation.vectors = vectors;
+            rAF(function () {
+                the_board.animateGhost(animation);
+            });
         };
 
         the_board.unlock = function () {
