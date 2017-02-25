@@ -1653,7 +1653,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 Math.abs(newCoordinates[1] - animation.arrival[1])
             ];
             var piece = animation.piece;
-            piece.setGhostPosition(newCoordinates[0], newCoordinates[1]);
             if (animation.instant || (newDistances[0] === animation.rest[0] &&
                 newDistances[1] === animation.rest[1])) {
                 if (piece.ghost.parentElement !== null) {
@@ -1664,6 +1663,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 piece.isAnimated = false;
                 return;
             }
+            piece.setGhostPosition(newCoordinates[0], newCoordinates[1]);
             animation.start = newCoordinates;
             rAF(function () {
                 the_board.animateGhost(animation);
@@ -1676,6 +1676,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             animations.forEach(function (animation) {
                 var arrival = animation.arrival;
+                var move = {};
                 var piece = animation.piece;
                 var start = animation.start;
                 if (arrival === undefined) {
@@ -1683,7 +1684,10 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 } else if (start === undefined) {
                     piece.fadingPlace(arrival);
                 } else {
-                    the_board.movePiece(piece, arrival, false);
+                    move.arrival = arrival;
+                    move.isCapture = false;
+                    move.piece = piece;
+                    the_board.movePiece(move, true);
                 }
             });
         };
@@ -2083,32 +2087,34 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             });
         };
 
-        the_board.movePiece = function (playedPiece, arrivalSquare, isCapture) {
+        the_board.movePiece = function (move, animateGhost) {
 
             // Move a piece and modify its place in the DOM tree with animation.
 
-            var arrivalCoordinate = arrivalSquare.getCoordinate();
+            var arrivalCoordinate = move.arrival.getCoordinate();
             var capturedPiece = {};
             var ghostWidth = Math.floor(abBoard.width / 8);
-            var startCoordinate = playedPiece.square.getCoordinate();
-            if (isCapture) {
-                capturedPiece = arrivalSquare.piece;
+            var startCoordinate = move.piece.square.getCoordinate();
+            if (move.isCapture) {
+                capturedPiece = move.arrival.piece;
             }
-            rAF(function () {
-                playedPiece.setGhostPosition(startCoordinate[0],
-                    startCoordinate[1]);
-                playedPiece.showGhost(ghostWidth);
-                the_board.startGhostAnimation(playedPiece, startCoordinate,
+            if (animateGhost) {
+                rAF(function () {
+                    move.piece.setGhostPosition(startCoordinate[0],
+                        startCoordinate[1]);
+                    move.piece.showGhost(ghostWidth);
+                });
+                the_board.startGhostAnimation(move.piece, startCoordinate,
                     arrivalCoordinate);
-                if (isCapture) {
-                    capturedPiece.fadingRemove();
-                }
-                playedPiece.animateRemove();
-                playedPiece.animatePut(arrivalSquare);
-            });
+            }
+            if (move.isCapture) {
+                capturedPiece.fadingRemove();
+            }
+            move.piece.animateRemove();
+            move.piece.animatePut(move.arrival);
         };
 
-        the_board.play = function (move, promotion) {
+        the_board.play = function (move, promotion, animateGhost) {
 
             // Play the desired move on the board.
             // Manage special moves (castle, en passant, promotion).
@@ -2116,6 +2122,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var arrival = "";
             var arrivalSquare = {};
             var emptyArrival = false;
+            var moveObject = {};
             var playedPiece = {};
             var start = move.substr(0, 2);
             var startSquare = the_board.squares[start];
@@ -2126,12 +2133,15 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             arrival = move.substr(3, 2);
             arrivalSquare = the_board.squares[arrival];
             emptyArrival = arrivalSquare.isEmpty();
-            the_board.movePiece(playedPiece, arrivalSquare, !emptyArrival);
+            moveObject.arrival = arrivalSquare;
+            moveObject.isCapture = !emptyArrival;
+            moveObject.piece = playedPiece;
+            the_board.movePiece(moveObject, animateGhost);
             playedPiece.remove();
             playedPiece.put(arrivalSquare);
             if (regExp.castle.test(move) &&
                 playedPiece.name[1] === chessValue.blackKing) {
-                the_board.playCastle(arrival);
+                the_board.playCastle(arrival, animateGhost);
             } else if (playedPiece.name[1] === chessValue.blackPawn) {
                 if (emptyArrival && regExp.enPassant.test(move) &&
                     start[0] !== arrival[0]) {
@@ -2142,10 +2152,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             }
         };
 
-        the_board.playCastle = function (arrival) {
+        the_board.playCastle = function (arrival, animateGhost) {
 
             // Play a move if it's a castle.
 
+            var moveObject = {};
             var rook = {};
             var rookArrival = "";
             var rookStart = "";
@@ -2163,7 +2174,10 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 throw new Error(error.illegalMove);
             }
             rook = the_board.squares[rookStart].piece;
-            the_board.movePiece(rook, the_board.squares[rookArrival], false);
+            moveObject.arrival = the_board.squares[rookArrival];
+            moveObject.isCapture = false;
+            moveObject.piece = rook;
+            the_board.movePiece(moveObject, animateGhost);
             rook.remove();
             rook.put(the_board.squares[rookArrival]);
         };
@@ -2291,11 +2305,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var lastIndex = the_game.fenStrings.length - 1;
             var nextPosition = {};
             var pgnMove = "";
-            currentPosition = the_game.getNthPosition(lastIndex);
-            if (!currentPosition.checkMoveLegality(move)) {
-                throw new Error(error.illegalMove);
-            }
             promotion = promotion || "";
+            currentPosition = the_game.getNthPosition(lastIndex);
             nextPosition = currentPosition.getNextPosition(move, promotion);
             the_game.fenStrings.push(nextPosition.fenString);
             the_game.moves.push(move);
@@ -2312,7 +2323,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var limit = 80;
             var lineFeed = "\n";
             var pgn = "";
-            var result = the_game.getInfo("Result");
             Object.keys(the_game.tags).forEach(function (tag) {
                 var value = the_game.tags[tag];
                 pgn += "[" + tag + " \"" + value + "\"]" + lineFeed;
@@ -2336,7 +2346,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 }
                 pgn += move + " ";
             });
-            return pgn + result;
+            return pgn + the_game.getInfo("Result");
         };
 
         the_game.getInfo = function (tag) {
@@ -2622,21 +2632,25 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         }
     }
 
-    function playMove(move, promotion) {
+    function playMove(move, promotion, animateGhost) {
 
         // Play a move on the board and store it in the game.
 
-        var index = 0;
-        abBoard.play(move, promotion);
+        var currentPosition = {};
+        var lastIndex = abGame.fenStrings.length - 1;
+        currentPosition = abGame.getNthPosition(lastIndex);
+        if (!currentPosition.checkMoveLegality(move)) {
+            throw new Error(error.illegalMove);
+        }
+        abBoard.play(move, promotion, animateGhost);
         abGame.addMove(move, promotion);
-        index = abGame.fenStrings.length - 1;
-        navigate(index, false);
+        navigate(lastIndex + 1, false);
         if (typeof event.onMovePlayed === "function") {
             rAF(event.onMovePlayed);
         }
     }
 
-    function finishMove(start, arrival) {
+    function finishMove(start, arrival, animateGhost) {
 
         // Perform the second step of a move once the arrival square is defined.
         // Test the legality.
@@ -2665,7 +2679,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 : chessValue.black;
             abBoard.askPromotion(color);
         } else {
-            playMove(move);
+            playMove(move, "", animateGhost);
         }
         return true;
     }
@@ -2730,7 +2744,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
     abBoard.onPromotionChose = function (choice) {
         var move = abBoard.pendingMove;
-        playMove(move, choice);
+        playMove(move, choice, true);
     };
 
     abBoard.onSquareClick = function (clickedSquare) {
@@ -2748,7 +2762,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 }
             } else {
                 selectPiece(startSquare);
-                if (!finishMove(startSquare, clickedSquare) && !isEmptySquare) {
+                if (!finishMove(startSquare, clickedSquare, true) &&
+                    !isEmptySquare) {
                     selectPiece(clickedSquare);
                 }
             }
@@ -2795,7 +2810,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         playedPiece = startSquare.piece;
         ghostCoordinate = startSquare.piece.getGhostCoordinate();
         if (dropSquare.name !== startSquare.name &&
-            finishMove(startSquare.name, dropSquare.name, true)) {
+            finishMove(startSquare.name, dropSquare.name, false)) {
             dropCoordinate = dropSquare.getCoordinate();
             abBoard.startGhostAnimation(playedPiece, ghostCoordinate,
                 dropCoordinate);
@@ -2997,7 +3012,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             if (!regExp.move.test(move)) {
                 throw new SyntaxError(error.invalidParameter);
             }
-            return playMove(move, promotion);
+            return playMove(move, promotion, true);
         },
 
         reset: function () {
