@@ -2286,18 +2286,15 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Play a move and store the new FEN string.
 
-            var currentPosition = {};
             var lastIndex = the_game.fenStrings.length - 1;
+            var lastPosition = the_game.getNthPosition(lastIndex);
             var nextPosition = {};
-            var pgnMove = "";
             promotion = promotion || "";
-            currentPosition = the_game.getNthPosition(lastIndex);
-            nextPosition = currentPosition.getNextPosition(move, promotion);
+            nextPosition = lastPosition.getNextPosition(move, promotion);
             the_game.fenStrings.push(nextPosition.fenString);
-            the_game.moves.push(move);
-            pgnMove = currentPosition.getPGNMove(move, promotion);
-            the_game.pgnMoves.push(pgnMove);
             the_game.setResult(nextPosition);
+            the_game.moves.push(move);
+            the_game.pgnMoves.push(lastPosition.getPGNMove(move, promotion));
         };
 
         the_game.exportPGN = function () {
