@@ -23,3 +23,8 @@
     background-color: slategrey;
     color: white;
 }
+
+.pgn-move:hover {
+    cursor: pointer;
+    background-color: orange;
+}

@@ -1,5 +1,5 @@
 // AbChess-0.2.2.js
-// 2017-02-24
+// 2017-02-25
 // Copyright (c) 2017 Nimzozo
 
 /*global
@@ -162,7 +162,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         variation: /\([^()]*?\)/gm
     };
 
-    // RAF
+    // RAF polyfill.
 
     var rAF = window.requestAnimationFrame ||
         window.webkitRequestAnimationFrame ||
@@ -1901,9 +1901,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // - to animate.
 
             var animations = [];
-            var newSquares = [];
-            var newDifferentSquares = [];
             var newPosition = position.occupiedSquares;
+            var newSquares = [];
             var oldDifferentSquares = [];
             var oldPosition = the_board.getPositionObject();
             Object.keys(oldPosition).forEach(function (square) {
@@ -1911,23 +1910,19 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     oldDifferentSquares.push(square);
                 }
             });
-            Object.keys(newPosition).forEach(function (square) {
-                if (oldPosition[square] !== newPosition[square]) {
-                    newDifferentSquares.push(square);
-                }
-            });
-            newDifferentSquares.forEach(function (newSquare) {
+            Object.keys(newPosition).forEach(function (newSquare) {
                 var foundAnimation = false;
                 var indexToRemove = 0;
-                var newPiece = newPosition[newSquare];
+                if (oldPosition[newSquare] === newPosition[newSquare]) {
+                    return;
+                }
                 foundAnimation = oldDifferentSquares.some(function (oldSquare,
                     oldIndex) {
                     var animation = {};
                     var arrivalSquare = {};
-                    var oldPiece = oldPosition[oldSquare];
                     var pieceToAnimate = {};
                     var startSquare = {};
-                    if (newPiece !== oldPiece) {
+                    if (newPosition[newSquare] !== oldPosition[oldSquare]) {
                         return false;
                     }
                     startSquare = the_board.squares[oldSquare];
@@ -2141,7 +2136,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             playedPiece.put(arrivalSquare);
             if (regExp.castle.test(move) &&
                 playedPiece.name[1] === chessValue.blackKing) {
-                the_board.playCastle(arrival, animateGhost);
+                the_board.playCastle(arrival);
             } else if (playedPiece.name[1] === chessValue.blackPawn) {
                 if (emptyArrival && regExp.enPassant.test(move) &&
                     start[0] !== arrival[0]) {
@@ -2152,7 +2147,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             }
         };
 
-        the_board.playCastle = function (arrival, animateGhost) {
+        the_board.playCastle = function (arrival) {
 
             // Play a move if it's a castle.
 
@@ -2160,15 +2155,12 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var rook = {};
             var rookArrival = "";
             var rookStart = "";
-            switch (arrival[0]) {
-                case chessValue.columns[2]:
-                    rookStart = chessValue.columns[0] + arrival[1];
-                    rookArrival = chessValue.columns[3] + arrival[1];
-                    break;
-                case chessValue.columns[6]:
-                    rookStart = chessValue.columns[7] + arrival[1];
-                    rookArrival = chessValue.columns[5] + arrival[1];
-                    break;
+            if (arrival[0] === chessValue.columns[2]) {
+                rookArrival = chessValue.columns[3] + arrival[1];
+                rookStart = chessValue.columns[0] + arrival[1];
+            } else if (arrival[0] === chessValue.columns[6]) {
+                rookArrival = chessValue.columns[5] + arrival[1];
+                rookStart = chessValue.columns[7] + arrival[1];
             }
             if (the_board.squares[rookStart].isEmpty()) {
                 throw new Error(error.illegalMove);
@@ -2177,7 +2169,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             moveObject.arrival = the_board.squares[rookArrival];
             moveObject.isCapture = false;
             moveObject.piece = rook;
-            the_board.movePiece(moveObject, animateGhost);
+            the_board.movePiece(moveObject, true);
             rook.remove();
             rook.put(the_board.squares[rookArrival]);
         };

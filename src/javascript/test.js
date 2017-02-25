@@ -14,6 +14,8 @@ window.addEventListener("load", function () {
         imagesPath: "images/wikipedia/"
     };
     var pgnButton = document.getElementById("pgn-button");
+    var pgnNotation = document.getElementById("pgn-notation");
+    var pgnSpanClass = "pgn-move";
     var pgnText = document.getElementById("pgn-text");
     var pgnTextArea = document.getElementById("pgn-textarea");
     var previousButton = document.getElementById("previousButton");
@@ -30,44 +32,25 @@ window.addEventListener("load", function () {
         abChess.navigate(index);
     }
 
-    function addPGNMove(pgnMove, moveIndex, startVariation, endVariation,
-        navIndexes) {
+    function addPGNMove(pgnMove, moveIndex) {
 
         // Update the PGN by adding a move.
 
-        var fullmoveNumber = 0;
+        var fullmoveNumber = "";
         var moveSpan = {};
-        var pgnNotation = document.getElementById("pgn-notation");
-        var pgnSpanClass = "pgn-move";
         var textNode = {};
         fullmoveNumber = (moveIndex % 2 === 0)
-            ? moveIndex / 2 + 1
-            : (moveIndex + 1) / 2;
-        textNode = document.createTextNode(" ");
-        if (startVariation) {
-            textNode.data += "(";
-            textNode.data += (moveIndex % 2 === 0)
-                ? fullmoveNumber + ". "
-                : fullmoveNumber + "... ";
-        } else if (moveIndex % 2 === 0) {
-            textNode.data += fullmoveNumber + ". ";
-        }
+            ? " " + (moveIndex / 2 + 1) + ". "
+            : " ";
+        textNode = document.createTextNode(fullmoveNumber);
         pgnNotation.appendChild(textNode);
-
         moveSpan = document.createElement("SPAN");
         moveSpan.className = pgnSpanClass;
         moveSpan.innerText = pgnMove;
-        if (navIndexes === undefined) {
-            navIndexes = moveIndex + 1;
-        }
         moveSpan.addEventListener("click", function () {
-            navigate(navIndexes);
+            navigate(moveIndex + 1);
         });
         pgnNotation.appendChild(moveSpan);
-        if (endVariation) {
-            textNode = document.createTextNode(")");
-            pgnNotation.appendChild(textNode);
-        }
     }
 
     function updatePGNText() {
