@@ -1185,16 +1185,15 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         var columns = chessValue.columns.split("");
         var fenPosition = "";
         var rows = chessValue.rows.split("").reverse();
-        function buildRowString(row, rowIndex) {
+        rows.forEach(function (row, rowIndex) {
             var emptyCount = 0;
             columns.forEach(function (column, columnIndex) {
-                var square = column + row;
-                if (position.hasOwnProperty(square)) {
+                if (position.hasOwnProperty(column + row)) {
                     if (emptyCount > 0) {
                         fenPosition += emptyCount;
                         emptyCount = 0;
                     }
-                    fenPosition += position[square];
+                    fenPosition += position[column + row];
                 } else {
                     emptyCount += 1;
                 }
@@ -1208,8 +1207,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     fenPosition += "/";
                 }
             });
-        }
-        rows.forEach(buildRowString);
+        });
         return fenPosition;
     };
 
@@ -1745,6 +1743,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     currentSquare.showCanvas();
                 }
             });
+            abBoard.selectedSquare = null;
         };
 
         the_board.clickPromotionHandler = function (e) {
@@ -2549,38 +2548,14 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
     abBoard = new Chessboard(containerId, abConfig);
     abGame = new Chessgame();
 
-    function navigate(index, updatePosition) {
+    function updateMarks(index, position) {
 
-        // Navigate through the game to the desired position.
-        // Update the board position and marks.
+        // Update the marks (check and last move) on the board.
 
-        var animations = [];
         var kingSquare = "";
         var lastMove = "";
         var lastMoveArrival = "";
         var lastMoveStart = "";
-        var maxIndex = 0;
-        var position = {};
-        var similarPieces = [];
-        if (abBoard.isNavigating) {
-            return;
-        }
-        maxIndex = abGame.fenStrings.length - 1;
-        if (index < 0 || index > maxIndex) {
-            throw new Error(error.invalidParameter);
-        }
-        position = abGame.getNthPosition(index);
-        if (updatePosition) {
-            animations = abBoard.getAnimations(position);
-            similarPieces = abBoard.getSimilarPieces(position);
-            abBoard.animateNavigation(animations);
-            abBoard.addNavigationData(animations, similarPieces);
-            if (index < maxIndex) {
-                abBoard.lock();
-            } else {
-                abBoard.unlock();
-            }
-        }
         abBoard.clearMarks();
         if (abConfig.markLastMove && index > 0) {
             lastMove = abGame.moves[index - 1];
@@ -2592,6 +2567,38 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             position.isInCheck(position.activeColor)) {
             kingSquare = position.getKingSquare(position.activeColor);
             abBoard.markSquares([kingSquare]);
+        }
+    }
+
+    function navigate(index, updatePosition) {
+
+        // Navigate through the game to the desired position.
+        // Update the board position and marks.
+
+        var animations = [];
+        var maxIndex = 0;
+        var position = {};
+        var similarPieces = [];
+        if (abBoard.isNavigating) {
+            return;
+        }
+        maxIndex = abGame.fenStrings.length - 1;
+        if (index < 0 || index > maxIndex) {
+            throw new Error(error.invalidParameter);
+        }
+        position = abGame.getNthPosition(index);
+        updateMarks(index, position);
+        if (!updatePosition) {
+            return;
+        }
+        animations = abBoard.getAnimations(position);
+        similarPieces = abBoard.getSimilarPieces(position);
+        abBoard.animateNavigation(animations);
+        abBoard.addNavigationData(animations, similarPieces);
+        if (index < maxIndex) {
+            abBoard.lock();
+        } else {
+            abBoard.unlock();
         }
     }
 
@@ -2771,11 +2778,10 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
     };
 
     abBoard.onSquareMouseUp = function (dropSquare) {
-        var dropXY = [];
+        var destination = [];
         var ghostXY = [];
         var playedPiece = {};
         var startSquare = {};
-        var startXY = [];
         if (!abBoard.isDragging) {
             return;
         }
@@ -2786,14 +2792,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         selectPiece(startSquare.name);
         playedPiece = startSquare.piece;
         ghostXY = startSquare.piece.getGhostCoordinate();
-        if (dropSquare.name !== startSquare.name &&
-            finishMove(startSquare.name, dropSquare.name, false)) {
-            dropXY = dropSquare.getCoordinate();
-            abBoard.startGhostAnimation(playedPiece, ghostXY, dropXY);
-        } else {
-            startXY = startSquare.getCoordinate();
-            abBoard.startGhostAnimation(playedPiece, ghostXY, startXY);
-        }
+        destination = (dropSquare.name !== startSquare.name &&
+            finishMove(startSquare.name, dropSquare.name, false))
+            ? dropSquare.getCoordinate()
+            : startSquare.getCoordinate();
+        abBoard.startGhostAnimation(playedPiece, ghostXY, destination);
         abBoard.isDragging = false;
     };
 
