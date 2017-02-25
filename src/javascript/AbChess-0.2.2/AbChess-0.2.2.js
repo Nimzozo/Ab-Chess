@@ -1215,7 +1215,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
     // -------------------------------------------------------------------------
 
-    function Piece(name, url) {
+    function Piece(name, url, width) {
 
         // The Piece class constructs an HTML DIV element.
         // The name property is a 2 chars string (b|w)[bknqr]
@@ -1225,11 +1225,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         var the_piece = {
             div: null,
             ghost: null,
-            ghostWidth: 0,
             isAnimated: false,
             name: name,
             square: null,
-            url: url
+            url: url,
+            width: width
         };
 
         the_piece.animatePut = function (square) {
@@ -1341,29 +1341,31 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Set the ghost position.
 
-            the_piece.ghost.style.left = left + "px";
-            the_piece.ghost.style.top = top + "px";
+            rAF(function () {
+                the_piece.ghost.style.left = left + "px";
+                the_piece.ghost.style.top = top + "px";
+            });
         };
 
         the_piece.setGhostPositionCursor = function (e) {
 
             // Attach the ghost to the cursor position.
 
-            var left = e.clientX + window.pageXOffset -
-                the_piece.ghostWidth / 2;
-            var top = e.clientY + window.pageYOffset - the_piece.ghostWidth / 2;
+            var left = e.clientX + window.pageXOffset - the_piece.width / 2;
+            var top = e.clientY + window.pageYOffset - the_piece.width / 2;
             the_piece.setGhostPosition(left, top);
         };
 
-        the_piece.showGhost = function (width) {
+        the_piece.showGhost = function () {
 
             // Show the ghost and make the piece disappear.
 
-            the_piece.ghostWidth = width;
-            the_piece.div.style.opacity = "0";
-            the_piece.ghost.style.height = width + "px";
-            the_piece.ghost.style.width = width + "px";
-            document.body.appendChild(the_piece.ghost);
+            rAF(function () {
+                the_piece.div.style.opacity = "0";
+                the_piece.ghost.style.height = the_piece.width + "px";
+                the_piece.ghost.style.width = the_piece.width + "px";
+                document.body.appendChild(the_piece.ghost);
+            });
         };
 
         the_piece.initPiece();
@@ -1962,12 +1964,12 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Create and return a new piece object.
 
-            var pieceName = (char.toLowerCase() === char)
+            var name = (char.toLowerCase() === char)
                 ? chessValue.black + char
                 : chessValue.white + char.toLowerCase();
-            var url = the_board.imagesPath + pieceName +
-                the_board.imagesExtension;
-            return new Piece(pieceName, url);
+            var url = the_board.imagesPath + name + the_board.imagesExtension;
+            var width = Math.floor(abBoard.width / 8);
+            return new Piece(name, url, width);
         };
 
         the_board.getPositionObject = function () {
@@ -2085,16 +2087,13 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             var arrivalXY = move.arrival.getCoordinate();
             var capturedPiece = {};
-            var ghostWidth = Math.floor(abBoard.width / 8);
             var startXY = move.piece.square.getCoordinate();
             if (move.isCapture) {
                 capturedPiece = move.arrival.piece;
             }
             if (animateGhost) {
-                rAF(function () {
-                    move.piece.setGhostPosition(startXY[0], startXY[1]);
-                    move.piece.showGhost(ghostWidth);
-                });
+                move.piece.setGhostPosition(startXY[0], startXY[1]);
+                move.piece.showGhost();
                 the_board.startGhostAnimation(move.piece, startXY, arrivalXY);
             }
             if (move.isCapture) {
@@ -2203,6 +2202,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var newPieceColor = "";
             var newPieceName = "";
             var url = "";
+            var width = Math.floor(abBoard.width / 8);
             promotion = promotion || chessValue.blackQueen;
             newPieceColor = (arrival[1] === chessValue.rows[0])
                 ? chessValue.black
@@ -2210,7 +2210,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             newPieceName = newPieceColor + promotion.toLowerCase();
             url = the_board.imagesPath + newPieceName +
                 the_board.imagesExtension;
-            newPiece = new Piece(newPieceName, url);
+            newPiece = new Piece(newPieceName, url, width);
             playedPiece.fadingRemove();
             playedPiece.remove();
             newPiece.fadingPlace(arrivalSquare);
@@ -2699,21 +2699,13 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
     };
 
     abBoard.onPieceMouseDown = function (e, piece) {
-        var ghostWidth = 0;
         e.preventDefault();
-        if (piece.isAnimated) {
-            return;
-        }
-        if (!abBoard.draggablePieces) {
-            return;
-        }
-        if (e.button !== 0) {
+        if (!abBoard.draggablePieces || piece.isAnimated || e.button !== 0) {
             return;
         }
         abBoard.isDragging = true;
-        ghostWidth = Math.floor(abBoard.width / 8);
-        piece.showGhost(ghostWidth);
         piece.setGhostPositionCursor(e);
+        piece.showGhost();
         if (abBoard.markOverflownSquare) {
             piece.square.overfly();
         }
@@ -2740,17 +2732,17 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         }
         if (clickedSquare === startSquare) {
             selectPiece(startSquare);
+            return;
+        }
+        if (startSquare === null) {
+            if (!isEmptySquare && !abBoard.hasDraggedClickedSquare) {
+                selectPiece(clickedSquare);
+            }
         } else {
-            if (startSquare === null) {
-                if (!isEmptySquare && !abBoard.hasDraggedClickedSquare) {
-                    selectPiece(clickedSquare);
-                }
-            } else {
-                selectPiece(startSquare);
-                if (!finishMove(startSquare, clickedSquare, true) &&
-                    !isEmptySquare) {
-                    selectPiece(clickedSquare);
-                }
+            selectPiece(startSquare);
+            if (!finishMove(startSquare, clickedSquare, true) &&
+                !isEmptySquare) {
+                selectPiece(clickedSquare);
             }
         }
         abBoard.hasDraggedClickedSquare = false;
@@ -2782,8 +2774,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         var dropXY = [];
         var ghostXY = [];
         var playedPiece = {};
-        var startXY = [];
         var startSquare = {};
+        var startXY = [];
         if (!abBoard.isDragging) {
             return;
         }
