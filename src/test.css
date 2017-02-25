@@ -1,11 +1,13 @@
 #main-container {
-    margin: 0 10%;
+    width: 90%;
+    margin: auto;
 }
 
 .inline-block {
     display: inline-block;
     vertical-align: top;
     width: 50%;
+    margin: auto;
 }
 
 #pgn-textarea {
@@ -13,7 +15,13 @@
     width: 90%;
 }
 
+#commands {
+    display: inline-block;
+    margin: 20px auto;
+}
+
 .commands__button {
+    margin: 2px;
     background-color: white;
     color: slategrey;
     font-size: 1.2em;

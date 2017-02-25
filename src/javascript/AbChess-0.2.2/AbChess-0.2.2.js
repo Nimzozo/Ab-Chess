@@ -2303,10 +2303,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         the_game.exportPGN = function () {
 
             // Return the PGN string.
+            // https://www.chessclub.com/user/help/PGN-spec
 
-            var charCount = 0;
-            var limit = 80;
+            var lineCount = 0;
             var lineFeed = "\n";
+            var lineLimit = 80;
             var pgn = "";
             Object.keys(the_game.tags).forEach(function (tag) {
                 var value = the_game.tags[tag];
@@ -2314,24 +2315,22 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             });
             pgn += lineFeed;
             the_game.pgnMoves.forEach(function (move, index) {
-                var moveNumber = "";
+                var moveText = "";
+                if (lineCount !== 0) {
+                    moveText = " ";
+                }
                 if (index % 2 === 0) {
-                    moveNumber = (index / 2 + 1) + ".";
+                    moveText += (index / 2 + 1) + ". ";
                 }
-                charCount += moveNumber.length + 1;
-                if (charCount > limit) {
+                moveText += move;
+                lineCount += moveText.length;
+                if (lineCount >= lineLimit) {
                     pgn += lineFeed;
-                    charCount = 0;
+                    lineCount = moveText.length;
                 }
-                pgn += moveNumber + " ";
-                charCount += move.length + 1;
-                if (charCount > limit) {
-                    pgn += lineFeed;
-                    charCount = 0;
-                }
-                pgn += move + " ";
+                pgn += moveText;
             });
-            return pgn + the_game.getInfo("Result");
+            return pgn + " " + the_game.getInfo("Result") + lineFeed + lineFeed;
         };
 
         the_game.getInfo = function (tag) {

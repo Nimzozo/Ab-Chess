@@ -1,6 +1,6 @@
 /*
 // AbChess-0.2.2.css
-// 2017-02-22
+// 2017-02-25
 // Copyright (c) 2017 Nimzozo
 */
 
@@ -77,9 +77,10 @@
 .columns-border {
     height: 20px;
     text-align: center;
-    font-size: 80%;
+    font-size: 90%;
     line-height: 20px;
     margin-left: 20px;
+    color: grey;
 }
 
 .columns-border__fragment {
@@ -92,8 +93,9 @@
     display: inline-block;
     width: 20px;
     text-align: center;
-    font-size: 80%;
+    font-size: 90%;
     vertical-align: top;
+    color: grey;
 }
 
 .rows-border__fragment {
