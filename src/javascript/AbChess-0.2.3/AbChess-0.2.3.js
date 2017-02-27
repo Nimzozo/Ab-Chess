@@ -134,6 +134,16 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         onMovePlayed: null
     };
 
+    // RAF polyfill.
+
+    var rAF = window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        function (callback) {
+            return window.setTimeout(callback, 1000 / 60);
+        };
+
     // Regular expressions.
 
     var regExp = {
@@ -160,16 +170,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         tagPairsSection: /(?:\[[^]+?\s"[^]+?"\]\s+){7,}\s+/gm,
         variation: /\([^()]*?\)/gm
     };
-
-    // RAF polyfill.
-
-    var rAF = window.requestAnimationFrame ||
-        window.webkitRequestAnimationFrame ||
-        window.mozRequestAnimationFrame ||
-        window.oRequestAnimationFrame ||
-        function (callback) {
-            return window.setTimeout(callback, 1000 / 60);
-        };
 
     // -------------------------------------------------------------------------
 
@@ -1844,10 +1844,10 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
         var the_board = {
             animationSpeed: config.animationSpeed,
-            clickablePieces: config.clickable,
+            clickable: config.clickable,
             columnsBorder: null,
             container: null,
-            draggablePieces: config.draggable,
+            draggable: config.draggable,
             game: null,
             hasDraggedClickedSquare: false,
             imagesExtension: config.imagesExtension,
@@ -1855,13 +1855,17 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             isDragging: false,
             isFlipped: config.flipped,
             legalMarksColor: config.legalMarksColor,
+            markKingInCheck: config.markKingInCheck,
+            markLastMove: config.markLastMove,
+            markLegalSquares: config.markLegalSquares,
             markOverflownSquare: config.markOverflownSquare,
+            markSelectedSquare: config.markSelectedSquare,
             notationBorder: config.notationBorder,
             pendingMove: null,
             promotionDiv: null,
             rowsBorder: null,
             selectedSquare: null,
-            squares: {},
+            squares: null,
             squaresDiv: null,
             width: config.width
         };
@@ -1996,7 +2000,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     currentSquare.showCanvas();
                 }
             });
-            abBoard.selectedSquare = null;
+            the_board.selectedSquare = null;
         };
 
         the_board.clickPromotionHandler = function (e) {
@@ -2083,6 +2087,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var columns = chessValue.columns.split("");
             var rows = chessValue.rows.split("");
             var squareWidth = Math.floor(the_board.width / 8);
+            the_board.squares = {};
             columns.forEach(function (column) {
                 rows.forEach(function (row) {
                     var name = column + row;
@@ -2253,7 +2258,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 ? chessValue.black + char
                 : chessValue.white + char.toLowerCase();
             var url = the_board.imagesPath + name + the_board.imagesExtension;
-            var width = Math.floor(abBoard.width / 8);
+            var width = Math.floor(the_board.width / 8);
             return new Piece(name, url, width);
         };
 
@@ -2356,8 +2361,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Lock the pieces.
 
-            the_board.clickablePieces = false;
-            the_board.draggablePieces = false;
+            the_board.clickable = false;
+            the_board.draggable = false;
         };
 
         the_board.markSquares = function (squares) {
@@ -2448,8 +2453,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
         the_board.onPieceMouseDown = function (e, piece) {
             e.preventDefault();
-            if (!the_board.draggablePieces || piece.isAnimated ||
-                e.button !== 0) {
+            if (!the_board.draggable || piece.isAnimated || e.button !== 0) {
                 return;
             }
             the_board.isDragging = true;
@@ -2476,7 +2480,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         the_board.onSquareClick = function (clickedSquare) {
             var isEmptySquare = the_board.squares[clickedSquare].isEmpty();
             var startSquare = the_board.selectedSquare;
-            if (!the_board.clickablePieces) {
+            if (!the_board.clickable) {
                 return;
             }
             if (clickedSquare === startSquare) {
@@ -2736,8 +2740,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Unlock the pieces.
 
-            the_board.clickablePieces = config.clickable;
-            the_board.draggablePieces = config.draggable;
+            the_board.clickable = config.clickable;
+            the_board.draggable = config.draggable;
         };
 
         the_board.updateMarks = function (index, position) {
