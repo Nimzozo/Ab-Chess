@@ -1,5 +1,5 @@
-// AbChess-0.2.2.js
-// 2017-02-25
+// AbChess-0.2.3.js
+// 2017-02-27
 // Copyright (c) 2017 Nimzozo
 
 /*global
@@ -1590,7 +1590,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             hasDraggedClickedSquare: false,
             isDragging: false,
             isFlipped: config.flipped,
-            isNavigating: false,
             legalMarksColor: config.legalMarksColor,
             markOverflownSquare: config.markOverflownSquare,
             notationBorder: config.notationBorder,
@@ -1657,7 +1656,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     document.body.removeChild(piece.ghost);
                 }
                 piece.div.style.opacity = "1";
-                the_board.isNavigating = false;
                 piece.isAnimated = false;
                 return;
             }
@@ -2244,7 +2242,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             animation.rest = rests;
             animation.start = ghostXY;
             animation.vectors = vectors;
-            the_board.isNavigating = true;
             piece.isAnimated = true;
             rAF(function () {
                 the_board.animateGhost(animation);
@@ -2575,9 +2572,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         var maxIndex = 0;
         var position = {};
         var similarPieces = [];
-        if (abBoard.isNavigating) {
-            return;
-        }
         maxIndex = abGame.fenStrings.length - 1;
         if (index < 0 || index > maxIndex) {
             throw new Error(error.invalidParameter);
