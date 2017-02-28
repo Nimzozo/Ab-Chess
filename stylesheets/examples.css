@@ -87,13 +87,21 @@ p {
     background-color: white;
     border: 1px solid slategrey;
     color: slategrey;
-    padding: 8px;
+    padding: 4px;
     font-size: 1.2em;
+    min-width: 40px;
 }
 
 .commands__button:hover {
     background-color: slategrey;
     color: white;
+}
+
+textarea {
+    display: block;
+    height: 100px;
+    width: 100%;
+    margin: 4px auto;
 }
 
 .link {

@@ -59,6 +59,10 @@ window.Accordeon = window.Accordeon || function (indexes) {
                     {
                         "name": "Random moves",
                         "href": "examples/advanced/random-moves.html"
+                    },
+                    {
+                        "name": "PGN reader",
+                        "href": "examples/advanced/pgn-reader.html"
                     }
                 ]
             }
