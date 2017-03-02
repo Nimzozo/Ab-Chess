@@ -1,5 +1,5 @@
 // AbChess-0.2.3.js
-// 2017-02-27
+// 2017-03-02
 // Copyright (c) 2017 Nimzozo
 
 /*global
@@ -1739,6 +1739,15 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             the_square.isHighlighted = !the_square.isHighlighted;
             the_square.updateClass();
         };
+        
+        the_square.highlightKing = function () {
+
+            // Highlight the square (king in check).
+            // Cancel if already highlighted.
+
+            the_square.isMarked = !the_square.isMarked;
+            the_square.updateClass();
+        };
 
         the_square.initSquare = function () {
 
@@ -1763,15 +1772,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Check whether the square is empty.
 
             return the_square.piece === null;
-        };
-
-        the_square.mark = function () {
-
-            // Mark the square (king in check).
-            // Cancel if already marked.
-
-            the_square.isMarked = !the_square.isMarked;
-            the_square.updateClass();
         };
 
         the_square.overfly = function () {
@@ -1978,9 +1978,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             });
         };
 
-        the_board.clearMarks = function () {
+        the_board.clearHighlight = function () {
 
-            // Remove all the marks of the squares.
+            // Remove all the highlight of the squares.
 
             Object.keys(the_board.squares).forEach(function (key) {
                 var currentSquare = the_board.squares[key];
@@ -1988,7 +1988,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     currentSquare.highlight();
                 }
                 if (config.markKingInCheck && currentSquare.isMarked) {
-                    currentSquare.mark();
+                    currentSquare.highlightKing();
                 }
                 if (config.markOverflownSquare && currentSquare.isOverflown) {
                     currentSquare.overfly();
@@ -2096,16 +2096,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     square.board = the_board;
                     the_board.squares[name] = square;
                 });
-            });
-        };
-
-        the_board.displayCanvas = function (squares) {
-
-            // Display or hide the circles for an array of squares.
-
-            squares.forEach(function (name) {
-                var square = the_board.squares[name];
-                square.showCanvas();
             });
         };
 
@@ -2301,14 +2291,35 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             });
             return similarPieces;
         };
+        
+        the_board.highlightKing = function (position) {
 
-        the_board.highlightSquares = function (squares) {
+            // Highlight a king in check.
 
-            // Highlight an array of squares.
+            var kingSquare = "";
+            if (!the_board.markKingInCheck ||
+                !position.isInCheck(position.activeColor)) {
+                return;
+            }
+            kingSquare = position.getKingSquare(position.activeColor);
+            the_board.squares[kingSquare].highlightKing();
+        };
 
-            squares.forEach(function (square) {
-                the_board.squares[square].highlight();
-            });
+        the_board.highlightLastMove = function (index) {
+
+            // Highlight the squares of the last move.
+
+            var lastMove = "";
+            var lastMoveArrival = "";
+            var lastMoveStart = "";
+            if (!the_board.markLastMove || index < 1) {
+                return;
+            }
+            lastMove = the_board.game.moves[index - 1];
+            lastMoveStart = lastMove.substr(0, 2);
+            lastMoveArrival = lastMove.substr(3, 2);
+            the_board.squares[lastMoveArrival].highlight();
+            the_board.squares[lastMoveStart].highlight();
         };
 
         the_board.initBoard = function () {
@@ -2365,15 +2376,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             the_board.draggable = false;
         };
 
-        the_board.markSquares = function (squares) {
-
-            // Mark an array of squares.
-
-            squares.forEach(function (square) {
-                the_board.squares[square].mark();
-            });
-        };
-
         the_board.movePiece = function (move, animateGhost) {
 
             // Move a piece and modify its place in the DOM tree with animation.
@@ -2396,10 +2398,10 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             move.piece.animatePut(move.arrival);
         };
 
-        the_board.navigate = function (index, updatePosition) {
+        the_board.navigate = function (index) {
 
             // Navigate through the game to the desired position.
-            // Update the board position and marks.
+            // Update the board position and highlight.
 
             var animations = [];
             var maxIndex = the_board.game.fenStrings.length - 1;
@@ -2409,10 +2411,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 throw new Error(error.invalidParameter);
             }
             position = the_board.game.getNthPosition(index);
-            the_board.updateMarks(index, position);
-            if (!updatePosition) {
-                return;
-            }
+            the_board.updateHighlight(index, position);
             animations = the_board.getAnimations(position);
             similarPieces = the_board.getSimilarPieces(position);
             the_board.animateNavigation(animations);
@@ -2558,9 +2557,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var piece = {};
             var start = move.substr(0, 2);
             var startSquare = the_board.squares[start];
-            if (startSquare.isEmpty()) {
-                throw new Error(error.illegalMove);
-            }
             piece = startSquare.piece;
             arrival = move.substr(3, 2);
             arrivalSquare = the_board.squares[arrival];
@@ -2642,13 +2638,15 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             var currentPosition = {};
             var lastIndex = the_board.game.fenStrings.length - 1;
+            var nextPosition = {};
             currentPosition = the_board.game.getNthPosition(lastIndex);
             if (!currentPosition.checkMoveLegality(move)) {
                 throw new Error(error.illegalMove);
             }
             the_board.play(move, promotion, animateGhost);
             the_board.game.addMove(move, promotion);
-            the_board.navigate(lastIndex + 1, false);
+            nextPosition = currentPosition.getNextPosition(move, promotion);
+            the_board.updateHighlight(lastIndex + 1, nextPosition);
             if (typeof event.onMovePlayed === "function") {
                 rAF(event.onMovePlayed);
             }
@@ -2683,9 +2681,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Select a piece on the board and show its legal squares.
             // Deselect if already selected.
 
-            var index = 0;
-            var lastPosition = {};
-            var legalSquares = [];
             if (the_board.selectedSquare === null) {
                 the_board.selectedSquare = square;
             } else {
@@ -2694,12 +2689,25 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             if (the_board.markSelectedSquare) {
                 the_board.squares[square].select();
             }
-            if (the_board.markLegalSquares) {
-                index = the_board.game.fenStrings.length - 1;
-                lastPosition = the_board.game.getNthPosition(index);
-                legalSquares = lastPosition.getLegalSquares(square);
-                the_board.displayCanvas(legalSquares);
+            the_board.showLegalSquares(square);
+        };
+
+        the_board.showLegalSquares = function (square) {
+
+            // Display or hide the legal highlights for a square.
+
+            var index = 0;
+            var lastPosition = {};
+            var legalSquares = [];
+            if (!the_board.markLegalSquares) {
+                return;
             }
+            index = the_board.game.fenStrings.length - 1;
+            lastPosition = the_board.game.getNthPosition(index);
+            legalSquares = lastPosition.getLegalSquares(square);
+            legalSquares.forEach(function (name) {
+                the_board.squares[name].showCanvas();
+            });
         };
 
         the_board.startGhostAnimation = function (piece, ghostXY, squareXY) {
@@ -2744,26 +2752,13 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             the_board.draggable = config.draggable;
         };
 
-        the_board.updateMarks = function (index, position) {
+        the_board.updateHighlight = function (index, position) {
 
-            // Update the marks (check and last move) on the board.
+            // Update the highlight (check and last move) on the board.
 
-            var kingSquare = "";
-            var lastMove = "";
-            var lastMoveArrival = "";
-            var lastMoveStart = "";
-            the_board.clearMarks();
-            if (the_board.markLastMove && index > 0) {
-                lastMove = the_board.game.moves[index - 1];
-                lastMoveStart = lastMove.substr(0, 2);
-                lastMoveArrival = lastMove.substr(3, 2);
-                the_board.highlightSquares([lastMoveStart, lastMoveArrival]);
-            }
-            if (the_board.markKingInCheck &&
-                position.isInCheck(position.activeColor)) {
-                kingSquare = position.getKingSquare(position.activeColor);
-                the_board.markSquares([kingSquare]);
-            }
+            the_board.clearHighlight();
+            the_board.highlightKing(position);
+            the_board.highlightLastMove(index);
         };
 
         the_board.initBoard();
@@ -2948,7 +2943,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Navigate to a position.
 
-            return abBoard.navigate(index, true);
+            return abBoard.navigate(index);
         },
 
         onMovePlayed: function (callback) {
@@ -2976,7 +2971,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Reset the game and the board.
 
             abBoard.loadFEN();
-            abBoard.clearMarks();
+            abBoard.clearHighlight();
             abBoard.unlock();
             abBoard.game = new Chessgame();
         },
