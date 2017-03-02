@@ -1739,7 +1739,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             the_square.isHighlighted = !the_square.isHighlighted;
             the_square.updateClass();
         };
-        
+
         the_square.highlightKing = function () {
 
             // Highlight the square (king in check).
@@ -2015,6 +2015,39 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             });
         };
 
+        the_board.confirmMove = function (start, arrival, animateGhost) {
+
+            // Confirm a move :
+            // - Test the legality.
+            // - Ask for promotion if needed.
+
+            var color = "";
+            var index = 0;
+            var move = start + "-" + arrival;
+            var piece = "";
+            var position = {};
+            if (!regExp.move.test(move)) {
+                throw new Error(error.invalidParameter);
+            }
+            index = the_board.game.fenStrings.length - 1;
+            if (!the_board.game.isLegal(index, move)) {
+                return false;
+            }
+            position = the_board.game.getNthPosition(index);
+            piece = position.occupiedSquares[start];
+            if (piece.toLowerCase() === chessValue.blackPawn &&
+                regExp.promotion.test(move)) {
+                the_board.pendingMove = move;
+                color = (arrival[1] === chessValue.rows[7])
+                    ? chessValue.white
+                    : chessValue.black;
+                the_board.askPromotion(color);
+            } else {
+                the_board.playMove(move, "", animateGhost);
+            }
+            return true;
+        };
+
         the_board.createBoard = function () {
 
             // Create the HTML board.
@@ -2138,39 +2171,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             });
         };
 
-        the_board.finishMove = function (start, arrival, animateGhost) {
-
-            // Perform the second step of a move.
-            // Test the legality.
-            // Show promotion div if needed.
-
-            var color = "";
-            var index = 0;
-            var move = start + "-" + arrival;
-            var piece = "";
-            var position = {};
-            if (!regExp.move.test(move)) {
-                throw new Error(error.invalidParameter);
-            }
-            index = the_board.game.fenStrings.length - 1;
-            if (!the_board.game.isLegal(index, move)) {
-                return false;
-            }
-            position = the_board.game.getNthPosition(index);
-            piece = position.occupiedSquares[start];
-            if (piece.toLowerCase() === chessValue.blackPawn &&
-                regExp.promotion.test(move)) {
-                the_board.pendingMove = move;
-                color = (arrival[1] === chessValue.rows[7])
-                    ? chessValue.white
-                    : chessValue.black;
-                the_board.askPromotion(color);
-            } else {
-                the_board.playMove(move, "", animateGhost);
-            }
-            return true;
-        };
-
         the_board.getAnimations = function (position) {
 
             // Return an array of animations to perform to navigate.
@@ -2291,7 +2291,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             });
             return similarPieces;
         };
-        
+
         the_board.highlightKing = function (position) {
 
             // Highlight a king in check.
@@ -2492,7 +2492,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 }
             } else {
                 the_board.selectPiece(startSquare);
-                if (!the_board.finishMove(startSquare, clickedSquare, true) &&
+                if (!the_board.confirmMove(startSquare, clickedSquare, true) &&
                     !isEmptySquare) {
                     the_board.selectPiece(clickedSquare);
                 }
@@ -2538,7 +2538,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             playedPiece = startSquare.piece;
             ghostXY = playedPiece.getGhostCoordinate();
             destination = (dropSquare.name !== startSquare.name &&
-                the_board.finishMove(startSquare.name, dropSquare.name, false))
+                the_board.confirmMove(startSquare.name, dropSquare.name, false))
                 ? dropSquare.getCoordinate()
                 : startSquare.getCoordinate();
             the_board.startGhostAnimation(playedPiece, ghostXY, destination);

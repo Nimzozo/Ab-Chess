@@ -1,0 +1,6 @@
+languages:
+  JavaScript: true
+exclude_paths:
+- "LICENCE.txt"
+- "README.md"
+- "src/images/"
