@@ -14,9 +14,12 @@ window.addEventListener("load", function () {
             var movesCount = 0;
             var pgnParagraph = document.getElementById("pgnParagraph");
             var promotions = ["b", "n", "q", "r"];
+            
             abChess = new AbChess("chessboard", config);
             abChess.draw();
             abChess.setFEN();
+            abChess.setGameInfo("White", "Math.random()");
+            abChess.setGameInfo("Black", "Math.random()");
 
             function chooseRandom(array) {
                 var random = 0;
