@@ -1,5 +1,5 @@
 // AbChess-0.2.3.js
-// 2017-03-02
+// 2017-03-03
 // Copyright (c) 2017 Nimzozo
 
 /*global
@@ -444,12 +444,14 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             if (playedPiece.toLowerCase() === chessValue.blackKing &&
                 regExp.castle.test(move)) {
                 if (arrivalSquare[0] === chessValue.columns[2]) {
-                    rookStart = chessValue.columns[0] + arrivalSquare[1];
-                    rookArrival = chessValue.columns[3] + arrivalSquare[1];
+                    rookStart = chessValue.columns[0];
+                    rookArrival = chessValue.columns[3];
                 } else {
-                    rookStart = chessValue.columns[7] + arrivalSquare[1];
-                    rookArrival = chessValue.columns[5] + arrivalSquare[1];
+                    rookStart = chessValue.columns[7];
+                    rookArrival = chessValue.columns[5];
                 }
+                rookStart += arrivalSquare[1];
+                rookArrival += arrivalSquare[1];
                 delete newOccupiedSquares[rookStart];
                 if (startSquare === "e1") {
                     newOccupiedSquares[rookArrival] = chessValue.whiteRook;
@@ -465,10 +467,10 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 }
                 if (regExp.promotion.test(move)) {
                     promotion = promotion || chessValue.blackQueen;
-                    if (arrivalSquare[1] === "1") {
+                    if (arrivalSquare[1] === chessValue.rows[0]) {
                         playedPiece = promotion.toLowerCase();
                     }
-                    if (arrivalSquare[1] === "8") {
+                    if (arrivalSquare[1] === chessValue.rows[7]) {
                         playedPiece = promotion.toUpperCase();
                     }
                 }
@@ -1569,9 +1571,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         };
 
         the_piece.mouseDownHandler = function (e) {
-            if (typeof the_piece.square.board.onPieceMouseDown === "function") {
-                the_piece.square.board.onPieceMouseDown(e, the_piece);
-            }
+            the_piece.square.board.onPieceMouseDown(e, the_piece);
         };
 
         the_piece.put = function (square) {
@@ -1652,9 +1652,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         };
 
         the_square.clickHandler = function () {
-            if (typeof the_square.board.onSquareClick === "function") {
-                the_square.board.onSquareClick(the_square.name);
-            }
+            the_square.board.onSquareClick(the_square.name);
         };
 
         the_square.drawFilledCircle = function (cssColor) {
@@ -1671,27 +1669,19 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         };
 
         the_square.mouseDownHandler = function (e) {
-            if (typeof the_square.board.onSquareMouseDown === "function") {
-                the_square.board.onSquareMouseDown(e);
-            }
+            the_square.board.onSquareMouseDown(e);
         };
 
         the_square.mouseEnterHandler = function () {
-            if (typeof the_square.board.onSquareEnter === "function") {
-                the_square.board.onSquareEnter(the_square);
-            }
+            the_square.board.onSquareEnter(the_square);
         };
 
         the_square.mouseLeaveHandler = function () {
-            if (typeof the_square.board.onSquareLeave === "function") {
-                the_square.board.onSquareLeave(the_square);
-            }
+            the_square.board.onSquareLeave(the_square);
         };
 
         the_square.mouseUpHandler = function () {
-            if (typeof the_square.board.onSquareMouseUp === "function") {
-                the_square.board.onSquareMouseUp(the_square);
-            }
+            the_square.board.onSquareMouseUp(the_square);
         };
 
         the_square.getClassName = function () {
@@ -2002,9 +1992,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
         the_board.clickPromotionHandler = function (e) {
             var choice = e.target.name;
-            if (typeof the_board.onPromotionChose === "function") {
-                the_board.onPromotionChose(choice);
-            }
+            the_board.onPromotionChose(choice);
             the_board.pendingMove = null;
             the_board.unlock();
             rAF(function () {
@@ -2588,12 +2576,14 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var rookArrival = "";
             var rookStart = "";
             if (arrival[0] === chessValue.columns[2]) {
-                rookArrival = chessValue.columns[3] + arrival[1];
-                rookStart = chessValue.columns[0] + arrival[1];
+                rookStart = chessValue.columns[0];
+                rookArrival = chessValue.columns[3];
             } else if (arrival[0] === chessValue.columns[6]) {
-                rookArrival = chessValue.columns[5] + arrival[1];
-                rookStart = chessValue.columns[7] + arrival[1];
+                rookStart = chessValue.columns[7];
+                rookArrival = chessValue.columns[5];
             }
+            rookStart += arrival[1];
+            rookArrival += arrival[1];
             if (the_board.squares[rookStart].isEmpty()) {
                 throw new Error(error.illegalMove);
             }
