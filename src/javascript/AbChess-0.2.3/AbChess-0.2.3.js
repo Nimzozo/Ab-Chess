@@ -327,46 +327,43 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
         the_position.getNextAllowedCastles = function (move) {
 
-            // Return the new allowed castles.
+            // Return the updated allowed castles.
 
-            var allowedCastles = the_position.allowedCastles;
-            var arrivalSquare = "";
-            var newAllowedCastles = "";
-            var playedPiece = "";
-            var startSquare = "";
-            if (allowedCastles === "-") {
-                return allowedCastles;
+            var arrival = "";
+            var castles = the_position.allowedCastles;
+            var king = [chessValue.whiteKing, chessValue.blackKing];
+            var kingRook = "";
+            var kingStart = "";
+            var queen = [chessValue.whiteQueen, chessValue.blackQueen];
+            var queenRook = "";
+            var regExps = [/[KQ]/, /[kq]/];
+            var rows = [1, 8];
+            var start = "";
+            if (castles === "-") {
+                return castles;
             }
-            newAllowedCastles = allowedCastles;
-            startSquare = move.substr(0, 2);
-            playedPiece = the_position.occupiedSquares[startSquare];
-            arrivalSquare = move.substr(3, 2);
-            if (allowedCastles.search(/[kq]/) > -1) {
-                if (playedPiece === chessValue.blackKing) {
-                    newAllowedCastles = allowedCastles.replace(/[kq]/g, "");
+            start = move.substr(0, 2);
+            arrival = move.substr(3, 2);
+            rows.forEach(function (row, index) {
+                if (castles.search(regExps[index]) === -1) {
+                    return;
                 }
-                if (startSquare === "a8" || arrivalSquare === "a8") {
-                    newAllowedCastles = allowedCastles.replace(/q/, "");
+                kingStart = chessValue.columns[4] + row;
+                kingRook = chessValue.columns[7] + row;
+                queenRook = chessValue.columns[0] + row;
+                if (start === kingStart) {
+                    castles = castles.replace(king[index], "");
+                    castles = castles.replace(queen[index], "");
+                } else if (start === kingRook || arrival === kingRook) {
+                    castles = castles.replace(king[index], "");
+                } else if (start === queenRook || arrival === queenRook) {
+                    castles = castles.replace(queen[index], "");
                 }
-                if (startSquare === "h8" || arrivalSquare === "h8") {
-                    newAllowedCastles = allowedCastles.replace(/k/, "");
-                }
+            });
+            if (castles === "") {
+                castles = "-";
             }
-            if (allowedCastles.search(/[KQ]/) > -1) {
-                if (playedPiece === chessValue.whiteKing) {
-                    newAllowedCastles = allowedCastles.replace(/[KQ]/g, "");
-                }
-                if (startSquare === "a1" || arrivalSquare === "a1") {
-                    newAllowedCastles = allowedCastles.replace(/Q/, "");
-                }
-                if (startSquare === "h1" || arrivalSquare === "h1") {
-                    newAllowedCastles = allowedCastles.replace(/K/, "");
-                }
-            }
-            if (newAllowedCastles === "") {
-                newAllowedCastles = "-";
-            }
-            return newAllowedCastles;
+            return castles;
         };
 
         the_position.getNextEnPassant = function (move) {

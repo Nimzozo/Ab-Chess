@@ -53,13 +53,6 @@ window.addEventListener("load", function () {
         pgnNotation.appendChild(moveSpan);
     }
 
-    function updatePGNText() {
-
-        // Update the text PGN.
-
-        pgnText.innerText = abChess.getPGN();
-    }
-
     abChess.onMovePlayed(function () {
         var lastIndex = 0;
         var lastMove = "";
@@ -67,7 +60,7 @@ window.addEventListener("load", function () {
         lastIndex = pgnMoves.length - 1;
         lastMove = pgnMoves[lastIndex];
         addPGNMove(lastMove, lastIndex);
-        updatePGNText();
+        pgnText.innerText = abChess.getFEN(lastIndex + 1);
     });
 
     pgnButton.addEventListener("click", function () {
