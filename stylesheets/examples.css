@@ -64,6 +64,7 @@ ul {
     display: inline-block;
     vertical-align: top;
     width: 80%;
+    margin: auto;
 }
 
 .example {
@@ -103,6 +104,21 @@ textarea {
     height: 100px;
     width: 100%;
     margin: 4px auto;
+}
+
+#black-name {
+    margin: 10px auto;
+    padding: 4px;
+    color: white;
+    background-color: black;
+    border: 1px solid black;
+}
+
+#white-name {
+    margin: 10px auto;
+    padding: 4px;
+    background-color: white;
+    border: 1px solid black;
 }
 
 .link {

@@ -1,7 +1,7 @@
 window.addEventListener("load", function () {
     "use strict";
 
-    var accordeon = new Accordeon([1, 4]);
+    var accordeon = new Accordeon([1, 6]);
     var example = {
         func: function () {
             var abChess = {};

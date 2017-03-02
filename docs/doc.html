@@ -124,7 +124,7 @@
                 </tr>
                 <tr>
                     <td id="width">width</td>
-                    <td>Optional<br>Number<br>The width of the chessboard in pixel. The default is <code class="inline-code">360</code>.</td>
+                    <td>Optional<br>Number<br>The width of the chessboard in pixel. Multiples of 8 are recommended. The default is <code class="inline-code">360</code>.</td>
                 </tr>
             </table>
 
@@ -132,16 +132,17 @@
             <p class="description">Create an AbChess instance.</p>
             <span class="code-title">JavaScript</span>
             <code class="code">var abChess = {};
-var abConfig = {
-    clickable: true,
-    draggable: false,
-    flipped: false,
-    showKingInCheck: true,
-    showLegalMoves: false,
-    width: 180
-};
-var containerId = "abContainer";
-abChess = new AbChess(containerId, abConfig);</code>
+            var abConfig = {
+                clickable: true,
+                draggable: false,
+                flipped: false,
+                showKingInCheck: true,
+                showLegalMoves: false,
+                width: 180
+            };
+            var containerId = "abContainer";
+            abChess = new AbChess(containerId, abConfig);
+            </code>
 
             <h2 class="big-header">Constant</h2>
             <div class="anchor" id="DEFAULT_FEN"></div>
@@ -210,6 +211,7 @@ abChess = new AbChess(containerId, abConfig);</code>
                     </tr>
                 </table>
                 <p>Return type : String</p>
+                <p>See <a class="link" href="examples/methods/get-game-info.html">example</a>.</p>
             </div>
             <div class="method">
                 <div class="anchor" id="getGameMoves"></div>
@@ -481,6 +483,7 @@ abChess = new AbChess(containerId, abConfig);</code>
                         <td>String<br>The Portable Game Notation to import.</td>
                     </tr>
                 </table>
+                <p>See <a class="link" href="examples/methods/set-pgn.html">example</a>.</p>
             </div>
 
         </div>

@@ -1,7 +1,7 @@
 window.addEventListener("load", function () {
     "use strict";
 
-    var accordeon = new Accordeon([1, 4]);
+    var accordeon = new Accordeon([1, 5]);
     var example = {
         func: function () {
             var abChess = {};
@@ -9,10 +9,12 @@ window.addEventListener("load", function () {
                 clickable: false,
                 draggable: false
             };
-            var saavedraFEN = "8/8/1KP5/3r4/8/8/8/k7";
+            var pgnTextarea = document.getElementById("pgn-textarea");
             abChess = new AbChess("chessboard", options);
             abChess.draw();
-            abChess.setFEN(saavedraFEN);
+            abChess.setFEN();
+            abChess.setPGN(pgnTextarea.value);
+            abChess.navigate(abChess.getLastPositionIndex());
         },
         html: "<div id=\"chessboard\"></div>"
     };

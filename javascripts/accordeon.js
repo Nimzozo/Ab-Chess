@@ -44,8 +44,16 @@ window.Accordeon = window.Accordeon || function (indexes) {
                         "href": "examples/methods/get-fen.html"
                     },
                     {
+                        "name": "Get game info",
+                        "href": "examples/methods/get-game-info.html"
+                    },
+                    {
                         "name": "Set FEN",
                         "href": "examples/methods/set-fen.html"
+                    },
+                    {
+                        "name": "Set PGN",
+                        "href": "examples/methods/set-pgn.html"
                     },
                     {
                         "name": "Play",
