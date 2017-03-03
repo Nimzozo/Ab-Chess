@@ -1,6 +1,7 @@
 # Ab-Chess
 
 [![codebeat badge](https://codebeat.co/badges/999678fa-a0fe-4af0-bade-46da967f578b)](https://codebeat.co/projects/github-com-nimzozo-ab-chess)
+[![Issue Count](https://codeclimate.com/github/Nimzozo/Ab-Chess/badges/issue_count.svg)](https://codeclimate.com/github/Nimzozo/Ab-Chess)
 
 _**A chess API written in native JavaScript**_
 
