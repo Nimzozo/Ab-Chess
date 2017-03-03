@@ -1,5 +1,5 @@
 // AbChess-0.2.3.js
-// 2017-03-03
+// 2017-03-04
 // Copyright (c) 2017 Nimzozo
 
 /*global
@@ -534,19 +534,12 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var playedPiece = "";
             var start = move.substr(0, 2);
             playedPiece = the_position.occupiedSquares[start];
-            switch (playedPiece.toLowerCase()) {
-                case chessValue.blackBishop:
-                case chessValue.blackKnight:
-                case chessValue.blackQueen:
-                case chessValue.blackRook:
-                    pgnMove = the_position.getPGNPiece(move);
-                    break;
-                case chessValue.blackKing:
-                    pgnMove = the_position.getPGNKing(move);
-                    break;
-                case chessValue.blackPawn:
-                    pgnMove = the_position.getPGNPawn(move, promotion);
-                    break;
+            if (playedPiece.toLowerCase() === chessValue.blackKing) {
+                pgnMove = the_position.getPGNKing(move);
+            } else if (playedPiece.toLowerCase() === chessValue.blackPawn) {
+                pgnMove = the_position.getPGNPawn(move, promotion);
+            } else {
+                pgnMove = the_position.getPGNPiece(move);
             }
             return pgnMove + the_position.getPGNSymbol(move, promotion);
         };
@@ -1576,10 +1569,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 board.hasDraggedClickedSquare = true;
                 return;
             }
-            if (board.selectedSquare !== null) {
-                board.selectPiece(board.selectedSquare);
-            }
-            board.selectPiece(the_piece.square.name);
+            the_piece.select();
         };
 
         the_piece.put = function (square) {
@@ -1601,6 +1591,35 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 return;
             }
             the_piece.square.piece = null;
+        };
+
+        the_piece.select = function () {
+
+            // Select the piece after a click or a drag start.
+
+            var board = the_piece.square.board;
+            if (board.selectedSquare !== null) {
+                board.squares[board.selectedSquare].piece.deselect();
+            }
+            board.showLegalSquares(the_piece.square.name);
+            if (board.markSelectedSquare) {
+                board.squares[the_piece.square.name].isSelected = true;
+                board.squares[the_piece.square.name].updateCSS();
+            }
+            board.selectedSquare = the_piece.square.name;
+        };
+
+        the_piece.deselect = function () {
+
+            // Deselect the piece after a click or a drag end.
+
+            var board = the_piece.square.board;
+            board.showLegalSquares(the_piece.square.name);
+            if (board.markSelectedSquare) {
+                board.squares[the_piece.square.name].isSelected = false;
+                board.squares[the_piece.square.name].updateCSS();
+            }
+            board.selectedSquare = null;
         };
 
         the_piece.setGhostPosition = function (left, top) {
@@ -1732,18 +1751,18 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 return;
             }
             if (the_square.name === startSquare) {
-                board.selectPiece(startSquare);
+                the_square.piece.deselect();
                 return;
             }
             if (startSquare === null) {
                 if (!isEmptySquare && !board.hasDraggedClickedSquare) {
-                    board.selectPiece(the_square.name);
+                    the_square.piece.select();
                 }
             } else {
-                board.selectPiece(startSquare);
+                board.squares[startSquare].piece.deselect();
                 if (!board.confirmMove(startSquare, the_square.name, true) &&
                     !isEmptySquare) {
-                    board.selectPiece(the_square.name);
+                    the_square.piece.select();
                 }
             }
             board.hasDraggedClickedSquare = false;
@@ -1775,8 +1794,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 the_square.updateCSS();
             }
             startSquare = board.squares[board.selectedSquare];
-            board.selectPiece(startSquare.name);
             playedPiece = startSquare.piece;
+            playedPiece.deselect();
             ghostXY = getCoordinate(playedPiece.ghost);
             destination = (the_square.name !== startSquare.name &&
                 board.confirmMove(startSquare.name, the_square.name, false))
@@ -2427,9 +2446,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             squareXY = getCoordinate(selectedSquare.div);
             the_board.startGhostAnimation(selectedSquare.piece, ghostXY,
                 squareXY);
-            if (the_board.selectedSquare !== null) {
-                the_board.selectPiece(the_board.selectedSquare);
-            }
+            selectedSquare.piece.deselect();
             the_board.isDragging = false;
         };
 
@@ -2573,24 +2590,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             playedPiece.remove();
             newPiece.fadingPlace(arrivalSquare);
             newPiece.put(arrivalSquare);
-        };
-
-        the_board.selectPiece = function (square) {
-
-            // Select a piece on the board and show its legal squares.
-            // Deselect if already selected.
-
-            if (the_board.selectedSquare === null) {
-                the_board.selectedSquare = square;
-            } else {
-                the_board.selectedSquare = null;
-            }
-            the_board.showLegalSquares(square);
-            if (the_board.markSelectedSquare) {
-                the_board.squares[square].isSelected =
-                    !the_board.squares[square].isSelected;
-                the_board.squares[square].updateCSS();
-            }
         };
 
         the_board.showLegalSquares = function (square) {
