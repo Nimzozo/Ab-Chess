@@ -1713,8 +1713,12 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             div.className = cssClass;
             div.addEventListener("click", the_square.onClick);
             div.addEventListener("mousedown", the_square.onMouseDown);
-            div.addEventListener("mouseenter", the_square.onMouseEnter);
-            div.addEventListener("mouseleave", the_square.onMouseLeave);
+            div.addEventListener("mouseenter", function () {
+                the_square.onMouseEnterLeave(true);
+            });
+            div.addEventListener("mouseleave", function () {
+                the_square.onMouseEnterLeave(false);
+            });
             div.addEventListener("mouseup", the_square.onMouseUp);
         };
 
@@ -1754,18 +1758,10 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             e.preventDefault();
         };
 
-        the_square.onMouseEnter = function () {
+        the_square.onMouseEnterLeave = function (overflow) {
             var board = the_square.board;
             if (board.isDragging && board.markOverflownSquare) {
-                the_square.isOverflown = true;
-                the_square.updateCSS();
-            }
-        };
-
-        the_square.onMouseLeave = function () {
-            var board = the_square.board;
-            if (board.isDragging && board.markOverflownSquare) {
-                the_square.isOverflown = false;
+                the_square.isOverflown = overflow;
                 the_square.updateCSS();
             }
         };
