@@ -341,10 +341,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var arrival = "";
             var castles = the_position.allowedCastles;
             var king = [chessValue.whiteKing, chessValue.blackKing];
-            var kingRook = "";
-            var kingStart = "";
             var queen = [chessValue.whiteQueen, chessValue.blackQueen];
-            var queenRook = "";
             var regExps = [/[KQ]/, /[kq]/];
             var rows = [1, 8];
             var start = "";
@@ -354,6 +351,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             start = move.substr(0, 2);
             arrival = move.substr(3, 2);
             rows.forEach(function (row, index) {
+                var kingRook = "";
+                var kingStart = "";
+                var queenRook = "";
                 if (castles.search(regExps[index]) === -1) {
                     return;
                 }
@@ -599,15 +599,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             pgnMove = playedPiece.toUpperCase();
             Object.keys(occupiedSquares).forEach(function (square) {
                 var legalSquares = [];
-                var piece = "";
-                if (square === start) {
-                    return;
-                }
-                if (sameColumn && sameRow) {
-                    return;
-                }
-                piece = the_position.occupiedSquares[square];
-                if (piece !== playedPiece) {
+                var piece = the_position.occupiedSquares[square];
+                if (square === start || piece !== playedPiece ||
+                    (sameColumn && sameRow)) {
                     return;
                 }
                 legalSquares = the_position.getLegalSquares(square);
@@ -1571,12 +1565,12 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 return;
             }
             board.isDragging = true;
-            the_piece.setGhostPositionCursor(e);
-            the_piece.showGhost();
             if (board.markOverflownSquare) {
                 the_piece.square.isOverflown = true;
                 the_piece.square.updateCSS();
             }
+            the_piece.setGhostPositionCursor(e);
+            the_piece.showGhost();
             if (board.selectedSquare === the_piece.square.name) {
                 board.hasDraggedClickedSquare = true;
                 return;
