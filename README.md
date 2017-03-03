@@ -13,11 +13,17 @@ GitHub pages are available at https://nimzozo.github.io/Ab-Chess/ with :
 
 - [Documentation](https://nimzozo.github.io/Ab-Chess/docs/overview.html)
 - [Examples](https://nimzozo.github.io/Ab-Chess/examples/basics/default.html)
+- [Releases](https://nimzozo.github.io/Ab-Chess/download.html)
 
 ## License
 
 [MIT License](https://github.com/Nimzozo/ab-chess/blob/master/LICENSE.txt)
 
-## Miscellaneous
+## Coding tools
 
-Built with the help of [JSLint](http://www.jslint.com) and [Visual Studio Code](http://code.visualstudio.com/).
+Built with the help of :
+
+- [Code Climate](https://codeclimate.com)
+- [Codebeat](https://codebeat.co)
+- [JSLint](http://www.jslint.com)
+- [Visual Studio Code](http://code.visualstudio.com)
