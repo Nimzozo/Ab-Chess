@@ -1563,15 +1563,32 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             the_piece.div = document.createElement("DIV");
             the_piece.div.className = css.squarePiece;
             the_piece.div.style.backgroundImage = backgroundImage;
-            the_piece.div.addEventListener("mousedown",
-                the_piece.mouseDownHandler);
+            the_piece.div.addEventListener("mousedown", the_piece.onMouseDown);
             the_piece.ghost = document.createElement("DIV");
             the_piece.ghost.className = css.ghostPiece;
             the_piece.ghost.style.backgroundImage = backgroundImage;
         };
 
-        the_piece.mouseDownHandler = function (e) {
-            the_piece.square.board.onPieceMouseDown(e, the_piece);
+        the_piece.onMouseDown = function (e) {
+            var board = the_piece.square.board;
+            e.preventDefault();
+            if (!board.draggable || the_piece.isAnimated || e.button !== 0) {
+                return;
+            }
+            board.isDragging = true;
+            the_piece.setGhostPositionCursor(e);
+            the_piece.showGhost();
+            if (board.markOverflownSquare) {
+                the_piece.square.overfly();
+            }
+            if (board.selectedSquare === the_piece.square.name) {
+                board.hasDraggedClickedSquare = true;
+                return;
+            }
+            if (board.selectedSquare !== null) {
+                board.selectPiece(board.selectedSquare);
+            }
+            board.selectPiece(the_piece.square.name);
         };
 
         the_piece.put = function (square) {
@@ -1651,10 +1668,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             width: width
         };
 
-        the_square.clickHandler = function () {
-            the_square.board.onSquareClick(the_square.name);
-        };
-
         the_square.drawFilledCircle = function (cssColor) {
             var context = the_square.canvas.getContext("2d");
             var radius = Math.floor(the_square.width / 8);
@@ -1666,22 +1679,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             context.arc(xy, xy, radius, 0, 2 * Math.PI);
             context.fillStyle = cssColor;
             context.fill();
-        };
-
-        the_square.mouseDownHandler = function (e) {
-            the_square.board.onSquareMouseDown(e);
-        };
-
-        the_square.mouseEnterHandler = function () {
-            the_square.board.onSquareEnter(the_square);
-        };
-
-        the_square.mouseLeaveHandler = function () {
-            the_square.board.onSquareLeave(the_square);
-        };
-
-        the_square.mouseUpHandler = function () {
-            the_square.board.onSquareMouseUp(the_square);
         };
 
         the_square.getClassName = function () {
@@ -1747,11 +1744,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             the_square.canvas = document.createElement("CANVAS");
             the_square.div = div;
             div.className = cssClass;
-            div.addEventListener("click", the_square.clickHandler);
-            div.addEventListener("mousedown", the_square.mouseDownHandler);
-            div.addEventListener("mouseenter", the_square.mouseEnterHandler);
-            div.addEventListener("mouseleave", the_square.mouseLeaveHandler);
-            div.addEventListener("mouseup", the_square.mouseUpHandler);
+            div.addEventListener("click", the_square.onClick);
+            div.addEventListener("mousedown", the_square.onMouseDown);
+            div.addEventListener("mouseenter", the_square.onMouseEnter);
+            div.addEventListener("mouseleave", the_square.onMouseLeave);
+            div.addEventListener("mouseup", the_square.onMouseUp);
         };
 
         the_square.isEmpty = function () {
@@ -1759,6 +1756,77 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Check whether the square is empty.
 
             return the_square.piece === null;
+        };
+        
+        the_square.onClick = function () {
+            var board = the_square.board;
+            var isEmptySquare = the_square.isEmpty();
+            var startSquare = board.selectedSquare;
+            if (!board.clickable) {
+                return;
+            }
+            if (the_square.name === startSquare) {
+                board.selectPiece(startSquare);
+                return;
+            }
+            if (startSquare === null) {
+                if (!isEmptySquare && !board.hasDraggedClickedSquare) {
+                    board.selectPiece(the_square.name);
+                }
+            } else {
+                board.selectPiece(startSquare);
+                if (!board.confirmMove(startSquare, the_square.name, true) &&
+                    !isEmptySquare) {
+                    board.selectPiece(the_square.name);
+                }
+            }
+            board.hasDraggedClickedSquare = false;
+        };
+
+        the_square.onMouseDown = function (e) {
+            e.preventDefault();
+        };
+
+        the_square.onMouseEnter = function () {
+            if (!the_square.board.isDragging) {
+                return;
+            }
+            if (the_square.board.markOverflownSquare) {
+                the_square.overfly();
+            }
+        };
+
+        the_square.onMouseLeave = function () {
+            if (!the_square.board.isDragging) {
+                return;
+            }
+            if (the_square.board.markOverflownSquare) {
+                the_square.overfly();
+            }
+        };
+
+        the_square.onMouseUp = function () {
+            var board = the_square.board;
+            var destination = [];
+            var ghostXY = [];
+            var playedPiece = {};
+            var startSquare = {};
+            if (!board.isDragging) {
+                return;
+            }
+            if (board.markOverflownSquare) {
+                the_square.overfly();
+            }
+            startSquare = board.squares[board.selectedSquare];
+            board.selectPiece(startSquare.name);
+            playedPiece = startSquare.piece;
+            ghostXY = playedPiece.getGhostCoordinate();
+            destination = (the_square.name !== startSquare.name &&
+                board.confirmMove(startSquare.name, the_square.name, false))
+                ? the_square.getCoordinate()
+                : startSquare.getCoordinate();
+            board.startGhostAnimation(playedPiece, ghostXY, destination);
+            board.isDragging = false;
         };
 
         the_square.overfly = function () {
@@ -1947,17 +2015,14 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 promotionDiv.removeChild(promotionDiv.lastChild);
             }
             pieces.forEach(function (piece) {
-                var promotionButton;
+                var button = document.createElement("BUTTON");
                 var url = the_board.imagesPath + color + piece +
                     the_board.imagesExtension;
-                promotionButton = document.createElement("INPUT");
-                promotionButton.className = css.promotionButton;
-                promotionButton.setAttribute("type", "button");
-                promotionButton.setAttribute("name", piece);
-                promotionButton.style.backgroundImage = "url('" + url + "')";
-                promotionButton.addEventListener("click",
-                    the_board.clickPromotionHandler);
-                promotionDiv.appendChild(promotionButton);
+                button.className = css.promotionButton;
+                button.setAttribute("name", piece);
+                button.style.backgroundImage = "url('" + url + "')";
+                button.addEventListener("click", the_board.onPromote);
+                promotionDiv.appendChild(button);
             });
             the_board.lock();
             rAF(function () {
@@ -1988,16 +2053,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 }
             });
             the_board.selectedSquare = null;
-        };
-
-        the_board.clickPromotionHandler = function (e) {
-            var choice = e.target.name;
-            the_board.onPromotionChose(choice);
-            the_board.pendingMove = null;
-            the_board.unlock();
-            rAF(function () {
-                the_board.promotionDiv.style.display = "none";
-            });
         };
 
         the_board.confirmMove = function (start, arrival, animateGhost) {
@@ -2434,100 +2489,14 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             }
             the_board.isDragging = false;
         };
-
-        the_board.onPieceMouseDown = function (e, piece) {
-            e.preventDefault();
-            if (!the_board.draggable || piece.isAnimated || e.button !== 0) {
-                return;
-            }
-            the_board.isDragging = true;
-            piece.setGhostPositionCursor(e);
-            piece.showGhost();
-            if (the_board.markOverflownSquare) {
-                piece.square.overfly();
-            }
-            if (the_board.selectedSquare === piece.square.name) {
-                the_board.hasDraggedClickedSquare = true;
-                return;
-            }
-            if (the_board.selectedSquare !== null) {
-                the_board.selectPiece(the_board.selectedSquare);
-            }
-            the_board.selectPiece(piece.square.name);
-        };
-
-        the_board.onPromotionChose = function (choice) {
-            var move = the_board.pendingMove;
-            the_board.playMove(move, choice, true);
-        };
-
-        the_board.onSquareClick = function (clickedSquare) {
-            var isEmptySquare = the_board.squares[clickedSquare].isEmpty();
-            var startSquare = the_board.selectedSquare;
-            if (!the_board.clickable) {
-                return;
-            }
-            if (clickedSquare === startSquare) {
-                the_board.selectPiece(startSquare);
-                return;
-            }
-            if (startSquare === null) {
-                if (!isEmptySquare && !the_board.hasDraggedClickedSquare) {
-                    the_board.selectPiece(clickedSquare);
-                }
-            } else {
-                the_board.selectPiece(startSquare);
-                if (!the_board.confirmMove(startSquare, clickedSquare, true) &&
-                    !isEmptySquare) {
-                    the_board.selectPiece(clickedSquare);
-                }
-            }
-            the_board.hasDraggedClickedSquare = false;
-        };
-
-        the_board.onSquareEnter = function (square) {
-            if (!the_board.isDragging) {
-                return;
-            }
-            if (the_board.markOverflownSquare) {
-                square.overfly();
-            }
-        };
-
-        the_board.onSquareLeave = function (square) {
-            if (!the_board.isDragging) {
-                return;
-            }
-            if (the_board.markOverflownSquare) {
-                square.overfly();
-            }
-        };
-
-        the_board.onSquareMouseDown = function (e) {
-            e.preventDefault();
-        };
-
-        the_board.onSquareMouseUp = function (dropSquare) {
-            var destination = [];
-            var ghostXY = [];
-            var playedPiece = {};
-            var startSquare = {};
-            if (!the_board.isDragging) {
-                return;
-            }
-            if (the_board.markOverflownSquare) {
-                dropSquare.overfly();
-            }
-            startSquare = the_board.squares[the_board.selectedSquare];
-            the_board.selectPiece(startSquare.name);
-            playedPiece = startSquare.piece;
-            ghostXY = playedPiece.getGhostCoordinate();
-            destination = (dropSquare.name !== startSquare.name &&
-                the_board.confirmMove(startSquare.name, dropSquare.name, false))
-                ? dropSquare.getCoordinate()
-                : startSquare.getCoordinate();
-            the_board.startGhostAnimation(playedPiece, ghostXY, destination);
-            the_board.isDragging = false;
+        
+        the_board.onPromote = function (e) {
+            the_board.playMove(the_board.pendingMove, e.target.name, true);
+            the_board.pendingMove = null;
+            the_board.unlock();
+            rAF(function () {
+                the_board.promotionDiv.style.display = "none";
+            });
         };
 
         the_board.play = function (move, promotion, animateGhost) {
