@@ -846,49 +846,42 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             var bishopSquare = "";
             var castleStart = "";
-            var kingSide = "";
+            var colors = [chessValue.black, chessValue.white];
+            var index = 0;
+            var kings = [chessValue.whiteKing, chessValue.blackKing];
             var kSideCollisions = ["f", "g"];
             var noCollision = false;
-            var oppositeColor = "";
             var qSideCollisions = ["b", "c", "d"];
-            var queenSide = "";
+            var queens = [chessValue.whiteQueen, chessValue.blackQueen];
             var queenSquare = "";
-            var row = "";
+            var rows = [chessValue.rows[0], chessValue.rows[7]];
             var targets = [];
-            if (color === chessValue.white) {
-                kingSide = chessValue.whiteKing;
-                oppositeColor = chessValue.black;
-                queenSide = chessValue.whiteQueen;
-                row = "1";
-            } else {
-                kingSide = chessValue.blackKing;
-                oppositeColor = chessValue.white;
-                queenSide = chessValue.blackQueen;
-                row = "8";
-            }
-            castleStart = "e" + row;
+            index = (color === chessValue.white)
+                ? 0
+                : 1;
+            castleStart = chessValue.columns[4] + rows[index];
             if (start !== castleStart || the_position.isControlledBy(
-                castleStart, oppositeColor)) {
+                castleStart, colors[index])) {
                 return targets;
             }
             function hasNoCollision(column) {
-                var testSquare = column + row;
+                var testSquare = column + rows[index];
                 return !the_position.occupiedSquares.hasOwnProperty(testSquare);
             }
-            queenSquare = "d" + row;
-            if (the_position.allowedCastles.indexOf(queenSide) > -1 &&
-                !the_position.isControlledBy(queenSquare, oppositeColor)) {
+            queenSquare = chessValue.columns[3] + rows[index];
+            if (the_position.allowedCastles.indexOf(queens[index]) > -1 &&
+                !the_position.isControlledBy(queenSquare, colors[index])) {
                 noCollision = qSideCollisions.every(hasNoCollision);
                 if (noCollision) {
-                    targets.push("c" + row);
+                    targets.push(chessValue.columns[2] + rows[index]);
                 }
             }
-            bishopSquare = "f" + row;
-            if (the_position.allowedCastles.indexOf(kingSide) > -1 &&
-                !the_position.isControlledBy(bishopSquare, oppositeColor)) {
+            bishopSquare = chessValue.columns[5] + rows[index];
+            if (the_position.allowedCastles.indexOf(kings[index]) > -1 &&
+                !the_position.isControlledBy(bishopSquare, colors[index])) {
                 noCollision = kSideCollisions.every(hasNoCollision);
                 if (noCollision) {
-                    targets.push("g" + row);
+                    targets.push(chessValue.columns[6] + rows[index]);
                 }
             }
             return targets;
