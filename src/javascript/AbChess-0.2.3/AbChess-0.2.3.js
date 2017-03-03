@@ -134,6 +134,15 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         onMovePlayed: null
     };
 
+    var getCoordinate = function (element) {
+
+        // Return the coordinate of an HTML element.
+
+        var x = element.getBoundingClientRect().left + window.pageXOffset;
+        var y = element.getBoundingClientRect().top + window.pageYOffset;
+        return [Math.round(x), Math.round(y)];
+    };
+
     // RAF polyfill.
 
     var rAF = window.requestAnimationFrame ||
@@ -1544,17 +1553,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             }
         };
 
-        the_piece.getGhostCoordinate = function () {
-
-            // Returns the coordinate of the ghost.
-
-            var x = Math.round(the_piece.ghost.getBoundingClientRect().left +
-                window.pageXOffset);
-            var y = Math.round(the_piece.ghost.getBoundingClientRect().top +
-                window.pageYOffset);
-            return [x, y];
-        };
-
         the_piece.initPiece = function () {
 
             // Initialize the piece object.
@@ -1702,17 +1700,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return initialClass;
         };
 
-        the_square.getCoordinate = function () {
-
-            // Returns an array of coordinate of the square.
-
-            var x = Math.round(the_square.div.getBoundingClientRect().left +
-                window.pageXOffset);
-            var y = Math.round(the_square.div.getBoundingClientRect().top +
-                window.pageYOffset);
-            return [x, y];
-        };
-
         the_square.highlight = function () {
 
             // Highlight the square (last move).
@@ -1810,11 +1797,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             startSquare = board.squares[board.selectedSquare];
             board.selectPiece(startSquare.name);
             playedPiece = startSquare.piece;
-            ghostXY = playedPiece.getGhostCoordinate();
+            ghostXY = getCoordinate(playedPiece.ghost);
             destination = (the_square.name !== startSquare.name &&
                 board.confirmMove(startSquare.name, the_square.name, false))
-                ? the_square.getCoordinate()
-                : startSquare.getCoordinate();
+                ? getCoordinate(the_square.div)
+                : getCoordinate(startSquare.div);
             board.startGhostAnimation(playedPiece, ghostXY, destination);
             board.isDragging = false;
         };
@@ -2415,9 +2402,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Move a piece and modify its place in the DOM tree with animation.
 
-            var arrivalXY = move.arrival.getCoordinate();
+            var arrivalXY = getCoordinate(move.arrival.div);
             var capturedPiece = {};
-            var startXY = move.piece.square.getCoordinate();
+            var startXY = getCoordinate(move.piece.square.div);
             if (move.isCapture) {
                 capturedPiece = move.arrival.piece;
             }
@@ -2475,8 +2462,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 return;
             }
             selectedSquare = the_board.squares[the_board.selectedSquare];
-            ghostXY = selectedSquare.piece.getGhostCoordinate();
-            squareXY = selectedSquare.getCoordinate();
+            ghostXY = getCoordinate(selectedSquare.piece.ghost);
+            squareXY = getCoordinate(selectedSquare.div);
             the_board.startGhostAnimation(selectedSquare.piece, ghostXY,
                 squareXY);
             if (the_board.selectedSquare !== null) {
