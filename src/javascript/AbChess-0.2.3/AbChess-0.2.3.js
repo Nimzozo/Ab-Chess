@@ -1573,7 +1573,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             board.isDragging = true;
             the_piece.setGhostPositionCursor(e);
             the_piece.showGhost();
-            the_piece.square.overfly();
+            the_piece.square.toggleCSS(css.overflownSquare);
             if (board.selectedSquare === the_piece.square.name) {
                 board.hasDraggedClickedSquare = true;
                 return;
@@ -1697,28 +1697,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return initialClass;
         };
 
-        the_square.highlight = function () {
-
-            // Highlight the square (last move).
-            // Cancel if already highlighted.
-
-            if (the_square.board.markLastMove) {
-                the_square.isHighlighted = !the_square.isHighlighted;
-                the_square.updateClass();
-            }
-        };
-
-        the_square.highlightKing = function () {
-
-            // Highlight the square (king in check).
-            // Cancel if already highlighted.
-
-            if (the_square.board.markKingInCheck) {
-                the_square.isMarked = !the_square.isMarked;
-                the_square.updateClass();
-            }
-        };
-
         the_square.initSquare = function () {
 
             // Initialize the square object.
@@ -1774,11 +1752,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         };
 
         the_square.onMouseEnter = function () {
-            the_square.overfly();
+            the_square.toggleCSS(css.overflownSquare);
         };
 
         the_square.onMouseLeave = function () {
-            the_square.overfly();
+            the_square.toggleCSS(css.overflownSquare);
         };
 
         the_square.onMouseUp = function () {
@@ -1790,7 +1768,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             if (!board.isDragging) {
                 return;
             }
-            the_square.overfly();
+            the_square.toggleCSS(css.overflownSquare);
             startSquare = board.squares[board.selectedSquare];
             board.selectPiece(startSquare.name);
             playedPiece = startSquare.piece;
@@ -1801,29 +1779,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 : getCoordinate(startSquare.div);
             board.startGhostAnimation(playedPiece, ghostXY, destination);
             board.isDragging = false;
-        };
-
-        the_square.overfly = function () {
-
-            // Overfly the square.
-            // Cancel if already overflown.
-
-            if (the_square.board.markOverflownSquare &&
-                the_square.board.isDragging) {
-                the_square.isOverflown = !the_square.isOverflown;
-                the_square.updateClass();
-            }
-        };
-
-        the_square.select = function () {
-
-            // Select the square.
-            // Cancel if already selected.
-
-            if (the_square.board.markSelectedSquare) {
-                the_square.isSelected = !the_square.isSelected;
-                the_square.updateClass();
-            }
         };
 
         the_square.showCanvas = function () {
@@ -1846,14 +1801,41 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             the_square.hasCircle = !the_square.hasCircle;
         };
 
-        the_square.updateClass = function () {
+        the_square.toggleCSS = function (property) {
 
-            // Update the CSS class of the square.
+            // Toogle a CSS property.
 
-            var className = the_square.getClassName();
-            rAF(function () {
-                the_square.div.className = className;
-            });
+            var className = "";
+            var initialClass = the_square.getClassName();
+            switch (property) {
+                case css.highlightedSquare:
+                    if (the_square.board.markLastMove) {
+                        the_square.isHighlighted = !the_square.isHighlighted;
+                    }
+                    break;
+                case css.markedSquare:
+                    if (the_square.board.markKingInCheck) {
+                        the_square.isMarked = !the_square.isMarked;
+                    }
+                    break;
+                case css.overflownSquare:
+                    if (the_square.board.markOverflownSquare &&
+                        the_square.board.isDragging) {
+                        the_square.isOverflown = !the_square.isOverflown;
+                    }
+                    break;
+                case css.selectedSquare:
+                    if (the_square.board.markSelectedSquare) {
+                        the_square.isSelected = !the_square.isSelected;
+                    }
+                    break;
+            }
+            className = the_square.getClassName();
+            if (initialClass !== className) {
+                rAF(function () {
+                    the_square.div.className = className;
+                });
+            }
         };
 
         the_square.initSquare();
@@ -2019,13 +2001,13 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             Object.keys(the_board.squares).forEach(function (key) {
                 var currentSquare = the_board.squares[key];
                 if (currentSquare.isHighlighted) {
-                    currentSquare.highlight();
+                    currentSquare.toggleCSS(css.highlightedSquare);
                 }
                 if (currentSquare.isMarked) {
-                    currentSquare.highlightKing();
+                    currentSquare.toggleCSS(css.markedSquare);
                 }
                 if (currentSquare.isSelected) {
-                    currentSquare.select();
+                    currentSquare.toggleCSS(css.selectedSquare);
                 }
                 if (currentSquare.hasCircle) {
                     currentSquare.showCanvas();
@@ -2321,7 +2303,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 return;
             }
             kingSquare = position.getKingSquare(position.activeColor);
-            the_board.squares[kingSquare].highlightKing();
+            the_board.squares[kingSquare].toggleCSS(css.markedSquare);
         };
 
         the_board.highlightLastMove = function (index) {
@@ -2337,8 +2319,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             lastMove = the_board.game.moves[index - 1];
             lastMoveStart = lastMove.substr(0, 2);
             lastMoveArrival = lastMove.substr(3, 2);
-            the_board.squares[lastMoveArrival].highlight();
-            the_board.squares[lastMoveStart].highlight();
+            the_board.squares[lastMoveArrival].toggleCSS(css.highlightedSquare);
+            the_board.squares[lastMoveStart].toggleCSS(css.highlightedSquare);
         };
 
         the_board.initBoard = function () {
@@ -2621,7 +2603,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             } else {
                 the_board.selectedSquare = null;
             }
-            the_board.squares[square].select();
+            the_board.squares[square].toggleCSS(css.selectedSquare);
             the_board.showLegalSquares(square);
         };
 
