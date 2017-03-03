@@ -530,8 +530,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Return the PGN notation for a move.
 
-            var isInCheck = false;
-            var nextPosition = {};
             var pgnMove = "";
             var playedPiece = "";
             var start = move.substr(0, 2);
@@ -550,17 +548,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     pgnMove = the_position.getPGNPawn(move, promotion);
                     break;
             }
-            nextPosition = the_position.getNextPosition(move, promotion);
-            isInCheck = nextPosition.isInCheck(nextPosition.activeColor);
-            if (!isInCheck) {
-                return pgnMove;
-            }
-            if (!nextPosition.hasLegalMoves()) {
-                pgnMove += chessValue.checkmateSymbol;
-            } else {
-                pgnMove += chessValue.checkSymbol;
-            }
-            return pgnMove;
+            return pgnMove + the_position.getPGNSymbol(move, promotion);
         };
 
         the_position.getPGNPawn = function (move, promotion) {
@@ -632,6 +620,19 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             }
             pgnMove += arrival;
             return pgnMove;
+        };
+
+        the_position.getPGNSymbol = function (move, promotion) {
+
+            // Return the check or checkmate symbol for a PGN move if needed.
+
+            var nextPosition = the_position.getNextPosition(move, promotion);
+            if (!nextPosition.isInCheck(nextPosition.activeColor)) {
+                return "";
+            }
+            return (!nextPosition.hasLegalMoves())
+                ? chessValue.checkmateSymbol
+                : chessValue.checkSymbol;
         };
 
         the_position.getPiecesPlaces = function (color) {
