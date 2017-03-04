@@ -2,15 +2,13 @@
 
 [![Issue Count](https://codeclimate.com/github/Nimzozo/Ab-Chess/badges/issue_count.svg)](https://codeclimate.com/github/Nimzozo/Ab-Chess)
 
-**Chess API written in native JavaScript**
+## Chess API written in native JavaScript
 
 Ab-Chess API for JavaScript provides the tools to build HTML chessboards. 
 
 It lets you import, play and export a chessgame in the PGN notation.
 
-## Website
-
-GitHub pages are available at https://nimzozo.github.io/Ab-Chess/ with :
+More informations are available on the [GitHub pages](https://nimzozo.github.io/Ab-Chess/) :
 
 - [Documentation](https://nimzozo.github.io/Ab-Chess/docs/overview.html)
 - [Examples](https://nimzozo.github.io/Ab-Chess/examples/basics/default.html)
@@ -28,3 +26,9 @@ Built with the help of :
 - [Codebeat](https://codebeat.co)
 - [JSLint](http://www.jslint.com)
 - [Visual Studio Code](http://code.visualstudio.com)
+
+## Chess resources
+
+- [FEN Wikipedia](https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation)
+- [PGN Wikipedia](https://en.wikipedia.org/wiki/Portable_Game_Notation)
+- [PGN-spec](https://www.chessclub.com/user/help/PGN-spec)
