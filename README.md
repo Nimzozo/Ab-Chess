@@ -2,10 +2,11 @@
 
 [![Issue Count](https://codeclimate.com/github/Nimzozo/Ab-Chess/badges/issue_count.svg)](https://codeclimate.com/github/Nimzozo/Ab-Chess)
 
-_**A chess API written in native JavaScript**_
+**Chess API written in native JavaScript**
 
-Ab-Chess is a JavaScript API for building HTML chessboards linked to chessgames. 
-It can be used to import a game and embed it on a website, or to play a game and export it as PGN.
+Ab-Chess API for JavaScript provides the tools to build HTML chessboards. 
+
+It lets you import, play and export a chessgame in the PGN notation.
 
 ## Website
 
@@ -17,7 +18,7 @@ GitHub pages are available at https://nimzozo.github.io/Ab-Chess/ with :
 
 ## License
 
-[MIT License](https://github.com/Nimzozo/ab-chess/blob/master/LICENSE.txt)
+- [MIT License](https://github.com/Nimzozo/ab-chess/blob/master/LICENSE.txt)
 
 ## Coding tools
 
