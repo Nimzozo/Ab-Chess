@@ -1505,6 +1505,19 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             });
         };
 
+        the_piece.deselect = function () {
+
+            // Deselect the piece after a click or a drag end.
+
+            var board = the_piece.square.board;
+            the_piece.showLegalSquares();
+            if (board.markSelectedSquare) {
+                the_piece.square.isSelected = false;
+                the_piece.square.updateCSS();
+            }
+            board.selectedSquare = null;
+        };
+
         the_piece.fadingPlace = function (square) {
 
             // Fade the piece in until its opacity reaches 1.
@@ -1601,25 +1614,12 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             if (board.selectedSquare !== null) {
                 board.squares[board.selectedSquare].piece.deselect();
             }
-            board.showLegalSquares(the_piece.square.name);
+            the_piece.showLegalSquares();
             if (board.markSelectedSquare) {
-                board.squares[the_piece.square.name].isSelected = true;
-                board.squares[the_piece.square.name].updateCSS();
+                the_piece.square.isSelected = true;
+                the_piece.square.updateCSS();
             }
             board.selectedSquare = the_piece.square.name;
-        };
-
-        the_piece.deselect = function () {
-
-            // Deselect the piece after a click or a drag end.
-
-            var board = the_piece.square.board;
-            board.showLegalSquares(the_piece.square.name);
-            if (board.markSelectedSquare) {
-                board.squares[the_piece.square.name].isSelected = false;
-                board.squares[the_piece.square.name].updateCSS();
-            }
-            board.selectedSquare = null;
         };
 
         the_piece.setGhostPosition = function (left, top) {
@@ -1650,6 +1650,25 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 the_piece.ghost.style.height = the_piece.width + "px";
                 the_piece.ghost.style.width = the_piece.width + "px";
                 document.body.appendChild(the_piece.ghost);
+            });
+        };
+
+        the_piece.showLegalSquares = function () {
+
+            // Display or hide the legal squares canvas.
+
+            var board = the_piece.square.board;
+            var index = 0;
+            var lastPosition = {};
+            var legalSquares = [];
+            if (!board.markLegalSquares) {
+                return;
+            }
+            index = board.game.fenStrings.length - 1;
+            lastPosition = board.game.getNthPosition(index);
+            legalSquares = lastPosition.getLegalSquares(the_piece.square.name);
+            legalSquares.forEach(function (name) {
+                board.squares[name].showCanvas();
             });
         };
 
@@ -1810,9 +1829,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Show the square's canvas.
             // Hide if already showed.
 
-            if (!the_square.board.showLegalSquares) {
-                return;
-            }
             if (the_square.hasCircle) {
                 rAF(function () {
                     the_square.div.removeChild(the_square.canvas);
@@ -2590,24 +2606,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             playedPiece.remove();
             newPiece.fadingPlace(arrivalSquare);
             newPiece.put(arrivalSquare);
-        };
-
-        the_board.showLegalSquares = function (square) {
-
-            // Display or hide the legal highlights for a square.
-
-            var index = 0;
-            var lastPosition = {};
-            var legalSquares = [];
-            if (!the_board.markLegalSquares) {
-                return;
-            }
-            index = the_board.game.fenStrings.length - 1;
-            lastPosition = the_board.game.getNthPosition(index);
-            legalSquares = lastPosition.getLegalSquares(square);
-            legalSquares.forEach(function (name) {
-                the_board.squares[name].showCanvas();
-            });
         };
 
         the_board.startGhostAnimation = function (piece, ghostXY, squareXY) {
