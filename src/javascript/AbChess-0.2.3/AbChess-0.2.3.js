@@ -352,15 +352,14 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 var kingRook = chessValue.columns[7] + row;
                 var kingStart = chessValue.columns[4] + row;
                 var queenRook = chessValue.columns[0] + row;
-                if (castles.indexOf(king[index]) > -1 && (start === kingStart ||
-                    start === kingRook || arrival === kingRook)) {
-                    castles = castles.replace(king[index], "");
+                function removeCastle(char, rookSquare) {
+                    if (castles.indexOf(char) > -1 && (start === kingStart ||
+                        start === rookSquare || arrival === rookSquare)) {
+                        castles = castles.replace(char, "");
+                    }
                 }
-                if (castles.indexOf(queen[index]) > -1 &&
-                    (start === kingStart ||
-                        start === queenRook || arrival === queenRook)) {
-                    castles = castles.replace(queen[index], "");
-                }
+                removeCastle(king[index], kingRook);
+                removeCastle(queen[index], queenRook);
             });
             if (castles === "") {
                 castles = "-";
