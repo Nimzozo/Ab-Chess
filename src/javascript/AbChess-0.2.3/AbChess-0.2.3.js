@@ -434,71 +434,72 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // The data of FEN position are updated here.
             // The played move is assumed to be legal.
 
-            var arrivalSquare = move.substr(3, 2);
-            var enPassantCapture = "";
             var newActiveColor = "";
             var newAllowedCastles = "";
             var newEnPassant = "";
             var newFEN = "";
             var newFullmove = 0;
             var newHalfmove = 0;
-            var newOccupiedSquares = {};
-            var playedPiece = "";
-            var positionString = "";
-            var rookArrival = "";
-            var rookStart = "";
-            var startSquare = move.substr(0, 2);
-            newOccupiedSquares = Position.fenToObject(the_position.fenString);
-            playedPiece = newOccupiedSquares[startSquare];
-            if (playedPiece.toLowerCase() === chessValue.blackKing &&
-                regExp.castle.test(move)) {
-                if (arrivalSquare[0] === chessValue.columns[2]) {
-                    rookStart = chessValue.columns[0];
-                    rookArrival = chessValue.columns[3];
-                } else {
-                    rookStart = chessValue.columns[7];
-                    rookArrival = chessValue.columns[5];
-                }
-                rookStart += arrivalSquare[1];
-                rookArrival += arrivalSquare[1];
-                delete newOccupiedSquares[rookStart];
-                if (startSquare === "e1") {
-                    newOccupiedSquares[rookArrival] = chessValue.whiteRook;
-                } else {
-                    newOccupiedSquares[rookArrival] = chessValue.blackRook;
-                }
-            } else if (playedPiece.toLowerCase() === chessValue.blackPawn) {
-                if (arrivalSquare === the_position.enPassantSquare &&
-                    regExp.enPassant.test(move)) {
-                    enPassantCapture = the_position.enPassantSquare[0] +
-                        startSquare[1];
-                    delete newOccupiedSquares[enPassantCapture];
-                }
-                if (regExp.promotion.test(move)) {
-                    promotion = promotion || chessValue.blackQueen;
-                    if (arrivalSquare[1] === chessValue.rows[0]) {
-                        playedPiece = promotion.toLowerCase();
-                    }
-                    if (arrivalSquare[1] === chessValue.rows[7]) {
-                        playedPiece = promotion.toUpperCase();
-                    }
-                }
-            }
-            delete newOccupiedSquares[startSquare];
-            newOccupiedSquares[arrivalSquare] = playedPiece;
-            positionString = Position.objectToFEN(newOccupiedSquares);
+            var newPosition = "";
+            newPosition = the_position.getNextPositionString(move, promotion);
             newActiveColor = the_position.getNextActiveColor();
             newAllowedCastles = the_position.getNextAllowedCastles(move);
             newEnPassant = the_position.getNextEnPassant(move);
             newHalfmove = the_position.getNextHalfmoveClock(move);
             newFullmove = the_position.getNextFullmoveNumber();
-            newFEN = positionString +
+            newFEN = newPosition +
                 " " + newActiveColor +
                 " " + newAllowedCastles +
                 " " + newEnPassant +
                 " " + newHalfmove +
                 " " + newFullmove;
             return new Position(newFEN);
+        };
+
+        the_position.getNextPositionString = function (move, promotion) {
+
+            // Return the next position string.
+
+            var arrival = move.substr(3, 2);
+            var enPassantPawn = "";
+            var newPosition = {};
+            var playedPiece = "";
+            var rookArrival = "";
+            var rookStart = "";
+            var start = move.substr(0, 2);
+            newPosition = Position.fenToObject(the_position.fenString);
+            playedPiece = newPosition[start];
+            if (playedPiece.toLowerCase() === chessValue.blackKing &&
+                regExp.castle.test(move)) {
+                if (arrival[0] === chessValue.columns[2]) {
+                    rookStart = chessValue.columns[0];
+                    rookArrival = chessValue.columns[3];
+                } else {
+                    rookStart = chessValue.columns[7];
+                    rookArrival = chessValue.columns[5];
+                }
+                rookStart += arrival[1];
+                rookArrival += arrival[1];
+                delete newPosition[rookStart];
+                newPosition[rookArrival] = (start[1] === chessValue.rows[0])
+                        ? chessValue.whiteRook
+                        : chessValue.blackRook;
+            } else if (playedPiece.toLowerCase() === chessValue.blackPawn) {
+                if (arrival === the_position.enPassantSquare &&
+                    regExp.enPassant.test(move)) {
+                    enPassantPawn = the_position.enPassantSquare[0] + start[1];
+                    delete newPosition[enPassantPawn];
+                }
+                if (regExp.promotion.test(move)) {
+                    promotion = promotion || chessValue.blackQueen;
+                    playedPiece = (arrival[1] === chessValue.rows[0])
+                        ? promotion.toLowerCase()
+                        : promotion.toUpperCase();
+                }
+            }
+            delete newPosition[start];
+            newPosition[arrival] = playedPiece;
+            return Position.objectToFEN(newPosition);
         };
 
         the_position.getPGNKing = function (move) {
@@ -758,8 +759,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             var color = "";
             var piece = "";
-            var targets = [];
             var queenVectors = [];
+            var targets = [];
             if (!the_position.occupiedSquares.hasOwnProperty(start)) {
                 return targets;
             }
