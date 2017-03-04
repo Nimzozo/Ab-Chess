@@ -342,30 +342,23 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var castles = the_position.allowedCastles;
             var king = [chessValue.whiteKing, chessValue.blackKing];
             var queen = [chessValue.whiteQueen, chessValue.blackQueen];
-            var regExps = [/[KQ]/, /[kq]/];
-            var rows = [1, 8];
             var start = "";
             if (castles === "-") {
                 return castles;
             }
             start = move.substr(0, 2);
             arrival = move.substr(3, 2);
-            rows.forEach(function (row, index) {
-                var kingRook = "";
-                var kingStart = "";
-                var queenRook = "";
-                if (castles.search(regExps[index]) === -1) {
-                    return;
+            [1, 8].forEach(function (row, index) {
+                var kingRook = chessValue.columns[7] + row;
+                var kingStart = chessValue.columns[4] + row;
+                var queenRook = chessValue.columns[0] + row;
+                if (castles.indexOf(king[index]) > -1 && (start === kingStart ||
+                    start === kingRook || arrival === kingRook)) {
+                    castles = castles.replace(king[index], "");
                 }
-                kingStart = chessValue.columns[4] + row;
-                kingRook = chessValue.columns[7] + row;
-                queenRook = chessValue.columns[0] + row;
-                if (start === kingStart) {
-                    castles = castles.replace(king[index], "");
-                    castles = castles.replace(queen[index], "");
-                } else if (start === kingRook || arrival === kingRook) {
-                    castles = castles.replace(king[index], "");
-                } else if (start === queenRook || arrival === queenRook) {
+                if (castles.indexOf(queen[index]) > -1 &&
+                    (start === kingStart ||
+                        start === queenRook || arrival === queenRook)) {
                     castles = castles.replace(queen[index], "");
                 }
             });
@@ -482,8 +475,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 rookArrival += arrival[1];
                 delete newPosition[rookStart];
                 newPosition[rookArrival] = (start[1] === chessValue.rows[0])
-                        ? chessValue.whiteRook
-                        : chessValue.blackRook;
+                    ? chessValue.whiteRook
+                    : chessValue.blackRook;
             } else if (playedPiece.toLowerCase() === chessValue.blackPawn) {
                 if (arrival === the_position.enPassantSquare &&
                     regExp.enPassant.test(move)) {
@@ -760,9 +753,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var color = "";
             var piece = "";
             var queenVectors = [];
-            var targets = [];
             if (!the_position.occupiedSquares.hasOwnProperty(start)) {
-                return targets;
+                return [];
             }
             piece = the_position.occupiedSquares[start];
             color = (piece.toLowerCase() === piece)
@@ -770,33 +762,26 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 : chessValue.white;
             switch (piece.toLowerCase()) {
                 case chessValue.blackBishop:
-                    targets = the_position.getLinearTargets(start, color,
+                    return the_position.getLinearTargets(start, color,
                         chessValue.bishopVectors);
-                    break;
                 case chessValue.blackKing:
-                    targets = the_position.getTargetsKing(start, color,
+                    return the_position.getTargetsKing(start, color,
                         onlyAttack);
-                    break;
                 case chessValue.blackKnight:
-                    targets = the_position.getTargetsByVectors(
+                    return the_position.getTargetsByVectors(
                         start, color, chessValue.knightVectors);
-                    break;
                 case chessValue.blackPawn:
-                    targets = the_position.getTargetsPawn(start, color,
+                    return the_position.getTargetsPawn(start, color,
                         onlyAttack);
-                    break;
                 case chessValue.blackQueen:
                     queenVectors = chessValue.bishopVectors.concat(
                         chessValue.rookVectors);
-                    targets = the_position.getLinearTargets(start, color,
+                    return the_position.getLinearTargets(start, color,
                         queenVectors);
-                    break;
                 case chessValue.blackRook:
-                    targets = the_position.getLinearTargets(start, color,
+                    return the_position.getLinearTargets(start, color,
                         chessValue.rookVectors);
-                    break;
             }
-            return targets;
         };
 
         the_position.getTargetsByVectors = function (start, color, vectors) {
