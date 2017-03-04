@@ -342,24 +342,25 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var castles = the_position.allowedCastles;
             var king = [chessValue.whiteKing, chessValue.blackKing];
             var queen = [chessValue.whiteQueen, chessValue.blackQueen];
+            var rows = [1, 8];
             var start = "";
             if (castles === "-") {
                 return castles;
             }
             start = move.substr(0, 2);
             arrival = move.substr(3, 2);
-            [1, 8].forEach(function (row, index) {
+            function removeCastle(char, kingStart, rookSquare) {
+                if (castles.indexOf(char) > -1 && (start === kingStart ||
+                    start === rookSquare || arrival === rookSquare)) {
+                    castles = castles.replace(char, "");
+                }
+            }
+            rows.forEach(function (row, index) {
                 var kingRook = chessValue.columns[7] + row;
                 var kingStart = chessValue.columns[4] + row;
                 var queenRook = chessValue.columns[0] + row;
-                function removeCastle(char, rookSquare) {
-                    if (castles.indexOf(char) > -1 && (start === kingStart ||
-                        start === rookSquare || arrival === rookSquare)) {
-                        castles = castles.replace(char, "");
-                    }
-                }
-                removeCastle(king[index], kingRook);
-                removeCastle(queen[index], queenRook);
+                removeCastle(king[index], kingStart, kingRook);
+                removeCastle(queen[index], kingStart, queenRook);
             });
             if (castles === "") {
                 castles = "-";
