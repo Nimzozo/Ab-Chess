@@ -11,7 +11,7 @@ window.addEventListener("load", function () {
         animationSpeed: "normal",
         clickable: true,
         draggable: true,
-        imagesPath: "images/wikipedia/"
+        imagesPath: "../src/images/wikipedia/"
     };
     var pgnButton = document.getElementById("pgn-button");
     var pgnNotation = document.getElementById("pgn-notation");

@@ -4,4 +4,4 @@ exclude_paths:
 - "LICENSE.txt"
 - "README.md"
 - "src/images/"
-- "src/test.html"
+- "test/"
