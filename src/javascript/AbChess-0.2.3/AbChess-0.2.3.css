@@ -1,6 +1,6 @@
 /*
 // AbChess-0.2.3.css
-// 2017-02-27
+// 2017-03-06
 // Copyright (c) 2017 Nimzozo
 */
 
@@ -58,12 +58,12 @@
     background: burlywood;
 }
 
-.square_highlighted {
-     box-shadow: inset 0 0 0 2px green;
+.square_check {
+    box-shadow: inset 0 0 0 2px red;
 }
 
-.square_marked {
-    box-shadow: inset 0 0 0 2px red;
+.square_last-move {
+     box-shadow: inset 0 0 0 2px green;
 }
 
 .square_overflown {

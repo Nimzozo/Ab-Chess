@@ -1,5 +1,5 @@
 // AbChess-0.2.3.js
-// 2017-03-04
+// 2017-03-06
 // Copyright (c) 2017 Nimzozo
 
 /*global
@@ -78,15 +78,15 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         whiteRook: "R"
     };
 
-    // Css class and ids.
+    // Css classes and ids.
 
     var css = {
         blackSquare: "square_black",
+        checkSquare: "square_check",
         columnsBorder: "columns-border",
         columnsBorderFragment: "columns-border__fragment",
         ghostPiece: "ghost_piece",
-        highlightedSquare: "square_highlighted",
-        markedSquare: "square_marked",
+        lastMoveSquare: "square_last-move",
         overflownSquare: "square_overflown",
         promotionButton: "promotion-button",
         promotionDiv: "promotion-div",
@@ -1674,8 +1674,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             canvas: null,
             div: null,
             hasCircle: false,
-            isHighlighted: false,
-            isMarked: false,
+            isCheck: false,
+            isLastMove: false,
             isOverflown: false,
             isSelected: false,
             name: name,
@@ -1704,11 +1704,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             initialClass += (Square.isWhite(the_square.name))
                 ? css.whiteSquare
                 : css.blackSquare;
-            if (the_square.isHighlighted) {
-                initialClass += " " + css.highlightedSquare;
+            if (the_square.isLastMove) {
+                initialClass += " " + css.lastMoveSquare;
             }
-            if (the_square.isMarked) {
-                initialClass += " " + css.markedSquare;
+            if (the_square.isCheck) {
+                initialClass += " " + css.checkSquare;
             }
             if (the_square.isOverflown) {
                 initialClass += " " + css.overflownSquare;
@@ -1999,17 +1999,17 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             Object.keys(the_board.squares).forEach(function (key) {
                 var currentSquare = the_board.squares[key];
-                if (currentSquare.isHighlighted) {
-                    currentSquare.isHighlighted = false;
+                if (currentSquare.hasCircle) {
+                    currentSquare.showCanvas();
                 }
-                if (currentSquare.isMarked) {
-                    currentSquare.isMarked = false;
+                if (currentSquare.isCheck) {
+                    currentSquare.isCheck = false;
+                }
+                if (currentSquare.isLastMove) {
+                    currentSquare.isLastMove = false;
                 }
                 if (currentSquare.isSelected) {
                     currentSquare.isSelected = false;
-                }
-                if (currentSquare.hasCircle) {
-                    currentSquare.showCanvas();
                 }
                 currentSquare.updateCSS();
             });
@@ -2303,7 +2303,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 return;
             }
             kingSquare = position.getKingSquare(position.activeColor);
-            the_board.squares[kingSquare].isMarked = true;
+            the_board.squares[kingSquare].isCheck = true;
             the_board.squares[kingSquare].updateCSS();
         };
 
@@ -2319,10 +2319,10 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             }
             lastMove = the_board.game.moves[index - 1];
             lastMoveArrival = lastMove.substr(3, 2);
-            the_board.squares[lastMoveArrival].isHighlighted = true;
+            the_board.squares[lastMoveArrival].isLastMove = true;
             the_board.squares[lastMoveArrival].updateCSS();
             lastMoveStart = lastMove.substr(0, 2);
-            the_board.squares[lastMoveStart].isHighlighted = true;
+            the_board.squares[lastMoveStart].isLastMove = true;
             the_board.squares[lastMoveStart].updateCSS();
         };
 
