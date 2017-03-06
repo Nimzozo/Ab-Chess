@@ -71,6 +71,10 @@ window.Accordeon = window.Accordeon || function (indexes) {
                     {
                         "name": "PGN reader",
                         "href": "examples/advanced/pgn-reader.html"
+                    },
+                    {
+                        "name": "PGN viewer",
+                        "href": "examples/advanced/pgn-viewer.html"
                     }
                 ]
             }

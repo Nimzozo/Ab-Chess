@@ -92,6 +92,7 @@ p {
     padding: 4px;
     font-size: 1.2em;
     min-width: 40px;
+    cursor: pointer;
 }
 
 .commands__button:hover {
@@ -129,4 +130,41 @@ textarea {
 
 .link:hover {
     text-decoration: underline;
+}
+
+#chessboard {
+    display: inline-block;
+    vertical-align: top;
+}
+
+#moves-div {
+    display: inline-block;
+    width: 150px;
+    vertical-align: top;
+    max-height: 360px;
+    overflow: auto;
+    margin: 0 10px;
+}
+
+.move-span {
+    cursor: pointer;
+    display: inline-block;
+    vertical-align: top;
+    width: 50%;
+    border-bottom: 1px gainsboro solid;
+    color: grey;
+}
+
+#move-span_selected {
+    cursor: pointer;
+    display: inline-block;
+    vertical-align: top;
+    width: 50%;
+    border-bottom: 1px gainsboro solid;
+    font-weight: bold;
+    color: green;
+}
+
+.move-span:hover {
+    background-color: gainsboro;
 }
