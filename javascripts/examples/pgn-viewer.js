@@ -77,11 +77,13 @@ window.addEventListener("load", function () {
         },
         html: "<div id=\"chessboard\"></div>\n" +
         "<div id=\"moves-div\"></div>\n" +
-        "<button id=\"pgn-button\" class=\"commands__button\">Import</button>\n" +
-        "<button id=\"first-button\" class=\"commands__button\">|<</button>\n" +
-        "<button id=\"previous-button\" class=\"commands__button\"><</button>\n" +
-        "<button id=\"next-button\" class=\"commands__button\">></button>\n" +
-        "<button id=\"last-button\" class=\"commands__button\">>|</button>\n" +
+        "<div>\n" +
+        "  <button id=\"pgn-button\" class=\"commands__button\">Import</button>\n" +
+        "  <button id=\"first-button\" class=\"commands__button\">|<</button>\n" +
+        "  <button id=\"previous-button\" class=\"commands__button\"><</button>\n" +
+        "  <button id=\"next-button\" class=\"commands__button\">></button>\n" +
+        "  <button id=\"last-button\" class=\"commands__button\">>|</button>\n" +
+        "</div>\n" +
         "<textarea id=\"pgn-textarea\" placeholder=\"Paste a PGN here and click Import.\"></textarea>"
     };
     var htmlCode = document.getElementById("html-code");

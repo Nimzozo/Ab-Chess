@@ -55,12 +55,14 @@ window.addEventListener("load", function () {
             pgnImportButton.addEventListener("click", importPGN);
         },
         html: "<div id=\"chessboard\"></div>\n" +
-         "<button id=\"pgn-button\" class=\"commands__button\">Import</button>\n" +
-         "<button id=\"first-button\" class=\"commands__button\">|<</button>\n" + 
-         "<button id=\"previous-button\" class=\"commands__button\"><</button>\n" + 
-         "<button id=\"next-button\" class=\"commands__button\">></button>\n" + 
-         "<button id=\"last-button\" class=\"commands__button\">>|</button>\n" +
-         "<textarea id=\"pgn-textarea\" placeholder=\"Paste a PGN here and click Import.\"></textarea>"
+        "<div>\n" +
+        "  <button id=\"pgn-button\" class=\"commands__button\">Import</button>\n" +
+        "  <button id=\"first-button\" class=\"commands__button\">|<</button>\n" +
+        "  <button id=\"previous-button\" class=\"commands__button\"><</button>\n" +
+        "  <button id=\"next-button\" class=\"commands__button\">></button>\n" +
+        "  <button id=\"last-button\" class=\"commands__button\">>|</button>\n" +
+        "</div>\n" +
+        "<textarea id=\"pgn-textarea\" placeholder=\"Paste a PGN here and click Import.\"></textarea>"
     };
     var htmlCode = document.getElementById("html-code");
     var jsCode = document.getElementById("js-code");

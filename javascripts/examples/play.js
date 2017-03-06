@@ -30,7 +30,11 @@ window.addEventListener("load", function () {
                 abChess.play("a7-a6");
             });
         },
-        html: "<div id=\"chessboard\"></div>\n<div>\n  <input type=\"button\" value=\"Queen's gambit\" id=\"qGambitButton\" class=\"commands__button\">\n  <input type=\"button\" value=\"Sicilian Najdorf\" id=\"sicilianButton\" class=\"commands__button\">\n</div>"
+        html: "<div id=\"chessboard\"></div>\n" +
+        "<div>\n" +
+        "  <input type=\"button\" value=\"Queen's gambit\" id=\"qGambitButton\" class=\"commands__button\">\n" +
+        "  <input type=\"button\" value=\"Sicilian Najdorf\" id=\"sicilianButton\" class=\"commands__button\">\n" +
+        "</div>"
     };
     var htmlCode = document.getElementById("html-code");
     var jsCode = document.getElementById("js-code");

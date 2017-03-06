@@ -14,7 +14,7 @@ window.addEventListener("load", function () {
             var movesCount = 0;
             var pgnParagraph = document.getElementById("pgnParagraph");
             var promotions = ["b", "n", "q", "r"];
-            
+
             abChess = new AbChess("chessboard", config);
             abChess.draw();
             abChess.setFEN();
