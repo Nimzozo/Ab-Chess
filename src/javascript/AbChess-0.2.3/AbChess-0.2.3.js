@@ -1235,6 +1235,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var ambiguity = "";
             var arrival = "";
             var matches = [];
+            var move = {};
             var pgnMove = the_game.pgnMoves[n];
             var piece = "";
             var promotion = "";
@@ -1248,7 +1249,10 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             piece = (n % 2 === 0)
                 ? chessValue.whitePawn
                 : chessValue.blackPawn;
-            start = the_game.getSimpleStart(n, piece, arrival, ambiguity);
+            move.piece = piece;
+            move.ambiguity = ambiguity;
+            move.arrival = arrival;
+            start = the_game.getSimpleStart(n, move);
             return start + "-" + arrival + promotion;
         };
 
@@ -1259,6 +1263,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var ambiguity = "";
             var arrival = "";
             var matches = [];
+            var move = {};
             var pgnMove = the_game.pgnMoves[n];
             var piece = "";
             var start = "";
@@ -1266,11 +1271,14 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             ambiguity = matches[1];
             arrival = matches[2];
             piece = pgnMove[0];
-            start = the_game.getSimpleStart(n, piece, arrival, ambiguity);
+            move.piece = piece;
+            move.ambiguity = ambiguity;
+            move.arrival = arrival;
+            start = the_game.getSimpleStart(n, move);
             return start + "-" + arrival;
         };
 
-        the_game.getSimpleStart = function (n, piece, arrival, ambiguity) {
+        the_game.getSimpleStart = function (n, move) {
 
             // Return the start of a piece.
 
@@ -1280,17 +1288,17 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return piecesPlaces.find(function (start) {
                 var legalSquares = [];
                 var testPiece = position.occupiedSquares[start];
-                if (testPiece.toLowerCase() !== piece.toLowerCase()) {
+                if (testPiece.toLowerCase() !== move.piece.toLowerCase()) {
                     return false;
                 }
                 legalSquares = position.getLegalSquares(start);
-                if (legalSquares.indexOf(arrival) === -1) {
+                if (legalSquares.indexOf(move.arrival) === -1) {
                     return false;
                 }
-                if (ambiguity === "") {
+                if (move.ambiguity === "") {
                     return true;
                 }
-                return start.indexOf(ambiguity) > -1;
+                return start.indexOf(move.ambiguity) > -1;
             });
         };
 
