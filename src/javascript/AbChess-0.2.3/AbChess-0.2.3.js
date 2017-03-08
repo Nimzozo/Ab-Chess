@@ -546,6 +546,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 case chessValue.blackRook:
                     return the_position.getLinearTargets(start,
                         chessValue.rookVectors);
+                default:
+                    throw new Error(error.invalidParameter);
             }
         };
 
@@ -2556,15 +2558,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             var enPassant = "";
             var enPassantSquare = {};
-            enPassant = arrival[0];
-            switch (arrival[1]) {
-                case "3":
-                    enPassant += "4";
-                    break;
-                case "6":
-                    enPassant += "5";
-                    break;
-            }
+            enPassant = (arrival[1] === chessValue.rows[2])
+                ? arrival[0] + chessValue.rows[3]
+                : arrival[0] + chessValue.rows[4];
             enPassantSquare = the_board.squares[enPassant];
             if (enPassantSquare.isEmpty()) {
                 throw new Error(error.illegalMove);
