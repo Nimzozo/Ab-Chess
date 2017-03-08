@@ -2089,7 +2089,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             the_board.selectedSquare = null;
         };
 
-        the_board.confirmMove = function (start, arrival, animateGhost) {
+        the_board.confirmMove = function (start, arrival, animate) {
 
             // Confirm a move :
             // - Test the legality.
@@ -2117,7 +2117,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     : chessValue.black;
                 the_board.askPromotion(color);
             } else {
-                the_board.playMove(move, "", animateGhost);
+                the_board.playMove(move, "", animate);
             }
             return true;
         };
@@ -2599,12 +2599,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var currentPosition = {};
             var lastIndex = the_board.game.fenStrings.length - 1;
             var nextPosition = {};
-            currentPosition = the_board.game.getNthPosition(lastIndex);
-            if (!currentPosition.checkMoveLegality(move)) {
-                throw new Error(error.illegalMove);
-            }
             the_board.play(move, promotion, animateGhost);
             the_board.game.addMove(move, promotion);
+            currentPosition = the_board.game.getNthPosition(lastIndex);
             nextPosition = currentPosition.getNextPosition(move, promotion);
             the_board.updateHighlight(lastIndex + 1, nextPosition);
             if (typeof event.onMovePlayed === "function") {
@@ -2847,12 +2844,17 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
         play: function (move, promotion) {
 
-            // Play the desired move and return the resulting FEN string.
+            // Play the desired move.
 
+            var lastIndex = 0;
             if (!regExp.move.test(move)) {
                 throw new SyntaxError(error.invalidParameter);
             }
-            return abBoard.playMove(move, promotion, true);
+            lastIndex = abBoard.game.fenStrings.length - 1;
+            if (!abBoard.game.isLegal(lastIndex, move)) {
+                throw new SyntaxError(error.illegalMove);
+            }
+            abBoard.playMove(move, promotion, true);
         },
 
         reset: function () {
