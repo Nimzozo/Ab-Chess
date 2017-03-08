@@ -461,13 +461,13 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var arrival = move.substr(3, 2);
             var enPassantPawn = "";
             var newPosition = {};
-            var playedPiece = "";
+            var piece = "";
             var rookArrival = "";
             var rookStart = "";
             var start = move.substr(0, 2);
             newPosition = Position.fenToObject(the_position.fenString);
-            playedPiece = newPosition[start];
-            if (playedPiece.toLowerCase() === chessValue.blackKing &&
+            piece = newPosition[start];
+            if (piece.toLowerCase() === chessValue.blackKing &&
                 regExp.castle.test(move)) {
                 if (arrival[0] === chessValue.columns[2]) {
                     rookStart = chessValue.columns[0];
@@ -482,7 +482,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 newPosition[rookArrival] = (start[1] === chessValue.rows[0])
                     ? chessValue.whiteRook
                     : chessValue.blackRook;
-            } else if (playedPiece.toLowerCase() === chessValue.blackPawn) {
+            } else if (piece.toLowerCase() === chessValue.blackPawn) {
                 if (arrival === the_position.enPassantSquare &&
                     regExp.enPassant.test(move)) {
                     enPassantPawn = the_position.enPassantSquare[0] + start[1];
@@ -490,13 +490,13 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 }
                 if (regExp.promotion.test(move)) {
                     promotion = promotion || chessValue.blackQueen;
-                    playedPiece = (arrival[1] === chessValue.rows[0])
+                    piece = (arrival[1] === chessValue.rows[0])
                         ? promotion.toLowerCase()
                         : promotion.toUpperCase();
                 }
             }
             delete newPosition[start];
-            newPosition[arrival] = playedPiece;
+            newPosition[arrival] = piece;
             return Position.objectToFEN(newPosition);
         };
 
@@ -863,7 +863,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return the_position.isControlledBy(kingSquare, ennemiesColor);
         };
 
-        the_position.initPosition = function () {
+        the_position.initialize = function () {
 
             // Initialize the position object.
 
@@ -880,7 +880,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             the_position.occupiedSquares = Position.fenToObject(fen);
         };
 
-        the_position.initPosition();
+        the_position.initialize();
         return the_position;
     }
 
@@ -975,7 +975,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             fenStrings: [chessValue.defaultFEN],
             moves: [],
             pgnMoves: [],
-            tags: {}
+            tags: null
         };
 
         the_game.addMove = function (move, promotion) {
@@ -1344,15 +1344,14 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Import the tag pairs from a PGN.
 
             var importedTags = pgn.match(regExp.tagPair);
-            the_game.tags = {};
-            the_game.initRequiredTags();
+            the_game.initialize();
             importedTags.forEach(function (tagPair) {
                 var matches = regExp.tagPairCapture.exec(tagPair);
                 the_game.setTag(matches[1], matches[2]);
             });
         };
 
-        the_game.initRequiredTags = function () {
+        the_game.initialize = function () {
 
             // Initialize the 7 required tag pairs.
 
@@ -1365,6 +1364,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 "Black": "?",
                 "Result": "*"
             };
+            the_game.tags = {};
             Object.keys(requiredTags).forEach(function (tag) {
                 the_game.tags[tag] = requiredTags[tag];
             });
@@ -1435,7 +1435,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             the_game.tags[tag] = value;
         };
 
-        the_game.initRequiredTags();
+        the_game.initialize();
         return the_game;
     }
 
@@ -1585,7 +1585,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             }
         };
 
-        the_piece.initPiece = function () {
+        the_piece.initialize = function () {
 
             // Initialize the piece object.
 
@@ -1759,7 +1759,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             });
         };
 
-        the_piece.initPiece();
+        the_piece.initialize();
         return the_piece;
     }
 
@@ -1820,7 +1820,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return initialClass;
         };
 
-        the_square.initSquare = function () {
+        the_square.initialize = function () {
 
             // Initialize the square object.
 
@@ -1938,7 +1938,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             });
         };
 
-        the_square.initSquare();
+        the_square.initialize();
         return the_square;
     }
 
@@ -2399,7 +2399,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             the_board.squares[lastMoveStart].updateCSS();
         };
 
-        the_board.initBoard = function () {
+        the_board.initialize = function () {
 
             // Initialize the board object.
 
@@ -2653,7 +2653,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             the_board.highlightLastMove(index);
         };
 
-        the_board.initBoard();
+        the_board.initialize();
         return the_board;
     }
 
