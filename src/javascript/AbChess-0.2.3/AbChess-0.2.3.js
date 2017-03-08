@@ -1121,50 +1121,45 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Return the PGN notation for a piece (non-pawn) move.
 
-            var ambiguity = false;
             var arrival = "";
-            var clue = "";
+            var candidates = [];
             var move = the_game.moves[n];
+            var occupiedSquares = {};
             var pgnMove = "";
             var playedPiece = "";
             var position = the_game.getNthPosition(n);
             var sameColumn = false;
             var sameRow = false;
             var start = move.substr(0, 2);
-            playedPiece = position.occupiedSquares[start];
-            pgnMove = playedPiece.toUpperCase();
+            occupiedSquares = position.occupiedSquares;
+            playedPiece = occupiedSquares[start];
             arrival = move.substr(3, 2);
-            Object.keys(position.occupiedSquares).forEach(function (square) {
+            candidates = Object.keys(occupiedSquares).filter(function (square) {
                 var legalSquares = [];
-                var piece = position.occupiedSquares[square];
-                if (square === start || piece !== playedPiece ||
-                    (sameColumn && sameRow)) {
-                    return;
+                var piece = occupiedSquares[square];
+                if (piece !== playedPiece || square === start) {
+                    return false;
                 }
                 legalSquares = position.getLegalSquares(square);
-                if (legalSquares.indexOf(arrival) === -1) {
-                    return;
-                }
-                if (square[0] === start[0]) {
-                    sameColumn = true;
-                } else if (square[1] === start[1]) {
-                    sameRow = true;
-                }
-                ambiguity = true;
+                return legalSquares.indexOf(arrival) > -1;
             });
-            if (ambiguity) {
-                if (sameColumn) {
-                    if (sameRow) {
-                        clue = start;
-                    } else {
-                        clue = start[1];
-                    }
+            sameColumn = candidates.some(function (candidate) {
+                return candidate[0] === start[0];
+            });
+            sameRow = candidates.some(function (candidate) {
+                return candidate[1] === start[1];
+            });
+            pgnMove = playedPiece.toUpperCase();
+            if (sameColumn) {
+                if (sameRow) {
+                    pgnMove += start;
                 } else {
-                    clue = start[0];
+                    pgnMove += start[1];
                 }
-                pgnMove += clue;
+            } else if (sameRow) {
+                pgnMove += start[0];
             }
-            if (position.occupiedSquares.hasOwnProperty(arrival)) {
+            if (occupiedSquares.hasOwnProperty(arrival)) {
                 pgnMove += chessValue.captureSymbol;
             }
             pgnMove += arrival;
