@@ -285,7 +285,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return legalSquares;
         };
 
-        the_position.getLinearTargets = function (start, vectors) {
+        the_position.getLineTargets = function (start, vectors) {
 
             // Return an array of linear squares without collision.
 
@@ -528,62 +528,24 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             var piece = the_position.occupiedSquares[start];
             var queenVectors = [];
-            switch (piece.toLowerCase()) {
-                case chessValue.blackBishop:
-                    return the_position.getLinearTargets(start,
-                        chessValue.bishopVectors);
-                case chessValue.blackKing:
-                    return the_position.getTargetsKing(start, onlyAttack);
-                case chessValue.blackKnight:
-                    return the_position.getTargetsByVectors(start,
-                        chessValue.knightVectors);
-                case chessValue.blackPawn:
-                    return the_position.getTargetsPawn(start, onlyAttack);
-                case chessValue.blackQueen:
-                    queenVectors = chessValue.bishopVectors.concat(
-                        chessValue.rookVectors);
-                    return the_position.getLinearTargets(start, queenVectors);
-                case chessValue.blackRook:
-                    return the_position.getLinearTargets(start,
-                        chessValue.rookVectors);
-                default:
-                    throw new Error(error.invalidParameter);
+            if (piece.toLowerCase() === chessValue.blackBishop) {
+                return the_position.getLineTargets(start,
+                    chessValue.bishopVectors);
+            } else if (piece.toLowerCase() === chessValue.blackKing) {
+                return the_position.getTargetsKing(start, onlyAttack);
+            } else if (piece.toLowerCase() === chessValue.blackKnight) {
+                return the_position.getVectorsTargets(start,
+                    chessValue.knightVectors);
+            } else if (piece.toLowerCase() === chessValue.blackPawn) {
+                return the_position.getTargetsPawn(start, onlyAttack);
+            } else if (piece.toLowerCase() === chessValue.blackQueen) {
+                queenVectors = chessValue.bishopVectors.concat(
+                    chessValue.rookVectors);
+                return the_position.getLineTargets(start, queenVectors);
+            } else {
+                return the_position.getLineTargets(start,
+                    chessValue.rookVectors);
             }
-        };
-
-        the_position.getTargetsByVectors = function (start, vectors) {
-
-            // Return an array of squares found with vectors.
-
-            var alliesPlaces = [];
-            var color = "";
-            var columnNumber = 0;
-            var piece = the_position.occupiedSquares[start];
-            var rowNumber = 0;
-            var targets = [];
-            color = (piece.toLowerCase() === piece)
-                ? chessValue.black
-                : chessValue.white;
-            alliesPlaces = the_position.getPiecesPlaces(color);
-            columnNumber = chessValue.columns.indexOf(start[0]) + 1;
-            rowNumber = Number(start[1]);
-            vectors.forEach(function (vector) {
-                var testColNumber = 0;
-                var testRowNumber = 0;
-                var testSquare = "";
-                testColNumber = columnNumber + vector[0];
-                testRowNumber = rowNumber + vector[1];
-                if (testColNumber < 1 || testColNumber > 8 ||
-                    testRowNumber < 1 || testRowNumber > 8) {
-                    return;
-                }
-                testSquare = chessValue.columns[testColNumber - 1] +
-                    testRowNumber;
-                if (alliesPlaces.indexOf(testSquare) === -1) {
-                    targets.push(testSquare);
-                }
-            });
-            return targets;
         };
 
         the_position.getTargetsCastle = function (start) {
@@ -650,13 +612,13 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var normalTargets = [];
             var piece = the_position.occupiedSquares[start];
             var targets = [];
-            normalTargets = the_position.getTargetsByVectors(start,
+            normalTargets = the_position.getVectorsTargets(start,
                 chessValue.kingVectors);
             ennemiesColor = (piece.toLowerCase() === piece)
                 ? chessValue.white
                 : chessValue.black;
             ennemyKingSquare = the_position.getKingSquare(ennemiesColor);
-            ennemyKingTargets = the_position.getTargetsByVectors(
+            ennemyKingTargets = the_position.getVectorsTargets(
                 ennemyKingSquare, chessValue.kingVectors);
             targets = normalTargets.filter(function (target) {
                 return ennemyKingTargets.indexOf(target) === -1;
@@ -753,6 +715,41 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     targets.push(testSquare);
                 }
             }
+            return targets;
+        };
+
+        the_position.getVectorsTargets = function (start, vectors) {
+
+            // Return an array of squares found with vectors.
+
+            var alliesPlaces = [];
+            var color = "";
+            var columnNumber = 0;
+            var piece = the_position.occupiedSquares[start];
+            var rowNumber = 0;
+            var targets = [];
+            color = (piece.toLowerCase() === piece)
+                ? chessValue.black
+                : chessValue.white;
+            alliesPlaces = the_position.getPiecesPlaces(color);
+            columnNumber = chessValue.columns.indexOf(start[0]) + 1;
+            rowNumber = Number(start[1]);
+            vectors.forEach(function (vector) {
+                var testColNumber = 0;
+                var testRowNumber = 0;
+                var testSquare = "";
+                testColNumber = columnNumber + vector[0];
+                testRowNumber = rowNumber + vector[1];
+                if (testColNumber < 1 || testColNumber > 8 ||
+                    testRowNumber < 1 || testRowNumber > 8) {
+                    return;
+                }
+                testSquare = chessValue.columns[testColNumber - 1] +
+                    testRowNumber;
+                if (alliesPlaces.indexOf(testSquare) === -1) {
+                    targets.push(testSquare);
+                }
+            });
             return targets;
         };
 
