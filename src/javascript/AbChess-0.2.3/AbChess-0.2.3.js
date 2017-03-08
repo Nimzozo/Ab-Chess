@@ -1,5 +1,5 @@
 // AbChess-0.2.3.js
-// 2017-03-07
+// 2017-03-08
 // Copyright (c) 2017 Nimzozo
 
 /*global
@@ -285,18 +285,23 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return legalSquares;
         };
 
-        the_position.getLinearTargets = function (start, color, vectors) {
+        the_position.getLinearTargets = function (start, vectors) {
 
             // Return an array of linear squares without collision.
 
             var alliesPlaces = [];
+            var color = "";
             var columnNumber = 0;
             var ennemiesColor = "";
             var ennemiesPlaces = [];
+            var piece = the_position.occupiedSquares[start];
             var rowNumber = 0;
             var targets = [];
             columnNumber = chessValue.columns.indexOf(start[0]) + 1;
             rowNumber = Number(start[1]);
+            color = (piece.toLowerCase() === piece)
+                ? chessValue.black
+                : chessValue.white;
             alliesPlaces = the_position.getPiecesPlaces(color);
             ennemiesColor = (color === chessValue.black)
                 ? chessValue.white
@@ -521,56 +526,50 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // The onlyAttack parameter allows to filter king moves
             // and pawn non-attacking moves.
 
-            var color = "";
-            var piece = "";
+            var piece = the_position.occupiedSquares[start];
             var queenVectors = [];
-            if (!the_position.occupiedSquares.hasOwnProperty(start)) {
-                return [];
-            }
-            piece = the_position.occupiedSquares[start];
-            color = (piece.toLowerCase() === piece)
-                ? chessValue.black
-                : chessValue.white;
             switch (piece.toLowerCase()) {
                 case chessValue.blackBishop:
-                    return the_position.getLinearTargets(start, color,
+                    return the_position.getLinearTargets(start,
                         chessValue.bishopVectors);
                 case chessValue.blackKing:
-                    return the_position.getTargetsKing(start, color,
-                        onlyAttack);
+                    return the_position.getTargetsKing(start, onlyAttack);
                 case chessValue.blackKnight:
-                    return the_position.getTargetsByVectors(
-                        start, color, chessValue.knightVectors);
+                    return the_position.getTargetsByVectors(start,
+                        chessValue.knightVectors);
                 case chessValue.blackPawn:
-                    return the_position.getTargetsPawn(start, color,
-                        onlyAttack);
+                    return the_position.getTargetsPawn(start, onlyAttack);
                 case chessValue.blackQueen:
                     queenVectors = chessValue.bishopVectors.concat(
                         chessValue.rookVectors);
-                    return the_position.getLinearTargets(start, color,
-                        queenVectors);
+                    return the_position.getLinearTargets(start, queenVectors);
                 case chessValue.blackRook:
-                    return the_position.getLinearTargets(start, color,
+                    return the_position.getLinearTargets(start,
                         chessValue.rookVectors);
             }
         };
 
-        the_position.getTargetsByVectors = function (start, color, vectors) {
+        the_position.getTargetsByVectors = function (start, vectors) {
 
             // Return an array of squares found with vectors.
 
             var alliesPlaces = [];
-            var colNumber = 0;
+            var color = "";
+            var columnNumber = 0;
+            var piece = the_position.occupiedSquares[start];
             var rowNumber = 0;
             var targets = [];
+            color = (piece.toLowerCase() === piece)
+                ? chessValue.black
+                : chessValue.white;
             alliesPlaces = the_position.getPiecesPlaces(color);
-            colNumber = chessValue.columns.indexOf(start[0]) + 1;
+            columnNumber = chessValue.columns.indexOf(start[0]) + 1;
             rowNumber = Number(start[1]);
             vectors.forEach(function (vector) {
                 var testColNumber = 0;
                 var testRowNumber = 0;
                 var testSquare = "";
-                testColNumber = colNumber + vector[0];
+                testColNumber = columnNumber + vector[0];
                 testRowNumber = rowNumber + vector[1];
                 if (testColNumber < 1 || testColNumber > 8 ||
                     testRowNumber < 1 || testRowNumber > 8) {
@@ -585,7 +584,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return targets;
         };
 
-        the_position.getTargetsCastle = function (start, color) {
+        the_position.getTargetsCastle = function (start) {
 
             // Return an array of squares for allowed castles.
 
@@ -605,9 +604,10 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var colors = [chessValue.black, chessValue.white];
             var i = 0;
             var legalColumns = [chessValue.columns[6], chessValue.columns[2]];
+            var piece = the_position.occupiedSquares[start];
             var rows = [chessValue.rows[0], chessValue.rows[7]];
             var targets = [];
-            i = (color === chessValue.white)
+            i = (piece.toUpperCase() === piece)
                 ? 0
                 : 1;
             castleStart = chessValue.columns[4] + rows[i];
@@ -636,7 +636,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return targets;
         };
 
-        the_position.getTargetsKing = function (start, color, noCastles) {
+        the_position.getTargetsKing = function (start, noCastles) {
 
             // Return an array of squares a king on a specific square can reach.
             // Add castles, filter ennemy king opposition.
@@ -646,57 +646,56 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var ennemyKingSquare = "";
             var ennemyKingTargets = [];
             var normalTargets = [];
+            var piece = the_position.occupiedSquares[start];
             var targets = [];
-            normalTargets = the_position.getTargetsByVectors(
-                start, color, chessValue.kingVectors);
-            ennemiesColor = (color === chessValue.black)
+            normalTargets = the_position.getTargetsByVectors(start,
+                chessValue.kingVectors);
+            ennemiesColor = (piece.toLowerCase() === piece)
                 ? chessValue.white
                 : chessValue.black;
             ennemyKingSquare = the_position.getKingSquare(ennemiesColor);
             ennemyKingTargets = the_position.getTargetsByVectors(
-                ennemyKingSquare, ennemiesColor, chessValue.kingVectors);
+                ennemyKingSquare, chessValue.kingVectors);
             targets = normalTargets.filter(function (target) {
                 return ennemyKingTargets.indexOf(target) === -1;
             });
             if (noCastles) {
                 return targets;
             }
-            castleTargets = the_position.getTargetsCastle(start, color);
+            castleTargets = the_position.getTargetsCastle(start);
             targets = targets.concat(castleTargets);
             return targets;
         };
 
-        the_position.getTargetsPawn = function (start, color, onlyAttack) {
+        the_position.getTargetsPawn = function (start, onlyAttack) {
 
             // Return an array of squares a pawn on a specific square can reach.
             // Pawns can move, take (en passant), promote.
             // Use onlyAttack to get only attacking moves.
 
-            var pawnAttacks = the_position.getTargetsPawnAttack(start, color,
-                onlyAttack);
+            var attacks = the_position.getTargetsPawnAttack(start, onlyAttack);
             if (onlyAttack) {
-                return pawnAttacks;
+                return attacks;
             }
-            return pawnAttacks.concat(the_position.getTargetsPawnMove(start,
-                color));
+            return attacks.concat(the_position.getTargetsPawnMove(start));
         };
 
-        the_position.getTargetsPawnAttack = function (start, color,
-            onlyAttack) {
+        the_position.getTargetsPawnAttack = function (start, onlyAttack) {
 
             // Return an array of attacking pawn moves.
 
             var colDirections = [-1, 1];
-            var colNumber = 0;
+            var columnNumber = 0;
             var direction = 0;
             var ennemiesColor = "";
             var ennemiesPlaces = [];
+            var piece = the_position.occupiedSquares[start];
             var rowNumber = 0;
             var targets = [];
             var testRow = 0;
-            colNumber = chessValue.columns.indexOf(start[0]) + 1;
+            columnNumber = chessValue.columns.indexOf(start[0]) + 1;
             rowNumber = Number(start[1]);
-            if (color === chessValue.black) {
+            if (piece.toLowerCase() === piece) {
                 direction = -1;
                 ennemiesColor = chessValue.white;
             } else {
@@ -706,7 +705,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             testRow = rowNumber + direction;
             ennemiesPlaces = the_position.getPiecesPlaces(ennemiesColor);
             colDirections.forEach(function (colDirection) {
-                var testCol = colNumber + colDirection;
+                var testCol = columnNumber + colDirection;
                 var testSquare = chessValue.columns[testCol - 1] + testRow;
                 if (ennemiesPlaces.indexOf(testSquare) > -1 ||
                     the_position.enPassantSquare === testSquare) {
@@ -718,12 +717,13 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return targets;
         };
 
-        the_position.getTargetsPawnMove = function (start, color) {
+        the_position.getTargetsPawnMove = function (start) {
 
             // Return an array of squares a pawn can reach (no capture).
 
             var colNumber = 0;
             var direction = 0;
+            var piece = the_position.occupiedSquares[start];
             var rowNumber = 0;
             var targets = [];
             var testCol = 0;
@@ -731,7 +731,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var testSquare = "";
             colNumber = chessValue.columns.indexOf(start[0]) + 1;
             rowNumber = Number(start[1]);
-            if (color === chessValue.black) {
+            if (piece.toLowerCase() === piece) {
                 direction = -1;
             } else {
                 direction = 1;
