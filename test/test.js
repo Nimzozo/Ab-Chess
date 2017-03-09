@@ -5,6 +5,7 @@ window.addEventListener("load", function () {
     var currentIndex = 0;
     var firstButton = document.getElementById("firstButton");
     var flipButton = document.getElementById("flipButton");
+    var importButton = document.getElementById("importButton");
     var lastButton = document.getElementById("lastButton");
     var lastIndex = 0;
     var moves = [];
@@ -16,7 +17,7 @@ window.addEventListener("load", function () {
         draggable: true,
         imagesPath: "../src/images/wikipedia/"
     };
-    var pgnButton = document.getElementById("pgn-button");
+    var pgnButton = document.getElementById("pgnButton");
     var pgnSpanClass = "move-span";
     var pgnSelectedSpanId = "move-span_selected";
     var pgnTextArea = document.getElementById("pgn-textarea");
@@ -64,7 +65,7 @@ window.addEventListener("load", function () {
         lastIndex = abChess.getLastPositionIndex();
         navigate(lastIndex);
     }
-    pgnButton.addEventListener("click", importPGN);
+    importButton.addEventListener("click", importPGN);
     resetButton.addEventListener("click", function () {
         abChess.reset();
         clearSpans();
@@ -82,5 +83,8 @@ window.addEventListener("load", function () {
     lastButton.addEventListener("click", function () {
         navigate(lastIndex);
     });
-
+    pgnButton.addEventListener("click", function () {
+        var pgn = abChess.getPGN();
+        alert(pgn);
+    });
 });
