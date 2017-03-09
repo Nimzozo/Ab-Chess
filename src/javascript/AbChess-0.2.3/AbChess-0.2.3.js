@@ -1,5 +1,5 @@
 // AbChess-0.2.3.js
-// 2017-03-08
+// 2017-03-09
 // Copyright (c) 2017 Nimzozo
 
 /*global
@@ -236,20 +236,13 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Return the square where the desired king is placed.
 
-            var desiredKing = "";
-            var square = "";
-            desiredKing = (color === chessValue.black)
+            var desiredKing = (color === chessValue.black)
                 ? chessValue.blackKing
                 : chessValue.whiteKing;
-            Object.keys(the_position.occupiedSquares).every(function (key) {
-                var piece = the_position.occupiedSquares[key];
-                if (piece === desiredKing) {
-                    square = key;
-                    return false;
-                }
-                return true;
-            });
-            return square;
+            return Object.keys(the_position.occupiedSquares).find(
+                function (key) {
+                    return the_position.occupiedSquares[key] === desiredKing;
+                });
         };
 
         the_position.getLegalMoves = function () {
@@ -2455,8 +2448,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
         the_board.navigate = function (index) {
 
-            // Navigate through the game to the desired position.
-            // Update the board position and highlight.
+            // Navigate to the desired position.
+            // Update the board position and the highlighting.
 
             var animations = [];
             var maxIndex = the_board.game.fenStrings.length - 1;
@@ -2511,7 +2504,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             });
         };
 
-        the_board.play = function (move, promotion, animateGhost) {
+        the_board.play = function (move, promotion, animate) {
 
             // Play the desired move on the board.
             // Manage special moves (castle, en passant, promotion).
@@ -2529,7 +2522,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             emptyArrival = arrivalSquare.isEmpty();
             moveObject.arrival = arrivalSquare;
             moveObject.isCapture = !emptyArrival;
-            piece.move(moveObject, animateGhost);
+            piece.move(moveObject, animate);
             piece.remove();
             piece.put(arrivalSquare);
             if (regExp.castle.test(move) &&
@@ -2592,14 +2585,14 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             enPassantSquare.piece.remove();
         };
 
-        the_board.playMove = function (move, promotion, animateGhost) {
+        the_board.playMove = function (move, promotion, animate) {
 
             // Play a move on the board and store it in the game.
 
             var currentPosition = {};
             var lastIndex = the_board.game.fenStrings.length - 1;
             var nextPosition = {};
-            the_board.play(move, promotion, animateGhost);
+            the_board.play(move, promotion, animate);
             the_board.game.addMove(move, promotion);
             currentPosition = the_board.game.getNthPosition(lastIndex);
             nextPosition = currentPosition.getNextPosition(move, promotion);
@@ -2655,7 +2648,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
     }
 
     // -------------------------------------------------------------------------
-    // Load the default configuration properties and create the board.
+    // Load the missing default properties and create the board.
 
     abConfig = abConfig || {};
     Object.keys(defaultConfig).forEach(function (key) {
