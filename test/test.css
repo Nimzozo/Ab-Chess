@@ -32,7 +32,39 @@
     color: white;
 }
 
-.pgn-move:hover {
+#chessboard {
+    display: inline-block;
+    vertical-align: top;
+}
+
+#moves-div {
+    display: inline-block;
+    width: 150px;
+    vertical-align: top;
+    max-height: 360px;
+    overflow: auto;
+    margin: 0 10px;
+}
+
+.move-span {
     cursor: pointer;
-    background-color: orange;
+    display: inline-block;
+    vertical-align: top;
+    width: 50%;
+    border-bottom: 1px gainsboro solid;
+    color: grey;
+}
+
+#move-span_selected {
+    cursor: pointer;
+    display: inline-block;
+    vertical-align: top;
+    width: 50%;
+    border-bottom: 1px gainsboro solid;
+    font-weight: bold;
+    color: green;
+}
+
+.move-span:hover {
+    background-color: gainsboro;
 }
