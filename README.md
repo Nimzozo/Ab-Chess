@@ -23,13 +23,12 @@ Download the latest release. Add this minimal code to your HTML page.
 
 <div id="chessboard"></div>
 
-<script>AbChess.js</script>
-```
-
-```javascript
-var abChess = new AbChess("chessboard");
-abChess.draw();
-abChess.setFEN();
+<script src="AbChess.js"></script>
+<script>
+    var abChess = new AbChess("chessboard");
+    abChess.draw();
+    abChess.setFEN();
+</script>
 ```
 
 ## License
