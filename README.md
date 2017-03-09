@@ -14,6 +14,24 @@ More informations are available on the [GitHub pages](https://nimzozo.github.io/
 - [Examples](https://nimzozo.github.io/Ab-Chess/examples/basics/default.html)
 - [Releases](https://nimzozo.github.io/Ab-Chess/download.html)
 
+## Install
+
+Download the latest release. Add this minimal code to your HTML page.
+
+```html
+<link rel="stylesheet" href="AbChess.css">
+
+<div id="chessboard"></div>
+
+<script>AbChess.js</script>
+```
+
+```javascript
+var abChess = new AbChess("chessboard");
+abChess.draw();
+abChess.setFEN();
+```
+
 ## License
 
 - [MIT License](https://github.com/Nimzozo/ab-chess/blob/master/LICENSE.txt)
