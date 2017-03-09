@@ -23,8 +23,12 @@
 .commands__button {
     margin: 2px;
     background-color: white;
+    border: 1px solid slategrey;
     color: slategrey;
+    padding: 4px;
     font-size: 1.2em;
+    min-width: 40px;
+    cursor: pointer;
 }
 
 .commands__button:hover {
