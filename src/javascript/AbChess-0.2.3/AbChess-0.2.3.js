@@ -1,5 +1,5 @@
 // AbChess-0.2.3.js
-// 2017-03-09
+// 2017-03-11
 // Copyright (c) 2017 Nimzozo
 
 /*global
@@ -180,7 +180,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         variation: /\([^()]*?\)/gm
     };
 
-    // -------------------------------------------------------------------------
+    // Position ----------------------------------------------------------------
 
     function Position(fen) {
 
@@ -952,7 +952,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         return fenPosition;
     };
 
-    // -------------------------------------------------------------------------
+    // Chessgame ---------------------------------------------------------------
 
     function Chessgame() {
 
@@ -1460,7 +1460,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         return regExp.result.test(pgn);
     };
 
-    // -------------------------------------------------------------------------
+    // Piece -------------------------------------------------------------------
 
     function Piece(name, url, width) {
 
@@ -1494,12 +1494,16 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 if (the_piece.ghost.parentElement !== null) {
                     document.body.removeChild(the_piece.ghost);
                 }
+                the_piece.ghost.style.transform = "";
                 the_piece.div.style.opacity = "1";
                 the_piece.isAnimated = false;
                 return;
             }
-            the_piece.setGhostPosition(position[0], position[1]);
+            the_piece.ghost.style.transform = "translate(" +
+                animation.vectors[0] * animation.step + "px, " +
+                animation.vectors[1] * animation.step + "px)";
             animation.start = position;
+            animation.step += 1;
             rAF(function () {
                 the_piece.animateGhost(animation);
             });
@@ -1713,7 +1717,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             });
         };
 
-        the_piece.startGhostAnimation = function (ghostXY, squareXY) {
+        the_piece.startGhostAnimation = function (start, arrival) {
 
             // Start the ghost animation.
 
@@ -1723,22 +1727,23 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var signs = [];
             var speed = the_piece.square.board.animationSpeed;
             var vectors = [];
-            distances[0] = Math.abs(ghostXY[0] - squareXY[0]);
-            distances[1] = Math.abs(ghostXY[1] - squareXY[1]);
+            distances[0] = Math.abs(start[0] - arrival[0]);
+            distances[1] = Math.abs(start[1] - arrival[1]);
             if (Math.max(distances[0], distances[1]) < speed) {
                 animation.instant = true;
             } else {
                 distances.forEach(function (distance, i) {
-                    rests[i] = distance % speed;
-                    signs[i] = (ghostXY[i] < squareXY[i])
+                    signs[i] = (start[i] < arrival[i])
                         ? 1
                         : -1;
+                    rests[i] = distance % speed;
                     vectors[i] = signs[i] * (distance - rests[i]) / speed;
                 });
             }
-            animation.arrival = squareXY;
+            animation.arrival = arrival;
             animation.rest = rests;
-            animation.start = ghostXY;
+            animation.start = start;
+            animation.step = 1;
             animation.vectors = vectors;
             the_piece.isAnimated = true;
             rAF(function () {
@@ -1750,7 +1755,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         return the_piece;
     }
 
-    // -------------------------------------------------------------------------
+    // Square ------------------------------------------------------------------
 
     function Square(name, width) {
 
@@ -1942,7 +1947,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             : colNumber % 2 === 0;
     };
 
-    // -------------------------------------------------------------------------
+    // Chessboard --------------------------------------------------------------
 
     function Chessboard(containerId, config) {
 
@@ -2000,27 +2005,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 } else {
                     arrival.piece = piece;
                     piece.square = arrival;
-                }
-            });
-        };
-
-        the_board.animateNavigation = function (animations) {
-
-            // Animate the navigation to a position.
-
-            animations.forEach(function (animation) {
-                var arrival = animation.arrival;
-                var move = {};
-                var piece = animation.piece;
-                var start = animation.start;
-                if (arrival === undefined) {
-                    piece.fadingRemove();
-                } else if (start === undefined) {
-                    piece.fadingPlace(arrival);
-                } else {
-                    move.arrival = arrival;
-                    move.isCapture = false;
-                    piece.move(move, true);
                 }
             });
         };
@@ -2541,7 +2525,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             the_board.updateHighlight(index, position);
             animations = the_board.getAnimations(position);
             similarPieces = the_board.getSimilarPieces(position);
-            the_board.animateNavigation(animations);
+            the_board.performAnimations(animations);
             the_board.addNavigationData(animations, similarPieces);
             if (index < maxIndex) {
                 the_board.lock();
@@ -2583,6 +2567,27 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             });
         };
 
+        the_board.performAnimations = function (animations) {
+
+            // Animate the navigation to a position.
+
+            animations.forEach(function (animation) {
+                var arrival = animation.arrival;
+                var move = {};
+                var piece = animation.piece;
+                var start = animation.start;
+                if (arrival === undefined) {
+                    piece.fadingRemove();
+                } else if (start === undefined) {
+                    piece.fadingPlace(arrival);
+                } else {
+                    move.arrival = arrival;
+                    move.isCapture = false;
+                    piece.move(move, true);
+                }
+            });
+        };
+
         the_board.play = function (move, promotion, animate) {
 
             // Play a move on the board and store it in the game.
@@ -2600,7 +2605,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             }
         };
 
-        the_board.setPosition = function (fen) {
+        the_board.setFEN = function (fen) {
 
             // Load a position from a FEN string.
 
@@ -2842,7 +2847,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Reset the game and the board.
 
-            abBoard.setPosition();
+            abBoard.setFEN();
             abBoard.clearHighlight();
             abBoard.unlock();
             abBoard.game = new Chessgame();
@@ -2852,7 +2857,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Load the FEN position on the board.
 
-            abBoard.setPosition(fen);
+            abBoard.setFEN(fen);
         },
 
         setGameInfo: function (info, value) {
