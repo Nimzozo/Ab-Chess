@@ -1,211 +1,235 @@
-window.Accordeon = window.Accordeon || function (indexes) {
+// Accordeon.js
+// 2017-03-10
+// Copyright (c) 2017 Nimzozo
+
+/*global
+    window
+*/
+
+/*jslint
+    browser, white
+*/
+
+window.Accordeon = window.Accordeon || function (containerId, data, options) {
     "use strict";
 
     var accordeon = {
-        "items": [
-            {
-                "name": "Basics",
-                "items": [
-                    {
-                        "name": "Default options",
-                        "href": "examples/basics/default.html"
-                    },
-                    {
-                        "name": "Visual changes",
-                        "href": "examples/basics/visual.html"
-                    },
-                    {
-                        "name": "Locked pieces",
-                        "href": "examples/basics/locked.html"
-                    },
-                    {
-                        "name": "Orientation",
-                        "href": "examples/basics/orientation.html"
-                    },
-                    {
-                        "name": "Squares highlighting",
-                        "href": "examples/basics/highlighting.html"
-                    }
-                ]
-            },
-            {
-                "name": "Methods",
-                "items": [
-                    {
-                        "name": "Flip",
-                        "href": "examples/methods/flip.html"
-                    },
-                    {
-                        "name": "Get active color",
-                        "href": "examples/methods/get-active-color.html"
-                    },
-                    {
-                        "name": "Get FEN",
-                        "href": "examples/methods/get-fen.html"
-                    },
-                    {
-                        "name": "Get game info",
-                        "href": "examples/methods/get-game-info.html"
-                    },
-                    {
-                        "name": "Set FEN",
-                        "href": "examples/methods/set-fen.html"
-                    },
-                    {
-                        "name": "Set PGN",
-                        "href": "examples/methods/set-pgn.html"
-                    },
-                    {
-                        "name": "Play",
-                        "href": "examples/methods/play.html"
-                    }
-                ]
-            },
-            {
-                "name": "Advanced",
-                "items": [
-                    {
-                        "name": "Random moves",
-                        "href": "examples/advanced/random-moves.html"
-                    },
-                    {
-                        "name": "PGN reader",
-                        "href": "examples/advanced/pgn-reader.html"
-                    },
-                    {
-                        "name": "PGN viewer",
-                        "href": "examples/advanced/pgn-viewer.html"
-                    }
-                ]
-            }
-        ]
+        container: {},
+        options: {
+            uniqueOpenList: false
+        },
+        element: {},
+        lists: []
     };
+
+    /**
+     * Css classes and ids.    
+     */
     var css = {
-        activeHeader: "list__header_active",
-        activeSubList: "sub-list_active",
-        header: "list__header",
-        item: "list__item",
-        link: "example-link",
-        list: "list",
-        selectedItem: "sub-list__item_selected",
-        selectedLink: "example-link_selected",
-        subItem: "sub-list__item",
-        subList: "sub-list"
+        accordeon: "accordeon",
+        link: "accordeon__link",
+        list: "accordeon__list",
+        listHeader: "list-header",
+        listItem: "list__item",
+        openList: "list_open",
+        openListHeader: "list-header_open",
+        selectedLink: "link_selected"
     };
-    var activeHeader = document.getElementsByClassName(css.activeHeader)[0];
-    var activeSubList = document.getElementsByClassName(css.activeSubList)[0];
 
-    function changeHeight(element, step, limit) {
-        var clientHeight = element.clientHeight;
-        var newHeight = clientHeight + step;
-        var strHeight = newHeight + "px";
-        element.style.height = strHeight;
-        if ((step > 0 && newHeight < limit) ||
-            (step < 0 && newHeight > limit)) {
-            requestAnimationFrame(function () {
-                changeHeight(element, step, limit);
-            });
-        } else if (limit === 0) {
-            element.style.display = "none";
-        }
+    /**
+     * requestAnimationFrame polyfill.
+     */
+    function raf(callback) {
+        return window.requestAnimationFrame(callback) ||
+            window.webkitRequestAnimationFrame(callback) ||
+            window.mozRequestAnimationFrame(callback) ||
+            window.setTimeout(callback, 1000 / 60);
     }
 
-    function getItemsFromList(list) {
-        var arrayChildren = [];
-        var children = list.children;
-        Object.keys(children).forEach(function (key) {
-            var child = children[key];
-            if (child.tagName === "LI") {
-                arrayChildren.push(child);
-            }
-        });
-        return arrayChildren;
-    }
+    /**
+     * HTML list class.
+     */
+    function HtmlList(data) {
 
-    function closeList(header, list) {
-        var listItems = getItemsFromList(list);
-        listItems.forEach(function (item) {
-            item.style.display = "block";
-            changeHeight(item, -4, 0);
-        });
-        header.className = css.header;
-        list.className = css.subList;
-        activeSubList = undefined;
-    }
+        var htmlList = {
+            animationSpeed: 4,
+            data: data,
+            currentItemHeight: 0,
+            element: {},
+            header: {},
+            isOpen: false,
+            itemMaxHeight: 20,
+            items: [],
+            name: ""
+        };
 
-    function openList(header, list) {
-        var listItems = getItemsFromList(list);
-        header.className = css.activeHeader;
-        list.className = css.activeSubList;
-        listItems.forEach(function (item) {
-            item.style.height = 0;
-            item.style.display = "block";
-            changeHeight(item, 4, 36);
-        });
-        if (activeSubList !== undefined) {
-            closeList(activeHeader, activeSubList);
-        }
-        activeHeader = header;
-        activeSubList = list;
-    }
+        /**
+         * Set the currentItemHeight to an item.
+         * @param {Object} element 
+         */
+        htmlList.setCurrentHeight = function (element) {
+            element.style.height = htmlList.currentItemHeight + "px";
+        };
 
-    function selectLink(link) {
-        var selectedLink = document.getElementsByClassName(css.selectedLink);
-        if (selectedLink.length > 0) {
-            selectedLink[0].className = css.link;
-        }
-        link.className = css.selectedLink;
-    }
-
-    function getAccordeon(indexes) {
-        var list = document.createElement("UL");
-        list.className = css.list;
-        accordeon.items.forEach(function (item, index) {
-            var header = document.createElement("H4");
-            var htmlItem = document.createElement("LI");
-            var subList = document.createElement("UL");
-            if (index === indexes[0]) {
-                activeHeader = header;
-                activeSubList = subList;
-                header.className = css.activeHeader;
-                subList.className = css.activeSubList;
+        /**
+         * Animate the items height change.
+         */
+        htmlList.animate = function () {
+            if (htmlList.isOpen) {
+                htmlList.currentItemHeight -= htmlList.animationSpeed;
+                htmlList.items.forEach(htmlList.setCurrentHeight);
+                if (htmlList.currentItemHeight === 0) {
+                    htmlList.element.className = css.list;
+                    htmlList.header.className = css.listHeader;
+                    htmlList.isOpen = false;
+                    return;
+                }
             } else {
-                header.className = css.header;
-                subList.className = css.subList;
+                htmlList.currentItemHeight += htmlList.animationSpeed;
+                htmlList.items.forEach(htmlList.setCurrentHeight);
+                if (htmlList.currentItemHeight === htmlList.itemMaxHeight) {
+                    htmlList.isOpen = true;
+                    return;
+                }
             }
-            header.innerHTML = item.name;
-            header.addEventListener("click", function () {
-                if (subList === activeSubList) {
-                    closeList(header, subList);
-                } else {
-                    openList(header, subList);
-                }
-            });
-            htmlItem.className = css.item;
-            htmlItem.appendChild(header);
-            item.items.forEach(function (subItem, subIndex) {
-                var htmlSubItem = document.createElement("LI");
+            raf(htmlList.animate);
+        };
+
+        /**
+         * Close the list.
+         */
+        htmlList.close = function () {
+            htmlList.currentItemHeight = htmlList.itemMaxHeight;
+            raf(htmlList.animate);
+        };
+
+        /**
+         * Create the list header.
+         */
+        htmlList.createHeader = function () {
+            htmlList.header = document.createElement("HEADER");
+            htmlList.header.className = (htmlList.isOpen)
+                ? css.openListHeader
+                : css.listHeader;
+            htmlList.header.innerHTML = htmlList.name;
+            htmlList.header.addEventListener("click", htmlList.onHeaderClick);
+        };
+
+        /**
+         * Create the list items.
+         */
+        htmlList.createItems = function () {
+            htmlList.data.items.forEach(function (datum) {
                 var link = document.createElement("A");
-                htmlSubItem.className = css.subItem;
-                link.innerHTML = subItem.name;
-                link.href = subItem.href;
-                if (index === indexes[0] && subIndex === indexes[1]) {
-                    link.className = css.selectedLink;
-                } else {
-                    link.className = css.link;
-                }
-                link.addEventListener("click", function () {
-                    selectLink(link);
-                });
-                htmlSubItem.appendChild(link);
-                subList.appendChild(htmlSubItem);
+                var listItem = document.createElement("LI");
+                listItem.className = css.listItem;
+                link.className = (datum.selected)
+                    ? css.selectedLink
+                    : css.link;
+                link.innerHTML = datum.name;
+                link.href = datum.href;
+                listItem.appendChild(link);
+                htmlList.items.push(listItem);
             });
-            htmlItem.appendChild(subList);
-            list.appendChild(htmlItem);
-        });
-        return list;
+        };
+
+        /**
+         * Initialize the list.
+         */
+        htmlList.initialize = function () {
+            htmlList.readData();
+            htmlList.element = document.createElement("UL");
+            htmlList.element.className = (htmlList.isOpen)
+                ? css.openList
+                : css.list;
+            htmlList.createHeader();
+            htmlList.element.appendChild(htmlList.header);
+            htmlList.createItems();
+            htmlList.items.forEach(function (item) {
+                htmlList.element.appendChild(item);
+            });
+        };
+
+        /**
+         * Header click handler.
+         */
+        htmlList.onHeaderClick = function () {
+            if (htmlList.isOpen) {
+                htmlList.close();
+            } else {
+                if (accordeon.options.uniqueOpenList) {
+                    accordeon.closeLists();
+                }
+                htmlList.open();
+            }
+        };
+
+        /**
+         * Open the list.
+         */
+        htmlList.open = function () {
+            htmlList.currentItemHeight = 0;
+            htmlList.element.className = css.openList;
+            htmlList.header.className = css.openListHeader;
+            raf(htmlList.animate);
+        };
+
+        /**
+         * Read the data and initialize the list.
+         */
+        htmlList.readData = function () {
+            if (data.open) {
+                htmlList.isOpen = true;
+            }
+            htmlList.name = data.name;
+        };
+
+        htmlList.initialize();
+        return htmlList;
     }
 
-    return getAccordeon(indexes);
-};
+    /**
+     * Build the menu.
+     */
+    accordeon.build = function () {
+        accordeon.container = document.getElementById(containerId);
+        accordeon.element = document.createElement("DIV");
+        accordeon.element.className = css.accordeon;
+        data.items.forEach(function (listData) {
+            var list = new HtmlList(listData);
+            accordeon.lists.push(list);
+            accordeon.element.appendChild(list.header);
+            accordeon.element.appendChild(list.element);
+        });
+        accordeon.container.appendChild(accordeon.element);
+    };
 
+    /**
+     * Close all the lists.
+     */
+    accordeon.closeLists = function () {
+        accordeon.lists.forEach(function (list) {
+            if (list.isOpen) {
+                list.close();
+            }
+        });
+    };
+
+    /**
+     * Initialize the accordeon.
+     */
+    accordeon.initialize = function () {
+        options = options || {};
+        Object.keys(accordeon.options).forEach(function (key) {
+            if (options.hasOwnProperty(key)) {
+                accordeon.options[key] = options[key];
+            }
+        });
+        accordeon.build();
+    };
+
+    accordeon.initialize();
+    return {
+
+    };
+};
