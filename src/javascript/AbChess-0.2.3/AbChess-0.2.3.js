@@ -202,15 +202,15 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Check whether a move is legal or not.
             // Check : active color, kings are not in check, moves are legal.
 
-            var arrival = "";
+            var arrival = move.substr(3, 2);
+            var arrivalPieceColor = "";
             var pieceColor = "";
-            var start = "";
+            var start = move.substr(0, 2);
             var targets = [];
             var testPosition = {};
             if (!regExp.move.test(move)) {
                 return false;
             }
-            start = move.substr(0, 2);
             if (!the_position.occupiedSquares.hasOwnProperty(start)) {
                 return false;
             }
@@ -221,12 +221,20 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             if (the_position.activeColor !== pieceColor) {
                 return false;
             }
+            if (the_position.occupiedSquares.hasOwnProperty(arrival)) {
+                arrivalPieceColor = (the_position.occupiedSquares[arrival] ===
+                the_position.occupiedSquares[arrival].toLowerCase())
+                ? chess.black
+                : chess.white;
+                if (arrivalPieceColor === pieceColor) {
+                    return false;
+                }
+            }
             testPosition = the_position.getNextPosition(move);
             if (testPosition.isInCheck(the_position.activeColor)) {
                 return false;
             }
             targets = the_position.getTargets(start, false);
-            arrival = move.substr(3, 2);
             return targets.some(function (target) {
                 return target === arrival;
             });
