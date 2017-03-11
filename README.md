@@ -4,7 +4,7 @@
 
 ## Chess API written in native JavaScript
 
-Ab-Chess API for JavaScript provides the tools to build HTML chessboards. 
+Ab-Chess API for JavaScript provides the tools to build HTML playable chessboards with animated pieces. 
 
 It lets you import, play and export a chessgame in the PGN notation.
 
