@@ -16,19 +16,28 @@ More informations are available on the [GitHub pages](https://nimzozo.github.io/
 
 ## Install
 
-Download the latest release. Add this minimal code to your HTML page.
+Download the latest release. To embed a chessboard with the default configuration, simply follow these steps :
 
+- Load the CSS file.
 ```html
-<link rel="stylesheet" href="AbChess.css">
+<link rel="stylesheet" href="AbChess-x.x.x.css">
+```
 
+- Add a chessboard container.
+```html
 <div id="chessboard"></div>
+```
 
-<script src="AbChess.js"></script>
-<script>
-    var abChess = new AbChess("chessboard");
-    abChess.draw();
-    abChess.setFEN();
-</script>
+- Load the JavaScript file.
+```html
+<script src="AbChess-x.x.x.js"></script>
+```
+
+- Run this script.
+```javascript
+var abChess = new AbChess("chessboard");
+abChess.draw();
+abChess.setFEN();
 ```
 
 ## License
