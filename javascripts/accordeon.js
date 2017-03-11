@@ -1,5 +1,5 @@
 // Accordeon.js
-// 2017-03-10
+// 2017-03-11
 // Copyright (c) 2017 Nimzozo
 
 /*global
