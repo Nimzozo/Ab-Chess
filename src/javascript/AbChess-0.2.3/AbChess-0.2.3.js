@@ -1,5 +1,5 @@
 // AbChess-0.2.3.js
-// 2017-03-11
+// 2017-03-12
 // Copyright (c) 2017 Nimzozo
 
 /*global
@@ -223,9 +223,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             }
             if (the_position.occupiedSquares.hasOwnProperty(arrival)) {
                 arrivalPieceColor = (the_position.occupiedSquares[arrival] ===
-                the_position.occupiedSquares[arrival].toLowerCase())
-                ? chess.black
-                : chess.white;
+                    the_position.occupiedSquares[arrival].toLowerCase())
+                    ? chess.black
+                    : chess.white;
                 if (arrivalPieceColor === pieceColor) {
                     return false;
                 }
@@ -2385,19 +2385,19 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             the_board.container = document.getElementById(containerId);
             switch (the_board.animationSpeed) {
                 case "slow":
-                    the_board.animationSpeed = 20;
+                    the_board.animationSpeed = 12;
                     break;
                 case "normal":
-                    the_board.animationSpeed = 10;
+                    the_board.animationSpeed = 8;
                     break;
                 case "fast":
-                    the_board.animationSpeed = 5;
+                    the_board.animationSpeed = 4;
                     break;
                 case "instant":
                     the_board.animationSpeed = Infinity;
                     break;
                 default:
-                    the_board.animationSpeed = 10;
+                    the_board.animationSpeed = 8;
             }
             the_board.game = new Chessgame();
             document.addEventListener("mousemove", the_board.onMouseMove);
@@ -2654,7 +2654,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         return the_board;
     }
 
-    // -------------------------------------------------------------------------
+    // API ---------------------------------------------------------------------
 
     abConfig = abConfig || {};
     Object.keys(defaultConfig).forEach(function (key) {

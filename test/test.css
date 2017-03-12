@@ -72,3 +72,8 @@
 .move-span:hover {
     background-color: gainsboro;
 }
+
+#errorSpan {
+    color: red;
+    padding: 4px;
+}

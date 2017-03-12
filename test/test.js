@@ -3,6 +3,7 @@ window.addEventListener("load", function () {
 
     var abChess = {};
     var currentIndex = 0;
+    var errorSpan = document.getElementById("errorSpan");
     var firstButton = document.getElementById("firstButton");
     var flipButton = document.getElementById("flipButton");
     var importButton = document.getElementById("importButton");
@@ -58,6 +59,11 @@ window.addEventListener("load", function () {
         }
     }
     function importPGN() {
+        errorSpan.innerHTML = "";
+        if (!abChess.isValidPGN(pgnTextArea.value)) {
+            errorSpan.innerHTML = "Invalid PGN.";
+            return;
+        }
         abChess.setPGN(pgnTextArea.value);
         clearSpans();
         moves = abChess.getGameMovesPGN();
