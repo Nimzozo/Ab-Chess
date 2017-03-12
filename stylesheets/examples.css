@@ -80,6 +80,15 @@ textarea {
     vertical-align: top;
 }
 
+.game {
+    display: none;
+}
+
+#games-select {
+    display: block;
+    margin: 10px;
+}
+
 #moves-div {
     display: inline-block;
     vertical-align: top;

@@ -101,7 +101,6 @@ window.addEventListener("load", function () {
     };
     var htmlCode = document.getElementById("html-code");
     var jsCode = document.getElementById("js-code");
-    var navigation = document.getElementById("navigation_fixed");
     var result = document.getElementById("result");
 
     function replaceSpecials(str) {
