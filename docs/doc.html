@@ -337,6 +337,15 @@
                     </tr>
                 </table>
                 <p>Return type : Boolean</p>
+                <h4 class="little-header">Example</h4>
+                <p class="description">Test some moves legality.</p>
+                <span class="code-title">JavaScript</span>
+                <code class="code">var abChess = {};
+            var containerId = "abContainer";
+            abChess = new AbChess(containerId);
+            abChess.isLegal(0, "e2-e4"); // True
+            abChess.isLegal(0, "e1-e4"); // False
+                </code>
             </div>
             <div class="method">
                 <div class="anchor" id="isStalemate"></div>
@@ -373,6 +382,16 @@
                     </tr>
                 </table>
                 <p>Return type : Boolean</p>
+                <h4 class="little-header">Example</h4>
+                <p class="description">Test some FEN strings.</p>
+                <span class="code-title">JavaScript</span>
+                <code class="code">var abChess = {};
+            var containerId = "abContainer";
+            abChess = new AbChess(containerId);
+            abChess.isValidFEN("rnbqkbnr/pp3ppp/8/3p4/3P4/8/PP3PPP/RNBQKBNR w KQkq - 0 6"); // True
+            abChess.isValidFEN("rnbqkbnr/8/8/8/8/8/8/RNBQKBNR"); // False
+            abChess.isValidFEN("rnbqkbnr/8/8/8/8/8/8/RNBQKBNR", true); // True
+                </code>
             </div>
             <div class="method">
                 <div class="anchor" id="isValidPGN"></div>
@@ -388,6 +407,7 @@
                     </tr>
                 </table>
                 <p>Return type : Boolean</p>
+
             </div>
             <div class="method">
                 <div class="anchor" id="navigate"></div>

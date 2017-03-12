@@ -4,7 +4,7 @@ window.addEventListener("load", function () {
     var codes = document.getElementsByClassName("code");
 
     window.colorize = function (text, trim) {
-        var regexComment = /(\/{2}[^]*?)\n/g;
+        var regexComment = /(\/{2}.*)\n/g;
         var regexHTMLAttribute = /(\w+?)\=/g;
         var regexHTMLTag = /(&lt;\/?)(button|div|input|label|p|select|span|textarea|ul)/g;
         var regexString = /([\[\(\s\=>])("[^"]*?")([<;:,\s\)\]&])/g;
@@ -12,7 +12,7 @@ window.addEventListener("load", function () {
         var regexWhite = /\ {12}/g;
         var replaceAttribute = "<pre class=\"number\">$1</pre>=";
         var replaceBlue = "<pre class=\"blue\">$1</pre>";
-        var replaceComment = "<pre class=\"comment\">$1</pre>";
+        var replaceComment = "<pre class=\"comment\">$1</pre>\n";
         var replacePink = "$1<pre class=\"pink\">$2</pre>$3";
         var replaceTag = "$1<pre class=\"blue\">$2</pre>";
         var replaceWhite = "";
@@ -27,10 +27,10 @@ window.addEventListener("load", function () {
         }
         text = text.replace(regexHTMLAttribute, replaceAttribute);
         text = text.replace(regexHTMLTag, replaceTag);
-        text = text.replace(regexComment, replaceComment);
         text = text.replace(regexString, replacePink);
         text = text.replace(regexVar, replaceBlue);
         text = text.replace(regexWhite, replaceWhite);
+        text = text.replace(regexComment, replaceComment);
         return text;
     };
 

@@ -98,23 +98,30 @@ window.addEventListener("load", function () {
             var nextButton = document.getElementById("next-button");
             var previousButton = document.getElementById("previous-button");
 
+            abChess = new AbChess("chessboard", config);
+            abChess.draw();
+            abChess.setFEN();
+
             function importPGN(pgn) {
                 abChess.setPGN(pgn);
                 lastIndex = abChess.getLastPositionIndex();
                 clickLastButton();
             }
-            
+
             Object.keys(games).forEach(function (key, i) {
                 var option = document.createElement("OPTION");
-                option.innerHTML = "Game " + (i + 1);
+                var pgn = games[key].innerHTML;
+                abChess.setPGN(pgn);
+                option.innerHTML = abChess.getGameInfo("White") + " vs " +
+                    abChess.getGameInfo("Black") +
+                    " | " + abChess.getGameInfo("Event") +
+                    " (" + abChess.getGameInfo("Round") + ")";
                 option.addEventListener("dblclick", function () {
-                    importPGN(games[key].innerHTML);
+                    importPGN(pgn);
                 });
                 gamesSelect.appendChild(option);
             });
-            abChess = new AbChess("chessboard", config);
-            abChess.draw();
-            abChess.setFEN();
+
 
             function clickFirstButton() {
                 index = 0;
