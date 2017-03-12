@@ -1298,8 +1298,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Generate the moves and the FEN strings from the PGN moves.
 
             var lastPosition = {};
-            the_game.fenStrings = [chess.defaultFEN];
-            the_game.moves = [];
             lastPosition = the_game.getNthPosition(0);
             the_game.pgnMoves.forEach(function (pgnMove, index) {
                 var move = the_game.getSimpleMove(index, pgnMove);
@@ -1321,7 +1319,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Import the PGN moves from a PGN string.
 
             var importedPGNMoves = [];
-            the_game.pgnMoves = [];
             while (regExp.comment.test(pgn)) {
                 pgn = pgn.replace(regExp.comment, "");
             }
@@ -1341,7 +1338,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Import the tag pairs from a PGN.
 
             var importedTags = pgn.match(regExp.tagPair);
-            the_game.initialize();
             importedTags.forEach(function (tagPair) {
                 var matches = regExp.tagPairCapture.exec(tagPair);
                 the_game.tags[matches[1]] = matches[2];
@@ -1386,7 +1382,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return position.checkMoveLegality(move);
         };
 
-        the_game.setPGN = function (pgn) {
+        the_game.setPGN = function (pgn, loadMoves) {
 
             // Load a PGN string. To proceed :
             // - Validate.
@@ -1396,13 +1392,20 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // - Variations.
             // - Store the PGN moves.
             // - Get simple moves and FEN strings from PGN moves.
+            // Set loadMoves to false to load only infos.
 
             if (!Chessgame.isValidPGN(pgn)) {
                 throw new SyntaxError(error.invalidPGN);
             }
+            the_game.initialize();
+            the_game.fenStrings = [chess.defaultFEN];
+            the_game.moves = [];
+            the_game.pgnMoves = [];
             the_game.importTags(pgn);
-            the_game.importPGNMoves(pgn);
-            the_game.importMoves();
+            if (loadMoves === undefined || loadMoves) {
+                the_game.importPGNMoves(pgn);
+                the_game.importMoves();
+            }
         };
 
         the_game.setResult = function (nextPosition) {
@@ -2875,11 +2878,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             abBoard.game.tags[info] = value;
         },
 
-        setPGN: function (pgn) {
+        setPGN: function (pgn, loadMoves) {
 
             // Set the PGN in the game.
 
-            abBoard.game.setPGN(pgn);
+            abBoard.game.setPGN(pgn, loadMoves);
         }
 
     };

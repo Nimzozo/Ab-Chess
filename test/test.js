@@ -64,7 +64,7 @@ window.addEventListener("load", function () {
             errorSpan.innerHTML = "Invalid PGN.";
             return;
         }
-        abChess.setPGN(pgnTextArea.value);
+        abChess.setPGN(pgnTextArea.value, true);
         clearSpans();
         moves = abChess.getGameMovesPGN();
         moves.forEach(addMoveSpan);
