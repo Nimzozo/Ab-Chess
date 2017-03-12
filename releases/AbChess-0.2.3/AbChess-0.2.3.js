@@ -1129,6 +1129,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var start = move.substr(0, 2);
             occupiedSquares = position.occupiedSquares;
             playedPiece = occupiedSquares[start];
+            pgnMove = playedPiece.toUpperCase();
             arrival = move.substr(3, 2);
             candidates = Object.keys(occupiedSquares).filter(function (square) {
                 var legalSquares = [];
@@ -1139,21 +1140,20 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 legalSquares = position.getLegalSquares(square);
                 return legalSquares.indexOf(arrival) > -1;
             });
-            sameColumn = candidates.some(function (candidate) {
-                return candidate[0] === start[0];
-            });
-            sameRow = candidates.some(function (candidate) {
-                return candidate[1] === start[1];
-            });
-            pgnMove = playedPiece.toUpperCase();
-            if (sameColumn) {
-                if (sameRow) {
-                    pgnMove += start;
+            if (candidates.length > 0) {
+                sameColumn = candidates.some(function (candidate) {
+                    return candidate[0] === start[0];
+                });
+                sameRow = candidates.some(function (candidate) {
+                    return candidate[1] === start[1];
+                });
+                if (sameColumn) {
+                    pgnMove += (sameRow)
+                        ? start
+                        : start[1];
                 } else {
-                    pgnMove += start[1];
+                    pgnMove += start[0];
                 }
-            } else if (sameRow) {
-                pgnMove += start[0];
             }
             if (occupiedSquares.hasOwnProperty(arrival)) {
                 pgnMove += chess.captureSymbol;
