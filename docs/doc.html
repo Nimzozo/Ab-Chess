@@ -503,7 +503,7 @@
             </div>
             <div class="method">
                 <div class="anchor" id="setPGN"></div>
-                <h3 class="identifier-header">setPGN(pgn)</h3>
+                <h3 class="identifier-header">setPGN(pgn, loadMoves)</h3>
                 <p>Load a chessgame from a PGN string. This will replace the game in progress.</p>
                 <table class="parameter-table">
                     <tr>
@@ -512,6 +512,10 @@
                     <tr>
                         <td>pgn</td>
                         <td>String<br>The Portable Game Notation to import.</td>
+                    </tr>
+                    <tr>
+                        <td>loadMoves</td>
+                        <td>Optional<br>Boolean<br>When set to false, the function will only load the game informations. The default is <code class="inline-code">true</code>.</td>
                     </tr>
                 </table>
                 <p>See <a class="link" href="examples/methods/set-pgn.html">example</a>.</p>

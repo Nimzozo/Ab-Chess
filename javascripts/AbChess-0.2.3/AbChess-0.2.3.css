@@ -1,6 +1,6 @@
 /*
-// AbChess-0.2.2.css
-// 2017-02-25
+// AbChess-0.2.3.css
+// 2017-03-09
 // Copyright (c) 2017 Nimzozo
 */
 
@@ -36,7 +36,6 @@
     left: 0;
     height: 100%;
     width: 100%;
-    cursor: pointer;
 }
 
 .ghost_piece {
@@ -58,12 +57,12 @@
     background: burlywood;
 }
 
-.square_highlighted {
-     box-shadow: inset 0 0 0 2px green;
+.square_check {
+    box-shadow: inset 0 0 0 2px red;
 }
 
-.square_marked {
-    box-shadow: inset 0 0 0 2px red;
+.square_last-move {
+     box-shadow: inset 0 0 0 2px green;
 }
 
 .square_overflown {

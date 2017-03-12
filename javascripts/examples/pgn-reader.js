@@ -103,7 +103,7 @@ window.addEventListener("load", function () {
             abChess.setFEN();
 
             function importPGN(pgn) {
-                abChess.setPGN(pgn);
+                abChess.setPGN(pgn, true);
                 lastIndex = abChess.getLastPositionIndex();
                 clickLastButton();
             }
@@ -111,7 +111,7 @@ window.addEventListener("load", function () {
             Object.keys(games).forEach(function (key, i) {
                 var option = document.createElement("OPTION");
                 var pgn = games[key].innerHTML;
-                abChess.setPGN(pgn);
+                abChess.setPGN(pgn, false);
                 option.innerHTML = abChess.getGameInfo("White") + " vs " +
                     abChess.getGameInfo("Black") +
                     " | " + abChess.getGameInfo("Event") +
