@@ -82,19 +82,31 @@ textarea {
 
 #moves-div {
     display: inline-block;
-    width: 150px;
     vertical-align: top;
+    width: 120px;
     max-height: 360px;
     overflow: auto;
     margin: 0 10px;
+    font-size: 0.8em;
+    text-align: center;
+}
+
+.move-number-span {
+    display: inline-block;
+    vertical-align: top;
+    width: 18%;
+    border-bottom: 1px gainsboro solid;
+    color: grey;
+    text-align: left;
 }
 
 .move-span {
     cursor: pointer;
     display: inline-block;
     vertical-align: top;
-    width: 50%;
+    width: 40%;
     border-bottom: 1px gainsboro solid;
+    border-left: 1px gainsboro solid;
     color: grey;
 }
 
@@ -102,10 +114,10 @@ textarea {
     cursor: pointer;
     display: inline-block;
     vertical-align: top;
-    width: 50%;
+    width: 40%;
     border-bottom: 1px gainsboro solid;
-    font-weight: bold;
     color: green;
+    background-color: palegreen;
 }
 
 .move-span:hover {

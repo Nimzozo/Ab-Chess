@@ -105,6 +105,8 @@ window.addEventListener("load", function () {
             abChess.setFEN();
 
             function navigate(index) {
+                var scroll = 0;
+                var scrollIndex = 0;
                 var selectedSpan = document.getElementById("move-span_selected");
                 var spans = document.getElementsByClassName("move-span");
                 if (index < 0 || index > lastIndex) {
@@ -117,15 +119,28 @@ window.addEventListener("load", function () {
                 }
                 if (index > 0 && spans.length > 0) {
                     spans[index - 1].id = "move-span_selected";
+                    scrollIndex = (index % 2 === 1)
+                        ? (index - 1) / 2
+                        : (index - 2) / 2;
+                    scroll = movesDiv.scrollHeight / (spans.length / 2) *
+                        scrollIndex - movesDiv.offsetHeight / 2;
+                    movesDiv.scrollTop = scroll;
                 }
             }
             function addMoveSpan(move, i) {
+                var numberSpan = {};
                 var span = document.createElement("SPAN");
                 span.className = "move-span";
                 span.innerHTML = move;
                 span.addEventListener("click", function () {
                     navigate(i + 1);
                 });
+                if (i % 2 === 0) {
+                    numberSpan = document.createElement("SPAN");
+                    numberSpan.className = "move-number-span";
+                    numberSpan.innerHTML = i / 2 + 1;
+                    movesDiv.appendChild(numberSpan);
+                }
                 movesDiv.appendChild(span);
             }
             function clearSpans() {
