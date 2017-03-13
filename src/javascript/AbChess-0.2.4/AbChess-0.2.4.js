@@ -203,30 +203,24 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Check : active color, kings are not in check, moves are legal.
 
             var arrival = move.substr(3, 2);
-            var arrivalPieceColor = "";
-            var pieceColor = "";
+            var isWhiteArrival = "";
+            var isWhitePiece = false;
+            var position = the_position.occupiedSquares;
             var start = move.substr(0, 2);
             var targets = [];
             var testPosition = {};
-            if (!regExp.move.test(move)) {
+            if (!regExp.move.test(move) || !position.hasOwnProperty(start)) {
                 return false;
             }
-            if (!the_position.occupiedSquares.hasOwnProperty(start)) {
+            isWhitePiece = position[start] === position[start].toUpperCase();
+            if ((the_position.activeColor === chess.white && !isWhitePiece) ||
+                (the_position.activeColor === chess.black && isWhitePiece)) {
                 return false;
             }
-            pieceColor = (the_position.occupiedSquares[start] ===
-                the_position.occupiedSquares[start].toLowerCase())
-                ? chess.black
-                : chess.white;
-            if (the_position.activeColor !== pieceColor) {
-                return false;
-            }
-            if (the_position.occupiedSquares.hasOwnProperty(arrival)) {
-                arrivalPieceColor = (the_position.occupiedSquares[arrival] ===
-                    the_position.occupiedSquares[arrival].toLowerCase())
-                    ? chess.black
-                    : chess.white;
-                if (arrivalPieceColor === pieceColor) {
+            if (position.hasOwnProperty(arrival)) {
+                isWhiteArrival = position[arrival] ===
+                    position[arrival].toUpperCase();
+                if (isWhiteArrival === isWhitePiece) {
                     return false;
                 }
             }
