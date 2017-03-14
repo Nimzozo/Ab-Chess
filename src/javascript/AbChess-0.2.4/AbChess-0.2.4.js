@@ -2012,27 +2012,16 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Display the promotion div to complete a move.
 
-            var pieces = [
-                chess.blackQueen, chess.blackRook,
-                chess.blackBishop, chess.blackKnight
-            ];
-            var promotionDiv = theBoard.promotionDiv;
-            while (promotionDiv.hasChildNodes()) {
-                promotionDiv.removeChild(promotionDiv.lastChild);
-            }
-            pieces.forEach(function (piece) {
-                var button = document.createElement("BUTTON");
-                var url = theBoard.imagesPath + color + piece +
+            var children = theBoard.promotionDiv.children;
+            Object.keys(children).forEach(function (key) {
+                var button = children[key];
+                var url = theBoard.imagesPath + color + button.name +
                     theBoard.imagesExtension;
-                button.className = css.promotionButton;
-                button.setAttribute("name", piece);
                 button.style.backgroundImage = "url('" + url + "')";
-                button.addEventListener("click", theBoard.onPromote);
-                promotionDiv.appendChild(button);
             });
             theBoard.lock();
             rAF(function () {
-                promotionDiv.style.display = "block";
+                theBoard.promotionDiv.style.display = "block";
             });
         };
 
@@ -2097,6 +2086,10 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Create the HTML board.
 
             var columns = chess.columns.split("");
+            var pieces = [
+                chess.blackQueen, chess.blackRook,
+                chess.blackBishop, chess.blackKnight
+            ];
             var rows = chess.rows.split("");
             theBoard.squaresDiv = document.createElement("DIV");
             theBoard.squaresDiv.style.width = theBoard.width + "px";
@@ -2114,6 +2107,15 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     var square = theBoard.squares[column + row];
                     theBoard.squaresDiv.appendChild(square.div);
                 });
+            });
+            theBoard.promotionDiv = document.createElement("DIV");
+            theBoard.promotionDiv.className = css.promotionDiv;
+            pieces.forEach(function (piece) {
+                var button = document.createElement("BUTTON");
+                button.className = css.promotionButton;
+                button.setAttribute("name", piece);
+                button.addEventListener("click", theBoard.onPromote);
+                theBoard.promotionDiv.appendChild(button);
             });
         };
 
@@ -2180,8 +2182,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Draw the empty chessboard.
 
-            theBoard.promotionDiv = document.createElement("DIV");
-            theBoard.promotionDiv.className = css.promotionDiv;
             theBoard.createBoard();
             rAF(function () {
                 theBoard.squaresDiv.appendChild(theBoard.promotionDiv);
