@@ -524,8 +524,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var piece = thePosition.occupiedSquares[start];
             var queenVectors = [];
             if (piece.toLowerCase() === chess.blackBishop) {
-                return thePosition.getLineTargets(start,
-                    chess.bishopVectors);
+                return thePosition.getLineTargets(start, chess.bishopVectors);
             } else if (piece.toLowerCase() === chess.blackKing) {
                 return thePosition.getTargetsKing(start, onlyAttack);
             } else if (piece.toLowerCase() === chess.blackKnight) {
@@ -534,13 +533,12 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             } else if (piece.toLowerCase() === chess.blackPawn) {
                 return thePosition.getTargetsPawn(start, onlyAttack);
             } else if (piece.toLowerCase() === chess.blackQueen) {
-                queenVectors = chess.bishopVectors.concat(
-                    chess.rookVectors);
+                queenVectors = chess.bishopVectors.concat(chess.rookVectors);
                 return thePosition.getLineTargets(start, queenVectors);
-            } else {
-                return thePosition.getLineTargets(start,
-                    chess.rookVectors);
+            } else if (piece.toLowerCase() === chess.blackRook) {
+                return thePosition.getLineTargets(start, chess.rookVectors);
             }
+            throw new SyntaxError(error.invalidParameter);
         };
 
         thePosition.getTargetsCastle = function (start) {
@@ -1208,9 +1206,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 return theGame.getSimplePawnMove(n);
             } else if (regExp.pgnPieceMove.test(pgnMove)) {
                 return theGame.getSimplePieceMove(n);
-            } else {
-                throw new SyntaxError(error.invalidParameter);
             }
+            throw new SyntaxError(error.invalidParameter);
         };
 
         theGame.getSimplePawnMove = function (n) {
