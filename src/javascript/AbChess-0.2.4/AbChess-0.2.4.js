@@ -175,8 +175,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         result: /1-0|0-1|1\/2-1\/2|\*/,
         row: /[1-8]/,
         tagPair: /\[[A-Z][^]+?\s"[^]+?"\]/gm,
-        tagPairCapture: /\[(\S+)\s"(.*)"/,
-        tagPairsSection: /(?:\[[^]+?\s"[^]+?"\]\s+){7,}\s+/gm,
+        tagPairCapture: /\[(\S+)\s"(.*)"\]/,
+        tagPairsSection: /(?:\[[^]+?\s"[^]+?"\]\n){7,}\n/gm,
         variation: /\([^()]*?\)/gm
     };
 
