@@ -280,7 +280,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return legalSquares;
         };
 
-        thePosition.getLineTargets = function (start, vectors) {
+        thePosition.getLineTargets = function (start) {
 
             // Return an array of linear squares without collision.
 
@@ -292,6 +292,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var piece = thePosition.occupiedSquares[start];
             var rowNumber = 0;
             var targets = [];
+            var vectors = [];
             columnNumber = chess.columns.indexOf(start[0]) + 1;
             rowNumber = Number(start[1]);
             color = (piece.toLowerCase() === piece)
@@ -302,6 +303,13 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 ? chess.white
                 : chess.black;
             ennemiesPlaces = thePosition.getPiecesPlaces(ennemiesColor);
+            if (piece.toLowerCase() === chess.blackBishop) {
+                vectors = chess.bishopVectors;
+            } else if (piece.toLowerCase() === chess.blackQueen) {
+                vectors = chess.bishopVectors.concat(chess.rookVectors);
+            } else if (piece.toLowerCase() === chess.blackRook) {
+                vectors = chess.rookVectors;
+            }
             vectors.forEach(function (vector) {
                 var columnVector = vector[0];
                 var rowVector = vector[1];
@@ -522,21 +530,14 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // and pawn non-attacking moves.
 
             var piece = thePosition.occupiedSquares[start];
-            var queenVectors = [];
-            if (piece.toLowerCase() === chess.blackBishop) {
-                return thePosition.getLineTargets(start, chess.bishopVectors);
+            if (/[bqr]/i.test(piece)) {
+                return thePosition.getLineTargets(start);
             } else if (piece.toLowerCase() === chess.blackKing) {
                 return thePosition.getTargetsKing(start, onlyAttack);
             } else if (piece.toLowerCase() === chess.blackKnight) {
-                return thePosition.getVectorsTargets(start,
-                    chess.knightVectors);
+                return thePosition.getVectorTargets(start, chess.knightVectors);
             } else if (piece.toLowerCase() === chess.blackPawn) {
                 return thePosition.getTargetsPawn(start, onlyAttack);
-            } else if (piece.toLowerCase() === chess.blackQueen) {
-                queenVectors = chess.bishopVectors.concat(chess.rookVectors);
-                return thePosition.getLineTargets(start, queenVectors);
-            } else if (piece.toLowerCase() === chess.blackRook) {
-                return thePosition.getLineTargets(start, chess.rookVectors);
             }
             throw new SyntaxError(error.invalidParameter);
         };
@@ -605,13 +606,13 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var normalTargets = [];
             var piece = thePosition.occupiedSquares[start];
             var targets = [];
-            normalTargets = thePosition.getVectorsTargets(start,
+            normalTargets = thePosition.getVectorTargets(start,
                 chess.kingVectors);
             ennemiesColor = (piece.toLowerCase() === piece)
                 ? chess.white
                 : chess.black;
             ennemyKingSquare = thePosition.getKingSquare(ennemiesColor);
-            ennemyKingTargets = thePosition.getVectorsTargets(
+            ennemyKingTargets = thePosition.getVectorTargets(
                 ennemyKingSquare, chess.kingVectors);
             targets = normalTargets.filter(function (target) {
                 return ennemyKingTargets.indexOf(target) === -1;
@@ -711,7 +712,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return targets;
         };
 
-        thePosition.getVectorsTargets = function (start, vectors) {
+        thePosition.getVectorTargets = function (start, vectors) {
 
             // Return an array of squares found with vectors.
 
