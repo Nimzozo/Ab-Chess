@@ -1396,7 +1396,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             theGame.moves = [];
             theGame.pgnMoves = [];
             theGame.importTags(pgn);
-            if (loadMoves === undefined || loadMoves) {
+            if (typeof loadMoves === "undefined" || loadMoves) {
                 theGame.importPGNMoves(pgn);
                 theGame.importMoves();
             }
@@ -2001,10 +2001,10 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 var arrival = animation.arrival;
                 var piece = animation.piece;
                 var start = animation.start;
-                if (arrival === undefined) {
+                if (typeof arrival === "undefined") {
                     return;
                 }
-                if (start === undefined) {
+                if (typeof start === "undefined") {
                     arrival.piece = piece;
                     piece.square = arrival;
                 } else {
@@ -2581,9 +2581,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 var move = {};
                 var piece = animation.piece;
                 var start = animation.start;
-                if (arrival === undefined) {
+                if (typeof arrival === "undefined") {
                     piece.fadingRemove();
-                } else if (start === undefined) {
+                } else if (typeof start === "undefined") {
                     piece.fadingPlace(arrival);
                 } else {
                     move.arrival = arrival;
