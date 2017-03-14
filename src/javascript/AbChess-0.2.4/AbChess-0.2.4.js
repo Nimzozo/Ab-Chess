@@ -1,5 +1,5 @@
 // AbChess-0.2.4.js
-// 2017-03-14
+// 2017-03-15
 // Copyright (c) 2017 Nimzozo
 
 /*global
@@ -145,13 +145,13 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
     // RAF polyfill.
 
-    var rAF = window.requestAnimationFrame ||
-        window.webkitRequestAnimationFrame ||
-        window.mozRequestAnimationFrame ||
-        window.oRequestAnimationFrame ||
-        function (callback) {
-            return window.setTimeout(callback, 1000 / 60);
-        };
+    function rAF(callback) {
+        return window.requestAnimationFrame(callback) ||
+            window.webkitRequestAnimationFrame(callback) ||
+            window.mozRequestAnimationFrame(callback) ||
+            window.oRequestAnimationFrame(callback) ||
+            window.setTimeout(callback, 1000 / 60);
+    }
 
     // Regular expressions.
 
@@ -197,36 +197,40 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             occupiedSquares: null
         };
 
-        thePosition.checkMoveLegality = function (move) {
+        thePosition.checkCannibalism = function (start, arrival) {
 
-            // Check if a move is legal.
-            // Check :
+            // Check if the move is cannibalism.
+
+            var arrivalColor = "";
+            var squares = thePosition.occupiedSquares;
+            var startColor = "";
+            if (!squares.hasOwnProperty(arrival)) {
+                return false;
+            }
+            startColor = (squares[start] === squares[start].toUpperCase())
+                ? chess.white
+                : chess.black;
+            arrivalColor = (squares[arrival] === squares[arrival].toUpperCase())
+                ? chess.white
+                : chess.black;
+            return startColor === arrivalColor;
+        };
+
+        thePosition.checkLegality = function (move) {
+
+            // Check if a move is legal :
             // - active color.
             // - cannibalism.
             // - move is playable.
             // - king is not in check.
 
             var arrival = move.substr(3, 2);
-            var isWhiteArrival = "";
-            var isWhitePiece = false;
             var nextPosition = {};
-            var position = thePosition.occupiedSquares;
             var start = move.substr(0, 2);
             var targets = [];
-            if (!regExp.move.test(move) || !position.hasOwnProperty(start)) {
+            if (!regExp.move.test(move) || !thePosition.checkTurn(start) ||
+                thePosition.checkCannibalism(start, arrival)) {
                 return false;
-            }
-            isWhitePiece = position[start] === position[start].toUpperCase();
-            if ((thePosition.activeColor === chess.white && !isWhitePiece) ||
-                (thePosition.activeColor === chess.black && isWhitePiece)) {
-                return false;
-            }
-            if (position.hasOwnProperty(arrival)) {
-                isWhiteArrival = position[arrival] ===
-                    position[arrival].toUpperCase();
-                if (isWhiteArrival === isWhitePiece) {
-                    return false;
-                }
             }
             targets = thePosition.getTargets(start, false);
             if (targets.indexOf(arrival) === -1) {
@@ -234,6 +238,21 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             }
             nextPosition = thePosition.getNextPosition(move);
             return !nextPosition.isInCheck(thePosition.activeColor);
+        };
+
+        thePosition.checkTurn = function (start) {
+
+            // Check if the move is legal according to the turn.
+
+            var color = "";
+            var position = thePosition.occupiedSquares;
+            if (!position.hasOwnProperty(start)) {
+                return false;
+            }
+            color = (position[start] === position[start].toUpperCase())
+                ? chess.white
+                : chess.black;
+            return thePosition.activeColor === color;
         };
 
         thePosition.getKingSquare = function (color) {
@@ -275,7 +294,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             targets = thePosition.getTargets(start, false);
             targets.forEach(function (target) {
                 var move = start + "-" + target;
-                if (thePosition.checkMoveLegality(move)) {
+                if (thePosition.checkLegality(move)) {
                     legalSquares.push(target);
                 }
             });
@@ -1361,7 +1380,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Check if a move is legal in the n-th position.
 
             var position = theGame.getNthPosition(n);
-            return position.checkMoveLegality(move);
+            return position.checkLegality(move);
         };
 
         theGame.setPGN = function (pgn, loadMoves) {
