@@ -511,17 +511,12 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // the pieces of a specific color.
 
             var occupiedSquares = thePosition.occupiedSquares;
-            var placements = [];
-            Object.keys(occupiedSquares).forEach(function (square) {
+            return Object.keys(occupiedSquares).filter(function (square) {
                 var piece = thePosition.occupiedSquares[square];
-                if ((color === chess.white &&
-                    piece === piece.toUpperCase())
-                    || (color === chess.black &&
-                        piece === piece.toLowerCase())) {
-                    placements.push(square);
-                }
+                return (color === chess.white &&
+                    piece === piece.toUpperCase()) ||
+                    (color === chess.black && piece === piece.toLowerCase());
             });
-            return placements;
         };
 
         thePosition.getTargets = function (start, onlyAttack) {
@@ -792,8 +787,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var insufficients = [
                 [chess.blackKing, chess.blackBishop],
                 [chess.blackKing, chess.blackKnight],
-                [chess.blackKing, chess.blackKnight,
-                chess.blackKnight]
+                [chess.blackKing, chess.blackKnight, chess.blackKnight]
             ];
             var pieces = [];
             var whitePlaces = [];
