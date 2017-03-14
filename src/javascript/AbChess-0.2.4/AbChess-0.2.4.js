@@ -201,19 +201,15 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Check if the move is cannibalism.
 
-            var arrivalColor = "";
             var squares = thePosition.occupiedSquares;
-            var startColor = "";
+            var whiteArrival = false;
+            var whiteStart = false;
             if (!squares.hasOwnProperty(arrival)) {
                 return false;
             }
-            startColor = (squares[start] === squares[start].toUpperCase())
-                ? chess.white
-                : chess.black;
-            arrivalColor = (squares[arrival] === squares[arrival].toUpperCase())
-                ? chess.white
-                : chess.black;
-            return startColor === arrivalColor;
+            whiteStart = squares[start] === squares[start].toUpperCase();
+            whiteArrival = squares[arrival] === squares[arrival].toUpperCase();
+            return whiteStart === whiteArrival;
         };
 
         thePosition.checkLegality = function (move) {
