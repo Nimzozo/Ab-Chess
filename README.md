@@ -44,15 +44,6 @@ abChess.setFEN();
 
 - [MIT License](https://github.com/Nimzozo/ab-chess/blob/master/LICENSE.txt)
 
-## Coding tools
-
-Built with the help of :
-
-- [Code Climate](https://codeclimate.com)
-- [Codebeat](https://codebeat.co)
-- [JSLint](http://www.jslint.com)
-- [Visual Studio Code](http://code.visualstudio.com)
-
 ## Chess resources
 
 - [FEN Wikipedia](https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation)
