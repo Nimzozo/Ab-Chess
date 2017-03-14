@@ -159,7 +159,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         castle: /^e(?:1-c1|1-g1|8-c8|8-g8)$/,
         comment: /\{[^]+?\}/gm,
         enPassant: /^[a-h]4-[a-h]3|[a-h]5-[a-h]6$/,
-        fen: /^(?:[bBkKnNpPqQrR1-8]{1,8}\/){7}[bBkKnNpPqQrR1-8]{1,8}\s(w|b)\s(KQ?k?q?|K?Qk?q?|K?Q?kq?|K?Q?k?q|-)\s([a-h][36]|-)\s(0|[1-9]\d*)\s([1-9]\d*)$/,
+        fen: /^(?:[bBkKnNpPqQrR1-8]{1,8}\/){7}[bBkKnNpPqQrR1-8]{1,8}\s(w|b)\s(K?Q?k?q?|-)\s([a-h][36]|-)\s(0|[1-9]\d*)\s([1-9]\d*)$/,
         fenRow: /^[bknpqr1]{8}|[bknpqr12]{7}|[bknpqr1-3]{6}|[bknpqr1-4]{5}|[bknpqr1-5]{4}|[bknpqr1-6]{3}|[bknpqr]7|7[bknpqr]|8$/i,
         move: /^[a-h][1-8]-[a-h][1-8]$/,
         pgnCastle: /^O-O(?:-O)?(?:\+|#)?$/,
