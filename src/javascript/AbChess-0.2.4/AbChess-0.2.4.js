@@ -199,16 +199,20 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
         thePosition.checkMoveLegality = function (move) {
 
-            // Check whether a move is legal or not.
-            // Check : active color, kings are not in check, moves are legal.
+            // Check if a move is legal.
+            // Check :
+            // - active color.
+            // - cannibalism.
+            // - move is playable.
+            // - king is not in check.
 
             var arrival = move.substr(3, 2);
             var isWhiteArrival = "";
             var isWhitePiece = false;
+            var nextPosition = {};
             var position = thePosition.occupiedSquares;
             var start = move.substr(0, 2);
             var targets = [];
-            var testPosition = {};
             if (!regExp.move.test(move) || !position.hasOwnProperty(start)) {
                 return false;
             }
@@ -224,14 +228,12 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     return false;
                 }
             }
-            testPosition = thePosition.getNextPosition(move);
-            if (testPosition.isInCheck(thePosition.activeColor)) {
+            targets = thePosition.getTargets(start, false);
+            if (targets.indexOf(arrival) === -1) {
                 return false;
             }
-            targets = thePosition.getTargets(start, false);
-            return targets.some(function (target) {
-                return target === arrival;
-            });
+            nextPosition = thePosition.getNextPosition(move);
+            return !nextPosition.isInCheck(thePosition.activeColor);
         };
 
         thePosition.getKingSquare = function (color) {
@@ -532,11 +534,14 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var piece = thePosition.occupiedSquares[start];
             if (/[bqr]/i.test(piece)) {
                 return thePosition.getLineTargets(start);
-            } else if (piece.toLowerCase() === chess.blackKing) {
+            }
+            if (piece.toLowerCase() === chess.blackKing) {
                 return thePosition.getTargetsKing(start, onlyAttack);
-            } else if (piece.toLowerCase() === chess.blackKnight) {
+            }
+            if (piece.toLowerCase() === chess.blackKnight) {
                 return thePosition.getVectorTargets(start, chess.knightVectors);
-            } else if (piece.toLowerCase() === chess.blackPawn) {
+            }
+            if (piece.toLowerCase() === chess.blackPawn) {
                 return thePosition.getTargetsPawn(start, onlyAttack);
             }
             throw new SyntaxError(error.invalidParameter);
@@ -621,8 +626,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 return targets;
             }
             castleTargets = thePosition.getTargetsCastle(start);
-            targets = targets.concat(castleTargets);
-            return targets;
+            return targets.concat(castleTargets);
         };
 
         thePosition.getTargetsPawn = function (start, onlyAttack) {
@@ -716,16 +720,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Return an array of squares found with vectors.
 
-            var alliesPlaces = [];
-            var color = "";
             var columnNumber = 0;
-            var piece = thePosition.occupiedSquares[start];
             var rowNumber = 0;
             var targets = [];
-            color = (piece.toLowerCase() === piece)
-                ? chess.black
-                : chess.white;
-            alliesPlaces = thePosition.getPiecesPlaces(color);
             columnNumber = chess.columns.indexOf(start[0]) + 1;
             rowNumber = Number(start[1]);
             vectors.forEach(function (vector) {
@@ -738,11 +735,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     testRowNumber < 1 || testRowNumber > 8) {
                     return;
                 }
-                testSquare = chess.columns[testColNumber - 1] +
-                    testRowNumber;
-                if (alliesPlaces.indexOf(testSquare) === -1) {
-                    targets.push(testSquare);
-                }
+                testSquare = chess.columns[testColNumber - 1] + testRowNumber;
+                targets.push(testSquare);
             });
             return targets;
         };
@@ -1203,9 +1197,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             if (regExp.pgnKingMove.test(pgnMove)) {
                 return theGame.getSimpleKingMove(n);
-            } else if (regExp.pgnPawnMove.test(pgnMove)) {
+            }
+            if (regExp.pgnPawnMove.test(pgnMove)) {
                 return theGame.getSimplePawnMove(n);
-            } else if (regExp.pgnPieceMove.test(pgnMove)) {
+            }
+            if (regExp.pgnPieceMove.test(pgnMove)) {
                 return theGame.getSimplePieceMove(n);
             }
             throw new SyntaxError(error.invalidParameter);
