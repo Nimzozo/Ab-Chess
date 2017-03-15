@@ -44,24 +44,34 @@ window.addEventListener("load", function () {
             spans[index - 1].id = pgnSelectedSpanId;
         }
     }
+
     function addMoveSpan(move, i) {
+        var numberSpan = {};
         var span = document.createElement("SPAN");
         span.className = pgnSpanClass;
-        span.innerHTML = move;
+        span.innerText = move;
         span.addEventListener("click", function () {
             navigate(i + 1);
         });
+        if (i % 2 === 0) {
+            numberSpan = document.createElement("SPAN");
+            numberSpan.className = "move-number-span";
+            numberSpan.innerText = i / 2 + 1;
+            movesDiv.appendChild(numberSpan);
+        }
         movesDiv.appendChild(span);
     }
+
     function clearSpans() {
         while (movesDiv.hasChildNodes()) {
             movesDiv.removeChild(movesDiv.lastElementChild);
         }
     }
+
     function importPGN() {
-        errorSpan.innerHTML = "";
+        errorSpan.innerText = "";
         if (!abChess.isValidPGN(pgnTextArea.value)) {
-            errorSpan.innerHTML = "Invalid PGN.";
+            errorSpan.innerText = "Invalid PGN.";
             return;
         }
         abChess.setPGN(pgnTextArea.value, true);
@@ -71,6 +81,7 @@ window.addEventListener("load", function () {
         lastIndex = abChess.getLastPositionIndex();
         navigate(lastIndex);
     }
+
     importButton.addEventListener("click", importPGN);
     resetButton.addEventListener("click", function () {
         abChess.reset();
