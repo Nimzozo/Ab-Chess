@@ -350,15 +350,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return targets;
         };
 
-        thePosition.getNextActiveColor = function () {
-
-            // Return the new active color.
-
-            return (thePosition.activeColor === chess.white)
-                ? chess.black
-                : chess.white;
-        };
-
         thePosition.getNextAllowedCastles = function (move) {
 
             // Return the updated allowed castles.
@@ -419,64 +410,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return nextEnPassantTarget;
         };
 
-        thePosition.getNextFullmoveNumber = function () {
+        thePosition.getNextFENPosition = function (move, promotion) {
 
-            // Return the new fullmove number.
-
-            return (thePosition.activeColor === chess.black)
-                ? thePosition.fullmoveNumber + 1
-                : thePosition.fullmoveNumber;
-        };
-
-        thePosition.getNextHalfmoveClock = function (move) {
-
-            // Return the new halfmoveclock.
-
-            var arrivalSquare = move.substr(3, 2);
-            var playedPiece = "";
-            var startSquare = move.substr(0, 2);
-            var takenPiece = false;
-            playedPiece = thePosition.occupiedSquares[startSquare];
-            takenPiece = thePosition.occupiedSquares.hasOwnProperty(
-                arrivalSquare);
-            return (playedPiece.toLowerCase() === chess.blackPawn ||
-                takenPiece)
-                ? 0
-                : thePosition.halfmoveClock + 1;
-        };
-
-        thePosition.getNextPosition = function (move, promotion) {
-
-            // Return the new Position object after a move has been played.
-            // The move parameter must be on the form [a-h][1-8]-[a-h][1-8].
-            // The data of FEN position are updated here.
-            // The played move is assumed to be legal.
-
-            var newActiveColor = "";
-            var newAllowedCastles = "";
-            var newEnPassant = "";
-            var newFEN = "";
-            var newFullmove = 0;
-            var newHalfmove = 0;
-            var newPosition = "";
-            newPosition = thePosition.getNextPositionString(move, promotion);
-            newActiveColor = thePosition.getNextActiveColor();
-            newAllowedCastles = thePosition.getNextAllowedCastles(move);
-            newEnPassant = thePosition.getNextEnPassant(move);
-            newHalfmove = thePosition.getNextHalfmoveClock(move);
-            newFullmove = thePosition.getNextFullmoveNumber();
-            newFEN = newPosition +
-                " " + newActiveColor +
-                " " + newAllowedCastles +
-                " " + newEnPassant +
-                " " + newHalfmove +
-                " " + newFullmove;
-            return new Position(newFEN);
-        };
-
-        thePosition.getNextPositionString = function (move, promotion) {
-
-            // Return the next position string.
+            // Return the next FEN position string.
 
             var arrival = move.substr(3, 2);
             var enPassantPawn = "";
@@ -507,8 +443,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     regExp.enPassant.test(move)) {
                     enPassantPawn = thePosition.enPassantSquare[0] + start[1];
                     delete newPosition[enPassantPawn];
-                }
-                if (regExp.promotion.test(move)) {
+                } else if (regExp.promotion.test(move)) {
                     promotion = promotion || chess.blackQueen;
                     piece = (arrival[1] === chess.rows[0])
                         ? promotion.toLowerCase()
@@ -518,6 +453,54 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             delete newPosition[start];
             newPosition[arrival] = piece;
             return Position.objectToFEN(newPosition);
+        };
+
+        thePosition.getNextHalfmoveClock = function (move) {
+
+            // Return the new halfmoveclock.
+
+            var arrival = move.substr(3, 2);
+            var playedPiece = "";
+            var start = move.substr(0, 2);
+            playedPiece = thePosition.occupiedSquares[start];
+            return (playedPiece.toLowerCase() === chess.blackPawn ||
+                thePosition.occupiedSquares.hasOwnProperty(arrival))
+                ? 0
+                : thePosition.halfmoveClock + 1;
+        };
+
+        thePosition.getNextPosition = function (move, promotion) {
+
+            // Return the new Position object after a move has been played.
+            // The move parameter must be on the form [a-h][1-8]-[a-h][1-8].
+            // The data of FEN position are updated here.
+            // The played move is assumed to be legal.
+
+            var newActiveColor = "";
+            var newAllowedCastles = "";
+            var newEnPassant = "";
+            var newFEN = "";
+            var newFullmove = 0;
+            var newHalfmove = 0;
+            var newPosition = "";
+            if (thePosition.activeColor === chess.white) {
+                newActiveColor = chess.black;
+                newFullmove = thePosition.fullmoveNumber;
+            } else {
+                newActiveColor = chess.white;
+                newFullmove = thePosition.fullmoveNumber + 1;
+            }
+            newPosition = thePosition.getNextFENPosition(move, promotion);
+            newAllowedCastles = thePosition.getNextAllowedCastles(move);
+            newEnPassant = thePosition.getNextEnPassant(move);
+            newHalfmove = thePosition.getNextHalfmoveClock(move);
+            newFEN = newPosition +
+                " " + newActiveColor +
+                " " + newAllowedCastles +
+                " " + newEnPassant +
+                " " + newHalfmove +
+                " " + newFullmove;
+            return new Position(newFEN);
         };
 
         thePosition.getPiecesPlaces = function (color) {
