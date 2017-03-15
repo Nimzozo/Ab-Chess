@@ -746,17 +746,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             });
         };
 
-        thePosition.isCheckmate = function () {
-
-            // Return true if the active king is checkmated.
-
-            var isCheck = thePosition.isInCheck(thePosition.activeColor);
-            if (!isCheck) {
-                return false;
-            }
-            return !thePosition.hasLegalMoves();
-        };
-
         thePosition.isControlledBy = function (square, color) {
 
             // Check if the desired square is controlled
@@ -769,16 +758,22 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             });
         };
 
-        thePosition.isDrawBy50MovesRule = function () {
+        thePosition.isInCheck = function (color) {
 
-            // Check if the position is draw by the 50 moves rule.
+            // Check if the desired king is in check.
 
-            return thePosition.halfmoveClock > 99;
+            var ennemiesColor = "";
+            var kingSquare = "";
+            ennemiesColor = (color === chess.white)
+                ? chess.black
+                : chess.white;
+            kingSquare = thePosition.getKingSquare(color);
+            return thePosition.isControlledBy(kingSquare, ennemiesColor);
         };
 
-        thePosition.isDrawByInsufficientMaterial = function () {
+        thePosition.isInsufficientMaterial = function () {
 
-            // Check if the position is draw by the insufficient material rule.
+            // Check if the position is drawn by insufficient material.
 
             var blackPlaces = [];
             var insufficientBlack = false;
@@ -828,19 +823,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return insufficients.some(function (insufficient) {
                 return sameArray(insufficient, pieces);
             });
-        };
-
-        thePosition.isInCheck = function (color) {
-
-            // Check if the desired king is in check.
-
-            var ennemiesColor = "";
-            var kingSquare = "";
-            ennemiesColor = (color === chess.white)
-                ? chess.black
-                : chess.white;
-            kingSquare = thePosition.getKingSquare(color);
-            return thePosition.isControlledBy(kingSquare, ennemiesColor);
         };
 
         thePosition.initialize = function () {
@@ -964,12 +946,12 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             var lastIndex = theGame.fenStrings.length - 1;
             var lastPosition = theGame.getNthPosition(lastIndex);
-            var nextPosition = {};
+            var newPosition = {};
             var pgnMove = "";
             promotion = promotion || "";
-            nextPosition = lastPosition.getNextPosition(move, promotion);
-            theGame.fenStrings.push(nextPosition.fenString);
-            theGame.setResult(nextPosition);
+            newPosition = lastPosition.getNextPosition(move, promotion);
+            theGame.fenStrings.push(newPosition.fenString);
+            theGame.updateResult(newPosition);
             theGame.moves.push(move);
             pgnMove = theGame.getPGNMove(lastIndex, promotion);
             theGame.pgnMoves.push(pgnMove);
@@ -1343,17 +1325,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             });
         };
 
-        theGame.isInCheck = function (n) {
-
-            // Check if the active player is in check in the n-th position.
-
-            var activeColor = "";
-            var position = {};
-            position = theGame.getNthPosition(n);
-            activeColor = position.activeColor;
-            return position.isInCheck(activeColor);
-        };
-
         theGame.isLegal = function (n, move) {
 
             // Check if a move is legal in the n-th position.
@@ -1388,24 +1359,21 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             }
         };
 
-        theGame.setResult = function (nextPosition) {
+        theGame.updateResult = function (nextPosition) {
 
-            // Set the possible result after a move has been played.
+            // Update the possible result after a move has been played.
 
-            var hasNoMoves = !nextPosition.hasLegalMoves();
-            var isInCheck = false;
             var result = theGame.tags.Result;
-            if (hasNoMoves) {
-                isInCheck = nextPosition.isInCheck(nextPosition.activeColor);
-                if (isInCheck) {
+            if (!nextPosition.hasLegalMoves()) {
+                if (nextPosition.isInCheck(nextPosition.activeColor)) {
                     result = (nextPosition.activeColor === chess.black)
                         ? chess.resultWhite
                         : chess.resultBlack;
                 } else {
                     result = chess.resultDraw;
                 }
-            } else if (nextPosition.isDrawByInsufficientMaterial() ||
-                nextPosition.isDrawBy50MovesRule()) {
+            } else if (nextPosition.halfmoveClock > 99 ||
+                nextPosition.isInsufficientMaterial()) {
                 result = chess.resultDraw;
             }
             theGame.tags.Result = result;
@@ -2646,6 +2614,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         }
     });
     abBoard = new Chessboard(containerId, abConfig);
+
     return {
         DEFAULT_FEN: chess.defaultFEN,
 
@@ -2740,7 +2709,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // in the n-th position.
 
             var position = abBoard.game.getNthPosition(n);
-            return position.isDrawBy50MovesRule();
+            return position.halfmoveClock > 99;
         },
 
         isCheckmate(n) {
@@ -2748,14 +2717,18 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Check if the active player is checkmated in the n-th position.
 
             var position = abBoard.game.getNthPosition(n);
-            return position.isCheckmate();
+            if (!position.isInCheck(position.activeColor)) {
+                return false;
+            }
+            return !position.hasLegalMoves();
         },
 
         isInCheck(n) {
 
             // Check if the active player is in check in the n-th position.
 
-            return abBoard.game.isInCheck(n);
+            var position = abBoard.game.getNthPosition(n);
+            return position.isInCheck(position.activeColor);
         },
 
         isInsufficientMaterialDraw(n) {
@@ -2764,7 +2737,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // in the n-th position.
 
             var position = abBoard.game.getNthPosition(n);
-            return position.isDrawByInsufficientMaterial();
+            return position.isInsufficientMaterial();
         },
 
         isLegal(n, move) {
