@@ -1,6 +1,6 @@
 /*
 // AbChess-0.2.4.css
-// 2017-03-13
+// 2017-03-15
 // Copyright (c) 2017 Nimzozo
 */
 
@@ -36,15 +36,14 @@
     left: 0;
     height: 100%;
     width: 100%;
+    opacity: 1;
 }
 
-.ghost_piece {
+.piece-ghost {
     background-size: 100% 100%;
     position: absolute;
     top: 0;
     left: 0;
-    height: 50px;
-    width: 50px;
     z-index: 9;
     pointer-events: none;
 }

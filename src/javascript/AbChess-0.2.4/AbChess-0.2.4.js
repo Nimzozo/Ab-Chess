@@ -85,9 +85,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         checkSquare: "square_check",
         columnsBorder: "columns-border",
         columnsBorderFragment: "columns-border__fragment",
-        ghostPiece: "ghost_piece",
         lastMoveSquare: "square_last-move",
         overflownSquare: "square_overflown",
+        pieceGhost: "piece-ghost",
         promotionButton: "promotion-button",
         promotionDiv: "promotion-div",
         rowsBorder: "rows-border",
@@ -1502,7 +1502,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
         thePiece.fadingPlace = function (square) {
 
-            // Fade the piece in until its opacity reaches 1.
+            // Place the piece and change the opacity from 0 to 1.
 
             var opacity = Number(thePiece.div.style.opacity);
             if (opacity === 0) {
@@ -1510,7 +1510,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             }
             opacity += 0.1;
             thePiece.div.style.opacity = opacity;
-            if (opacity === 1) {
+            if (opacity.toFixed(1) === "1.0") {
                 return;
             }
             rAF(function () {
@@ -1520,18 +1520,15 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
         thePiece.fadingRemove = function () {
 
-            // Fade the piece until its opacity reaches 0.
+            // Change the piece opacity from 1 to 0 and remove it.
 
-            var opacity = thePiece.div.style.opacity;
-            if (opacity === "") {
-                opacity = 1;
-            }
+            var opacity = Number(thePiece.div.style.opacity);
             opacity -= 0.1;
             thePiece.div.style.opacity = opacity;
-            if (opacity > 0) {
-                rAF(thePiece.fadingRemove);
-            } else {
+            if (opacity.toFixed(1) === "0.0") {
                 thePiece.animateRemove();
+            } else {
+                rAF(thePiece.fadingRemove);
             }
         };
 
@@ -1545,7 +1542,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             thePiece.div.style.backgroundImage = backgroundImage;
             thePiece.div.addEventListener("mousedown", thePiece.onMouseDown);
             thePiece.ghost = document.createElement("DIV");
-            thePiece.ghost.className = css.ghostPiece;
+            thePiece.ghost.className = css.pieceGhost;
             thePiece.ghost.style.backgroundImage = backgroundImage;
         };
 
