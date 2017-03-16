@@ -11,10 +11,11 @@
     background-color: lavender;
     white-space: pre;
     font-family: Monaco, monospace;
-    font-size: 98%;
-    padding: 10px;
-    margin-bottom: 10px;
+    font-size: 0.9em;
+    padding: 8px;
+    margin-bottom: 8px;
     overflow: auto;
+    max-height: 500px;
 }
 
 pre {

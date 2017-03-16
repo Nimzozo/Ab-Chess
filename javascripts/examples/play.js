@@ -86,36 +86,29 @@ window.addEventListener("load", function () {
     var example = {
         func: function () {
             var abChess = {};
-            var qGambitButton = document.getElementById("qGambitButton");
-            var sicilianButton = document.getElementById("sicilianButton");
+            var d4Button = document.getElementById("d4Button");
+            var e4Button = document.getElementById("e4Button");
+            var resetButton = document.getElementById("resetButton");
             abChess = new AbChess("chessboard");
             abChess.draw();
             abChess.setFEN();
-            qGambitButton.addEventListener("click", function () {
-                abChess.reset();
+            d4Button.addEventListener("click", function () {
                 abChess.play("d2-d4");
-                abChess.play("d7-d5");
-                abChess.play("c2-c4");
+                abChess.play("g8-f6");
             });
-            sicilianButton.addEventListener("click", function () {
-                abChess.reset();
+            e4Button.addEventListener("click", function () {
                 abChess.play("e2-e4");
                 abChess.play("c7-c5");
-                abChess.play("g1-f3");
-                abChess.play("d7-d6");
-                abChess.play("d2-d4");
-                abChess.play("c5-d4");
-                abChess.play("f3-d4");
-                abChess.play("g8-f6");
-                abChess.play("b1-c3");
-                abChess.play("a7-a6");
             });
+            resetButton.addEventListener("click", abChess.reset);
         },
-        html: "<div id=\"chessboard\"></div>\n" +
-        "<div>\n" +
-        "  <input type=\"button\" value=\"Queen's gambit\" id=\"qGambitButton\" class=\"commands__button\">\n" +
-        "  <input type=\"button\" value=\"Sicilian Najdorf\" id=\"sicilianButton\" class=\"commands__button\">\n" +
-        "</div>"
+        html: "<div>\n" +
+        "  <button id=\"d4Button\" class=\"commands__button\">d4 Nf6</button>\n" +
+        "  <button id=\"e4Button\" class=\"commands__button\">e4 c5</button>\n" +
+        "  <button id=\"resetButton\" class=\"commands__button\">Reset</button>\n" +
+        "</div>\n" +
+        "<div id=\"chessboard\"></div>"
+
     };
     var htmlCode = document.getElementById("html-code");
     var jsCode = document.getElementById("js-code");

@@ -88,7 +88,7 @@ window.addEventListener("load", function () {
             var abChess = {};
             var options = {
                 imagesPath: "images/alpha/",
-                legalMarksColor: "lightgreen",
+                legalMarksColor: "green",
                 width: 280
             };
             abChess = new AbChess("chessboard", options);

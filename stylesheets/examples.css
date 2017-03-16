@@ -53,8 +53,8 @@
 textarea {
     display: block;
     height: 100px;
-    width: 80%;
-    margin: 4px;
+    width: 100%;
+    margin: 8px 0;
 }
 
 #black-name {
