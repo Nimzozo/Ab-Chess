@@ -7,7 +7,7 @@
 */
 
 /*jslint
-    browser, es6, white
+    browser, white
 */
 
 window.AbChess = window.AbChess || function (containerId, abConfig) {
@@ -973,19 +973,17 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             pgn += lineFeed;
             theGame.pgnMoves.forEach(function (move, index) {
                 var moveText = "";
-                if (lineCount !== 0) {
-                    moveText = " ";
-                }
                 if (index % 2 === 0) {
-                    moveText += (index / 2 + 1) + ". ";
+                    moveText = (index / 2 + 1) + ". ";
                 }
                 moveText += move;
-                lineCount += moveText.length;
-                if (lineCount >= lineLimit) {
-                    pgn += lineFeed;
+                lineCount += 1 + moveText.length;
+                if (lineCount < lineLimit) {
+                    pgn += " " + moveText;
+                } else {
+                    pgn += lineFeed + moveText;
                     lineCount = moveText.length;
                 }
-                pgn += moveText;
             });
             return pgn + " " + theGame.tags.Result + lineFeed + lineFeed;
         };
@@ -1432,10 +1430,10 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             div: null,
             ghost: null,
             isAnimated: false,
-            name,
+            name: name,
             square: null,
-            url,
-            width
+            url: url,
+            width: width
         };
 
         thePiece.animateGhost = function (animation) {
@@ -1727,9 +1725,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             isLastMove: false,
             isOverflown: false,
             isSelected: false,
-            name,
+            name: name,
             piece: null,
-            width
+            width: width
         };
 
         theSquare.drawFilledCircle = function (cssColor) {
@@ -2615,7 +2613,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
     return {
         DEFAULT_FEN: chess.defaultFEN,
 
-        draw() {
+        draw: function () {
 
             // Create the HTML squares.
             // Draw the chessboard.
@@ -2624,7 +2622,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             abBoard.draw();
         },
 
-        flip() {
+        flip: function () {
 
             // Change the board orientation.
 
@@ -2638,7 +2636,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             abBoard.draw();
         },
 
-        getActiveColor(n) {
+        getActiveColor: function (n) {
 
             // Return the active color b|w in the n-th position.
 
@@ -2646,7 +2644,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return position.activeColor;
         },
 
-        getFEN(n) {
+        getFEN: function (n) {
 
             // Return the n-th FEN string of the game.
 
@@ -2657,35 +2655,35 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return abBoard.game.fenStrings[n];
         },
 
-        getGameInfo(info) {
+        getGameInfo: function (info) {
 
             // Return the desired information.
 
             return abBoard.game.tags[info];
         },
 
-        getGameMoves() {
+        getGameMoves: function () {
 
             // Return an array of the moves of the game.
 
             return abBoard.game.moves;
         },
 
-        getGameMovesPGN() {
+        getGameMovesPGN: function () {
 
             // Return an array of the moves of the game in PGN notation.
 
             return abBoard.game.pgnMoves;
         },
 
-        getLastPositionIndex() {
+        getLastPositionIndex: function () {
 
             // Return the index of the last position of the game.
 
             return abBoard.game.fenStrings.length - 1;
         },
 
-        getLegalMoves(n) {
+        getLegalMoves: function (n) {
 
             // Return an array of the legal moves in the n-th position.
 
@@ -2693,14 +2691,14 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return position.getLegalMoves();
         },
 
-        getPGN() {
+        getPGN: function () {
 
             // Return the full PGN string.
 
             return abBoard.game.exportPGN();
         },
 
-        is50MovesDraw(n) {
+        is50MovesDraw: function (n) {
 
             // Check if the draw by 50 moves rule can be claimed
             // in the n-th position.
@@ -2709,7 +2707,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return position.halfmoveClock > 99;
         },
 
-        isCheckmate(n) {
+        isCheckmate: function (n) {
 
             // Check if the active player is checkmated in the n-th position.
 
@@ -2720,7 +2718,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return !position.hasLegalMoves();
         },
 
-        isInCheck(n) {
+        isInCheck: function (n) {
 
             // Check if the active player is in check in the n-th position.
 
@@ -2728,7 +2726,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return position.isInCheck(position.activeColor);
         },
 
-        isInsufficientMaterialDraw(n) {
+        isInsufficientMaterialDraw: function (n) {
 
             // Check if the material is insufficient to win
             // in the n-th position.
@@ -2737,7 +2735,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return position.isInsufficientMaterial();
         },
 
-        isLegal(n, move) {
+        isLegal: function (n, move) {
 
             // Check if a move is legal in the n-th position.
 
@@ -2747,7 +2745,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return abBoard.game.isLegal(n, move);
         },
 
-        isStalemate(n) {
+        isStalemate: function (n) {
 
             // Check if the active player is stalemated in the n-th position.
 
@@ -2758,28 +2756,28 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 !position.hasLegalMoves();
         },
 
-        isValidFEN(fen, onlyCheckPosition) {
+        isValidFEN: function (fen, onlyCheckPosition) {
 
             // Check if a FEN string is valid.
 
             return Position.isValidFEN(fen, onlyCheckPosition);
         },
 
-        isValidPGN(pgn) {
+        isValidPGN: function (pgn) {
 
             // Check if a PGN string is valid.
 
             return Chessgame.isValidPGN(pgn);
         },
 
-        navigate(index) {
+        navigate: function (index) {
 
             // Navigate to a position.
 
             return abBoard.navigate(index);
         },
 
-        onMovePlayed(callback) {
+        onMovePlayed: function (callback) {
 
             // Event fired when a move has been played.
 
@@ -2789,7 +2787,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             event.onMovePlayed = callback;
         },
 
-        play(move, promotion) {
+        play: function (move, promotion) {
 
             // Play the desired move.
 
@@ -2804,7 +2802,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             abBoard.play(move, promotion, true);
         },
 
-        reset() {
+        reset: function () {
 
             // Reset the game and the board.
 
@@ -2814,21 +2812,21 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             abBoard.game = new Chessgame();
         },
 
-        setFEN(fen) {
+        setFEN: function (fen) {
 
             // Load the FEN position on the board.
 
             abBoard.setFEN(fen);
         },
 
-        setGameInfo(info, value) {
+        setGameInfo: function (info, value) {
 
             // Set the desired game information.
 
             abBoard.game.tags[info] = value;
         },
 
-        setPGN(pgn, loadMoves) {
+        setPGN: function (pgn, loadMoves) {
 
             // Set the PGN in the game.
 
