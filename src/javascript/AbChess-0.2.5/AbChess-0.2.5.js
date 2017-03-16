@@ -258,10 +258,15 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             var desiredKing = (color === chess.black)
                 ? chess.blackKing
                 : chess.whiteKing;
-            return Object.keys(thePosition.occupiedSquares).find(
-                function (key) {
-                    return thePosition.occupiedSquares[key] === desiredKing;
-                });
+            var square = "";
+            Object.keys(thePosition.occupiedSquares).some(function (key) {
+                if (thePosition.occupiedSquares[key] === desiredKing) {
+                    square = key;
+                    return true;
+                }
+                return false;
+            });
+            return square;
         };
 
         thePosition.getLegalMoves = function () {
@@ -1231,26 +1236,30 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
         theGame.getSimpleStart = function (n, move) {
 
-            // Return the start of a piece.
+            // Return the start of a piece move.
 
             var piecesPlaces = [];
             var position = theGame.getNthPosition(n);
+            var start = "";
             piecesPlaces = position.getPiecesPlaces(position.activeColor);
-            return piecesPlaces.find(function (start) {
+            piecesPlaces.some(function (place) {
                 var legalSquares = [];
-                var testPiece = position.occupiedSquares[start];
+                var testPiece = position.occupiedSquares[place];
                 if (testPiece.toLowerCase() !== move.piece.toLowerCase()) {
                     return false;
                 }
-                legalSquares = position.getLegalSquares(start);
+                legalSquares = position.getLegalSquares(place);
                 if (legalSquares.indexOf(move.arrival) === -1) {
                     return false;
                 }
-                if (move.ambiguity === "") {
+                if (move.ambiguity === "" ||
+                    place.indexOf(move.ambiguity) > -1) {
+                    start = place;
                     return true;
                 }
-                return start.indexOf(move.ambiguity) > -1;
+                return false;
             });
+            return start;
         };
 
         theGame.importMoves = function () {
@@ -2454,8 +2463,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 ? chess.black
                 : chess.white;
             newPieceName = newPieceColor + promotion.toLowerCase();
-            url = theBoard.imagesPath + newPieceName +
-                theBoard.imagesExtension;
+            url = theBoard.imagesPath + newPieceName + theBoard.imagesExtension;
             newPiece = new Piece(newPieceName, url, width);
             playedPiece.fadingRemove();
             playedPiece.remove();
