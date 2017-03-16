@@ -1,41 +1,48 @@
 #navigation {
     display: inline-block;
     vertical-align: top;
-    width: 25%;
+    width: 24%;
+    margin: 10px 0;
 }
 
 #content {
     display: inline-block;
     vertical-align: top;
-    width: 75%;
-    margin: auto;
-}
-
-.example {
-    width: 80%;
-    margin: auto;
+    width: 72%;
+    margin-left: 4%;
 }
 
 #result {
-    margin: 20px auto;
+    margin: 24px auto;
 }
 
-p {
-    font-size: 0.8em;
-    overflow: auto;
-    max-height: 200px;
-    width: 100%;
+#description {
+    color: grey;
+    text-align: justify;
+}
+
+#chessboard {
+    display: inline-block;
+    vertical-align: top;
+    margin: auto;
+}
+
+.commands {
+    margin: 10px;
 }
 
 .commands__button {
-    margin: 10px 0;
-    background-color: white;
-    border: 1px solid slategrey;
-    color: slategrey;
-    padding: 4px;
-    font-size: 1.2em;
-    min-width: 40px;
     cursor: pointer;
+    display: inline-block;
+    vertical-align: top;
+    margin: 8px 2px;
+    background-color: gainsboro;
+    color: slategrey;
+    border: none;
+    min-height: 40px;
+    min-width: 40px;
+    text-align: center;
+    font-size: 1.2em;
 }
 
 .commands__button:hover {
@@ -46,23 +53,27 @@ p {
 textarea {
     display: block;
     height: 100px;
-    width: 100%;
-    margin: 4px auto;
+    width: 80%;
+    margin: 4px;
 }
 
 #black-name {
-    margin: 10px auto;
+    margin: 10px 0;
+    width: 400px;
     padding: 4px;
     color: white;
     background-color: black;
     border: 1px solid black;
+    text-align: center;
 }
 
 #white-name {
-    margin: 10px auto;
+    margin: 10px 0;
+    width: 400px;
     padding: 4px;
     background-color: white;
     border: 1px solid black;
+    text-align: center;
 }
 
 .link {
@@ -73,11 +84,6 @@ textarea {
 
 .link:hover {
     text-decoration: underline;
-}
-
-#chessboard {
-    display: inline-block;
-    vertical-align: top;
 }
 
 .game {
@@ -92,12 +98,15 @@ textarea {
 #moves-div {
     display: inline-block;
     vertical-align: top;
-    width: 120px;
     max-height: 360px;
+    width: 200px;
     overflow: auto;
-    margin: 0 10px;
+    margin: 0 4px;
     font-size: 0.8em;
-    text-align: center;
+    -webkit-user-select: none; /* Chrome, Opera, Safari */
+    -moz-user-select: none; /* Firefox 2+ */
+    -ms-user-select: none; /* IE 10+ */
+    user-select: none; /* Standard syntax */
 }
 
 .move-number-span {
@@ -105,6 +114,7 @@ textarea {
     vertical-align: top;
     width: 18%;
     border-bottom: 1px gainsboro solid;
+    border-right: 1px gainsboro solid;
     color: grey;
     text-align: left;
 }
@@ -115,16 +125,12 @@ textarea {
     vertical-align: top;
     width: 40%;
     border-bottom: 1px gainsboro solid;
-    border-left: 1px gainsboro solid;
+    border-right: 1px gainsboro solid;
+    text-align: center;
     color: grey;
 }
 
 #move-span_selected {
-    cursor: pointer;
-    display: inline-block;
-    vertical-align: top;
-    width: 40%;
-    border-bottom: 1px gainsboro solid;
     color: green;
     background-color: palegreen;
 }

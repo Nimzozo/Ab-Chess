@@ -86,18 +86,19 @@ window.addEventListener("load", function () {
     var example = {
         func: function () {
             var abChess = {};
-            var fenParagraph = document.getElementById("fenParagraph");
+            var fenCode = document.getElementById("fenCode");
             var movesCount = 0;
             abChess = new AbChess("chessboard");
             abChess.draw();
             abChess.setFEN();
-            fenParagraph.innerText = abChess.getFEN(movesCount);
+            fenCode.innerText = abChess.getFEN(movesCount);
             abChess.onMovePlayed(function () {
                 movesCount += 1;
-                fenParagraph.innerText = abChess.getFEN(movesCount);
+                fenCode.innerText = abChess.getFEN(movesCount);
             });
         },
-        html: "<p id=\"fenParagraph\"></p>\n<div id=\"chessboard\"></div>"
+        html: "<code id=\"fenCode\" class=\"code\"></code>\n" +
+        "<div id=\"chessboard\"></div>"
     };
     var htmlCode = document.getElementById("html-code");
     var jsCode = document.getElementById("js-code");

@@ -102,8 +102,8 @@ window.addEventListener("load", function () {
             abChess.navigate(abChess.getLastPositionIndex());
             blackName = abChess.getGameInfo("Black");
             whiteName = abChess.getGameInfo("White");
-            blackParagraph.innerHTML = blackName;
-            whiteParagraph.innerHTML = whiteName;
+            blackParagraph.innerText = blackName;
+            whiteParagraph.innerText = whiteName;
         },
         html: "<p id=\"black-name\"></p>\n" +
         "<div id=\"chessboard\"></div>\n" +

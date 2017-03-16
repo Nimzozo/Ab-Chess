@@ -51,7 +51,8 @@
     list-style-type: none;
     margin: 0;
     padding: 0;
-    text-indent: 30px;
+    text-indent: 24px;
+    font-size: 0.9em;
     display: block;
 }
 

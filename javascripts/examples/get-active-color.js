@@ -100,7 +100,8 @@ window.addEventListener("load", function () {
                     : black;
             });
         },
-        html: "<p id=\"colorParagraph\">White to move.</p>\n<div id=\"chessboard\"></div>"
+        html: "<p id=\"colorParagraph\">White to move.</p>\n" +
+        "<div id=\"chessboard\"></div>"
     };
     var htmlCode = document.getElementById("html-code");
     var jsCode = document.getElementById("js-code");

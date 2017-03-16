@@ -110,9 +110,9 @@ window.addEventListener("load", function () {
 
             Object.keys(games).forEach(function (key, i) {
                 var option = document.createElement("OPTION");
-                var pgn = games[key].innerHTML;
+                var pgn = games[key].innerText;
                 abChess.setPGN(pgn, false);
-                option.innerHTML = abChess.getGameInfo("White") + " vs " +
+                option.innerText = abChess.getGameInfo("White") + " vs " +
                     abChess.getGameInfo("Black") +
                     " | " + abChess.getGameInfo("Event") +
                     " (" + abChess.getGameInfo("Round") + ")";
@@ -121,7 +121,6 @@ window.addEventListener("load", function () {
                 });
                 gamesSelect.appendChild(option);
             });
-
 
             function clickFirstButton() {
                 index = 0;
@@ -155,13 +154,13 @@ window.addEventListener("load", function () {
             previousButton.addEventListener("click", clickPreviousButton);
         },
         html: "<select id=\"games-select\" size=\"4\"></select>\n" +
-        "<div id=\"chessboard\"></div>\n" +
-        "<div>\n" +
-        "  <button id=\"first-button\" class=\"commands__button\">|<</button>\n" +
-        "  <button id=\"previous-button\" class=\"commands__button\"><</button>\n" +
-        "  <button id=\"next-button\" class=\"commands__button\">></button>\n" +
-        "  <button id=\"last-button\" class=\"commands__button\">>|</button>\n" +
-        "</div>"
+        "<div class=\"commands\">\n" +
+        "  <button id=\"first-button\" class=\"commands__button\">|&lt;</button>\n" +
+        "  <button id=\"previous-button\" class=\"commands__button\">&lt;</button>\n" +
+        "  <button id=\"next-button\" class=\"commands__button\">&gt;</button>\n" +
+        "  <button id=\"last-button\" class=\"commands__button\">&gt;|</button>\n" +
+        "</div>\n" +
+        "<div id=\"chessboard\"></div>"
     };
     var htmlCode = document.getElementById("html-code");
     var jsCode = document.getElementById("js-code");

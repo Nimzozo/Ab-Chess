@@ -94,7 +94,7 @@ window.addEventListener("load", function () {
         },
         html: "<div id=\"chessboard\"></div>\n" +
         "<div>\n" +
-        "  <input type=\"button\" value=\"Flip\" id=\"flipButton\" class=\"commands__button\">\n" +
+        "  <button id=\"flipButton\" class=\"commands__button\">&#8634;</button>\n" +
         "</div>"
     };
     var htmlCode = document.getElementById("html-code");

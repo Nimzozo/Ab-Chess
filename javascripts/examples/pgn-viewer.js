@@ -96,10 +96,13 @@ window.addEventListener("load", function () {
             var lastIndex = 0;
             var moves = [];
             var movesDiv = document.getElementById("moves-div");
+            var moveNumberSpanClass = "move-number-span";
+            var moveSpanClass = "move-span";
             var nextButton = document.getElementById("next-button");
             var pgnImportButton = document.getElementById("pgn-button");
             var pgnTextarea = document.getElementById("pgn-textarea");
             var previousButton = document.getElementById("previous-button");
+            var selectedSpanId = "move-span_selected";
             abChess = new AbChess("chessboard", config);
             abChess.draw();
             abChess.setFEN();
@@ -107,8 +110,8 @@ window.addEventListener("load", function () {
             function navigate(index) {
                 var scroll = 0;
                 var scrollIndex = 0;
-                var selectedSpan = document.getElementById("move-span_selected");
-                var spans = document.getElementsByClassName("move-span");
+                var selectedSpan = document.getElementById(selectedSpanId);
+                var spans = document.getElementsByClassName(moveSpanClass);
                 if (index < 0 || index > lastIndex) {
                     return;
                 }
@@ -118,7 +121,7 @@ window.addEventListener("load", function () {
                     selectedSpan.removeAttribute("id");
                 }
                 if (index > 0 && spans.length > 0) {
-                    spans[index - 1].id = "move-span_selected";
+                    spans[index - 1].id = selectedSpanId;
                     scrollIndex = (index % 2 === 1)
                         ? (index - 1) / 2
                         : (index - 2) / 2;
@@ -127,27 +130,30 @@ window.addEventListener("load", function () {
                     movesDiv.scrollTop = scroll;
                 }
             }
+
             function addMoveSpan(move, i) {
                 var numberSpan = {};
                 var span = document.createElement("SPAN");
-                span.className = "move-span";
-                span.innerHTML = move;
+                span.className = moveSpanClass;
+                span.innerText = move;
                 span.addEventListener("click", function () {
                     navigate(i + 1);
                 });
                 if (i % 2 === 0) {
                     numberSpan = document.createElement("SPAN");
-                    numberSpan.className = "move-number-span";
-                    numberSpan.innerHTML = i / 2 + 1;
+                    numberSpan.className = moveNumberSpanClass;
+                    numberSpan.innerText = i / 2 + 1;
                     movesDiv.appendChild(numberSpan);
                 }
                 movesDiv.appendChild(span);
             }
+
             function clearSpans() {
                 while (movesDiv.hasChildNodes()) {
                     movesDiv.removeChild(movesDiv.lastElementChild);
                 }
             }
+
             function importPGN() {
                 var pgn = pgnTextarea.value;
                 abChess.setPGN(pgn);
@@ -157,6 +163,7 @@ window.addEventListener("load", function () {
                 lastIndex = abChess.getLastPositionIndex();
                 navigate(lastIndex);
             }
+
             firstButton.addEventListener("click", function () {
                 navigate(0);
             });
@@ -171,16 +178,17 @@ window.addEventListener("load", function () {
             });
             pgnImportButton.addEventListener("click", importPGN);
         },
-        html: "<div id=\"chessboard\"></div>\n" +
-        "<div id=\"moves-div\"></div>\n" +
-        "<div>\n" +
+        html: "<div class=\"commands\">\n" +
+        "  <textarea id=\"pgn-textarea\" placeholder=\"Paste a PGN here and click Import.\"></textarea>\n" +
         "  <button id=\"pgn-button\" class=\"commands__button\">Import</button>\n" +
-        "  <button id=\"first-button\" class=\"commands__button\">|<</button>\n" +
-        "  <button id=\"previous-button\" class=\"commands__button\"><</button>\n" +
-        "  <button id=\"next-button\" class=\"commands__button\">></button>\n" +
-        "  <button id=\"last-button\" class=\"commands__button\">>|</button>\n" +
+        "  <button id=\"first-button\" class=\"commands__button\">|&lt;</button>\n" +
+        "  <button id=\"previous-button\" class=\"commands__button\">&lt;</button>\n" +
+        "  <button id=\"next-button\" class=\"commands__button\">&gt;</button>\n" +
+        "  <button id=\"last-button\" class=\"commands__button\">&gt;|</button>\n" +
         "</div>\n" +
-        "<textarea id=\"pgn-textarea\" placeholder=\"Paste a PGN here and click Import.\"></textarea>"
+        "<div id=\"chessboard\"></div>\n" +
+        "<div id=\"moves-div\"></div>"
+
     };
     var htmlCode = document.getElementById("html-code");
     var jsCode = document.getElementById("js-code");
