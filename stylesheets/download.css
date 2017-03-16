@@ -1,5 +1,4 @@
 .release {
-    background-color:  gainsboro;
     color: black;
     margin: 20px auto;
     padding: 16px;
@@ -8,8 +7,7 @@
 .release__title {
     margin: 0;
     font-family: Cambria, Cochin, Georgia, Times, Times New Roman, serif;
-    background-color: slategrey;
-    color: white;
+    border-bottom: 2px steelblue solid;
 }
 
 .release__date {
@@ -23,7 +21,7 @@
 
 .release__download {
     position: relative;
-    border-bottom: 1px solid grey;
+    border-bottom: 1px solid gainsboro;
 }
 
 .release__link {

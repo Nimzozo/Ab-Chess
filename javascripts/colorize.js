@@ -9,7 +9,7 @@ window.addEventListener("load", function () {
         var regexHTMLTag = /(&lt;\/?)(button|code|div|input|label|p|select|span|textarea|ul)/g;
         var regexString = /([\[\(\s\=>])("[^"]*?")([<;:,\s\)\]&])/g;
         var regexVar = /(else|false|function|if|new|return|true|var|while)/g;
-        var regexWhite = /\s{12}/g;
+        var regexWhite = /\ {12}/g;
         var replaceAttribute = "<pre class=\"number\">$1</pre>=";
         var replaceBlue = "<pre class=\"blue\">$1</pre>";
         var replaceComment = "<pre class=\"comment\">$1</pre>\n";
