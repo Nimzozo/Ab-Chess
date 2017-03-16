@@ -10,16 +10,16 @@
     display: block;
     background-color: lavender;
     white-space: pre;
-    font-family: Monaco, monospace;
+    font-family: "Lucida Console", Monaco, monospace;
     font-size: 0.9em;
     padding: 8px;
     margin-bottom: 8px;
     overflow: auto;
-    max-height: 500px;
+    max-height: 160px;
 }
 
 pre {
-    font-family: Monaco, monospace;
+    font-family: "Lucida Console", Monaco, monospace;
     display: inline;
 }
 

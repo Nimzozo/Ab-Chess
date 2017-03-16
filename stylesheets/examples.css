@@ -24,7 +24,7 @@
 #chessboard {
     display: inline-block;
     vertical-align: top;
-    margin: auto;
+    margin: 8px auto;
 }
 
 .commands {
@@ -53,7 +53,7 @@
 textarea {
     display: block;
     height: 100px;
-    width: 100%;
+    min-width: 100%;
     margin: 8px 0;
 }
 

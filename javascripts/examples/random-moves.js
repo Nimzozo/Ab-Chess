@@ -93,7 +93,7 @@ window.addEventListener("load", function () {
             var fenCode = document.getElementById("fenCode");
             var interval = 0;
             var movesCount = 0;
-            var pgnParagraph = document.getElementById("pgnTextarea");
+            var pgnCode = document.getElementById("pgnCode");
             var promotions = ["b", "n", "q", "r"];
 
             abChess = new AbChess("chessboard", config);
@@ -117,10 +117,8 @@ window.addEventListener("load", function () {
                 randomMove = chooseRandom(legalMoves);
                 randomPromotion = chooseRandom(promotions);
                 abChess.play(randomMove, randomPromotion);
-                requestAnimationFrame(function () {
-                    fenCode.innerText = abChess.getFEN(index + 1);
-                    pgnParagraph.innerText = abChess.getPGN();
-                });
+                fenCode.innerText = abChess.getFEN(index + 1);
+                pgnCode.innerText = abChess.getPGN();
                 if (abChess.isInsufficientMaterialDraw(index + 1) ||
                     abChess.is50MovesDraw(index + 1) ||
                     abChess.isCheckmate(index + 1) ||
@@ -135,9 +133,9 @@ window.addEventListener("load", function () {
                 movesCount += 1;
             }, 500);
         },
-        html: "<code id=\"fenCode\" class=\"code\"></code>\n" +
-        "<textarea id=\"pgnTextarea\" disabled></textarea>\n" +
-        "<div id=\"chessboard\"></div>"
+        html: "<div id=\"chessboard\"></div>\n" +
+        "<code id=\"fenCode\" class=\"code\"></code>\n" +
+        "<code id=\"pgnCode\" class=\"code\"></code>"
     };
     var htmlCode = document.getElementById("html-code");
     var jsCode = document.getElementById("js-code");
