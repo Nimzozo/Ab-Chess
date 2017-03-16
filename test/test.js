@@ -13,7 +13,7 @@ window.addEventListener("load", function () {
     var movesDiv = document.getElementById("moves-div");
     var nextButton = document.getElementById("nextButton");
     var options = {
-        animationSpeed: "slow",
+        animationSpeed: "normal",
         clickable: true,
         draggable: true,
         imagesPath: "../src/images/wikipedia/"

@@ -1,5 +1,5 @@
 // AbChess-0.2.4.js
-// 2017-03-15
+// 2017-03-16
 // Copyright (c) 2017 Nimzozo
 
 /*global
@@ -168,7 +168,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         pgnMoveNumber: /[1-9]\d{0,2}\.(?:\.\.)?\s?/,
         pgnPawnMove: /^([a-h]?)x?([a-h][1-8])(\=[BNQR])?(?:\+|#)?$/,
         pgnPieceMove: /^[BNQR]([a-h]?[1-8]?)x?([a-h][1-8])(?:\+|#)?$/,
-        pgnPromotion: /\=[BNQR]$/,
+        pgnPromotion: /\=[BNQR]/,
         pgnShortMove: /^(?:O-O(?:-O)?|(?:[BNQR][a-h]?[1-8]?|K)x?[a-h][1-8]|(?:[a-h]x)?[a-h][1-8](?:\=[BNQR])?)(?:\+|#)?$/,
         pieceChar: /[bknpqr]/i,
         promotion: /^[a-h]2-[a-h]1|[a-h]7-[a-h]8$/,
