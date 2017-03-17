@@ -91,8 +91,6 @@ window.addEventListener("load", function () {
                 draggable: false
             };
             var fenCode = document.getElementById("fenCode");
-            var interval = 0;
-            var movesCount = 0;
             var pgnCode = document.getElementById("pgnCode");
             var promotions = ["b", "n", "q", "r"];
 
@@ -104,12 +102,11 @@ window.addEventListener("load", function () {
             abChess.setGameInfo("Black", "Math.random()");
 
             function chooseRandom(array) {
-                var random = 0;
-                random = Math.floor(Math.random() * array.length);
+                var random = Math.floor(Math.random() * array.length);
                 return array[random];
             }
 
-            function playRandomMove(index, interval) {
+            function playRandomMove(index) {
                 var legalMoves = [];
                 var randomMove = "";
                 var randomPromotion = "";
@@ -117,21 +114,22 @@ window.addEventListener("load", function () {
                 randomMove = chooseRandom(legalMoves);
                 randomPromotion = chooseRandom(promotions);
                 abChess.play(randomMove, randomPromotion);
-                fenCode.innerText = abChess.getFEN(index + 1);
+                index += 1;
+                fenCode.innerText = abChess.getFEN(index);
                 pgnCode.innerText = abChess.getPGN();
-                if (abChess.isInsufficientMaterialDraw(index + 1) ||
-                    abChess.is50MovesDraw(index + 1) ||
-                    abChess.isCheckmate(index + 1) ||
-                    abChess.isStalemate(index + 1)) {
-                    clearInterval(interval);
-                    return;
+                if (!abChess.isInsufficientMaterialDraw(index) &&
+                    !abChess.is50MovesDraw(index) &&
+                    !abChess.isCheckmate(index) &&
+                    !abChess.isStalemate(index)) {
+                    setTimeout(function () {
+                        playRandomMove(index);
+                    }, 200);
                 }
             }
 
-            interval = setInterval(function () {
-                playRandomMove(movesCount, interval);
-                movesCount += 1;
-            }, 500);
+            setTimeout(function () {
+                playRandomMove(0);
+            }, 1000);
         },
         html: "<div id=\"chessboard\"></div>\n" +
         "<code id=\"fenCode\" class=\"code\"></code>\n" +
