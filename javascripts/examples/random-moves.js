@@ -122,7 +122,8 @@ window.addEventListener("load", function () {
                     !abChess.isCheckmate(index) &&
                     !abChess.isStalemate(index)) {
                     setTimeout(function () {
-                        playRandomMove(index);
+                        var i = index;
+                        playRandomMove(i);
                     }, 200);
                 }
             }
