@@ -68,6 +68,11 @@ window.addEventListener("load", function () {
         }
     }
 
+    abChess.onMovePlayed(function () {
+        currentIndex += 1;
+        lastIndex += 1;
+    });
+
     function importPGN() {
         errorSpan.innerText = "";
         if (!abChess.isValidPGN(pgnTextArea.value)) {

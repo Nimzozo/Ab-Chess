@@ -1,5 +1,5 @@
 // AbChess-0.2.5.js
-// 2017-03-16
+// 2017-03-17
 // Copyright (c) 2017 Nimzozo
 
 /*global
@@ -2453,18 +2453,18 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Play a move if it's a promotion.
 
             var arrivalSquare = theBoard.squares[arrival];
+            var newColor = "";
+            var newName = "";
             var newPiece = {};
-            var newPieceColor = "";
-            var newPieceName = "";
             var url = "";
             var width = Math.floor(theBoard.width / 8);
             promotion = promotion || chess.blackQueen;
-            newPieceColor = (arrival[1] === chess.rows[0])
+            newColor = (arrival[1] === chess.rows[0])
                 ? chess.black
                 : chess.white;
-            newPieceName = newPieceColor + promotion.toLowerCase();
-            url = theBoard.imagesPath + newPieceName + theBoard.imagesExtension;
-            newPiece = new Piece(newPieceName, url, width);
+            newName = newColor + promotion.toLowerCase();
+            url = theBoard.imagesPath + newName + theBoard.imagesExtension;
+            newPiece = new Piece(newName, url, width);
             playedPiece.fadingRemove();
             playedPiece.remove();
             newPiece.fadingPlace(arrivalSquare);
@@ -2484,7 +2484,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 throw new Error(error.invalidParameter);
             }
             position = theBoard.game.getNthPosition(index);
-            theBoard.updateHighlight(index, position);
+            theBoard.clearHighlight();
+            theBoard.highlightKing(position);
+            theBoard.highlightLastMove(index);
             animations = theBoard.getAnimations(position);
             similarPieces = theBoard.getSimilarPieces(position);
             theBoard.performAnimations(animations);
@@ -2554,14 +2556,16 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Play a move on the board and store it in the game.
 
+            var currentIndex = theBoard.game.fenStrings.length - 1;
             var currentPosition = {};
-            var lastIndex = theBoard.game.fenStrings.length - 1;
             var nextPosition = {};
             theBoard.move(move, promotion, animate);
             theBoard.game.addMove(move, promotion);
-            currentPosition = theBoard.game.getNthPosition(lastIndex);
+            currentPosition = theBoard.game.getNthPosition(currentIndex);
             nextPosition = currentPosition.getNextPosition(move, promotion);
-            theBoard.updateHighlight(lastIndex + 1, nextPosition);
+            theBoard.clearHighlight();
+            theBoard.highlightKing(nextPosition);
+            theBoard.highlightLastMove(currentIndex + 1);
             if (typeof event.onMovePlayed === "function") {
                 rAF(event.onMovePlayed);
             }
@@ -2593,15 +2597,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             theBoard.clickable = config.clickable;
             theBoard.draggable = config.draggable;
-        };
-
-        theBoard.updateHighlight = function (index, position) {
-
-            // Update the highlight (check and last move) on the board.
-
-            theBoard.clearHighlight();
-            theBoard.highlightKing(position);
-            theBoard.highlightLastMove(index);
         };
 
         theBoard.initialize();
