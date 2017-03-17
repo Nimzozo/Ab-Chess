@@ -38,6 +38,18 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         checkmateSymbol: "#",
         columns: "abcdefgh",
         defaultFEN: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+        htmlBlackBishop: "&#9821;",
+        htmlBlackKing: "&#9818;",
+        htmlBlackKnight: "&#9822;",
+        htmlBlackPawn: "&#9823;",
+        htmlBlackQueen: "&#9819;",
+        htmlBlackRook: "&#9820;",
+        htmlWhiteBishop: "&#9815;",
+        htmlWhiteKing: "&#9812;",
+        htmlWhiteKnight: "&#9816;",
+        htmlWhitePawn: "&#9817;",
+        htmlWhiteQueen: "&#9813;",
+        htmlWhiteRook: "&#9814;",
         kingVectors: [
             [-1, -1],
             [-1, 0],
@@ -2660,11 +2672,24 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return abBoard.game.moves;
         },
 
-        getGameMovesPGN: function () {
+        getGameMovesPGN: function (symbols) {
 
             // Return an array of the moves of the game in PGN notation.
 
-            return abBoard.game.pgnMoves;
+            var pgnMoves = abBoard.game.pgnMoves;
+            var symbols = [];
+            if (typeof symbols === "undefined" || !symbols) {
+                return pgnMoves;
+            }
+            pgnMoves.forEach(function (pgnMove) {
+                pgnMove = pgnMove.replace("B", chess.htmlWhiteBishop);
+                pgnMove = pgnMove.replace("K", chess.htmlWhiteKing);
+                pgnMove = pgnMove.replace("N", chess.htmlWhiteKnight);
+                pgnMove = pgnMove.replace("Q", chess.htmlWhiteQueen);
+                pgnMove = pgnMove.replace("R", chess.htmlWhiteRook);
+                symbols.push(pgnMove);
+            });
+            return symbols;
         },
 
         getLastPositionIndex: function () {

@@ -49,7 +49,7 @@ window.addEventListener("load", function () {
         var numberSpan = {};
         var span = document.createElement("SPAN");
         span.className = pgnSpanClass;
-        span.innerText = move;
+        span.innerHTML = move;
         span.addEventListener("click", function () {
             navigate(i + 1);
         });
@@ -81,7 +81,7 @@ window.addEventListener("load", function () {
         }
         abChess.setPGN(pgnTextArea.value, true);
         clearSpans();
-        moves = abChess.getGameMovesPGN();
+        moves = abChess.getGameMovesPGN(true);
         moves.forEach(addMoveSpan);
         lastIndex = abChess.getLastPositionIndex();
         navigate(lastIndex);
