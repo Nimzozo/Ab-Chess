@@ -2677,7 +2677,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Return an array of the moves of the game in PGN notation.
 
             var pgnMoves = abBoard.game.pgnMoves;
-            var symbols = [];
+            var htmlMoves = [];
             if (typeof symbols === "undefined" || !symbols) {
                 return pgnMoves;
             }
@@ -2687,9 +2687,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 pgnMove = pgnMove.replace("N", chess.htmlWhiteKnight);
                 pgnMove = pgnMove.replace("Q", chess.htmlWhiteQueen);
                 pgnMove = pgnMove.replace("R", chess.htmlWhiteRook);
-                symbols.push(pgnMove);
+                htmlMoves.push(pgnMove);
             });
-            return symbols;
+            return htmlMoves;
         },
 
         getLastPositionIndex: function () {
