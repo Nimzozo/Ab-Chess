@@ -848,7 +848,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             return thePosition;
         };
 
-        thePosition.initialize();
+        return thePosition.initialize();
     }
 
     Position.fenToObject = function (fen) {
@@ -1387,7 +1387,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             theGame.tags.Result = result;
         };
 
-        theGame.initialize();
+        return theGame.initialize();
     }
 
     Chessgame.isValidPGN = function (pgn) {
@@ -1715,7 +1715,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             });
         };
 
-        thePiece.initialize();
+        return thePiece.initialize();
     }
 
     // Square ------------------------------------------------------------------
@@ -1894,7 +1894,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             });
         };
 
-        theSquare.initialize();
+        return theSquare.initialize();
     }
 
     Square.isWhite = function (name) {
@@ -2588,7 +2588,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             });
         };
 
-        theBoard.initialize();
+        return theBoard.initialize();
     }
 
     // API ---------------------------------------------------------------------
