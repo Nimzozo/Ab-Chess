@@ -1983,7 +1983,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                     theBoard.imagesExtension;
                 button.style.backgroundImage = "url('" + url + "')";
             });
-            theBoard.lock();
+            theBoard.clickable = false;
+            theBoard.draggable = false;
             rAF(function () {
                 theBoard.promotionDiv.style.display = "block";
             });
@@ -2359,14 +2360,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             document.addEventListener("mouseup", theBoard.onMouseUp);
         };
 
-        theBoard.lock = function () {
-
-            // Lock the pieces.
-
-            theBoard.clickable = false;
-            theBoard.draggable = false;
-        };
-
         theBoard.move = function (move, promotion, animate) {
 
             // Play the desired move on the board.
@@ -2492,9 +2485,11 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             theBoard.performAnimations(animations);
             theBoard.addNavigationData(animations, similarPieces);
             if (index < maxIndex) {
-                theBoard.lock();
+                theBoard.clickable = false;
+                theBoard.draggable = false;
             } else {
-                theBoard.unlock();
+                theBoard.clickable = config.clickable;
+                theBoard.draggable = config.draggable;
             }
         };
 
@@ -2525,7 +2520,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         theBoard.onPromote = function (e) {
             theBoard.play(theBoard.pendingMove, e.target.name, true);
             theBoard.pendingMove = null;
-            theBoard.unlock();
+            theBoard.clickable = config.clickable;
+            theBoard.draggable = config.draggable;
             rAF(function () {
                 theBoard.promotionDiv.style.display = "none";
             });
@@ -2589,14 +2585,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 newPiece.animatePut(square);
                 newPiece.put(square);
             });
-        };
-
-        theBoard.unlock = function () {
-
-            // Unlock the pieces.
-
-            theBoard.clickable = config.clickable;
-            theBoard.draggable = config.draggable;
         };
 
         theBoard.initialize();
@@ -2811,7 +2799,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             abBoard.setFEN();
             abBoard.clearHighlight();
-            abBoard.unlock();
+            abBoard.clickable = abConfig.clickable;
+            abBoard.draggable = abConfig.draggable;
             abBoard.game = new Chessgame();
         },
 
