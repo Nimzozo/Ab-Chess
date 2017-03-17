@@ -832,7 +832,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
         thePosition.initialize = function () {
 
-            // Initialize the position object.
+            // Initialize and return the position object.
 
             var fenMatches = [];
             if (!Position.isValidFEN(fen)) {
@@ -845,10 +845,10 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             thePosition.fullmoveNumber = Number(fenMatches[5]);
             thePosition.halfmoveClock = Number(fenMatches[4]);
             thePosition.occupiedSquares = Position.fenToObject(fen);
+            return thePosition;
         };
 
         thePosition.initialize();
-        return thePosition;
     }
 
     Position.fenToObject = function (fen) {
@@ -1315,7 +1315,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
         theGame.initialize = function () {
 
-            // Initialize the 7 required tag pairs.
+            // Initialize the 7 required tag pairs and return the game object.
 
             var requiredTags = {
                 "Event": "?",
@@ -1330,6 +1330,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             Object.keys(requiredTags).forEach(function (tag) {
                 theGame.tags[tag] = requiredTags[tag];
             });
+            return theGame;
         };
 
         theGame.isLegal = function (n, move) {
@@ -1387,7 +1388,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         };
 
         theGame.initialize();
-        return theGame;
     }
 
     Chessgame.isValidPGN = function (pgn) {
@@ -1541,7 +1541,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
         thePiece.initialize = function () {
 
-            // Initialize the piece object.
+            // Initialize and return the piece object.
 
             var backgroundImage = "url('" + url + "')";
             thePiece.div = document.createElement("DIV");
@@ -1551,6 +1551,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             thePiece.ghost = document.createElement("DIV");
             thePiece.ghost.className = css.pieceGhost;
             thePiece.ghost.style.backgroundImage = backgroundImage;
+            return thePiece;
         };
 
         thePiece.move = function (move, animate) {
@@ -1715,7 +1716,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         };
 
         thePiece.initialize();
-        return thePiece;
     }
 
     // Square ------------------------------------------------------------------
@@ -1777,7 +1777,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
         theSquare.initialize = function () {
 
-            // Initialize the square object.
+            // Initialize and return the square object.
 
             var cssClass = (Square.isWhite(name))
                 ? css.square + " " + css.whiteSquare
@@ -1795,6 +1795,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 theSquare.onMouseEnterLeave(false);
             });
             div.addEventListener("mouseup", theSquare.onMouseUp);
+            return theSquare;
         };
 
         theSquare.isEmpty = function () {
@@ -1894,7 +1895,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         };
 
         theSquare.initialize();
-        return theSquare;
     }
 
     Square.isWhite = function (name) {
@@ -2336,7 +2336,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
         theBoard.initialize = function () {
 
-            // Initialize the board object.
+            // Initialize and return the board object.
 
             theBoard.container = document.getElementById(containerId);
             switch (theBoard.animationSpeed) {
@@ -2358,6 +2358,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             theBoard.game = new Chessgame();
             document.addEventListener("mousemove", theBoard.onMouseMove);
             document.addEventListener("mouseup", theBoard.onMouseUp);
+            return theBoard;
         };
 
         theBoard.move = function (move, promotion, animate) {
@@ -2588,7 +2589,6 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         };
 
         theBoard.initialize();
-        return theBoard;
     }
 
     // API ---------------------------------------------------------------------
