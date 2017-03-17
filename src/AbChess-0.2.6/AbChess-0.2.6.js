@@ -1,4 +1,4 @@
-// AbChess-0.2.5.js
+// AbChess-0.2.6.js
 // 2017-03-17
 // Copyright (c) 2017 Nimzozo
 
@@ -987,16 +987,15 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
                 var value = theGame.tags[tag];
                 pgn += "[" + tag + " \"" + value + "\"]" + lineFeed;
             });
-            pgn += lineFeed;
             theGame.pgnMoves.forEach(function (move, index) {
                 var moveText = "";
                 if (index % 2 === 0) {
                     moveText = (index / 2 + 1) + ". ";
                 }
                 moveText += move;
-                lineCount += 1 + moveText.length;
-                if (lineCount < lineLimit) {
+                if (lineCount < lineLimit && index > 0) {
                     pgn += " " + moveText;
+                    lineCount += 1 + moveText.length;
                 } else {
                     pgn += lineFeed + moveText;
                     lineCount = moveText.length;
