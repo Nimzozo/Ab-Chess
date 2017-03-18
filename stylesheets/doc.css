@@ -50,6 +50,8 @@
 }
 
 .inline-code {
-    font-family: Monaco, monospace;
+    font-family: "Lucida Console", Monaco, monospace;
     background-color: lavender;
+    font-size: 0.9em;
+    padding: 2px;
 }

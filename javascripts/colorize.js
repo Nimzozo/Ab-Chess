@@ -9,13 +9,13 @@ window.addEventListener("load", function () {
         var regexHTMLTag = /(&lt;\/?)(button|code|div|input|label|p|select|span|textarea|ul)/g;
         var regexString = /([\[\(\s\=>])("[^"]*?")([<;:,\s\)\]&])/g;
         var regexVar = /(else|false|function|if|new|return|true|var|while)/g;
-        var regexWhite = /\ {12}/g;
+        var regexWhite = /\s{12}(\S)/g;
         var replaceAttribute = "<pre class=\"number\">$1</pre>=";
         var replaceBlue = "<pre class=\"blue\">$1</pre>";
         var replaceComment = "<pre class=\"comment\">$1</pre>\n";
         var replacePink = "$1<pre class=\"pink\">$2</pre>$3";
         var replaceTag = "$1<pre class=\"blue\">$2</pre>";
-        var replaceWhite = "";
+        var replaceWhite = "$1";
         if (trim) {
             function removeFirstLastLines(str) {
                 var index = str.indexOf("\n");
