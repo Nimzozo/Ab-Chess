@@ -36,7 +36,7 @@
     color: white;
 }
 
-#chessboard {
+#chessboard, #chessboard2 {
     display: inline-block;
     vertical-align: top;
 }

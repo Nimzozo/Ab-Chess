@@ -1,0 +1,16 @@
+[Event "Ab-Chess random game"]
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "Math.random()"]
+[Black "Math.random()"]
+[Result "1-0"]
+
+1. g4 g5 2. f4 b6 3. Bh3 f5 4. Na3 h5 5. d4 b5 6. Nf3 fxg4 7. Ng1 a6 8. Nc4 d5 9. fxg5
+Bh6 10. Rb1 Rh7 11. Kf1 dxc4 12. Be3 Rg7 13. Rc1 Bb7 14. gxh6 Rf7+ 15. Nf3 c3 16. Bg2
+b4 17. Rb1 Rf4 18. Bxf4 Kd7 19. Ng5 Bd5 20. Qd3 Bxg2+ 21. Ke1 Nf6 22. Nf3 e5 23. dxe5+
+Nd5 24. Nh4 Qf6 25. Qf3 c5 26. Qf1 Qc6 27. Ra1 Nb6 28. a3 b3 29. Ng6 Qxg6 30. Kd1
+Kc7 31. Bg5 g3 32. hxg3 Qd3+ 33. exd3 Bb7 34. Rxh5 c4 35. Qg2 Nc8 36. Qe4 Kd7 37. Qf3
+Nc6 38. Bf4 Nb8 39. Bg5 a5 40. Qc6+ Bxc6 41. h7 Na7 42. Rh3 Ke6 43. Bd2 Kf7 44. Bh6
+Ke6 45. Ke2 cxb2 46. Bf8 Be4 47. Kd1 Nac6 48. dxe4 bxa1=N 49. Kc1 c3 50. Bd6 a4 51. Rh5
+Kf7 52. Be7 Ra6 53. Bg5 Ke8 54. e6 Kf8 55. Rh2 Nd4 56. h8=Q# 1-0

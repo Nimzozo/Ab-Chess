@@ -1,5 +1,5 @@
 // AbChess-0.2.6.js
-// 2017-03-17
+// 2017-03-18
 // Copyright (c) 2017 Nimzozo
 
 /*global
@@ -15,8 +15,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
     var abBoard = {};
 
-    // Chess constants.
-
+    /**
+     * Chess constants.
+     */
     var chess = {
         bishopVectors: [
             [-1, -1],
@@ -90,8 +91,9 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         whiteRook: "R"
     };
 
-    // Css classes and ids.
-
+    /**
+     * Css classes and ids.
+     */
     var css = {
         blackSquare: "square_black",
         checkSquare: "square_check",
@@ -105,15 +107,15 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         rowsBorder: "rows-border",
         rowsBorderFragment: "rows-border__fragment",
         selectedSquare: "square_selected",
-        square: "square",
         squareCanvas: "square__canvas",
         squarePiece: "square__piece",
-        squaresDiv: "squares-div",
+        squares: "squares-div",
         whiteSquare: "square_white"
     };
 
-    // Config default values.
-
+    /**
+     * Config default values.
+     */
     var defaultConfig = {
         animationSpeed: "normal",
         clickable: true,
@@ -128,11 +130,12 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         markOverflownSquare: true,
         markSelectedSquare: true,
         notationBorder: true,
-        width: 360
+        width: 400
     };
 
-    // Error messages.
-
+    /**
+     * Error messages.
+     */
     var error = {
         illegalMove: "Illegal move.",
         invalidFEN: "Invalid FEN string.",
@@ -140,33 +143,37 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
         invalidPGN: "Invalid PGN."
     };
 
-    // Custom events.
-
+    /**
+     * Custom events.
+     */
     var event = {
         onMovePlayed: null
     };
 
+    /**
+     * Return the coordinate of an HTML element.
+     * @param {HTMLElement} element
+     */
     var getCoordinate = function (element) {
-
-        // Return the coordinate of an HTML element.
-
         var x = element.getBoundingClientRect().left + window.pageXOffset;
         var y = element.getBoundingClientRect().top + window.pageYOffset;
         return [Math.round(x), Math.round(y)];
     };
 
-    // RAF polyfill.
+    /**
+     * RAF polyfill.
+     */
+    var rAF = window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        function (callback) {
+            return window.setTimeout(callback, 1000 / 60);
+        };
 
-    function rAF(callback) {
-        return window.requestAnimationFrame(callback) ||
-            window.webkitRequestAnimationFrame(callback) ||
-            window.mozRequestAnimationFrame(callback) ||
-            window.oRequestAnimationFrame(callback) ||
-            window.setTimeout(callback, 1000 / 60);
-    }
-
-    // Regular expressions.
-
+    /**
+     * Regular expressions.
+     */
     var regExp = {
         castle: /^e(?:1-c1|1-g1|8-c8|8-g8)$/,
         comment: /\{[^]+?\}/gm,
@@ -1767,8 +1774,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
 
             // Return the css class name of the square.
 
-            var initialClass = css.square + " ";
-            initialClass += (Square.isWhite(theSquare.name))
+            var initialClass = "";
+            initialClass = (Square.isWhite(theSquare.name))
                 ? css.whiteSquare
                 : css.blackSquare;
             if (theSquare.isLastMove) {
@@ -1791,8 +1798,8 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             // Initialize and return the square object.
 
             var cssClass = (Square.isWhite(name))
-                ? css.square + " " + css.whiteSquare
-                : css.square + " " + css.blackSquare;
+                ? css.whiteSquare
+                : css.blackSquare;
             var div = document.createElement("DIV");
             theSquare.canvas = document.createElement("CANVAS");
             theSquare.div = div;
@@ -2070,7 +2077,7 @@ window.AbChess = window.AbChess || function (containerId, abConfig) {
             theBoard.squaresDiv = document.createElement("DIV");
             theBoard.squaresDiv.style.width = theBoard.width + "px";
             theBoard.squaresDiv.style.height = theBoard.width + "px";
-            theBoard.squaresDiv.className = css.squaresDiv;
+            theBoard.squaresDiv.className = css.squares;
             if (theBoard.isFlipped) {
                 // From h1 to a1.
                 columns = columns.reverse();
