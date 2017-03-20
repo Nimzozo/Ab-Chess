@@ -15,4 +15,7 @@ window.addEventListener("load", function () {
     setTimeout(function () {
         abc2.board.move("g1", "f3");
     }, 2000);
+    document.addEventListener("keypress", function () {
+        console.log("fen", abc2.board.getFEN());
+    });
 });

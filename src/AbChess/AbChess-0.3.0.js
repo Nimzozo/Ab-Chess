@@ -1,5 +1,5 @@
 // AbChess.js
-// 2017-03-19
+// 2017-03-20
 // Copyright (c) 2017 Nimzozo
 
 /*global
@@ -58,7 +58,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
      * Options default values.
      */
     var defaultOptions = {
-        animationSpeed: 20,
+        animationSpeed: 10,
         clickable: true,
         draggable: true,
         flipped: false,
@@ -167,8 +167,6 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             piece.width = square.board.options.width / 8;
             piece.ghost.style.height = piece.width + "px";
             piece.ghost.style.width = piece.width + "px";
-            square.piece = piece;
-            square.element.appendChild(piece.element);
             return piece;
         };
 
@@ -185,8 +183,9 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
          * Drop the piece on a square.
          */
         piece.drop = function (dropSquare) {
-            document.body.removeChild(piece.ghost);
-            piece.element.style.opacity = 1;
+            var end = getCoordinates(dropSquare.element);
+            var start = getCoordinates(piece.ghost);
+            piece.startAnimation(start, end);
             piece.move(dropSquare);
         };
 
@@ -312,8 +311,13 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
          * Square click event handler.
          */
         square.onClick = function () {
+            var end = [];
+            var start = [];
             if (board.startSquare !== null) {
                 if (board.startSquare !== square) {
+                    start = getCoordinates(board.startSquare.element);
+                    end = getCoordinates(square.element);
+                    board.startSquare.piece.startAnimation(start, end);
                     board.startSquare.piece.move(square);
                 }
                 board.startSquare.deselect();
@@ -474,6 +478,41 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         };
 
         /**
+         * Return the current FEN string.
+         */
+        board.getFEN = function () {
+            var columns = chess.columns.split("");
+            var fen = "";
+            var rows = chess.rows.split("").reverse();
+            rows.forEach(function (row, rowIndex) {
+                var emptyCount = 0;
+                columns.forEach(function (column, columnIndex) {
+                    var pieceChar = "";
+                    var square = board.getSquare(column + row);
+                    if (square.piece === null) {
+                        emptyCount += 1;
+                        if (columnIndex > 6) {
+                            fen += emptyCount;
+                        }
+                    } else {
+                        if (emptyCount > 0) {
+                            fen += emptyCount;
+                            emptyCount = 0;
+                        }
+                        pieceChar = (square.piece.color === chess.white)
+                            ? square.piece.name.toUpperCase()
+                            : square.piece.name.toLowerCase();
+                        fen += pieceChar;
+                    }
+                });
+                if (rowIndex < 7) {
+                    fen += "/";
+                }
+            });
+            return fen;
+        };
+
+        /**
          * Return a square by giving its name.
          */
         board.getSquare = function (name) {
@@ -545,8 +584,10 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
                 var color = (char === char.toUpperCase())
                     ? chess.white
                     : chess.black;
+                var piece = {};
                 var square = board.getSquare(key);
-                new Piece(char.toLowerCase(), color, square);
+                piece = new Piece(char.toLowerCase(), color, square);
+                piece.move(square);
             });
         };
 
@@ -585,6 +626,9 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
                 }
                 abBoard.isFlipped = !abBoard.isFlipped;
                 abBoard.draw();
+            },
+            getFEN: function () {
+                return abBoard.getFEN();
             },
             move: function (start, destination) {
                 abBoard.move(start, destination);
