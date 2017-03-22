@@ -12,10 +12,7 @@ window.addEventListener("load", function () {
     var abc2 = new AbChess("chessboard2", options);
     abc2.board.draw();
     abc2.board.setFEN();
-    setTimeout(function () {
-        abc2.board.move("g1", "f3");
-    }, 2000);
-    document.addEventListener("keypress", function () {
-        console.log("fen", abc2.board.getFEN());
+    document.getElementById("fen-button").addEventListener("click", function () {
+        abc.board.setFEN(document.getElementById("fen-input").value);
     });
 });
