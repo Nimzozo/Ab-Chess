@@ -1,5 +1,5 @@
 // AbChess.js
-// 2017-03-22
+// 2017-03-23
 // Copyright (c) 2017 Nimzozo
 
 /*global
@@ -143,8 +143,9 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             var speed = board.options.animationSpeed;
             var x = animation.translates[0] * animation.iteration * speed;
             var y = animation.translates[1] * animation.iteration * speed;
-            piece.ghost.style.transform = "translate(" + x + "px, " + y + "px)";
             if (Math.abs(x) < animation.max && Math.abs(y) < animation.max) {
+                piece.ghost.style.transform = "translate(" + x + "px, " +
+                    y + "px)";
                 animation.iteration += 1;
                 raf(function () {
                     piece.animate(animation);
@@ -332,11 +333,9 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
                     playedPiece.moveFromTo(board.startSquare, square);
                 }
                 board.startSquare.deselect();
-                console.log("click deselect");
             } else if (square.piece !== null && !board.hasDraggedStart &&
                 !square.piece.isAnimated) {
                 square.select();
-                console.log("click select");
             }
             board.hasDraggedStart = false;
         };
@@ -361,10 +360,8 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
                     return;
                 }
                 board.startSquare.deselect();
-                console.log("mousedown deselect");
             }
             square.select();
-            console.log("mousedown select");
         };
 
         /**
@@ -397,7 +394,6 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
                 square.element.classList.remove(css.overflownSquare);
             });
             board.startSquare.deselect();
-            console.log("mouseup deselect");
             board.isDragging = false;
         };
 
@@ -739,6 +735,9 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         board.setPosition = function (fen) {
             var animations = [];
             var position = fenToObject(fen);
+            if (board.startSquare !== null) {
+                board.startSquare.deselect();
+            }
             animations = board.getAnimations(position);
             board.performAnimations(animations);
         };
