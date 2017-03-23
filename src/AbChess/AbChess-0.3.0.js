@@ -475,6 +475,8 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
          * Create the notation border.
          */
         board.createBorder = function () {
+            var border = {};
+            var className = "";
             var columns = chess.columns.split("");
             var rows = chess.rows.split("");
             if (board.isFlipped) {
@@ -482,22 +484,22 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             } else {
                 rows = rows.reverse();
             }
+            function createFragment(text) {
+                var fragment = document.createElement("div");
+                fragment.innerText = text;
+                fragment.className = className;
+                border.appendChild(fragment);
+            }
             board.columnsBorder = document.createElement("div");
             board.columnsBorder.className = css.columnsBorder;
-            columns.forEach(function (column) {
-                var fragment = document.createElement("div");
-                fragment.className = css.columnsBorderFragment;
-                fragment.innerText = column;
-                board.columnsBorder.appendChild(fragment);
-            });
+            border = board.columnsBorder;
+            className = css.columnsBorderFragment;
+            columns.forEach(createFragment);
             board.rowsBorder = document.createElement("div");
             board.rowsBorder.className = css.rowsBorder;
-            rows.forEach(function (row) {
-                var fragment = document.createElement("div");
-                fragment.className = css.rowsBorderFragment;
-                fragment.innerText = row;
-                board.rowsBorder.appendChild(fragment);
-            });
+            border = board.rowsBorder;
+            className = css.rowsBorderFragment;
+            rows.forEach(createFragment);
         };
 
         /**
@@ -773,6 +775,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             },
             flip: function () {
                 while (abBoard.container.hasChildNodes()) {
+
                     abBoard.container.removeChild(abBoard.container.lastChild);
                 }
                 abBoard.isFlipped = !abBoard.isFlipped;
