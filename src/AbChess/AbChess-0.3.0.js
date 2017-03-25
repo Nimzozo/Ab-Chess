@@ -341,6 +341,38 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         }
 
         /**
+         * Return the moves for king, knight.
+         */
+        piece.getKNMoves = function (position, start, vectors) {
+            var moves = [];
+            var startColumn = chess.columns.indexOf(start[0]);
+            var startRow = chess.rows.indexOf(start[1]);
+            vectors.forEach(function (vector) {
+                var columnIndex = startColumn + vector[0];
+                var rowIndex = startRow + vector[1];
+                var pieceChar = "";
+                var pieceColor = "";
+                var square = "";
+                if (columnIndex < 0 || columnIndex > 7 ||
+                    rowIndex < 0 || rowIndex > 7) {
+                    return;
+                }
+                square = chess.columns[columnIndex] + chess.rows[rowIndex];
+                if (position.hasOwnProperty(square)) {
+                    pieceChar = position[square];
+                    pieceColor = (pieceChar.toLowerCase() === pieceChar)
+                        ? chess.black
+                        : chess.white;
+                    if (pieceColor === piece.color) {
+                        return;
+                    }
+                }
+                moves.push(square);
+            });
+            return moves;
+        };
+
+        /**
          * Grab the piece.
          */
         piece.grab = function (e) {
@@ -391,37 +423,12 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
          * Return the possible moves in a position.
          */
         king.getMoves = function (position, start) {
-            var moves = [];
-            var startColumn = chess.columns.indexOf(start[0]);
-            var startRow = chess.rows.indexOf(start[1]);
             var vectors = [
                 [-1, -1], [-1, 0], [-1, 1],
                 [0, -1], [0, 1],
                 [1, -1], [1, 0], [1, 1]
             ];
-            vectors.forEach(function (vector) {
-                var columnIndex = startColumn + vector[0];
-                var rowIndex = startRow + vector[1];
-                var piece = "";
-                var pieceColor = "";
-                var square = "";
-                if (columnIndex < 0 || columnIndex > 7 ||
-                    rowIndex < 0 || rowIndex > 7) {
-                    return;
-                }
-                square = chess.columns[columnIndex] + chess.rows[rowIndex];
-                if (position.hasOwnProperty(square)) {
-                    piece = position[square];
-                    pieceColor = (piece.toLowerCase() === piece)
-                        ? chess.black
-                        : chess.white;
-                    if (pieceColor === king.color) {
-                        return;
-                    }
-                }
-                moves.push(square);
-            });
-            return moves;
+            return king.getKNMoves(position, start, vectors);
         };
 
         return king.create();
@@ -434,36 +441,11 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
          * Return the possible moves in a position.
          */
         knight.getMoves = function (position, start) {
-            var moves = [];
-            var startColumn = chess.columns.indexOf(start[0]);
-            var startRow = chess.rows.indexOf(start[1]);
             var vectors = [
                 [-2, -1], [-2, 1], [-1, -2], [-1, 2],
                 [1, -2], [1, 2], [2, -1], [2, 1]
             ];
-            vectors.forEach(function (vector) {
-                var columnIndex = startColumn + vector[0];
-                var rowIndex = startRow + vector[1];
-                var piece = "";
-                var pieceColor = "";
-                var square = "";
-                if (columnIndex < 0 || columnIndex > 7 ||
-                    rowIndex < 0 || rowIndex > 7) {
-                    return;
-                }
-                square = chess.columns[columnIndex] + chess.rows[rowIndex];
-                if (position.hasOwnProperty(square)) {
-                    piece = position[square];
-                    pieceColor = (piece.toLowerCase() === piece)
-                        ? chess.black
-                        : chess.white;
-                    if (pieceColor === knight.color) {
-                        return;
-                    }
-                }
-                moves.push(square);
-            });
-            return moves;
+            return knight.getKNMoves(position, start, vectors);
         };
 
         return knight.create();
