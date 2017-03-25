@@ -307,6 +307,40 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         };
 
         /**
+         * Return the moves for bishop, queen, rook.
+         */
+        piece.getBQRMoves = function (position, start, vectors) {
+            var moves = [];
+            var startColumn = chess.columns.indexOf(start[0]);
+            var startRow = chess.rows.indexOf(start[1]);
+            vectors.forEach(function (vector) {
+                var columnIndex = startColumn + vector[0];
+                var rowIndex = startRow + vector[1];
+                var pieceChar = "";
+                var pieceColor = "";
+                var square = "";
+                while (columnIndex >= 0 && columnIndex < 8 &&
+                    rowIndex >= 0 && rowIndex < 8) {
+                    square = chess.columns[columnIndex] + chess.rows[rowIndex];
+                    if (position.hasOwnProperty(square)) {
+                        pieceChar = position[square];
+                        pieceColor = (pieceChar.toLowerCase() === pieceChar)
+                            ? chess.black
+                            : chess.white;
+                        if (pieceColor !== piece.color) {
+                            moves.push(square);
+                        }
+                        return;
+                    }
+                    moves.push(square);
+                    columnIndex += vector[0];
+                    rowIndex += vector[1];
+                }
+            });
+            return moves;
+        }
+
+        /**
          * Grab the piece.
          */
         piece.grab = function (e) {
@@ -344,34 +378,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
          * Return the possible moves in a position.
          */
         bishop.getMoves = function (position, start) {
-            var moves = [];
-            var startColumn = chess.columns.indexOf(start[0]);
-            var startRow = chess.rows.indexOf(start[1]);
-            chess.bishopVectors.forEach(function (vector) {
-                var columnIndex = startColumn + vector[0];
-                var rowIndex = startRow + vector[1];
-                var piece = "";
-                var pieceColor = "";
-                var square = "";
-                while (columnIndex >= 0 && columnIndex < 8 &&
-                    rowIndex >= 0 && rowIndex < 8) {
-                    square = chess.columns[columnIndex] + chess.rows[rowIndex];
-                    if (position.hasOwnProperty(square)) {
-                        piece = position[square];
-                        pieceColor = (piece.toLowerCase() === piece)
-                            ? chess.black
-                            : chess.white;
-                        if (pieceColor !== bishop.color) {
-                            moves.push(square);
-                        }
-                        return;
-                    }
-                    moves.push(square);
-                    columnIndex += vector[0];
-                    rowIndex += vector[1];
-                }
-            });
-            return moves;
+            return bishop.getBQRMoves(position, start, chess.bishopVectors);
         };
 
         return bishop;
@@ -524,35 +531,8 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
          * Return the possible moves in a position.
          */
         queen.getMoves = function (position, start) {
-            var moves = [];
-            var startColumn = chess.columns.indexOf(start[0]);
-            var startRow = chess.rows.indexOf(start[1]);
             var vectors = chess.bishopVectors.concat(chess.rookVectors);
-            vectors.forEach(function (vector) {
-                var columnIndex = startColumn + vector[0];
-                var rowIndex = startRow + vector[1];
-                var piece = "";
-                var pieceColor = "";
-                var square = "";
-                while (columnIndex >= 0 && columnIndex < 8 &&
-                    rowIndex >= 0 && rowIndex < 8) {
-                    square = chess.columns[columnIndex] + chess.rows[rowIndex];
-                    if (position.hasOwnProperty(square)) {
-                        piece = position[square];
-                        pieceColor = (piece.toLowerCase() === piece)
-                            ? chess.black
-                            : chess.white;
-                        if (pieceColor !== queen.color) {
-                            moves.push(square);
-                        }
-                        return;
-                    }
-                    moves.push(square);
-                    columnIndex += vector[0];
-                    rowIndex += vector[1];
-                }
-            });
-            return moves;
+            return queen.getBQRMoves(position, start, vectors);
         };
 
         return queen.create();
@@ -565,34 +545,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
          * Return the possible moves in a position.
          */
         rook.getMoves = function (position, start) {
-            var moves = [];
-            var startColumn = chess.columns.indexOf(start[0]);
-            var startRow = chess.rows.indexOf(start[1]);
-            chess.rookVectors.forEach(function (vector) {
-                var columnIndex = startColumn + vector[0];
-                var rowIndex = startRow + vector[1];
-                var piece = "";
-                var pieceColor = "";
-                var square = "";
-                while (columnIndex >= 0 && columnIndex < 8 &&
-                    rowIndex >= 0 && rowIndex < 8) {
-                    square = chess.columns[columnIndex] + chess.rows[rowIndex];
-                    if (position.hasOwnProperty(square)) {
-                        piece = position[square];
-                        pieceColor = (piece.toLowerCase() === piece)
-                            ? chess.black
-                            : chess.white;
-                        if (pieceColor !== rook.color) {
-                            moves.push(square);
-                        }
-                        return;
-                    }
-                    moves.push(square);
-                    columnIndex += vector[0];
-                    rowIndex += vector[1];
-                }
-            });
-            return moves;
+            return rook.getBQRMoves(position, start, chess.rookVectors);
         };
 
         return rook.create();
