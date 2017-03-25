@@ -15,8 +15,12 @@
  * 
  * Chess logic :
  * - pieces basic movements : OK
- * - special moves
+ * - special moves :
+ *   - en passant
+ *   - promotion
+ *   - castling
  * - check
+ * - kings opposition
  * - legal moves
  * FEN validation
  * PGN parsing

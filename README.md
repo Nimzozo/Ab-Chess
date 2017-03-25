@@ -2,9 +2,9 @@
 
 [![Issue Count](https://codeclimate.com/github/Nimzozo/Ab-Chess/badges/issue_count.svg)](https://codeclimate.com/github/Nimzozo/Ab-Chess)
 
-## Chess API written in native JavaScript
+## Chess API for JavaScript
 
-Ab-Chess API for JavaScript provides the tools to build HTML playable chessboards with animated pieces. 
+Ab-Chess API for JavaScript provides the tools to build HTML playable chessboards with animated pieces.
 
 It lets you import, play and export a chessgame in the PGN notation.
 
@@ -14,9 +14,48 @@ More informations are available on the [GitHub pages](https://nimzozo.github.io/
 - [Examples](https://nimzozo.github.io/Ab-Chess/examples/basics/default.html)
 - [Releases](https://nimzozo.github.io/Ab-Chess/download.html)
 
-## Install
+## Features
 
-Download the latest release. To embed a chessboard with the default configuration, simply follow these steps :
+- GUI :
+  - customizable board and pieces
+  - playable pieces :
+    - with two-clicks
+    - with drag-and-drop
+  - animated pieces :
+    - for moves
+    - for wrong moves
+    - for captures
+    - for position changes
+
+- Chess logic :
+  - pieces basic movements
+  - pieces special moves :
+    - promotion
+    - en passant
+    - castling
+    - kings opposition
+  - check detection
+  - result detection :
+    - checkmate
+    - stalemate
+    - 50 moves rule
+    - insufficient material
+
+- Validation :
+  - FEN string
+  - PGN string
+
+- Game
+  - export :
+    - PGN moves array
+    - PGN string
+  - import :
+    - play moves
+    - PGN string
+
+## How to use
+
+Download the latest release and simply follow these steps :
 
 - Load the CSS file.
 ```html
@@ -33,7 +72,7 @@ Download the latest release. To embed a chessboard with the default configuratio
 <script src="AbChess-x.x.x.js"></script>
 ```
 
-- Run this script.
+- To embed a chessboard with the default configuration, run this script.
 ```javascript
 var abChess = new AbChess("chessboard");
 abChess.draw();
