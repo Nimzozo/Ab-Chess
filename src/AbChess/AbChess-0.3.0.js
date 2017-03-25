@@ -1,5 +1,5 @@
 // AbChess.js
-// 2017-03-23
+// 2017-03-25
 // Copyright (c) 2017 Nimzozo
 
 /*global
@@ -9,6 +9,18 @@
 /*jslint
     browser, white
 */
+
+/**
+ * TODO
+ * 
+ * Chess logic :
+ * - pieces basic movements : OK
+ * - special moves
+ * - check
+ * - legal moves
+ * FEN validation
+ * PGN parsing
+ */
 
 /**
  * Abchess
@@ -25,9 +37,17 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
      * Chess constants.
      */
     var chess = {
+        bishop: "b",
+        bishopVectors: [[-1, -1], [-1, 1], [1, -1], [1, 1]],
         black: "b",
         columns: "abcdefgh",
         defaultFEN: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+        king: "k",
+        knight: "n",
+        pawn: "p",
+        queen: "q",
+        rook: "r",
+        rookVectors: [[-1, 0], [0, -1], [0, 1], [1, 0]],
         rows: "12345678",
         white: "w"
     };
@@ -82,10 +102,13 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
     /**
      * Regular expressions.
      */
-    var regExp = {};
+    var regExp = {
+        fen: /^(?:[bBkKnNpPqQrR1-8]{1,8}\/){7}[bBkKnNpPqQrR1-8]{1,8}\s(b|w)\s(K?Q?k?q?|-)\s([a-h][36]|-)\s(0|[1-9]\d{0,2})\s([1-9]\d{0,2})$/
+    };
 
     /**
      * Convert a FEN string to a position object.
+     * @param {string} fen The FEN string to convert.
      */
     function fenToObject(fen) {
         var position = {};
@@ -121,12 +144,45 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
     }
 
     /**
+     * The class to create a chess position.
+     * @param {string} fen The FEN string representing the position.
+     */
+    function Position(fen) {
+        var position = {
+            activeColor: "",
+            allowedCastles: "",
+            enPassant: "",
+            fen: fen,
+            fullMoveNumber: 0,
+            halfMoveClock: 0,
+            squares: {}
+        };
+
+        /**
+         * Initialize and return the position.
+         */
+        position.create = function () {
+            var result = regExp.fen.exec(fen);
+            position.activeColor = result[1];
+            position.allowedCastles = result[2];
+            position.enPassant = result[3];
+            position.halfMoveClock = result[4];
+            position.fullMoveNumber = result[5];
+            position.squares = fenToObject(fen);
+            return position;
+        };
+
+        return position.create();
+    }
+
+    /**
      * The Piece class to build chess pieces.
      * @param {string} name The character representing the piece.
      * @param {string} color The character representing the color.
      */
     function Piece(name, color, board) {
         var piece = {
+            board: board,
             color: color,
             element: {},
             ghost: {},
@@ -262,13 +318,280 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
          * Move a piece from a square to another.
          */
         piece.moveFromTo = function (oldSquare, newSquare) {
+            var char = piece.name;
             raf(function () {
                 oldSquare.removePiece(piece);
                 newSquare.placePiece(piece);
             });
+            delete board.position[oldSquare.name];
+            if (piece.color === chess.white) {
+                char = char.toUpperCase();
+            }
+            board.position[newSquare.name] = char;
         };
 
         return piece.create();
+    }
+
+    function Bishop(color, board) {
+        var bishop = new Piece(chess.bishop, color, board);
+
+        /**
+         * Return the possible moves in a position.
+         */
+        bishop.getMoves = function (position, start) {
+            var moves = [];
+            var startColumn = chess.columns.indexOf(start[0]);
+            var startRow = chess.rows.indexOf(start[1]);
+            chess.bishopVectors.forEach(function (vector) {
+                var columnIndex = startColumn + vector[0];
+                var rowIndex = startRow + vector[1];
+                var piece = "";
+                var pieceColor = "";
+                var square = "";
+                while (columnIndex >= 0 && columnIndex < 8 &&
+                    rowIndex >= 0 && rowIndex < 8) {
+                    square = chess.columns[columnIndex] + chess.rows[rowIndex];
+                    if (position.hasOwnProperty(square)) {
+                        piece = position[square];
+                        pieceColor = (piece.toLowerCase() === piece)
+                            ? chess.black
+                            : chess.white;
+                        if (pieceColor !== bishop.color) {
+                            moves.push(square);
+                        }
+                        return;
+                    }
+                    moves.push(square);
+                    columnIndex += vector[0];
+                    rowIndex += vector[1];
+                }
+            });
+            return moves;
+        };
+
+        return bishop;
+    }
+
+    function King(color, board) {
+        var king = new Piece(chess.king, color, board);
+
+        /**
+         * Return the possible moves in a position.
+         */
+        king.getMoves = function (position, start) {
+            var moves = [];
+            var startColumn = chess.columns.indexOf(start[0]);
+            var startRow = chess.rows.indexOf(start[1]);
+            var vectors = [
+                [-1, -1], [-1, 0], [-1, 1],
+                [0, -1], [0, 1],
+                [1, -1], [1, 0], [1, 1]
+            ];
+            vectors.forEach(function (vector) {
+                var columnIndex = startColumn + vector[0];
+                var rowIndex = startRow + vector[1];
+                var piece = "";
+                var pieceColor = "";
+                var square = "";
+                if (columnIndex < 0 || columnIndex > 7 ||
+                    rowIndex < 0 || rowIndex > 7) {
+                    return;
+                }
+                square = chess.columns[columnIndex] + chess.rows[rowIndex];
+                if (position.hasOwnProperty(square)) {
+                    piece = position[square];
+                    pieceColor = (piece.toLowerCase() === piece)
+                        ? chess.black
+                        : chess.white;
+                    if (pieceColor === king.color) {
+                        return;
+                    }
+                }
+                moves.push(square);
+            });
+            return moves;
+        };
+
+        return king.create();
+    }
+
+    function Knight(color, board) {
+        var knight = new Piece(chess.knight, color, board);
+
+        /**
+         * Return the possible moves in a position.
+         */
+        knight.getMoves = function (position, start) {
+            var moves = [];
+            var startColumn = chess.columns.indexOf(start[0]);
+            var startRow = chess.rows.indexOf(start[1]);
+            var vectors = [
+                [-2, -1], [-2, 1], [-1, -2], [-1, 2],
+                [1, -2], [1, 2], [2, -1], [2, 1]
+            ];
+            vectors.forEach(function (vector) {
+                var columnIndex = startColumn + vector[0];
+                var rowIndex = startRow + vector[1];
+                var piece = "";
+                var pieceColor = "";
+                var square = "";
+                if (columnIndex < 0 || columnIndex > 7 ||
+                    rowIndex < 0 || rowIndex > 7) {
+                    return;
+                }
+                square = chess.columns[columnIndex] + chess.rows[rowIndex];
+                if (position.hasOwnProperty(square)) {
+                    piece = position[square];
+                    pieceColor = (piece.toLowerCase() === piece)
+                        ? chess.black
+                        : chess.white;
+                    if (pieceColor === knight.color) {
+                        return;
+                    }
+                }
+                moves.push(square);
+            });
+            return moves;
+        };
+
+        return knight.create();
+    }
+
+    function Pawn(color, board) {
+        var pawn = new Piece(chess.pawn, color, board);
+
+        /**
+         * Return the possible moves in a position.
+         */
+        pawn.getMoves = function (position, start) {
+            var direction = 1;
+            var moves = [];
+            var square = "";
+            var startColumn = chess.columns.indexOf(start[0]);
+            var startRow = chess.rows.indexOf(start[1]);
+            var vectors = [];
+            if (pawn.color === chess.black) {
+                direction = -1;
+            }
+            vectors = [[-1, direction], [1, direction]];
+            vectors.forEach(function (vector) {
+                var columnIndex = startColumn + vector[0];
+                var rowIndex = startRow + vector[1];
+                var piece = "";
+                var pieceColor = "";
+                if (columnIndex < 0 || columnIndex > 7 ||
+                    rowIndex < 0 || rowIndex > 7) {
+                    return;
+                }
+                square = chess.columns[columnIndex] + chess.rows[rowIndex];
+                if (!position.hasOwnProperty(square)) {
+                    return;
+                }
+                piece = position[square];
+                pieceColor = (piece.toLowerCase() === piece)
+                    ? chess.black
+                    : chess.white;
+                if (pieceColor !== pawn.color) {
+                    moves.push(square);
+                }
+            });
+            square = chess.columns[startColumn] +
+                chess.rows[startRow + direction];
+            if (!position.hasOwnProperty(square)) {
+                moves.push(square);
+                if ((startRow === 1 && pawn.color === chess.white) ||
+                    (startRow === 6 && pawn.color === chess.black)) {
+                    square = chess.columns[startColumn] +
+                        chess.rows[startRow + direction * 2];
+                    moves.push(square);
+                }
+            }
+            return moves;
+        };
+
+        return pawn.create();
+    }
+
+    function Queen(color, board) {
+        var queen = new Piece(chess.queen, color, board);
+
+        /**
+         * Return the possible moves in a position.
+         */
+        queen.getMoves = function (position, start) {
+            var moves = [];
+            var startColumn = chess.columns.indexOf(start[0]);
+            var startRow = chess.rows.indexOf(start[1]);
+            var vectors = chess.bishopVectors.concat(chess.rookVectors);
+            vectors.forEach(function (vector) {
+                var columnIndex = startColumn + vector[0];
+                var rowIndex = startRow + vector[1];
+                var piece = "";
+                var pieceColor = "";
+                var square = "";
+                while (columnIndex >= 0 && columnIndex < 8 &&
+                    rowIndex >= 0 && rowIndex < 8) {
+                    square = chess.columns[columnIndex] + chess.rows[rowIndex];
+                    if (position.hasOwnProperty(square)) {
+                        piece = position[square];
+                        pieceColor = (piece.toLowerCase() === piece)
+                            ? chess.black
+                            : chess.white;
+                        if (pieceColor !== queen.color) {
+                            moves.push(square);
+                        }
+                        return;
+                    }
+                    moves.push(square);
+                    columnIndex += vector[0];
+                    rowIndex += vector[1];
+                }
+            });
+            return moves;
+        };
+
+        return queen.create();
+    }
+
+    function Rook(color, board) {
+        var rook = new Piece(chess.rook, color, board);
+
+        /**
+         * Return the possible moves in a position.
+         */
+        rook.getMoves = function (position, start) {
+            var moves = [];
+            var startColumn = chess.columns.indexOf(start[0]);
+            var startRow = chess.rows.indexOf(start[1]);
+            chess.rookVectors.forEach(function (vector) {
+                var columnIndex = startColumn + vector[0];
+                var rowIndex = startRow + vector[1];
+                var piece = "";
+                var pieceColor = "";
+                var square = "";
+                while (columnIndex >= 0 && columnIndex < 8 &&
+                    rowIndex >= 0 && rowIndex < 8) {
+                    square = chess.columns[columnIndex] + chess.rows[rowIndex];
+                    if (position.hasOwnProperty(square)) {
+                        piece = position[square];
+                        pieceColor = (piece.toLowerCase() === piece)
+                            ? chess.black
+                            : chess.white;
+                        if (pieceColor !== rook.color) {
+                            moves.push(square);
+                        }
+                        return;
+                    }
+                    moves.push(square);
+                    columnIndex += vector[0];
+                    rowIndex += vector[1];
+                }
+            });
+            return moves;
+        };
+
+        return rook.create();
     }
 
     /**
@@ -277,8 +600,10 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
     function Square(column, row, board) {
         var square = {
             board: board,
+            canvas: {},
             column: column,
             element: {},
+            hasCanvas: false,
             name: "",
             piece: null,
             row: row
@@ -289,12 +614,23 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
          */
         square.create = function () {
             var columnIndex = chess.columns.indexOf(square.column);
+            var context = {};
             var rowIndex = chess.rows.indexOf(square.row);
+            var width = board.options.width / 8;
             square.element = document.createElement("div");
             square.element.className = (columnIndex % 2 === rowIndex % 2)
                 ? css.blackSquare
                 : css.whiteSquare;
             square.name = column + row;
+            square.canvas = document.createElement("canvas");
+            square.canvas.setAttribute("height", width + "px");
+            square.canvas.setAttribute("width", width + "px");
+            square.canvas.className = css.squareCanvas;
+            context = square.canvas.getContext("2d");
+            context.beginPath();
+            context.arc(width / 2, width / 2, width / 8, 0, 2 * Math.PI);
+            context.fillStyle = "green";
+            context.fill();
             if (board.options.clickable) {
                 square.element.addEventListener("click", square.onClick);
             }
@@ -310,27 +646,26 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             return square;
         };
 
+        /**
+         * Deselect the start square of the board.
+         */
         square.deselect = function () {
             board.startSquare = null;
             raf(function () {
                 square.element.classList.remove(css.startSquare);
             });
+            if (board.options.markLegalSquares) {
+                board.hideCanvas();
+            }
         };
 
         /**
          * Square click event handler.
          */
         square.onClick = function () {
-            var end = [];
-            var playedPiece = {};
-            var start = [];
             if (board.startSquare !== null) {
                 if (board.startSquare !== square) {
-                    playedPiece = board.startSquare.piece;
-                    start = getCoordinates(board.startSquare.element);
-                    end = getCoordinates(square.element);
-                    playedPiece.animateStart(start, end);
-                    playedPiece.moveFromTo(board.startSquare, square);
+                    board.move(board.startSquare.name, square.name);
                 }
                 board.startSquare.deselect();
             } else if (square.piece !== null && !board.hasDraggedStart &&
@@ -422,10 +757,16 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
          * Select the piece on the square.
          */
         square.select = function () {
+            var moves = [];
             board.startSquare = square;
             raf(function () {
                 square.element.classList.add(css.startSquare);
             });
+            if (board.options.markLegalSquares) {
+                moves = square.piece.getMoves(board.position,
+                    square.name);
+                moves.forEach(board.showCanvas);
+            }
         };
 
         return square.create();
@@ -446,6 +787,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             isDragging: false,
             isFlipped: false,
             options: options,
+            position: {},
             rowsBorder: {},
             startSquare: null,
             squares: []
@@ -532,7 +874,6 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
          */
         board.getAnimations = function (position) {
             var animations = [];
-            var boardPosition = fenToObject(board.getFEN());
             var columns = chess.columns.split("");
             var futureSquares = [];
             var pastSquares = [];
@@ -540,10 +881,10 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             rows.forEach(function (row) {
                 columns.forEach(function (column) {
                     var square = column + row;
-                    if (boardPosition[square] === position[square]) {
+                    if (board.position[square] === position[square]) {
                         return;
                     }
-                    if (!boardPosition.hasOwnProperty(square)) {
+                    if (!board.position.hasOwnProperty(square)) {
                         futureSquares.push(square);
                         return;
                     }
@@ -565,7 +906,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
                 var startSquare = {};
                 existsInPast = pastSquares.some(function (pastSquare, i) {
                     start = pastSquare;
-                    if (boardPosition[pastSquare] === char) {
+                    if (board.position[pastSquare] === char) {
                         pastSquares.splice(i, 1);
                         return true;
                     }
@@ -582,7 +923,26 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
                         ? chess.white
                         : chess.black;
                     char = char.toLowerCase();
-                    animation.piece = new Piece(char, color, board);
+                    switch (char) {
+                        case chess.bishop:
+                            animation.piece = new Bishop(color, board);
+                            break;
+                        case chess.king:
+                            animation.piece = new King(color, board);
+                            break;
+                        case chess.knight:
+                            animation.piece = new Knight(color, board);
+                            break;
+                        case chess.pawn:
+                            animation.piece = new Pawn(color, board);
+                            break;
+                        case chess.queen:
+                            animation.piece = new Queen(color, board);
+                            break;
+                        case chess.rook:
+                            animation.piece = new Rook(color, board);
+                            break;
+                    }
                 }
                 animation.end = endSquare;
                 animations.push(animation);
@@ -649,6 +1009,20 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         };
 
         /**
+         * Hide all the canvas.
+         */
+        board.hideCanvas = function () {
+            board.squares.forEach(function (square) {
+                if (square.hasCanvas) {
+                    raf(function () {
+                        square.element.removeChild(square.canvas);
+                        square.hasCanvas = false;
+                    });
+                }
+            });
+        };
+
+        /**
          * Move a piece.
          */
         board.move = function (start, destination) {
@@ -660,6 +1034,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             endCoordinates = getCoordinates(endSquare.element);
             startSquare.piece.animateStart(startCoordinates, endCoordinates);
             startSquare.piece.moveFromTo(startSquare, endSquare);
+
         };
 
         /**
@@ -731,6 +1106,17 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         };
 
         /**
+         * Show the canvas of the square.
+         */
+        board.showCanvas = function (squareName) {
+            var square = board.getSquare(squareName);
+            raf(function () {
+                square.element.appendChild(square.canvas);
+                square.hasCanvas = true;
+            });
+        };
+
+        /**
          * Set a position from a FEN string.
          * @param {string} fen
          */
@@ -742,6 +1128,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             }
             animations = board.getAnimations(position);
             board.performAnimations(animations);
+            board.position = position;
         };
 
         return board.create();
@@ -775,7 +1162,6 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             },
             flip: function () {
                 while (abBoard.container.hasChildNodes()) {
-
                     abBoard.container.removeChild(abBoard.container.lastChild);
                 }
                 abBoard.isFlipped = !abBoard.isFlipped;
