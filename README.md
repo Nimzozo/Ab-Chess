@@ -29,7 +29,7 @@ More informations are available on the [GitHub pages](https://nimzozo.github.io/
 
 - Chess logic :
   - pieces basic movements
-  - pieces special moves :
+  - pieces special rules :
     - promotion
     - en passant
     - castling

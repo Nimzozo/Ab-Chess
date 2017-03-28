@@ -14,5 +14,6 @@ window.addEventListener("load", function () {
     abc2.board.setFEN();
     document.getElementById("fen-button").addEventListener("click", function () {
         abc.board.setFEN(document.getElementById("fen-input").value);
+        alert(abc2.board.getFEN());
     });
 });
