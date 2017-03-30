@@ -1,5 +1,5 @@
 // AbChess.js
-// 2017-03-29
+// 2017-03-30
 // Copyright (c) 2017 Nimzozo
 
 /*global
@@ -13,11 +13,8 @@
 /**
  * TODO
  * 
- * Chess logic :
- * - special rules
- *   - castling
- *   - promotion
- * - legal moves
+ * - castling animation
+ * - legal moves input
  * FEN validation
  * PGN parsing
  */
@@ -586,26 +583,48 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
          */
         king.getCastles = function (position, start) {
             var allowedCastles = position.allowedCastles;
+            var castles = [chess.queen, chess.king];
+            var checks = [["d", "c"], ["f", "g"]];
+            var collisions = [["d", "c", "b"], ["f", "g"]];
+            var ennemyColor = "";
             var moves = [];
             if (start[0] !== chess.columns[4] || allowedCastles === "-") {
                 return [];
             }
-            if (king.color === chess.white && start[1] === chess.rows[0]) {
-                if (allowedCastles.indexOf(chess.king.toUpperCase()) > -1) {
-                    moves.push("g1");
-                }
-                if (allowedCastles.indexOf(chess.queen.toUpperCase()) > -1) {
-                    moves.push("c1");
-                }
-            } else if (king.color === chess.black &&
-                start[1] === chess.rows[7]) {
-                if (allowedCastles.indexOf(chess.king) > -1) {
-                    moves.push("g8");
-                }
-                if (allowedCastles.indexOf(chess.queen) > -1) {
-                    moves.push("c8");
-                }
+            if ((king.color === chess.white && start[1] !== chess.rows[0]) ||
+                (king.color === chess.black && start[1] !== chess.rows[7])) {
+                return [];
             }
+            ennemyColor = (king.color === chess.white)
+                ? chess.black
+                : chess.white;
+            if (board.getSquare(start).isAttacked(position, ennemyColor)) {
+                return [];
+            }
+            castles.forEach(function (castle, i) {
+                var hasCheck = false;
+                var hasCollision = false;
+                if (king.color === chess.white) {
+                    castle = castle.toUpperCase();
+                }
+                if (allowedCastles.indexOf(castle) === -1) {
+                    return;
+                }
+                hasCollision = collisions[i].some(function (collision) {
+                    return position.squares.hasOwnProperty(collision +
+                        start[1]);
+                });
+                if (hasCollision) {
+                    return;
+                }
+                hasCheck = checks[i].some(function (check) {
+                    var square = board.getSquare(check + start[1]);
+                    return square.isAttacked(position, ennemyColor);
+                });
+                if (!hasCheck) {
+                    moves.push(checks[i][1] + start[1]);
+                }
+            });
             return moves;
         };
 
@@ -812,6 +831,9 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         square.isAttacked = function (position, ennemyColor) {
             var ennemies = [];
             ennemies = position.getPieces(ennemyColor);
+            ennemies = ennemies.filter(function (ennemy) {
+                return position.squares[ennemy].toLowerCase() !== chess.king;
+            });
             return ennemies.some(function (ennemy) {
                 var moves = [];
                 var piece = board.getSquare(ennemy).piece;
@@ -1233,6 +1255,10 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
                 piece = new Knight(board.position.activeColor, board);
             }
             board.movePiece(board.pendingMove.start, board.pendingMove.end);
+            if (piece.color === chess.white) {
+                choice = choice.toUpperCase();
+            }
+            board.position.squares[board.pendingMove.end] = choice;
             raf(function () {
                 board.promotionDiv.style.display = "none";
                 square.placePiece(piece);
