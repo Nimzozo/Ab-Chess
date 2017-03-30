@@ -100,9 +100,9 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
      * Regular expressions.
      */
     var regExp = {
-        fen: /^(?:[bBkKnNpPqQrR1-8]{1,8}\/){7}[bBkKnNpPqQrR1-8]{1,8}\s(b|w)\s(K?Q?k?q?|-)\s([a-h][36]|-)\s(0|[1-9]\d{0,2})\s([1-9]\d{0,2})$/,
         castleEnd: /[cg][18]/,
         castleStart: /e[18]/,
+        fen: /^(?:[bBkKnNpPqQrR1-8]{1,8}\/){7}[bBkKnNpPqQrR1-8]{1,8}\s(b|w)\s(K?Q?k?q?|-)\s([a-h][36]|-)\s(0|[1-9]\d{0,2})\s([1-9]\d{0,2})$/,
         promotionEnd: /[a-h][18]/
     };
 
@@ -995,8 +995,8 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             position: {},
             promotionDiv: {},
             rowsBorder: {},
-            startSquare: null,
-            squares: []
+            squares: [],
+            startSquare: null
         };
 
         /**
@@ -1195,17 +1195,17 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
          * Animate and move a piece.
          */
         board.movePiece = function (start, end, animate) {
-            var endCoordinates = [];
+            var endXY = [];
             var endSquare = board.getSquare(end);
-            var startCoordinates = [];
+            var startXY = [];
             var startSquare = board.getSquare(start);
             if (typeof animate !== "boolean") {
                 animate = true;
             }
             if (animate) {
-                startCoordinates = getCoordinates(startSquare.element);
-                endCoordinates = getCoordinates(endSquare.element);
-                startSquare.piece.animateStart(startCoordinates, endCoordinates);
+                startXY = getCoordinates(startSquare.element);
+                endXY = getCoordinates(endSquare.element);
+                startSquare.piece.animateStart(startXY, endXY);
             }
             startSquare.piece.moveFromTo(startSquare, endSquare);
         };
