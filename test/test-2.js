@@ -4,7 +4,8 @@ window.addEventListener("load", function () {
     var options = {
         clickable: true,
         draggable: true,
-        imagesPath: "../src/images/wikipedia/"
+        imagesPath: "../src/images/wikipedia/",
+        markLegalSquares: true
     };
     var abc = new AbChess("chessboard", options);
     abc.board.draw();

@@ -12,10 +12,10 @@
 
 /**
  * TODO
- * - legal moves click event
- * - promotion fen update
+ * position update
  * FEN validation
  * PGN parsing
+ * Game class
  */
 
 /**
@@ -857,7 +857,6 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
          * Square click event handler.
          */
         square.onClick = function () {
-            console.log("onClick");
             if (board.startSquare === null) {
                 if (square.piece !== null && !board.hasDraggedStart &&
                     !square.piece.isAnimated) {
@@ -868,7 +867,6 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
                     board.playMove(board.startSquare.name, square.name);
                 }
                 board.startSquare.deselect();
-                console.log("click deselect");
             }
             board.hasDraggedStart = false;
         };
@@ -877,26 +875,26 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
          * Square mousedown event handler.
          */
         square.onMouseDown = function (e) {
-            console.log("onMouseDown");
             var piece = square.piece;
             e.preventDefault();
             if (piece === null || e.button !== 0 || piece.isAnimated) {
                 return;
             }
             board.isDragging = true;
+            if (board.startSquare !== null) {
+                if (square === board.startSquare) {
+                    board.hasDraggedStart = true;
+                } else if (board.startSquare.piece.canMoveTo(square.name)) {
+                    board.isDragging = false;
+                    return;
+                }
+                board.startSquare.deselect();
+            }
+            square.select();
             raf(function () {
                 square.element.classList.add(css.overflownSquare);
                 piece.grab(e);
             });
-            if (board.startSquare !== null) {
-                if (square === board.startSquare) {
-                    board.hasDraggedStart = true;
-                    return;
-                }
-                board.startSquare.deselect();
-                console.log("mousedown deselect");
-            }
-            square.select();
         };
 
         /**
@@ -932,7 +930,6 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             raf(function () {
                 square.element.classList.remove(css.overflownSquare);
             });
-            console.log("onMouseUp deselect");
             board.startSquare.deselect();
             board.isDragging = false;
         };
@@ -952,8 +949,8 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
          * Remove a piece of the square.
          */
         square.removePiece = function (piece) {
+            square.element.removeChild(piece.element);
             if (piece === square.piece) {
-                square.element.removeChild(piece.element);
                 square.piece = null;
             }
         };
