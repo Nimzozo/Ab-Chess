@@ -857,16 +857,20 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
          * Square click event handler.
          */
         square.onClick = function () {
-            if (board.startSquare === null) {
-                if (square.piece !== null && !board.hasDraggedStart &&
-                    !square.piece.isAnimated) {
-                    square.select();
-                }
-            } else {
+            var isLegal = false;
+            var piece = square.piece;
+            var sameSquare = false;
+            if (board.startSquare !== null) {
+                sameSquare = square === board.startSquare;
                 if (board.startSquare.piece.canMoveTo(square.name)) {
                     board.playMove(board.startSquare.name, square.name);
+                    isLegal = true;
                 }
                 board.startSquare.deselect();
+            }
+            if (piece !== null && !sameSquare && !board.hasDraggedStart &&
+                !isLegal && !piece.isAnimated) {
+                square.select();
             }
             board.hasDraggedStart = false;
         };
@@ -880,16 +884,16 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             if (piece === null || e.button !== 0 || piece.isAnimated) {
                 return;
             }
-            board.isDragging = true;
             if (board.startSquare !== null) {
-                if (square === board.startSquare) {
-                    board.hasDraggedStart = true;
-                } else if (board.startSquare.piece.canMoveTo(square.name)) {
-                    board.isDragging = false;
+                if (board.startSquare.piece.canMoveTo(square.name)) {
                     return;
+                }
+                if (board.startSquare === square) {
+                    board.hasDraggedStart = true;
                 }
                 board.startSquare.deselect();
             }
+            board.isDragging = true;
             square.select();
             raf(function () {
                 square.element.classList.add(css.overflownSquare);
