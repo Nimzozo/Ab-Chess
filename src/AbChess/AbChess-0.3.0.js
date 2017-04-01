@@ -1,5 +1,5 @@
 // AbChess.js
-// 2017-03-31
+// 2017-04-01
 // Copyright (c) 2017 Nimzozo
 
 /*global
@@ -685,19 +685,19 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         var pawn = new Piece(chess.pawn, color, board);
 
         /**
-         * Return the possible moves in a position.
+         * Return the possible attacking moves.
          */
-        pawn.getMoves = function (position, start) {
-            var direction = 1;
+        pawn.getAttackingMoves = function (position, start) {
+            var direction = 0;
             var moves = [];
             var rowIndex = 0;
             var square = "";
             var startColumn = chess.columns.indexOf(start[0]);
             var startRow = chess.rows.indexOf(start[1]);
             var vectors = [-1, 1];
-            if (pawn.color === chess.black) {
-                direction = -1;
-            }
+            direction = (pawn.color === chess.white)
+                ? 1
+                : -1;
             rowIndex = startRow + direction;
             if (rowIndex < 0 || rowIndex > 7) {
                 return [];
@@ -722,6 +722,26 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
                     moves.push(square);
                 }
             });
+            return moves;
+        };
+
+        /**
+         * Return the possible moves in a position.
+         */
+        pawn.getMoves = function (position, start) {
+            var direction = 0;
+            var moves = pawn.getAttackingMoves(position, start);
+            var rowIndex = 0;
+            var square = "";
+            var startColumn = chess.columns.indexOf(start[0]);
+            var startRow = chess.rows.indexOf(start[1]);
+            direction = (pawn.color === chess.white)
+                ? 1
+                : -1;
+            rowIndex = startRow + direction;
+            if (rowIndex < 0 || rowIndex > 7) {
+                return [];
+            }
             square = chess.columns[startColumn] + chess.rows[rowIndex];
             if (!position.squares.hasOwnProperty(square)) {
                 moves.push(square);
