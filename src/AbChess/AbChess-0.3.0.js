@@ -12,7 +12,6 @@
 
 /**
  * TODO
- * position update
  * FEN validation
  * PGN parsing
  * Game class
@@ -204,6 +203,17 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         };
 
         /**
+         * Return the current FEN string.
+         */
+        position.getFEN = function () {
+            position.fen = objectToFEN(position.squares);
+            position.fen += " " + position.activeColor + " " +
+                position.allowedCastles + " " + position.enPassant + " " +
+                position.halfMoveClock + " " + position.fullMoveNumber;
+            return position.fen;
+        };
+
+        /**
          * Return the desired king position.
          */
         position.getKing = function (color) {
@@ -226,7 +236,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
          * Return a new position after a move has been played.
          */
         position.getNext = function (start, end) {
-            var next = new Position(position.fen);
+            var next = new Position(position.getFEN());
             next.update(start, end);
             return next;
         };
@@ -279,9 +289,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             position.halfMoveClock = halfMoveClock;
             position.squares[end] = piece;
             delete position.squares[start];
-            position.fen = objectToFEN(position.squares);
-            position.fen += " " + activeColor + " " + position.allowedCastles +
-                " " + enPassant + " " + halfMoveClock + " " + fullMoveNumber;
+            position.fen = position.getFEN();
         };
 
         /**
@@ -1472,7 +1480,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
                 abBoard.draw();
             },
             getFEN: function () {
-                return abBoard.position.fen;
+                return abBoard.position.getFEN();
             },
             move: function (start, destination) {
                 abBoard.playMove(start, destination, true);
