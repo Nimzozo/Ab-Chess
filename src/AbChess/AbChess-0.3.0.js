@@ -1,5 +1,5 @@
 // AbChess.js
-// 2017-04-01
+// 2017-10-26
 // Copyright (c) 2017 Nimzozo
 
 /*global
