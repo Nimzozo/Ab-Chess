@@ -1,5 +1,5 @@
 // AbChess.js
-// 2017-10-26
+// 2017-10-27
 // Copyright (c) 2017 Nimzozo
 
 /*global
@@ -144,6 +144,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
 
     /**
      * Convert a position to a FEN string.
+     * @param {object} object The object to convert.
      */
     function objectToFEN(object) {
         var columns = chess.columns.split("");
@@ -332,6 +333,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
      * The Piece class to build chess pieces.
      * @param {string} name The character representing the piece.
      * @param {string} color The character representing the color.
+     * @param {object} board The board containing the piece.
      */
     function Piece(name, color, board) {
         var piece = {
@@ -797,6 +799,9 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
 
     /**
      * The Square class to build the chessboard squares.
+     * @param {string} column The character representing the column.
+     * @param {string} row The character representing the row.
+     * @param {object} board The board containing the square.
      */
     function Square(column, row, board) {
         var square = {
@@ -1007,8 +1012,8 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
 
     /**
      * The Board class to build HTML chessboards.
-     * @param {string} id
-     * @param {object} options
+     * @param {string} id The id of the container.
+     * @param {object} options The configuration object.
      */
     function Board(id, options) {
         var board = {
