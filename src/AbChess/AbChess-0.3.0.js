@@ -1,5 +1,5 @@
 // AbChess.js
-// 2017-10-27
+// 2017-10-30
 // Copyright (c) 2017 Nimzozo
 
 /*global
@@ -1013,6 +1013,39 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
 
         return square.create();
     }
+    
+    /**
+     * The Game class to store the chessgame data.
+     */
+    function Game() {
+        var game = {
+            fens: [chess.defaultFEN],
+            moves: [],
+            pgnMoves: [],
+            tags: {}
+        };
+
+        /**
+         * Initialize and return the game object.
+         */
+        game.create = function () {
+            var requiredTags = {
+                "Event": "?",
+                "Site": "?",
+                "Date": "????.??.??",
+                "Round": "?",
+                "White": "?",
+                "Black": "?",
+                "Result": "*"
+            };
+            Object.keys(requiredTags).forEach(function (tag) {
+                game.tags[tag] = requiredTags[tag];
+            });
+            return game;
+        };
+
+        return game.create();
+    }
 
     /**
      * The Board class to build HTML chessboards.
@@ -1024,6 +1057,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             columnsBorder: {},
             container: {},
             element: {},
+            game: {},
             hasDraggedStart: false,
             hasNotation: false,
             isDragging: false,
@@ -1065,6 +1099,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
                 document.addEventListener("mousemove", board.onMouseMove);
                 document.addEventListener("mouseup", board.onMouseUp);
             }
+            board.game = new Game();
             return board;
         };
 
@@ -1453,39 +1488,6 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         };
 
         return board.create();
-    }
-
-    /**
-     * The Game class to store the chessgame data.
-     */
-    function Game() {
-        var game = {
-            fens: [chess.defaultFEN],
-            moves: [],
-            pgnMoves: [],
-            tags: {}
-        };
-
-        /**
-         * Initialize and return the game object.
-         */
-        game.create = function () {
-            var requiredTags = {
-                "Event": "?",
-                "Site": "?",
-                "Date": "????.??.??",
-                "Round": "?",
-                "White": "?",
-                "Black": "?",
-                "Result": "*"
-            };
-            Object.keys(requiredTags).forEach(function (tag) {
-                game.tags[tag] = requiredTags[tag];
-            });
-            return game;
-        };
-
-        return game.create();
     }
 
     (function () {
