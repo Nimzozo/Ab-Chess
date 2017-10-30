@@ -12,9 +12,10 @@
 
 /**
  * TODO
- * FEN validation
- * PGN parsing
- * Game class
+ * FEN, PGN validation
+ * Game class :
+ *  - PGN parsing
+ *  - move update
  */
 
 /**
@@ -141,6 +142,9 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         var y = element.getBoundingClientRect().top + window.pageXOffset;
         return [x, y];
     }
+
+    function isValidFEN() {}
+    function isValidPGN() {}
 
     /**
      * Convert a position to a FEN string.
@@ -1449,6 +1453,39 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         };
 
         return board.create();
+    }
+
+    /**
+     * The Game class to store the chessgame data.
+     */
+    function Game() {
+        var game = {
+            fens: [chess.defaultFEN],
+            moves: [],
+            pgnMoves: [],
+            tags: {}
+        };
+
+        /**
+         * Initialize and return the game object.
+         */
+        game.create = function () {
+            var requiredTags = {
+                "Event": "?",
+                "Site": "?",
+                "Date": "????.??.??",
+                "Round": "?",
+                "White": "?",
+                "Black": "?",
+                "Result": "*"
+            };
+            Object.keys(requiredTags).forEach(function (tag) {
+                game.tags[tag] = requiredTags[tag];
+            });
+            return game;
+        };
+
+        return game.create();
     }
 
     (function () {
