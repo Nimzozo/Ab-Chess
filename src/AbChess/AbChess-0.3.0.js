@@ -1046,6 +1046,36 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             return game;
         };
 
+        /**
+         * Return the Portable Game Notation.
+         * https://www.chessclub.com/user/help/PGN-spec
+         */
+        game.getPGN = function () {
+            var lineCount = 0;
+            var lineFeed = "\n";
+            var lineLimit = 80;
+            var pgn = "";
+            Object.keys(game.tags).forEach(function (tag) {
+                var value = game.tags[tag];
+                pgn += "[" + tag + " \"" + value + "\"]" + lineFeed;
+            });
+            game.pgnMoves.forEach(function (move, index) {
+                var moveText = "";
+                if (index % 2 === 0) {
+                    moveText = (index / 2 + 1) + ". ";
+                }
+                moveText += move;
+                if (lineCount < lineLimit && index > 0) {
+                    pgn += " " + moveText;
+                    lineCount += 1 + moveText.length;
+                } else {
+                    pgn += lineFeed + moveText;
+                    lineCount = moveText.length;
+                }
+            });
+            return pgn + " " + game.tags.Result + lineFeed + lineFeed;
+        };
+
         return game.create();
     }
 
