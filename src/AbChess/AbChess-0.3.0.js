@@ -1,5 +1,5 @@
 // AbChess.js
-// 2017-10-30
+// 2017-10-31
 // Copyright (c) 2017 Nimzozo
 
 /*global
@@ -143,8 +143,8 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         return [x, y];
     }
 
-    function isValidFEN() {}
-    function isValidPGN() {}
+    function isValidFEN() { }
+    function isValidPGN() { }
 
     /**
      * Convert a position to a FEN string.
@@ -990,7 +990,9 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
          * Remove a piece of the square.
          */
         square.removePiece = function (piece) {
-            square.element.removeChild(piece.element);
+            if (square.element === piece.element.parentNode) {
+                square.element.removeChild(piece.element);
+            }
             if (piece === square.piece) {
                 square.piece = null;
             }
@@ -1013,7 +1015,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
 
         return square.create();
     }
-    
+
     /**
      * The Game class to store the chessgame data.
      */
