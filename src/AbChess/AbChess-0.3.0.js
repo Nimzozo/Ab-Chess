@@ -1,5 +1,5 @@
 // AbChess.js
-// 2017-10-31
+// 2017-11-07
 // Copyright (c) 2017 Nimzozo
 
 /*global
@@ -14,8 +14,8 @@
  * TODO
  * FEN, PGN validation
  * Game class :
- *  - PGN parsing
- *  - move update
+ *  - Export (modify data, convert, format to PGN)
+ *  - Import (read PGN, analyse, display)
  */
 
 /**
@@ -179,6 +179,22 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
     }
 
     /**
+     * The class to create a chess move.
+     * @param {string} start The coordinate of the start square.
+     * @param {string} end The coordinate of the arrival square.
+     * @param {string} [promotion=""] A letter representing the promotion.
+     */
+    function Move(start, end, promotion) {
+        var move = {
+            end: end,
+            promotion: promotion,
+            start: start
+        };
+
+        return move;
+    }
+
+    /**
      * The class to create a chess position.
      * @param {string} fen The FEN string representing the position.
      */
@@ -240,9 +256,9 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         /**
          * Return a new position after a move has been played.
          */
-        position.getNext = function (start, end) {
+        position.getNext = function (start, end, promotion) {
             var next = new Position(position.getFEN());
-            next.update(start, end);
+            next.update(start, end, promotion);
             return next;
         };
 
@@ -260,7 +276,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         /**
          * Return an updated position after a move.
          */
-        position.update = function (start, end) {
+        position.update = function (start, end, promotion) {
             var activeColor = "";
             var endRowIndex = 0;
             var enPassant = "-";
@@ -278,7 +294,12 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             if (piece.toLowerCase() === chess.pawn) {
                 startRowIndex = chess.rows.indexOf(start[1]);
                 endRowIndex = chess.rows.indexOf(end[1]);
-                if (Math.abs(endRowIndex - startRowIndex) === 2) {
+                if (endRowIndex === chess.rows[0] ||
+                    endRowIndex === chess.rows[7]) {
+                    piece = (activeColor === chess.white)
+                        ? promotion.toUpperCase()
+                        : promotion.toLowerCase();
+                } else if (Math.abs(endRowIndex - startRowIndex) === 2) {
                     enPassantRow = (position.activeColor === chess.white)
                         ? chess.rows[2]
                         : chess.rows[5];
@@ -331,6 +352,83 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         };
 
         return position.create();
+    }
+
+    /**
+     * The Game class to store the chessgame data.
+     */
+    function Game() {
+        var game = {
+            //fens: [chess.defaultFEN],
+            moves: [],
+            pgnMoves: [],
+            positions: [],
+            tags: {}
+        };
+
+        game.addMove = function (start, end, promotion) {
+            var lastIndex = 0;
+            var lastPosition = {};
+            var newPosition = {};
+            lastIndex = game.moves.length;
+            lastPosition = game.positions[lastIndex];
+            newPosition = lastPosition.getNext(start, end, promotion);
+            game.moves.push(start + "-" + end);
+            game.positions.push(newPosition);
+        };
+
+        /**
+         * Initialize and return the game object.
+         */
+        game.create = function () {
+            var position = new Position(chess.defaultFEN);
+            var requiredTags = {
+                "Event": "?",
+                "Site": "?",
+                "Date": "????.??.??",
+                "Round": "?",
+                "White": "?",
+                "Black": "?",
+                "Result": "*"
+            };
+            game.positions.push(position);
+            Object.keys(requiredTags).forEach(function (tag) {
+                game.tags[tag] = requiredTags[tag];
+            });
+            return game;
+        };
+
+        /**
+         * Return the Portable Game Notation.
+         * https://www.chessclub.com/user/help/PGN-spec
+         */
+        game.getPGN = function () {
+            var lineCount = 0;
+            var lineFeed = "\n";
+            var lineLimit = 80;
+            var pgn = "";
+            Object.keys(game.tags).forEach(function (tag) {
+                var value = game.tags[tag];
+                pgn += "[" + tag + " \"" + value + "\"]" + lineFeed;
+            });
+            game.pgnMoves.forEach(function (move, index) {
+                var moveText = "";
+                if (index % 2 === 0) {
+                    moveText = (index / 2 + 1) + ". ";
+                }
+                moveText += move;
+                if (lineCount < lineLimit && index > 0) {
+                    pgn += " " + moveText;
+                    lineCount += 1 + moveText.length;
+                } else {
+                    pgn += lineFeed + moveText;
+                    lineCount = moveText.length;
+                }
+            });
+            return pgn + " " + game.tags.Result + lineFeed + lineFeed;
+        };
+
+        return game.create();
     }
 
     /**
@@ -1017,69 +1115,6 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
     }
 
     /**
-     * The Game class to store the chessgame data.
-     */
-    function Game() {
-        var game = {
-            fens: [chess.defaultFEN],
-            moves: [],
-            pgnMoves: [],
-            tags: {}
-        };
-
-        /**
-         * Initialize and return the game object.
-         */
-        game.create = function () {
-            var requiredTags = {
-                "Event": "?",
-                "Site": "?",
-                "Date": "????.??.??",
-                "Round": "?",
-                "White": "?",
-                "Black": "?",
-                "Result": "*"
-            };
-            Object.keys(requiredTags).forEach(function (tag) {
-                game.tags[tag] = requiredTags[tag];
-            });
-            return game;
-        };
-
-        /**
-         * Return the Portable Game Notation.
-         * https://www.chessclub.com/user/help/PGN-spec
-         */
-        game.getPGN = function () {
-            var lineCount = 0;
-            var lineFeed = "\n";
-            var lineLimit = 80;
-            var pgn = "";
-            Object.keys(game.tags).forEach(function (tag) {
-                var value = game.tags[tag];
-                pgn += "[" + tag + " \"" + value + "\"]" + lineFeed;
-            });
-            game.pgnMoves.forEach(function (move, index) {
-                var moveText = "";
-                if (index % 2 === 0) {
-                    moveText = (index / 2 + 1) + ". ";
-                }
-                moveText += move;
-                if (lineCount < lineLimit && index > 0) {
-                    pgn += " " + moveText;
-                    lineCount += 1 + moveText.length;
-                } else {
-                    pgn += lineFeed + moveText;
-                    lineCount = moveText.length;
-                }
-            });
-            return pgn + " " + game.tags.Result + lineFeed + lineFeed;
-        };
-
-        return game.create();
-    }
-
-    /**
      * The Board class to build HTML chessboards.
      * @param {string} id The id of the container.
      * @param {object} options The configuration object.
@@ -1371,8 +1406,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             if (piece.color === chess.white) {
                 choice = choice.toUpperCase();
             }
-            board.position.update(start, end);
-            board.position.squares[end] = choice;
+            board.position.update(start, end, choice);
             board.movePiece(start, end);
             raf(function () {
                 board.promotionDiv.style.display = "none";
@@ -1432,6 +1466,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             }
             board.position.update(start, end);
             board.movePiece(start, end, animate);
+            board.game.addMove(start, end);
         };
 
         /**
@@ -1535,6 +1570,9 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         abBoard = new Board(abId, abOptions);
     }());
 
+    /**
+     * Return the API.
+     */
     return {
         board: {
             draw: function (flipped, notation) {
@@ -1564,6 +1602,11 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             setFEN: function (fen) {
                 fen = fen || chess.defaultFEN;
                 abBoard.setPosition(fen);
+            }
+        },
+        game: {
+            getPGN: function () {
+                return abBoard.game.getPGN();
             }
         }
     };

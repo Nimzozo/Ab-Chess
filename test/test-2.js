@@ -10,11 +10,13 @@ window.addEventListener("load", function () {
     var abc = new AbChess("chessboard", options);
     abc.board.draw();
     abc.board.setFEN("5r2/8/8/7p/2n5/3p4/8/r2K2k1 w - - 2 140");
+
     var abc2 = new AbChess("chessboard2", options);
     abc2.board.draw();
     abc2.board.setFEN();
+
     document.getElementById("fen-button").addEventListener("click", function () {
         abc.board.setFEN(document.getElementById("fen-input").value);
-        alert(abc2.board.getFEN());
+        alert(abc2.game.getPGN());
     });
 });
