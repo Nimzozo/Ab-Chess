@@ -1,5 +1,5 @@
 // AbChess.js
-// 2017-11-07
+// 2017-11-08
 // Copyright (c) 2017 Nimzozo
 
 /*global
@@ -12,10 +12,10 @@
 
 /**
  * TODO
- * FEN, PGN validation
- * Game class :
+ * - FEN, PGN validation
+ * - Game class :
  *  - Export (modify data, convert, format to PGN)
- *  - Import (read PGN, analyse, display)
+ *  - Import (read PGN, analyse, display / navigate)
  */
 
 /**
@@ -36,9 +36,23 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         bishop: "b",
         bishopVectors: [[-1, -1], [-1, 1], [1, -1], [1, 1]],
         black: "b",
+        castleKing: "O-O",
+        castleQueen: "O-O-O",
         columns: "abcdefgh",
         defaultFEN: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
         emptyFEN: "8/8/8/8/8/8/8/8 w - - 0 1",
+        htmlBlackBishop: "&#9821;",
+        htmlBlackKing: "&#9818;",
+        htmlBlackKnight: "&#9822;",
+        htmlBlackPawn: "&#9823;",
+        htmlBlackQueen: "&#9819;",
+        htmlBlackRook: "&#9820;",
+        htmlWhiteBishop: "&#9815;",
+        htmlWhiteKing: "&#9812;",
+        htmlWhiteKnight: "&#9816;",
+        htmlWhitePawn: "&#9817;",
+        htmlWhiteQueen: "&#9813;",
+        htmlWhiteRook: "&#9814;",
         king: "k",
         knight: "n",
         pawn: "p",
@@ -102,8 +116,19 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
     var regExp = {
         castleEnd: /[cg][18]/,
         castleStart: /e[18]/,
+        comment: /\{[^]+?\}/gm,
         fen: /^(?:[bBkKnNpPqQrR1-8]{1,8}\/){7}[bBkKnNpPqQrR1-8]{1,8}\s(b|w)\s(K?Q?k?q?|-)\s([a-h][36]|-)\s(0|[1-9]\d{0,2})\s([1-9]\d{0,2})$/,
-        promotionEnd: /[a-h][18]/
+        pgnCastle: /^O-O(?:-O)?(?:\+|#)?$/,
+        pgnKing: /^(?:Kx?([a-h][1-8])|O-O(?:-O)?)(?:\+|#)?$/,
+        pgnMove: /(?:[1-9]\d{0,2}\.(?:\.\.)?\s?)?(?:O-O(?:-O)?|(?:[BNQR][a-h]?[1-8]?|K)x?[a-h][1-8]|(?:[a-h]x)?[a-h][1-8](?:\=[BNQR])?)(?:\+|#)?/gm,
+        pgnMoveNumber: /[1-9]\d{0,2}\.(?:\.\.)?\s?/,
+        pgnPawn: /^([a-h]?)x?([a-h][1-8])(\=[BNQR])?(?:\+|#)?$/,
+        pgnPiece: /^[BNQR]([a-h]?[1-8]?)x?([a-h][1-8])(?:\+|#)?$/,
+        pgnPromotion: /\=[BNQR]/,
+        promotionEnd: /[a-h][18]/,
+        tagPair: /\[[A-Z][^]+?\s"[^]+?"\]/gm,
+        tagPairCapture: /\[(\S+)\s"(.*)"\]/,
+        variation: /\([^()]*?\)/gm
     };
 
     /**
@@ -273,6 +298,93 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             });
         };
 
+        position.getSimpleKingMove = function (pgnMove) {
+
+            // Return a simple move from a PGN king move.
+
+            var arrival = "";
+            var matches = [];
+            var row = "";
+            var start = "";
+            if (regExp.pgnCastle.test(pgnMove)) {
+                row = (position.activeColor === chess.white)
+                    ? chess.rows[0]
+                    : chess.rows[7];
+                start = chess.columns[4] + row;
+                arrival = (pgnMove === chess.castleKing)
+                    ? chess.columns[6] + row
+                    : chess.columns[2] + row;
+            } else {
+                matches = pgnMove.match(regExp.pgnKing);
+                arrival = matches[1];
+                start = position.getKing(position.activeColor);
+            }
+            return start + "-" + arrival;
+        };
+
+        position.getSimpleMove = function (pgnMove) {
+
+            // Return the corresponding move in simple notation.
+
+            if (regExp.pgnKing.test(pgnMove)) {
+                return position.getSimpleKingMove(pgnMove);
+            }
+            if (regExp.pgnPawn.test(pgnMove)) {
+                return position.getSimplePawnMove(pgnMove);
+            }
+            if (regExp.pgnPiece.test(pgnMove)) {
+                return position.getSimplePieceMove(pgnMove);
+            }
+        };
+
+        position.getSimplePawnMove = function (pgnMove) {
+
+            // Return a simple move from a PGN pawn move.
+
+            var ambiguity = "";
+            var arrival = "";
+            var matches = [];
+            var move = {};
+            var piece = "";
+            var promotion = "";
+            var start = "";
+            matches = pgnMove.match(regExp.pgnPawn);
+            ambiguity = matches[1];
+            arrival = matches[2];
+            if (regExp.pgnPromotion.test(pgnMove)) {
+                promotion = matches[3];
+            }
+            piece = (position.activeColor === chess.white)
+                ? chess.whitePawn
+                : chess.blackPawn;
+            move.piece = piece;
+            move.ambiguity = ambiguity;
+            move.arrival = arrival;
+            start = position.getSimpleStart(move);
+            return start + "-" + arrival + promotion;
+        };
+
+        position.getSimplePieceMove = function (pgnMove) {
+
+            // Return a simple move from a PGN piece move.
+
+            var ambiguity = "";
+            var arrival = "";
+            var matches = [];
+            var move = {};
+            var piece = "";
+            var start = "";
+            matches = pgnMove.match(regExp.pgnPiece);
+            ambiguity = matches[1];
+            arrival = matches[2];
+            piece = pgnMove[0];
+            move.piece = piece;
+            move.ambiguity = ambiguity;
+            move.arrival = arrival;
+            start = position.getSimpleStart(move);
+            return start + "-" + arrival;
+        };
+
         /**
          * Return an updated position after a move.
          */
@@ -359,7 +471,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
      */
     function Game() {
         var game = {
-            //fens: [chess.defaultFEN],
+            // fens: [chess.defaultFEN],
             moves: [],
             pgnMoves: [],
             positions: [],
@@ -426,6 +538,54 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
                 }
             });
             return pgn + " " + game.tags.Result + lineFeed + lineFeed;
+        };
+
+
+
+        game.importPGNMoves = function (pgn) {
+
+            // Import the PGN moves from a PGN string.
+            // - Delete comments and variations.
+            // - Store the PGN moves.
+
+            var importedPGNMoves = [];
+            while (regExp.comment.test(pgn)) {
+                pgn = pgn.replace(regExp.comment, "");
+            }
+            while (regExp.variation.test(pgn)) {
+                pgn = pgn.replace(regExp.variation, "");
+            }
+            pgn = pgn.replace(/\s{2,}/gm, " ");
+            importedPGNMoves = pgn.match(regExp.pgnMove);
+            importedPGNMoves.forEach(function (pgnMove) {
+                pgnMove = pgnMove.replace(regExp.pgnMoveNumber, "");
+                game.pgnMoves.push(pgnMove);
+            });
+        };
+
+        /**
+         * Import the tag pairs from a PGN.
+         */
+        game.importTags = function (pgn) {
+            var tags = pgn.match(regExp.tagPair);
+            tags.forEach(function (tagPair) {
+                var matches = regExp.tagPairCapture.exec(tagPair);
+                game.tags[matches[1]] = matches[2];
+            });
+        };
+
+        /**
+         * Reset the game object and load a PGN.
+         */
+        game.setPGN = function (pgn) {
+            game.moves = [];
+            game.pgnMoves = [];
+            game.positions = [];
+            game.tags = {};
+            game.create();
+            game.importTags(pgn);
+            game.importPGNMoves(pgn);
+            // game.importMoves();
         };
 
         return game.create();
@@ -1605,8 +1765,27 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             }
         },
         game: {
+            getMovesPGN: function (symbols) {
+                var pgnMoves = abBoard.game.pgnMoves;
+                var htmlMoves = [];
+                if (symbols === undefined || !symbols) {
+                    return pgnMoves;
+                }
+                pgnMoves.forEach(function (pgnMove) {
+                    pgnMove = pgnMove.replace("B", chess.htmlWhiteBishop);
+                    pgnMove = pgnMove.replace("K", chess.htmlWhiteKing);
+                    pgnMove = pgnMove.replace("N", chess.htmlWhiteKnight);
+                    pgnMove = pgnMove.replace("Q", chess.htmlWhiteQueen);
+                    pgnMove = pgnMove.replace("R", chess.htmlWhiteRook);
+                    htmlMoves.push(pgnMove);
+                });
+                return htmlMoves;
+            },
             getPGN: function () {
                 return abBoard.game.getPGN();
+            },
+            setPGN: function (pgn) {
+                abBoard.game.setPGN(pgn);
             }
         }
     };

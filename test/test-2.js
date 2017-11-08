@@ -17,6 +17,9 @@ window.addEventListener("load", function () {
 
     document.getElementById("fen-button").addEventListener("click", function () {
         abc.board.setFEN(document.getElementById("fen-input").value);
-        alert(abc2.game.getPGN());
+    });
+    document.getElementById("pgn-button").addEventListener("click", function () {
+        abc2.game.setPGN(document.getElementById("pgn-textarea").value);
+        alert(abc2.game.getMovesPGN());
     });
 });
