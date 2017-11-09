@@ -35,7 +35,7 @@ window.addEventListener("load", function () {
             return;
         }
         currentIndex = index;
-        abChess.navigate(currentIndex);
+        abChess.game.view(index);
         if (selectedSpan !== null) {
             selectedSpan.removeAttribute("id");
         }
@@ -82,8 +82,8 @@ window.addEventListener("load", function () {
         clearSpans();
         moves = abChess.game.getMovesPGN(true);
         moves.forEach(addMoveSpan);
-        // lastIndex = abChess.getLastPositionIndex();
-        // navigate(lastIndex);
+        lastIndex = moves.length;
+       // navigate(lastIndex);
     }
 
     importButton.addEventListener("click", importPGN);

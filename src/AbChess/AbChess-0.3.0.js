@@ -126,7 +126,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         pgnMoveNumber: /[1-9]\d{0,2}\.(?:\.\.)?\s?/,
         pgnPawn: /^([a-h]?)x?([a-h][1-8])(=[BNQR])?(?:\+|#)?$/,
         pgnPiece: /^[BNQR]([a-h]?[1-8]?)x?([a-h][1-8])(?:\+|#)?$/,
-        pgnPromotion: /=[BNQR]/,
+        pgnPromotion: /\=[BNQR]/,
         promotionEnd: /[a-h][18]/,
         tagPair: /\[[A-Z][^]+?\s"[^]+?"\]/gm,
         tagPairCapture: /\[(\S+)\s"(.*)"\]/,
@@ -162,11 +162,11 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
 
     /**
      * Return the coordinates of an element.
-     * @param {HTMLElement} element 
+     * @param {HTMLElement} element The concerned HTML element.
      */
     function getCoordinates(element) {
         var x = element.getBoundingClientRect().left + window.pageXOffset;
-        var y = element.getBoundingClientRect().top + window.pageXOffset;
+        var y = element.getBoundingClientRect().top + window.pageYOffset;
         return [x, y];
     }
 
@@ -823,18 +823,16 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         };
 
         /**
-         * Analyse the PGN moves and import the moves.
+         * Generate the moves and the positions from the PGN moves.
          */
         game.importMoves = function () {
-
-            // Generate the moves and the FEN strings from the PGN moves.
-
             var lastPosition = game.positions[0];
             game.pgnMoves.forEach(function (pgnMove) {
                 var move = lastPosition.getSimpleMove(pgnMove);
-                game.moves.push(move);
                 lastPosition = lastPosition.getNext(move.start, move.arrival,
                     move.promotion);
+                game.moves.push(move);
+                game.positions.push(lastPosition);
             });
         };
 
@@ -1577,12 +1575,11 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         };
 
         /**
-         * Set a position from a FEN string.
-         * @param {string} fen
+         * Set a position from a position object.
+         * @param {Object} position The position to set on the board.
          */
-        board.setPosition = function (fen) {
+        board.setPosition = function (position) {
             var animations = [];
-            var position = new Position(fen);
             if (board.startSquare !== null) {
                 board.startSquare.deselect();
             }
@@ -1707,8 +1704,10 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
                 abBoard.playMove(start, destination, true);
             },
             setFEN: function (fen) {
+                var position = {};
                 fen = fen || chess.defaultFEN;
-                abBoard.setPosition(fen);
+                position = new Position(fen);
+                abBoard.setPosition(position);
             }
         },
         game: {
@@ -1739,6 +1738,10 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             },
             setPGN: function (pgn) {
                 abBoard.game.setPGN(pgn);
+            },
+            view: function (index) {
+                var position = abBoard.game.positions[index];
+                abBoard.setPosition(position);
             }
         }
     };
