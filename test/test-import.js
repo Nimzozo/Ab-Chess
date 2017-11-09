@@ -13,9 +13,8 @@ window.addEventListener("load", function () {
     var movesDiv = document.getElementById("moves-div");
     var nextButton = document.getElementById("nextButton");
     var options = {
-        animationSpeed: "normal",
-        clickable: true,
-        draggable: true,
+        clickable: false,
+        draggable: false,
         imagesPath: "../src/images/wikipedia/"
     };
     var pgnButton = document.getElementById("pgnButton");
@@ -26,8 +25,8 @@ window.addEventListener("load", function () {
     var resetButton = document.getElementById("resetButton");
 
     abChess = new AbChess("chessboard", options);
-    abChess.draw();
-    abChess.setFEN();
+    abChess.board.draw();
+    abChess.board.setFEN();
 
     function navigate(index) {
         var selectedSpan = document.getElementById(pgnSelectedSpanId);
@@ -68,23 +67,23 @@ window.addEventListener("load", function () {
         }
     }
 
-    abChess.onMovePlayed(function () {
-        currentIndex += 1;
-        lastIndex += 1;
-    });
+    // abChess.onMovePlayed(function () {
+    //     currentIndex += 1;
+    //     lastIndex += 1;
+    // });
 
     function importPGN() {
         errorSpan.innerText = "";
-        if (!abChess.isValidPGN(pgnTextArea.value)) {
-            errorSpan.innerText = "Invalid PGN.";
-            return;
-        }
-        abChess.setPGN(pgnTextArea.value, true);
+        // if (!abChess.isValidPGN(pgnTextArea.value)) {
+        //     errorSpan.innerText = "Invalid PGN.";
+        //     return;
+        // }
+        abChess.game.setPGN(pgnTextArea.value, true);
         clearSpans();
-        moves = abChess.getGameMovesPGN(true);
+        moves = abChess.game.getMovesPGN(true);
         moves.forEach(addMoveSpan);
-        lastIndex = abChess.getLastPositionIndex();
-        navigate(lastIndex);
+        // lastIndex = abChess.getLastPositionIndex();
+        // navigate(lastIndex);
     }
 
     importButton.addEventListener("click", importPGN);
@@ -92,7 +91,7 @@ window.addEventListener("load", function () {
         abChess.reset();
         clearSpans();
     });
-    flipButton.addEventListener("click", abChess.flip);
+    flipButton.addEventListener("click", abChess.board.flip);
     firstButton.addEventListener("click", function () {
         navigate(0);
     });
@@ -106,7 +105,7 @@ window.addEventListener("load", function () {
         navigate(lastIndex);
     });
     pgnButton.addEventListener("click", function () {
-        var pgn = abChess.getPGN();
+        var pgn = abChess.game.getPGN();
         alert(pgn);
     });
 });

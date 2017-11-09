@@ -14,9 +14,10 @@
  * TODO
  * - FEN, PGN validation
  * - Game class :
- *  - Export (modify data, convert, format to PGN)
+ *  - Export (modify data, convert, write PGN)
  *  - Import (read PGN, analyse, display / navigate)
- * - BUG : promotion
+ * - BUG : promotion, update position
+ * - Move class ?
  */
 
 /**
@@ -203,22 +204,6 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         });
         return fen;
     }
-
-    /**
-     * The class to create a chess move.
-     * @param {string} start The coordinate of the start square.
-     * @param {string} end The coordinate of the arrival square.
-     * @param {string} [promotion=""] A letter representing the promotion.
-     */
-    // function Move(start, end, promotion) {
-    //     var move = {
-    //         end: end,
-    //         promotion: promotion,
-    //         start: start
-    //     };
-
-    //     return move;
-    // }
 
     /**
      * The class to create a chess position.
@@ -772,6 +757,9 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             tags: {}
         };
 
+        /**
+         * Add a move to the last position of the game.
+         */
         game.addMove = function (start, end, promotion) {
             var lastIndex = 0;
             var lastPosition = {};
@@ -834,6 +822,9 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             return pgn + " " + game.tags.Result + lineFeed + lineFeed;
         };
 
+        /**
+         * Analyse the PGN moves and import the moves.
+         */
         game.importMoves = function () {
 
             // Generate the moves and the FEN strings from the PGN moves.
@@ -847,6 +838,9 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             });
         };
 
+        /**
+         * Import the moves from a PGN string.
+         */
         game.importPGNMoves = function (pgn) {
 
             // Import the PGN moves from a PGN string.
@@ -869,7 +863,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         };
 
         /**
-         * Import the tag pairs from a PGN.
+         * Import the tag pairs from a PGN string.
          */
         game.importTags = function (pgn) {
             var tags = pgn.match(regExp.tagPair);
@@ -1718,6 +1712,12 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             }
         },
         game: {
+            getInfo: function (info) {
+                return abBoard.game.tags[info];
+            },
+            getMoves: function () {
+                return abBoard.game.moves;
+            },
             getMovesPGN: function (symbols) {
                 var pgnMoves = abBoard.game.pgnMoves;
                 var htmlMoves = [];
@@ -1742,5 +1742,4 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             }
         }
     };
-
 };
