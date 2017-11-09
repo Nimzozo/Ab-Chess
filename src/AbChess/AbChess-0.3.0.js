@@ -1,6 +1,8 @@
-// AbChess.js
-// 2017-11-09
-// Copyright (c) 2017 Nimzozo
+/**
+ * AbChess.js
+ * 2017-11-10
+ * Copyright (c) 2017 Nimzozo
+ */
 
 /*global
     window
@@ -750,7 +752,6 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
      */
     function Game() {
         var game = {
-            // fens: [chess.defaultFEN],
             moves: [],
             pgnMoves: [],
             positions: [],
@@ -808,7 +809,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             game.pgnMoves.forEach(function (move, index) {
                 var moveText = "";
                 if (index % 2 === 0) {
-                    moveText = (index / 2 + 1) + ". ";
+                    moveText = ((index / 2) + 1) + ". ";
                 }
                 moveText += move;
                 if (lineCount < lineLimit && index > 0) {
@@ -837,14 +838,10 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         };
 
         /**
-         * Import the moves from a PGN string.
+         * Import the PGN moves from a PGN string.
+         * Delete comments and variations.
          */
         game.importPGNMoves = function (pgn) {
-
-            // Import the PGN moves from a PGN string.
-            // - Delete comments and variations.
-            // - Store the PGN moves.
-
             var importedPGNMoves = [];
             while (regExp.comment.test(pgn)) {
                 pgn = pgn.replace(regExp.comment, "");
@@ -1028,8 +1025,8 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
          * Grab the piece.
          */
         piece.grab = function (e) {
-            var left = e.clientX + window.pageXOffset - piece.width / 2;
-            var top = e.clientY + window.pageYOffset - piece.width / 2;
+            var left = e.clientX + window.pageXOffset - (piece.width / 2);
+            var top = e.clientY + window.pageYOffset - (piece.width / 2);
             piece.ghost.style.left = left + "px";
             piece.ghost.style.top = top + "px";
             document.body.appendChild(piece.ghost);
@@ -1476,8 +1473,8 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             }
             ghost = board.startSquare.piece.ghost;
             raf(function () {
-                left = e.clientX + window.pageXOffset - options.width / 16;
-                top = e.clientY + window.pageYOffset - options.width / 16;
+                left = e.clientX + window.pageXOffset - (options.width / 16);
+                top = e.clientY + window.pageYOffset - (options.width / 16);
                 ghost.style.left = left + "px";
                 ghost.style.top = top + "px";
             });
