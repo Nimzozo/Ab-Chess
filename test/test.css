@@ -11,7 +11,7 @@
 }
 
 #pgn-textarea {
-    height: 200px;
+    height: 100px;
     width: 90%;
 }
 
@@ -36,7 +36,7 @@
     color: white;
 }
 
-#chessboard, #chessboard2 {
+#chessboard {
     display: inline-block;
     vertical-align: top;
 }

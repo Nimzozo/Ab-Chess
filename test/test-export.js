@@ -11,4 +11,12 @@ window.addEventListener("load", function () {
     abc.board.draw();
     abc.board.setFEN();
 
+    var fenSpan = document.getElementById("fen-span");
+    var pgnParagraph = document.getElementById("pgn-paragraph");
+
+    abc.board.onMovePlayed(function () {
+        fenSpan.innerText = abc.board.getFEN();
+        pgnParagraph.innerText = abc.game.getPGN();
+    });
+
 });
