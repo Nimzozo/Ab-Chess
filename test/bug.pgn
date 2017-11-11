@@ -27,3 +27,23 @@ Kf7 52. Be7 Ra6 53. Bg5 Ke8 54. e6 Kf8 55. Rh2 Nd4 56. h8=Q# 1-0
 [Result "0-1"]
 
 1. e4 e6 2. Nc3 d5 3. Nf3 d4 4. Ne2 c5 5. Ng3 Nc6 6. Bb5 Bd7 7. Bxc6 Bxc6 8. Ne5 Rc8 9. d3 g6 10. f4 h5 11. f5 gxf5 12. exf5 Bxg2 13. fxe6 Qd5 14. exf7+ Kd8 15. fxg8=Q Rxg8 16. Qxh5 Bxh1 17. Bf4 Rc7 18. O-O-O Bg2 19. Nf5 b6 20. Re1 Kc8 21. Nc4 Rd7 22. Re5 Bf3 23. Qe8+ Rd8 24. Ne7+ Bxe7 25. Qxe7 Qxe5 0-1
+
+[Event "Casual Bullet game"]
+[Site "https://lichess.org/E9NvnuPP"]
+[Date "2017.11.10"]
+[Round "-"]
+[White "a_gay_hegelian"]
+[Black "GameStarted"]
+[Result "0-1"]
+[UTCDate "2017.11.10"]
+[UTCTime "21:52:04"]
+[WhiteElo "2123"]
+[BlackElo "2278"]
+[Variant "Standard"]
+[TimeControl "30+0"]
+[ECO "A04"]
+[Opening "Zukertort Opening: Arctic Defense"]
+[Termination "Time forfeit"]
+[Annotator "lichess.org"]
+
+1. Nf3 f6 { A04 Zukertort Opening: Arctic Defense } 2. Ne5 fxe5 3. g3 Nf6 4. Bg2 e6 5. O-O Be7 6. d3 Bf8 7. Nd2 Be7 8. c3 O-O 9. Nf3 d6 10. e4 c5 11. Ng5 Nc6 12. Qb3 Qd7 13. Bh3 Na5 14. Qc2 Qe8 15. Bxe6+ Bxe6 16. Nxe6 Rf7 17. Nc7 Qd7 18. Nxa8 b6 19. b4 Nc6 20. bxc5 dxc5 21. a4 Qb7 22. a5 Qxa8 23. axb6 a5 24. Qa4 Qb7 25. Qb5 Bd8 26. Be3 Qxb6 27. Qxb6 Bxb6 28. Rab1 Rb7 29. Rb5 Nd8 30. Bxc5 Bxc5 31. Rxc5 Rd7 32. d4 exd4 33. cxd4 Nxe4 34. Rxa5 Ng5 35. Rb1 Nf3+ 36. Kg2 Nxd4 37. Rb8 Kf7 38. Raa8 Ke7 39. Rb4 N4e6 40. Re4 g6 41. Rxe6+ Kxe6 42. Ra6+ Ke7 43. Rf6 Ke8 44. Rf7 Kxf7 45. h3 Ke8 46. h4 Rd4 47. h5 Rd3 48. hxg6 hxg6 49. f3 g5 50. g4 Rd2+ 51. Kh3 Rd3 52. Kg3 Rd4 53. f4 Rd3+ 54. Kg2 Rd2+ { Black wins on time. } 0-1

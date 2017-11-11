@@ -1,6 +1,6 @@
 /**
  * AbChess.js
- * 2017-11-10
+ * 2017-11-11
  * Copyright (c) 2017 Nimzozo
  */
 
@@ -19,9 +19,11 @@
  * - Game class :
  *  - Export (modify data, convert, write PGN)
  *  - Import (read PGN, analyse, display / navigate)
- * - BUG : promotion, update position
- * - use charAt()
+ * - BUG : en passant update position
+ * - use charAt(x) instead of string[x]
  * - custom events
+ * - look for duplications
+ * - piece.endAnimation removeChild() error
  */
 
 /**
@@ -522,9 +524,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
          */
         position.getNext = function (start, end, promotion) {
             var next = new Position(position.getFEN());
-            if (promotion === undefined) {
-                promotion = chess.queen;
-            }
+            promotion = promotion || chess.queen;
             next.update(start, end, promotion);
             return next;
         };
@@ -695,6 +695,8 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             var fullMoveNumber = Number(position.fullMoveNumber);
             var halfMoveClock = 0;
             var piece = position.squares[start];
+            var rookEnd = "";
+            var rookStart = "";
             var startRowIndex = 0;
             if (position.activeColor === chess.white) {
                 activeColor = chess.black;
@@ -715,8 +717,26 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
                         : chess.rows[5];
                     enPassant = start[0] + enPassantRow;
                 }
-            } else if (!position.squares.hasOwnProperty(end)) {
-                halfMoveClock = Number(position.halfMoveClock) + 1;
+            } else {
+                if (piece.toLowerCase() === chess.king) {
+                    if (regExp.castleStart.test(start) &&
+                        regExp.castleEnd.test(end)) {
+                        if (end[0] === chess.columns[2]) {
+                            rookStart = chess.columns[0];
+                            rookEnd = chess.columns[3];
+                        } else {
+                            rookStart = chess.columns[7];
+                            rookEnd = chess.columns[5];
+                        }
+                        rookStart += end[1];
+                        rookEnd += end[1];
+                        position.squares[rookEnd] = position.squares[rookStart];
+                        delete position.squares[rookStart];
+                    }
+                }
+                if (!position.squares.hasOwnProperty(end)) {
+                    halfMoveClock = Number(position.halfMoveClock) + 1;
+                }
             }
             position.activeColor = activeColor;
             position.updateCastles(start, end);
@@ -1635,8 +1655,6 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             }
             rookStart += end[1];
             rookEnd += end[1];
-            board.position.squares[rookEnd] = board.position.squares[rookStart];
-            delete board.position.squares[rookStart];
             board.movePiece(rookStart, rookEnd);
         };
 
