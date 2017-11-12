@@ -19,10 +19,8 @@
  * - Game class :
  *  - Export (modify data, convert, write PGN)
  *  - Import (read PGN, analyse, display / navigate)
- * - use charAt(x) instead of string[x]
  * - custom events
  * - look for duplications
- * - piece.endAnimation removeChild() error
  */
 
 /**
@@ -1062,7 +1060,9 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
          * End the piece animation.
          */
         piece.endAnimation = function () {
-            document.body.removeChild(piece.ghost);
+            if (document.body === piece.ghost.parentNode) {
+                document.body.removeChild(piece.ghost);
+            }
             piece.ghost.style.transform = "";
             piece.element.style.opacity = 1;
             piece.isAnimated = false;
