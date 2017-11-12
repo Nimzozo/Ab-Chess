@@ -1,6 +1,6 @@
 /**
  * AbChess.js
- * 2017-11-11
+ * 2017-11-12
  * Copyright (c) 2017 Nimzozo
  */
 
@@ -19,7 +19,6 @@
  * - Game class :
  *  - Export (modify data, convert, write PGN)
  *  - Import (read PGN, analyse, display / navigate)
- * - BUG : en passant update position
  * - use charAt(x) instead of string[x]
  * - custom events
  * - look for duplications
@@ -689,6 +688,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
          */
         position.update = function (start, end, promotion) {
             var activeColor = "";
+            var capture = "";
             var endRowIndex = 0;
             var enPassant = "-";
             var enPassantRow = "";
@@ -711,6 +711,11 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
                     piece = (position.activeColor === chess.white)
                         ? promotion.toUpperCase()
                         : promotion.toLowerCase();
+                } else if (end === position.enPassant) {
+                    capture = (position.activeColor === chess.white)
+                        ? position.enPassant[0] + chess.rows[4]
+                        : position.enPassant[0] + chess.rows[3];
+                    delete position.squares[capture];
                 } else if (Math.abs(endRowIndex - startRowIndex) === 2) {
                     enPassantRow = (position.activeColor === chess.white)
                         ? chess.rows[2]
@@ -876,10 +881,11 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
 
         /**
          * Import the PGN moves from a PGN string.
-         * Delete comments and variations.
+         * Delete infos, comments and variations.
          */
         game.importPGNMoves = function (pgn) {
             var importedPGNMoves = [];
+            pgn = pgn.replace(regExp.tagPair, "");
             while (regExp.comment.test(pgn)) {
                 pgn = pgn.replace(regExp.comment, "");
             }
@@ -1669,7 +1675,6 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
                 ? 5
                 : 4;
             capture = board.position.enPassant[0] + captureRow;
-            delete board.position.squares[capture];
             captureSquare = board.getSquare(capture);
             captureSquare.piece.disappear(captureSquare);
         };
