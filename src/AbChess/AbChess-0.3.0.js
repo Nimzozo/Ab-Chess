@@ -1,6 +1,6 @@
 /**
  * AbChess.js
- * 2017-11-12
+ * 2017-11-13
  * Copyright (c) 2017 Nimzozo
  */
 
@@ -18,7 +18,6 @@
  * - FEN, PGN validation
  * - Game class :
  *  - Export (modify data, convert, write PGN)
- *  - Import (read PGN, analyse, display / navigate)
  * - custom events
  * - look for duplications
  */
@@ -41,8 +40,11 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         bishop: "b",
         bishopVectors: [[-1, -1], [-1, 1], [1, -1], [1, 1]],
         black: "b",
+        capture: "x",
         castleKing: "O-O",
         castleQueen: "O-O-O",
+        check: "+",
+        checkmate: "#",
         columns: "abcdefgh",
         defaultFEN: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
         emptyFEN: "8/8/8/8/8/8/8/8 w - - 0 1",
@@ -61,6 +63,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         king: "k",
         knight: "n",
         pawn: "p",
+        promotion: "=",
         queen: "q",
         rook: "r",
         rookVectors: [[-1, 0], [0, -1], [0, 1], [1, 0]],
@@ -295,9 +298,14 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
          * Return the moves for bishop, queen, rook.
          */
         position.getBQRMoves = function (start, vectors) {
+            var char = position.squares[start];
+            var color = "";
             var moves = [];
             var startColumn = chess.columns.indexOf(start.charAt(0));
             var startRow = chess.rows.indexOf(start.charAt(1));
+            color = (char.toUpperCase() === char)
+                ? chess.white
+                : chess.black;
             vectors.forEach(function (vector) {
                 var columnIndex = startColumn + vector[0];
                 var rowIndex = startRow + vector[1];
@@ -312,7 +320,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
                         pieceColor = (pieceChar.toLowerCase() === pieceChar)
                             ? chess.black
                             : chess.white;
-                        if (pieceColor !== position.activeColor) {
+                        if (pieceColor !== color) {
                             moves.push(square);
                         }
                         return;
@@ -438,9 +446,14 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
          * Return the moves for king, knight.
          */
         position.getKNMoves = function (start, vectors) {
+            var char = position.squares[start];
+            var color = "";
             var moves = [];
             var startColumn = chess.columns.indexOf(start.charAt(0));
             var startRow = chess.rows.indexOf(start.charAt(1));
+            color = (char.toUpperCase() === char)
+                ? chess.white
+                : chess.black;
             vectors.forEach(function (vector) {
                 var columnIndex = startColumn + vector[0];
                 var rowIndex = startRow + vector[1];
@@ -457,7 +470,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
                     pieceColor = (pieceChar.toLowerCase() === pieceChar)
                         ? chess.black
                         : chess.white;
-                    if (pieceColor === position.activeColor) {
+                    if (pieceColor === color) {
                         return;
                     }
                 }
@@ -560,6 +573,123 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
                 }
             }
             return moves;
+        };
+
+        position.getPGNKing = function (move) {
+
+            // Return the PGN notation for a king move.
+
+            var pgnMove = "";
+            if (regExp.castleStart.test(move.start) &&
+                regExp.castleEnd.test(move.arrival)) {
+                if (move.arrival.charAt(0) === chess.columns.charAt(2)) {
+                    pgnMove = chess.castleQueen;
+                } else {
+                    pgnMove = chess.castleKing;
+                }
+            } else {
+                pgnMove = chess.king.toUpperCase();
+                if (position.squares.hasOwnProperty(move.arrival)) {
+                    pgnMove += chess.capture;
+                }
+                pgnMove += move.arrival;
+            }
+            return pgnMove;
+        };
+
+        position.getPGNMove = function (move) {
+
+            // Return the PGN notation for a move.
+
+            var pgnMove = "";
+            var playedPiece = position.squares[move.start].toLowerCase();
+            if (playedPiece === chess.king) {
+                pgnMove = position.getPGNKing(move);
+            } else if (playedPiece === chess.pawn) {
+                pgnMove = position.getPGNPawn(move);
+            } else {
+                pgnMove = position.getPGNPiece(move);
+            }
+            return pgnMove + position.getPGNSymbol(move);
+        };
+
+        position.getPGNPawn = function (move) {
+
+            // Return the PGN notation for a pawn move.
+
+            var isCapture = false;
+            var pgnMove = "";
+            isCapture = position.squares.hasOwnProperty(move.arrival);
+            if (isCapture || move.arrival === position.enPassant) {
+                pgnMove = move.start.charAt(0) + chess.capture;
+            }
+            pgnMove += move.arrival;
+            if (typeof move.promotion === "string") {
+                pgnMove += chess.promotion + move.promotion.toUpperCase();
+            }
+            return pgnMove;
+        };
+
+        position.getPGNPiece = function (move) {
+
+            // Return the PGN notation for a piece (non-pawn) move.
+
+            var candidates = [];
+            var pgnMove = "";
+            var playedPiece = position.squares[move.start];
+            var sameColumn = false;
+            var sameRow = false;
+            pgnMove = playedPiece.toUpperCase();
+            candidates = Object.keys(position.squares).filter(
+                function (square) {
+                    var legalSquares = [];
+                    var piece = position.squares[square];
+                    if (piece !== playedPiece || square === move.start) {
+                        return false;
+                    }
+                    legalSquares = position.getLegalMoves(square);
+                    return legalSquares.indexOf(move.arrival) > -1;
+                });
+            if (candidates.length > 0) {
+                sameColumn = candidates.some(function (candidate) {
+                    return candidate.charAt(0) === move.start.charAt(0);
+                });
+                sameRow = candidates.some(function (candidate) {
+                    return candidate.charAt(1) === move.start.charAt(1);
+                });
+                if (sameColumn) {
+                    pgnMove += (sameRow)
+                        ? move.start
+                        : move.start.charAt(1);
+                } else {
+                    pgnMove += move.start.charAt(0);
+                }
+            }
+            if (position.squares.hasOwnProperty(move.arrival)) {
+                pgnMove += chess.capture;
+            }
+            pgnMove += move.arrival;
+            return pgnMove;
+        };
+
+        position.getPGNSymbol = function (move) {
+
+            // Return the check or checkmate symbol for a PGN move if needed.
+
+            var attackerColor = "";
+            var king = "";
+            var next = position.getNext(move.start, move.arrival,
+                move.promotion);
+            king = next.getKing(next.activeColor);
+            attackerColor = (next.activeColor === chess.black)
+                ? chess.white
+                : chess.black;
+            if (!next.isAttacked(king, attackerColor)) {
+                return "";
+            }
+            return (next.hasLegalMoves())
+                ? chess.check
+                : chess.checkmate;
         };
 
         /**
@@ -669,12 +799,23 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             return start;
         };
 
+        position.hasLegalMoves = function () {
+
+            // Return true if the position is playable.
+
+            var piecesPlaces = position.getPieces(position.activeColor);
+            return piecesPlaces.some(function (square) {
+                var legalSquares = position.getLegalMoves(square);
+                return legalSquares.length > 0;
+            });
+        };
+
         /**
          * Check if a square is attacked in the position.
          */
-        position.isAttacked = function (square, ennemyColor) {
+        position.isAttacked = function (square, attackerColor) {
             var ennemies = [];
-            ennemies = position.getPieces(ennemyColor);
+            ennemies = position.getPieces(attackerColor);
             ennemies = ennemies.filter(function (ennemy) {
                 return position.squares[ennemy].toLowerCase() !== chess.king;
             });
@@ -808,12 +949,19 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         game.addMove = function (start, end, promotion) {
             var lastIndex = 0;
             var lastPosition = {};
+            var move = {};
             var newPosition = {};
+            var pgnMove = "";
             lastIndex = game.moves.length;
             lastPosition = game.positions[lastIndex];
-            // newPosition = lastPosition.getNext(start, end, promotion);
-            // game.moves.push(start + "-" + end);
+            newPosition = lastPosition.getNext(start, end, promotion);
             game.positions.push(newPosition);
+            move.start = start;
+            move.arrival = end;
+            move.promotion = promotion;
+            game.moves.push(move);
+            pgnMove = lastPosition.getPGNMove(move);
+            game.pgnMoves.push(pgnMove);
         };
 
         /**
