@@ -14,7 +14,6 @@
 
 /**
  * TODO
- * - board highlighting
  * - FEN, PGN validation
  * - api
  * - look for duplications
@@ -106,7 +105,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         imagesExtension: ".png",
         imagesPath: "images/wikipedia/",
         legalMarksColor: "cornflowerblue",
-        markKingInCheck: true,
+        markCheck: true,
         markLastMove: true,
         markLegalSquares: true,
         markOverflownSquare: true,
@@ -1338,9 +1337,12 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         var square = {
             board: board,
             canvas: {},
+            className: "",
             column: column,
             element: {},
             hasCanvas: false,
+            isCheck: false,
+            isLastMove: false,
             name: "",
             piece: null,
             row: row
@@ -1355,9 +1357,10 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             var rowIndex = chess.rows.indexOf(square.row);
             var width = board.options.width / 8;
             square.element = document.createElement("div");
-            square.element.className = (columnIndex % 2 === rowIndex % 2)
+            square.className = (columnIndex % 2 === rowIndex % 2)
                 ? css.blackSquare
                 : css.whiteSquare;
+            square.element.className = square.className;
             square.name = column + row;
             square.canvas = document.createElement("canvas");
             square.canvas.setAttribute("height", width + "px");
@@ -1523,6 +1526,23 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             }
         };
 
+        /**
+         * Update the CSS of the square.
+         */
+        square.updateCSS = function () {
+            var className = square.className;
+            if (square.isCheck) {
+                className += " " + css.checkSquare;
+            } else if (square.isLastMove) {
+                className += " " + css.lastMoveSquare;
+            } else {
+                className = square.className;
+            }
+            raf(function () {
+                square.element.className = className;
+            });
+        };
+
         return square.create();
     }
 
@@ -1535,6 +1555,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         var board = {
             columnsBorder: {},
             container: {},
+            currentMoveIndex: -1,
             element: {},
             game: {},
             hasDraggedStart: false,
@@ -1800,6 +1821,8 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             board.position.update(start, end, choice);
             board.movePiece(start, end);
             board.game.addMove(start, end, choice);
+            board.currentMoveIndex += 1;
+            board.updateHighlighting();
             events.onMovePlayed();
             raf(function () {
                 board.promotionDiv.style.display = "none";
@@ -1860,6 +1883,8 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             board.position.update(start, end);
             board.movePiece(start, end, animate);
             board.game.addMove(start, end);
+            board.currentMoveIndex += 1;
+            board.updateHighlighting();
             events.onMovePlayed();
         };
 
@@ -1875,6 +1900,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             animations = board.getAnimations(position.squares);
             board.performAnimations(animations);
             board.position = position;
+            board.updateHighlighting();
         };
 
         /**
@@ -1942,6 +1968,37 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             raf(function () {
                 board.promotionDiv.style.display = "block";
             });
+        };
+
+        board.updateHighlighting = function () {
+            var end = "";
+            var endSquare = {};
+            var king = "";
+            var kingSquare = {};
+            var start = "";
+            var startSquare = {};
+            board.squares.forEach(function (square) {
+                square.isCheck = false;
+                square.isLastMove = false;
+                square.updateCSS();
+            });
+            if (board.options.markCheck &&
+                board.position.isCheck(board.position.activeColor)) {
+                king = board.position.getKing(board.position.activeColor);
+                kingSquare = board.getSquare(king);
+                kingSquare.isCheck = true;
+                kingSquare.updateCSS();
+            }
+            if (board.options.markLastMove && board.currentMoveIndex > -1) {
+                start = board.game.moves[board.currentMoveIndex].start;
+                end = board.game.moves[board.currentMoveIndex].arrival;
+                startSquare = board.getSquare(start);
+                endSquare = board.getSquare(end);
+                startSquare.isLastMove = true;
+                endSquare.isLastMove = true;
+                startSquare.updateCSS();
+                endSquare.updateCSS();
+            }
         };
 
         return board.create();
@@ -2030,6 +2087,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             },
             view: function (index) {
                 var position = abBoard.game.positions[index];
+                abBoard.currentMoveIndex = index - 1;
                 abBoard.setPosition(position);
             }
         }
