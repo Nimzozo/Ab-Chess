@@ -256,8 +256,8 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             position.activeColor = result[1];
             position.allowedCastles = result[2];
             position.enPassant = result[3];
-            position.halfMoveClock = result[4];
-            position.fullMoveNumber = result[5];
+            position.halfMoveClock = Number(result[4]);
+            position.fullMoveNumber = Number(result[5]);
             position.squares = fenToObject(fen);
             return position;
         };
@@ -901,23 +901,13 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
          * Update the position after a played move.
          */
         position.update = function (start, end, promotion) {
-            var activeColor = "";
-            var capture = "";
             var endRowIndex = 0;
             var enPassant = "-";
-            var enPassantRow = "";
-            var fullMoveNumber = Number(position.fullMoveNumber);
-            var halfMoveClock = 0;
             var piece = position.squares[start];
             var rookEnd = "";
             var rookStart = "";
             var startRowIndex = 0;
-            if (position.activeColor === chess.white) {
-                activeColor = chess.black;
-            } else {
-                activeColor = chess.white;
-                fullMoveNumber += 1;
-            }
+            var takenPawn = "";
             if (piece.toLowerCase() === chess.pawn) {
                 startRowIndex = chess.rows.indexOf(start.charAt(1));
                 endRowIndex = chess.rows.indexOf(end.charAt(1));
@@ -926,15 +916,14 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
                         ? promotion.toUpperCase()
                         : promotion.toLowerCase();
                 } else if (end === position.enPassant) {
-                    capture = (position.activeColor === chess.white)
+                    takenPawn = (position.activeColor === chess.white)
                         ? position.enPassant.charAt(0) + chess.rows.charAt(4)
                         : position.enPassant.charAt(0) + chess.rows.charAt(3);
-                    delete position.squares[capture];
-                } else if (Math.abs(endRowIndex - startRowIndex) === 2) {
-                    enPassantRow = (position.activeColor === chess.white)
-                        ? chess.rows.charAt(2)
-                        : chess.rows.charAt(5);
-                    enPassant = start.charAt(0) + enPassantRow;
+                    delete position.squares[takenPawn];
+                } else if (endRowIndex - startRowIndex === 2) {
+                    enPassant = start.charAt(0) + chess.rows.charAt(2);
+                } else if (startRowIndex - endRowIndex === 2) {
+                    enPassant = start.charAt(0) + chess.rows.charAt(5);
                 }
             } else {
                 if (piece.toLowerCase() === chess.king) {
@@ -954,14 +943,18 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
                     }
                 }
                 if (!position.squares.hasOwnProperty(end)) {
-                    halfMoveClock = Number(position.halfMoveClock) + 1;
+                    position.halfMoveClock += 1;
                 }
             }
-            position.activeColor = activeColor;
+            if (position.activeColor === chess.white) {
+                position.activeColor = chess.black;
+            } else {
+                position.activeColor = chess.white;
+                position.fullMoveNumber += 1;
+            }
             position.updateCastles(start, end);
             position.enPassant = enPassant;
-            position.fullMoveNumber = fullMoveNumber;
-            position.halfMoveClock = halfMoveClock;
+            position.halfMoveClock = 0;
             position.squares[end] = piece;
             delete position.squares[start];
             position.fen = position.getFEN();
