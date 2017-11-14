@@ -16,7 +16,6 @@
  * TODO
  * - board highlighting
  * - FEN, PGN validation
- * - Export (modify data, convert, write PGN)
  * - api
  * - look for duplications
  * - Move class ?
@@ -857,7 +856,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             var blackPlaces = [];
             var insufficientBlack = false;
             var insufficients = [
-                [chess.king, chess.bishop],
+                [chess.bishop, chess.king],
                 [chess.king, chess.knight],
                 [chess.king, chess.knight, chess.knight]
             ];
@@ -876,6 +875,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
                     var piece = position.squares[square];
                     pieces.push(piece);
                 });
+                pieces.sort();
                 insufficientBlack = insufficients.some(function (insufficient) {
                     return sameArray(insufficient, pieces);
                 });
@@ -891,6 +891,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
                 var piece = position.squares[square];
                 pieces.push(piece.toLowerCase());
             });
+            pieces.sort();
             return insufficients.some(function (insufficient) {
                 return sameArray(insufficient, pieces);
             });
@@ -2015,7 +2016,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             getMovesPGN: function (symbols) {
                 var pgnMoves = abBoard.game.pgnMoves;
                 var htmlMoves = [];
-                if (symbols === undefined || !symbols) {
+                if (typeof symbols !== "boolean" || !symbols) {
                     return pgnMoves;
                 }
                 pgnMoves.forEach(function (pgnMove) {
