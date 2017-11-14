@@ -1,6 +1,6 @@
 /**
  * AbChess.js
- * 2017-11-14
+ * 2017-11-15
  * Copyright (c) 2017 Nimzozo
  */
 
@@ -16,12 +16,12 @@
  * TODO
  * - FEN, PGN validation
  * - api
- * - look for duplications
- * - Move class ?
  */
 
 /**
- * Abchess
+ * AbChess returns an API to build a chessboard.
+ * @param {string} abId The HTML container's id.
+ * @param {object} abOptions The configuration object.
  */
 window.AbChess = window.AbChess || function (abId, abOptions) {
     "use strict";
@@ -185,8 +185,21 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         return [x, y];
     }
 
-    // function isValidFEN() { }
-    // function isValidPGN() { }
+    /**
+     * Check if a FEN string is valid.
+     * @param {string} fen The FEN string to validate.
+     */
+    function isValidFEN(fen) {
+        return;
+    }
+
+    /**
+     * Check if a PGN string is valid.
+     * @param {string} pgn The PGN string to validate.
+     */
+    function isValidPGN(pgn) {
+        return;
+    }
 
     /**
      * Convert a position to a FEN string.
@@ -589,10 +602,11 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             return moves;
         };
 
+        /**
+         * Return the PGN notation for a king move.
+         * @param {object} move An object representing the played move.
+         */
         position.getPGNKing = function (move) {
-
-            // Return the PGN notation for a king move.
-
             var pgnMove = "";
             if (regExp.castleStart.test(move.start) &&
                 regExp.castleEnd.test(move.arrival)) {
@@ -611,10 +625,11 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             return pgnMove;
         };
 
+        /**
+         * Return the PGN notation for a move.
+         * @param {object} move An object representing the played move.
+         */
         position.getPGNMove = function (move) {
-
-            // Return the PGN notation for a move.
-
             var pgnMove = "";
             var playedPiece = position.squares[move.start].toLowerCase();
             if (playedPiece === chess.king) {
@@ -627,10 +642,11 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             return pgnMove + position.getPGNSymbol(move);
         };
 
+        /**
+         * Return the PGN notation for a pawn move.
+         * @param {object} move An object representing the played move.
+         */
         position.getPGNPawn = function (move) {
-
-            // Return the PGN notation for a pawn move.
-
             var isCapture = false;
             var pgnMove = "";
             isCapture = position.squares.hasOwnProperty(move.arrival);
@@ -644,10 +660,11 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             return pgnMove;
         };
 
+        /**
+         * Return the PGN notation for a piece move.
+         * @param {object} move An object representing the played move.
+         */
         position.getPGNPiece = function (move) {
-
-            // Return the PGN notation for a piece (non-pawn) move.
-
             var candidates = [];
             var pgnMove = "";
             var playedPiece = position.squares[move.start];
@@ -686,10 +703,11 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             return pgnMove;
         };
 
+        /**
+         * Return the check or checkmate symbol for a PGN move if needed.
+         * @param {object} move An object representing the played move.
+         */
         position.getPGNSymbol = function (move) {
-
-            // Return the check or checkmate symbol for a PGN move if needed.
-
             var next = position.getNext(move.start, move.arrival,
                 move.promotion);
             if (!next.isCheck(next.activeColor)) {
@@ -808,10 +826,10 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             return start;
         };
 
+        /**
+         * Check if the position has legal moves.
+         */
         position.hasLegalMoves = function () {
-
-            // Return true if the position is playable.
-
             var piecesPlaces = position.getPieces(position.activeColor);
             return piecesPlaces.some(function (square) {
                 var legalSquares = position.getLegalMoves(square);
@@ -835,10 +853,11 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             });
         };
 
+        /**
+         * Check if the desired king is in check in the position.
+         * @param {string} color A character representing the color of the king.
+         */
         position.isCheck = function (color) {
-
-            // Check if the desired king is in check.
-
             var ennemiesColor = "";
             var kingSquare = "";
             ennemiesColor = (color === chess.white)
@@ -848,10 +867,10 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             return position.isAttacked(kingSquare, ennemiesColor);
         };
 
+        /**
+         * Check if the position is drawn by insufficient material.
+         */
         position.isLackingMaterial = function () {
-
-            // Check if the position is drawn by insufficient material.
-
             var blackPlaces = [];
             var insufficientBlack = false;
             var insufficients = [
@@ -1050,7 +1069,6 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
 
         /**
          * Return the Portable Game Notation.
-         * https://www.chessclub.com/user/help/PGN-spec
          */
         game.getPGN = function () {
             var lineCount = 0;
@@ -1125,23 +1143,29 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         };
 
         /**
-         * Reset the game object and load a PGN.
+         * Reset the game's properties.
          */
-        game.setPGN = function (pgn) {
+        game.reset = function () {
             game.moves = [];
             game.pgnMoves = [];
             game.positions = [];
             game.tags = {};
             game.create();
+        };
+
+        /**
+         * Reset the game object and load a PGN.
+         */
+        game.setPGN = function (pgn) {
             game.importTags(pgn);
             game.importPGNMoves(pgn);
             game.importMoves();
         };
 
+        /**
+         * Update the result string.
+         */
         game.updateResult = function () {
-
-            // Update the possible result after a move has been played.
-
             var lastIndex = game.moves.length;
             var position = game.positions[lastIndex];
             var result = game.tags.Result;
@@ -1815,7 +1839,9 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             board.game.addMove(start, end, choice);
             board.currentMoveIndex += 1;
             board.updateHighlighting();
-            events.onMovePlayed();
+            if (typeof events.onMovePlayed === "function") {
+                events.onMovePlayed();
+            }
             raf(function () {
                 board.promotionDiv.style.display = "none";
                 square.placePiece(piece);
@@ -1877,7 +1903,9 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             board.game.addMove(start, end);
             board.currentMoveIndex += 1;
             board.updateHighlighting();
-            events.onMovePlayed();
+            if (typeof events.onMovePlayed === "function") {
+                events.onMovePlayed();
+            }
         };
 
         /**
@@ -2039,7 +2067,9 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
                 abBoard.playMove(start, destination, true);
             },
             onMovePlayed: function (callback) {
-                events.onMovePlayed = callback;
+                if (typeof callback === "function") {
+                    events.onMovePlayed = callback;
+                }
             },
             setFEN: function (fen) {
                 var position = {};
@@ -2049,11 +2079,14 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             }
         },
         game: {
+            getActiveColor: function (index) {
+                return abBoard.game.positions[index].activeColor;
+            },
+            getFEN: function (index) {
+                return abBoard.game.positions[index].fen;
+            },
             getInfo: function (info) {
                 return abBoard.game.tags[info];
-            },
-            getMoves: function () {
-                return abBoard.game.moves;
             },
             getMovesPGN: function (symbols) {
                 var pgnMoves = abBoard.game.pgnMoves;
@@ -2074,7 +2107,14 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             getPGN: function () {
                 return abBoard.game.getPGN();
             },
+            reset: function () {
+                abBoard.game.reset();
+            },
+            setInfo: function (info, value) {
+                abBoard.game.tags[info] = value;
+            },
             setPGN: function (pgn) {
+                abBoard.game.reset();
                 abBoard.game.setPGN(pgn);
             },
             view: function (index) {
@@ -2082,6 +2122,12 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
                 abBoard.currentMoveIndex = index - 1;
                 abBoard.setPosition(position);
             }
+        },
+        isValidFEN: function (fen) {
+            return isValidFEN(fen);
+        },
+        isValidPGN: function (pgn) {
+            return isValidPGN(pgn);
         }
     };
 };
