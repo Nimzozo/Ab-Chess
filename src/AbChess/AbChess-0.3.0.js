@@ -925,21 +925,20 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
                     enPassant = start.charAt(0) + chess.rows.charAt(5);
                 }
             } else {
-                if (piece.toLowerCase() === chess.king) {
-                    if (regExp.castleStart.test(start) &&
-                        regExp.castleEnd.test(end)) {
-                        if (end.charAt(0) === chess.columns.charAt(2)) {
-                            rookStart = chess.columns.charAt(0);
-                            rookEnd = chess.columns.charAt(3);
-                        } else {
-                            rookStart = chess.columns.charAt(7);
-                            rookEnd = chess.columns.charAt(5);
-                        }
-                        rookStart += end.charAt(1);
-                        rookEnd += end.charAt(1);
-                        position.squares[rookEnd] = position.squares[rookStart];
-                        delete position.squares[rookStart];
+                if (piece.toLowerCase() === chess.king &&
+                    regExp.castleStart.test(start) &&
+                    regExp.castleEnd.test(end)) {
+                    if (end.charAt(0) === chess.columns.charAt(2)) {
+                        rookStart = chess.columns.charAt(0);
+                        rookEnd = chess.columns.charAt(3);
+                    } else {
+                        rookStart = chess.columns.charAt(7);
+                        rookEnd = chess.columns.charAt(5);
                     }
+                    rookStart += end.charAt(1);
+                    rookEnd += end.charAt(1);
+                    position.squares[rookEnd] = position.squares[rookStart];
+                    delete position.squares[rookStart];
                 }
                 if (!position.squares.hasOwnProperty(end)) {
                     position.halfMoveClock += 1;
@@ -1606,14 +1605,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         /**
          * Create the notation border.
          */
-        board.createBorder = function () {
-            var columns = chess.columns.split("");
-            var rows = chess.rows.split("");
-            if (board.isFlipped) {
-                columns = columns.reverse();
-            } else {
-                rows = rows.reverse();
-            }
+        board.createBorder = function (columns, rows) {
             board.columnsBorder = document.createElement("div");
             board.columnsBorder.className = css.columnsBorder;
             columns.forEach(function (column) {
@@ -1661,7 +1653,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             board.container.appendChild(board.element);
             board.element.appendChild(board.promotionDiv);
             if (board.hasNotation) {
-                board.createBorder();
+                board.createBorder(columns, rows);
                 board.container.insertBefore(board.rowsBorder, board.element);
                 board.container.appendChild(board.columnsBorder);
             }
