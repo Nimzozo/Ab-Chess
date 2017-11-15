@@ -74,10 +74,10 @@ window.addEventListener("load", function () {
 
     function importPGN() {
         errorSpan.innerText = "";
-        // if (!abChess.isValidPGN(pgnTextArea.value)) {
-        //     errorSpan.innerText = "Invalid PGN.";
-        //     return;
-        // }
+        if (!abChess.isValidPGN(pgnTextArea.value)) {
+            errorSpan.innerText = "Invalid PGN.";
+            return;
+        }
         abChess.game.setPGN(pgnTextArea.value, true);
         clearSpans();
         moves = abChess.game.getMovesPGN(true);

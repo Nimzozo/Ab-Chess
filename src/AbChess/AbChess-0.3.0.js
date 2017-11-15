@@ -14,7 +14,6 @@
 
 /**
  * TODO
- * - FEN, PGN validation
  * - api
  */
 
@@ -143,6 +142,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         pgnPawn: /^([a-h]?)x?([a-h][1-8])(=[BNQR])?(?:\+|#)?$/,
         pgnPiece: /^[BNQR]([a-h]?[1-8]?)x?([a-h][1-8])(?:\+|#)?$/,
         pgnPromotion: /\=[BNQR]/,
+        pgnResult: /1-0|0-1|1\/2-1\/2|\*/,
         promotionEnd: /[a-h][18]/,
         tagPair: /\[[A-Z][^]+?\s"[^]+?"\]/gm,
         tagPairCapture: /\[(\S+)\s"(.*)"\]/,
@@ -204,7 +204,24 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
      * @param {string} pgn The PGN string to validate.
      */
     function isValidPGN(pgn) {
-        return;
+        var moves = [];
+        var tagPairs = pgn.match(regExp.tagPair);
+        if (tagPairs.length < 7) {
+            return false;
+        }
+        pgn = pgn.replace(regExp.tagPair, "");
+        while (regExp.comment.test(pgn)) {
+            pgn = pgn.replace(regExp.comment, "");
+        }
+        while (regExp.variation.test(pgn)) {
+            pgn = pgn.replace(regExp.variation, "");
+        }
+        moves = pgn.match(regExp.pgnMove);
+        if (moves.length < 1) {
+            return false;
+        }
+        pgn = pgn.replace(regExp.pgnMove, "");
+        return regExp.pgnResult.test(pgn);
     }
 
     /**
