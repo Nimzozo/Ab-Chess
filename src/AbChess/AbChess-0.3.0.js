@@ -27,7 +27,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
     "use strict";
 
     /**
-     * The board used for the API.
+     * The board object used for the API.
      */
     var abBoard = {};
 
@@ -135,6 +135,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         castleStart: /e[18]/,
         comment: /\{[^]+?\}/gm,
         fen: /^(?:[bBkKnNpPqQrR1-8]{1,8}\/){7}[bBkKnNpPqQrR1-8]{1,8}\s(b|w)\s(K?Q?k?q?|-)\s([a-h][36]|-)\s(0|[1-9]\d{0,2})\s([1-9]\d{0,2})$/,
+        fenRow: /^8|7[bknpqr]|[bknpqr]7|[bknpqr1-6]{3,5}|[bknpqr1-5]{4,7}|[bknpqr1-4]{5,8}|[bknpqr123]{6,8}|[bknpqr12]{7,8}|[bknpqr]{8}$/i,
         pgnCastle: /^O-O(?:-O)?(?:\+|#)?$/,
         pgnKing: /^(?:Kx?([a-h][1-8])|O-O(?:-O)?)(?:\+|#)?$/,
         pgnMove: /(?:[1-9]\d{0,2}\.(?:\.\.)?\s?)?(?:O-O(?:-O)?|(?:[BNQR][a-h]?[1-8]?|K)x?[a-h][1-8]|(?:[a-h]x)?[a-h][1-8](?:=[BNQR])?)(?:\+|#)?/gm,
@@ -190,7 +191,12 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
      * @param {string} fen The FEN string to validate.
      */
     function isValidFEN(fen) {
-        return;
+        var rows = [];
+        var str = fen.replace(/\s.*/, "");
+        rows = str.split("/");
+        return rows.every(function (row) {
+            return regExp.fenRow.test(row);
+        });
     }
 
     /**
