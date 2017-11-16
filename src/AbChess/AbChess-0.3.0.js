@@ -1015,23 +1015,21 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
          */
         position.updateCastles = function (start, end) {
             var castles = position.allowedCastles;
-            var whiteKing = chess.king.toUpperCase();
-            var whiteQueen = chess.queen.toUpperCase();
+            var fenCastles = ["KQ", "kq"];
+            var regExpKing = [/[eh]1/, /[eh]8/];
+            var regExpQueen = [/[ae]1/, /[ae]8/];
+            var rows = ["1", "8"];
             if (castles === "-") {
                 return;
             }
-            if (/[ae]1/.test(start) || end === "a1") {
-                castles = castles.replace(whiteQueen, "");
-            }
-            if (/[eh]1/.test(start) || end === "h1") {
-                castles = castles.replace(whiteKing, "");
-            }
-            if (/[ae]8/.test(start) || end === "a8") {
-                castles = castles.replace(chess.queen, "");
-            }
-            if (/[eh]8/.test(start) || end === "h8") {
-                castles = castles.replace(chess.king, "");
-            }
+            rows.forEach(function (row, index) {
+                if (regExpQueen[index].test(start) || end === "a" + row) {
+                    castles = castles.replace(fenCastles[index].charAt(1), "");
+                }
+                if (regExpKing[index].test(start) || end === "h" + row) {
+                    castles = castles.replace(fenCastles[index].charAt(0), "");
+                }
+            });
             if (castles === "") {
                 castles = "-";
             }
