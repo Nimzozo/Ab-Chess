@@ -4,5 +4,6 @@ exclude_paths:
 - "LICENSE.txt"
 - "README.md"
 - "src/images/"
+- "src/AbChess/AbChess-0.2.6.css"
 - "src/AbChess/AbChess-0.2.6.js"
 - "test/"
