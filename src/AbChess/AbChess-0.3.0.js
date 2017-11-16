@@ -704,6 +704,8 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             var playedPiece = position.squares[move.start];
             var sameColumn = false;
             var sameRow = false;
+            var startColumn = move.start.charAt(0);
+            var startRow = move.start.charAt(1);
             pgnMove = playedPiece.toUpperCase();
             candidates = Object.keys(position.squares).filter(
                 function (square) {
@@ -717,17 +719,17 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
                 });
             if (candidates.length > 0) {
                 sameColumn = candidates.some(function (candidate) {
-                    return candidate.charAt(0) === move.start.charAt(0);
+                    return candidate.charAt(0) === startColumn;
                 });
                 sameRow = candidates.some(function (candidate) {
-                    return candidate.charAt(1) === move.start.charAt(1);
+                    return candidate.charAt(1) === startRow;
                 });
                 if (sameColumn) {
                     pgnMove += (sameRow)
                         ? move.start
-                        : move.start.charAt(1);
+                        : startRow;
                 } else {
-                    pgnMove += move.start.charAt(0);
+                    pgnMove += startColumn;
                 }
             }
             if (position.squares.hasOwnProperty(move.arrival)) {
