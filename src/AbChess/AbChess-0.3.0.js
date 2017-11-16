@@ -1,6 +1,6 @@
 /**
  * AbChess.js
- * 2017-11-15
+ * 2017-11-16
  * Copyright (c) 2017 Nimzozo
  */
 
@@ -1015,28 +1015,23 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
          */
         position.updateCastles = function (start, end) {
             var castles = position.allowedCastles;
-            var rows = [1, 8];
+            var whiteKing = chess.king.toUpperCase();
+            var whiteQueen = chess.queen.toUpperCase();
             if (castles === "-") {
                 return;
             }
-            rows.forEach(function (row, index) {
-                var castleKing = chess.king;
-                var castleQueen = chess.queen;
-                if (index === 0) {
-                    castleKing = castleKing.toUpperCase();
-                    castleQueen = castleQueen.toUpperCase();
-                }
-                if (start === chess.columns.charAt(4) + row) {
-                    castles = castles.replace(castleKing, "");
-                    castles = castles.replace(castleQueen, "");
-                } else if (start === chess.columns.charAt(0) + row ||
-                    end === chess.columns.charAt(0) + row) {
-                    castles = castles.replace(castleQueen, "");
-                } else if (start === chess.columns.charAt(7) + row ||
-                    end === chess.columns.charAt(7) + row) {
-                    castles = castles.replace(castleKing, "");
-                }
-            });
+            if (/[ae]1/.test(start) || end === "a1") {
+                castles = castles.replace(whiteQueen, "");
+            }
+            if (/[eh]1/.test(start) || end === "h1") {
+                castles = castles.replace(whiteKing, "");
+            }
+            if (/[ae]8/.test(start) || end === "a8") {
+                castles = castles.replace(chess.queen, "");
+            }
+            if (/[eh]8/.test(start) || end === "h8") {
+                castles = castles.replace(chess.king, "");
+            }
             if (castles === "") {
                 castles = "-";
             }
