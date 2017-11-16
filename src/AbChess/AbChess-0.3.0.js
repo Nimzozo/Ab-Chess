@@ -762,6 +762,19 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             });
         };
 
+        position.getRookMove = function (moveEnd) {
+            var rookEnd = "";
+            var rookStart = "";
+            if (moveEnd.charAt(0) === chess.columns.charAt(2)) {
+                rookStart = chess.columns.charAt(0) + moveEnd.charAt(1);
+                rookEnd = chess.columns.charAt(3) + moveEnd.charAt(1);
+            } else {
+                rookStart = chess.columns.charAt(7) + moveEnd.charAt(1);
+                rookEnd = chess.columns.charAt(5) + moveEnd.charAt(1);
+            }
+            return [rookStart, rookEnd];
+        };
+
         position.getSimpleKingMove = function (pgnMove) {
 
             // Return a simple move from a PGN king move.
@@ -955,8 +968,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             var endRowIndex = 0;
             var enPassant = "-";
             var piece = position.squares[start];
-            var rookEnd = "";
-            var rookStart = "";
+            var rookMove = [];
             var startRowIndex = 0;
             var takenPawn = "";
             if (piece.toLowerCase() === chess.pawn) {
@@ -980,17 +992,9 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
                 if (piece.toLowerCase() === chess.king &&
                     regExp.castleStart.test(start) &&
                     regExp.castleEnd.test(end)) {
-                    if (end.charAt(0) === chess.columns.charAt(2)) {
-                        rookStart = chess.columns.charAt(0);
-                        rookEnd = chess.columns.charAt(3);
-                    } else {
-                        rookStart = chess.columns.charAt(7);
-                        rookEnd = chess.columns.charAt(5);
-                    }
-                    rookStart += end.charAt(1);
-                    rookEnd += end.charAt(1);
-                    position.squares[rookEnd] = position.squares[rookStart];
-                    delete position.squares[rookStart];
+                    rookMove = position.getRookMove(end);
+                    position.squares[rookMove[1]] = position.squares[rookMove[0]];
+                    delete position.squares[rookMove[0]];
                 }
                 if (!position.squares.hasOwnProperty(end)) {
                     position.halfMoveClock += 1;
@@ -1960,18 +1964,8 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
          * Move the rook to complete a castle.
          */
         board.triggerCastle = function (end) {
-            var rookEnd = "";
-            var rookStart = "";
-            if (end.charAt(0) === chess.columns.charAt(2)) {
-                rookStart = chess.columns.charAt(0);
-                rookEnd = chess.columns.charAt(3);
-            } else {
-                rookStart = chess.columns.charAt(7);
-                rookEnd = chess.columns.charAt(5);
-            }
-            rookStart += end.charAt(1);
-            rookEnd += end.charAt(1);
-            board.movePiece(rookStart, rookEnd);
+            var rookMove = board.position.getRookMove(end);
+            board.movePiece(rookMove[0], rookMove[1]);
         };
 
         /**
