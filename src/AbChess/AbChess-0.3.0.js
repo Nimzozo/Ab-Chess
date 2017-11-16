@@ -15,6 +15,7 @@
 /**
  * TODO
  * - api
+ * - use objects instead of arrays when possible
  */
 
 /**
@@ -763,15 +764,20 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         };
 
         position.getRookMove = function (moveEnd) {
+            var endColumnIndex = 0;
             var rookEnd = "";
             var rookStart = "";
+            var row = moveEnd.charAt(1);
+            var startColumnIndex = 0;
             if (moveEnd.charAt(0) === chess.columns.charAt(2)) {
-                rookStart = chess.columns.charAt(0) + moveEnd.charAt(1);
-                rookEnd = chess.columns.charAt(3) + moveEnd.charAt(1);
+                startColumnIndex = 0;
+                endColumnIndex = 3;
             } else {
-                rookStart = chess.columns.charAt(7) + moveEnd.charAt(1);
-                rookEnd = chess.columns.charAt(5) + moveEnd.charAt(1);
+                startColumnIndex = 7;
+                endColumnIndex = 5;
             }
+            rookStart = chess.columns.charAt(startColumnIndex) + row;
+            rookEnd = chess.columns.charAt(endColumnIndex) + row;
             return [rookStart, rookEnd];
         };
 
