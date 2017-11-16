@@ -1014,26 +1014,22 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
          * Update the allowedCastles property.
          */
         position.updateCastles = function (start, end) {
-            var castles = position.allowedCastles;
-            var fenCastles = ["KQ", "kq"];
-            var regExpKing = [/[eh]1/, /[eh]8/];
-            var regExpQueen = [/[ae]1/, /[ae]8/];
-            var rows = ["1", "8"];
-            if (castles === "-") {
+            var ends = ["h1", "a1", "h8", "a8"];
+            var fenChars = ["K", "Q", "k", "q"];
+            var regExps = [/[eh]1/, /[ae]1/, /[eh]8/, /[ae]8/];
+            var result = position.allowedCastles;
+            if (result === "-") {
                 return;
             }
-            rows.forEach(function (row, index) {
-                if (regExpQueen[index].test(start) || end === "a" + row) {
-                    castles = castles.replace(fenCastles[index].charAt(1), "");
-                }
-                if (regExpKing[index].test(start) || end === "h" + row) {
-                    castles = castles.replace(fenCastles[index].charAt(0), "");
+            fenChars.forEach(function (fenChar, index) {
+                if (regExps[index].test(start) || end === ends[index]) {
+                    result = result.replace(fenChar, "");
                 }
             });
-            if (castles === "") {
-                castles = "-";
+            if (result === "") {
+                result = "-";
             }
-            position.allowedCastles = castles;
+            position.allowedCastles = result;
         };
 
         return position.create();
