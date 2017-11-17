@@ -171,7 +171,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         }
         pgn = pgn.replace(/\s{2,}/gm, " ");
         return pgn;
-    };
+    }
 
     /**
      * Convert a FEN string to a position object.
@@ -1699,6 +1699,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
          */
         board.getAnimations = function (position) {
             var animations = [];
+            var animationsNoEnd = [];
             var columns = chess.columns.split("");
             var futureSquares = [];
             var pastSquares = [];
@@ -1753,6 +1754,17 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
                 animation.end = endSquare;
                 animations.push(animation);
             });
+            animationsNoEnd = board.getAnimationsNoEnd(pastSquares);
+            animations = animations.concat(animationsNoEnd);
+            return animations;
+        };
+
+        /**
+         * Return the animations for pieces to disappear.
+         * @param {array} pastSquares The array of old occupied squares.
+         */
+        board.getAnimationsNoEnd = function (pastSquares) {
+            var animations = [];
             pastSquares.forEach(function (square) {
                 var animation = {};
                 var startSquare = board.getSquare(square);
