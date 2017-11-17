@@ -1368,28 +1368,9 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         };
 
         /**
-         * Initialize and return the square.
+         * Add the event listeners to the square element.
          */
-        square.create = function () {
-            var columnIndex = chess.columns.indexOf(square.column);
-            var context = {};
-            var rowIndex = chess.rows.indexOf(square.row);
-            var width = board.options.width / 8;
-            square.element = document.createElement("div");
-            square.className = (columnIndex % 2 === rowIndex % 2)
-                ? css.blackSquare
-                : css.whiteSquare;
-            square.element.className = square.className;
-            square.name = column + row;
-            square.canvas = document.createElement("canvas");
-            square.canvas.setAttribute("height", width + "px");
-            square.canvas.setAttribute("width", width + "px");
-            square.canvas.className = css.squareCanvas;
-            context = square.canvas.getContext("2d");
-            context.beginPath();
-            context.arc(width / 2, width / 2, width / 10, 0, 2 * Math.PI);
-            context.fillStyle = board.options.legalMarksColor;
-            context.fill();
+        square.addEventListeners = function () {
             if (board.options.clickable) {
                 square.element.addEventListener("click", square.onClick);
             }
@@ -1402,7 +1383,40 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
                     square.onMouseEnterLeave);
                 square.element.addEventListener("mouseup", square.onMouseUp);
             }
+        };
+
+        /**
+         * Initialize and return the square.
+         */
+        square.create = function () {
+            var columnIndex = chess.columns.indexOf(square.column);
+            var rowIndex = chess.rows.indexOf(square.row);
+            square.element = document.createElement("div");
+            square.className = (columnIndex % 2 === rowIndex % 2)
+                ? css.blackSquare
+                : css.whiteSquare;
+            square.element.className = square.className;
+            square.name = column + row;
+            square.createCanvas();
+            square.addEventListeners();
             return square;
+        };
+
+        /**
+         * Create the canvas element.
+         */
+        square.createCanvas = function () {
+            var context = {};
+            var width = board.options.width / 8;
+            square.canvas = document.createElement("canvas");
+            square.canvas.setAttribute("height", width + "px");
+            square.canvas.setAttribute("width", width + "px");
+            square.canvas.className = css.squareCanvas;
+            context = square.canvas.getContext("2d");
+            context.beginPath();
+            context.arc(width / 2, width / 2, width / 10, 0, 2 * Math.PI);
+            context.fillStyle = board.options.legalMarksColor;
+            context.fill();
         };
 
         /**
