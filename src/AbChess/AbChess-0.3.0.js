@@ -1,6 +1,6 @@
 /**
  * AbChess.js
- * 2017-11-16
+ * 2017-11-17
  * Copyright (c) 2017 Nimzozo
  */
 
@@ -16,6 +16,7 @@
  * TODO
  * - api
  * - use objects instead of arrays when possible
+ * - duplications
  */
 
 /**
@@ -125,7 +126,13 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
     /**
      * Raf
      */
-    var raf = window.requestAnimationFrame;
+    var raf = window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        function (callback) {
+            return window.setTimeout(callback, 1000 / 60);
+        };
 
     /**
      * Regular expressions.
@@ -2126,6 +2133,28 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             },
             getPGN: function () {
                 return abBoard.game.getPGN();
+            },
+            is50Moves: function (index) {
+                var position = abBoard.game.positions[index];
+                return position.halfMoveClock > 99;
+            },
+            isCheck: function (index) {
+                var position = abBoard.game.positions[index];
+                return position.isCheck(position.activeColor);
+            },
+            isCheckmate: function (index) {
+                var position = abBoard.game.positions[index];
+                return !position.hasLegalMoves() &&
+                    position.isCheck(position.activeColor);
+            },
+            isInsufficientMaterial: function (index) {
+                var position = abBoard.game.positions[index];
+                return position.isLackingMaterial();
+            },
+            isStalemate: function (index) {
+                var position = abBoard.game.positions[index];
+                return !position.hasLegalMoves() &&
+                    !position.isCheck(position.activeColor);
             },
             reset: function () {
                 abBoard.game.reset();
