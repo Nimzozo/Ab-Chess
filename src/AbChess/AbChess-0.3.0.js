@@ -275,16 +275,6 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
     }
 
     /**
-     * Remove an element from the DOM tree.
-     * @param {HTMLElement} element The element to remove.
-     */
-    function removeHTML(element) {
-        if (element.parentNode) {
-            element.parentNode.removeChild(element);
-        }
-    }
-
-    /**
      * Check if two arrays are equal.
      */
     function sameArray(array1, array2) {
@@ -1318,7 +1308,9 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
          * End the piece animation.
          */
         piece.endAnimation = function () {
-            removeHTML(piece.ghost);
+            if (piece.ghost.parentNode) {
+                piece.ghost.parentNode.removeChild(piece.ghost);
+            }
             piece.ghost.style.transform = "";
             piece.element.style.opacity = 1;
             piece.isAnimated = false;
@@ -1539,7 +1531,9 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
          * Remove a piece of the square.
          */
         square.removePiece = function (piece) {
-            removeHTML(piece.element);
+            if (square.element === piece.element.parentNode) {
+                square.element.removeChild(piece.element);
+            }
             if (piece === square.piece) {
                 square.piece = null;
             }
