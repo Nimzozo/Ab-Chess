@@ -363,45 +363,6 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         };
 
         /**
-         * Return the moves for bishop, queen, rook.
-         */
-        position.getBQRMoves = function (start, vectors) {
-            var char = position.squares[start];
-            var color = "";
-            var moves = [];
-            var startColumn = chess.columns.indexOf(start.charAt(0));
-            var startRow = chess.rows.indexOf(start.charAt(1));
-            color = (char.toUpperCase() === char)
-                ? chess.white
-                : chess.black;
-            vectors.forEach(function (vector) {
-                var columnIndex = startColumn + vector[0];
-                var rowIndex = startRow + vector[1];
-                var pieceChar = "";
-                var pieceColor = "";
-                var square = "";
-                while (columnIndex >= 0 && columnIndex < 8 &&
-                    rowIndex >= 0 && rowIndex < 8) {
-                    square = chess.columns[columnIndex] + chess.rows[rowIndex];
-                    if (position.squares.hasOwnProperty(square)) {
-                        pieceChar = position.squares[square];
-                        pieceColor = (pieceChar.toLowerCase() === pieceChar)
-                            ? chess.black
-                            : chess.white;
-                        if (pieceColor !== color) {
-                            moves.push(square);
-                        }
-                        return;
-                    }
-                    moves.push(square);
-                    columnIndex += vector[0];
-                    rowIndex += vector[1];
-                }
-            });
-            return moves;
-        };
-
-        /**
          * Return the possible castling moves.
          */
         position.getCastles = function (start) {
@@ -491,56 +452,17 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             var ennemy = "";
             var ennemyMoves = [];
             var moves = [];
-            var vectors = [
-                [-1, -1], [-1, 0], [-1, 1],
-                [0, -1], [0, 1],
-                [1, -1], [1, 0], [1, 1]
-            ];
-            moves = position.getKNMoves(start, vectors);
+            var vectors = [[-1, -1], [-1, 0], [-1, 1],
+            [0, -1], [0, 1],
+            [1, -1], [1, 0], [1, 1]];
+            moves = position.getMovesBKNQR(start, vectors, true);
             moves = castles.concat(moves);
             ennemy = (position.activeColor === chess.white)
                 ? position.getKing(chess.black)
                 : position.getKing(chess.white);
-            ennemyMoves = position.getKNMoves(ennemy, vectors);
+            ennemyMoves = position.getMovesBKNQR(ennemy, vectors, true);
             moves = moves.filter(function (move) {
                 return ennemyMoves.indexOf(move) === -1;
-            });
-            return moves;
-        };
-
-        /**
-         * Return the moves for king, knight.
-         */
-        position.getKNMoves = function (start, vectors) {
-            var char = position.squares[start];
-            var color = "";
-            var moves = [];
-            var startColumn = chess.columns.indexOf(start.charAt(0));
-            var startRow = chess.rows.indexOf(start.charAt(1));
-            color = (char.toUpperCase() === char)
-                ? chess.white
-                : chess.black;
-            vectors.forEach(function (vector) {
-                var columnIndex = startColumn + vector[0];
-                var rowIndex = startRow + vector[1];
-                var pieceChar = "";
-                var pieceColor = "";
-                var square = "";
-                if (columnIndex < 0 || columnIndex > 7 ||
-                    rowIndex < 0 || rowIndex > 7) {
-                    return;
-                }
-                square = chess.columns[columnIndex] + chess.rows[rowIndex];
-                if (position.squares.hasOwnProperty(square)) {
-                    pieceChar = position.squares[square];
-                    pieceColor = (pieceChar.toLowerCase() === pieceChar)
-                        ? chess.black
-                        : chess.white;
-                    if (pieceColor === color) {
-                        return;
-                    }
-                }
-                moves.push(square);
             });
             return moves;
         };
@@ -565,9 +487,19 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             moves = position.getMoves(start);
             return moves.filter(function (moveEnd) {
                 var king = "";
-                var testPosition = position.getNext(start, moveEnd);
+                var testColor = "";
+                var testPosition = {};
+                var testPiece = "";
+                if (position.squares.hasOwnProperty(moveEnd)) {
+                    testPiece = position.squares[moveEnd];
+                    testColor = (testPiece.toUpperCase() === testPiece)
+                        ? chess.white
+                        : chess.black;
+                }
+                testPosition = position.getNext(start, moveEnd);
                 king = testPosition.getKing(pieceColor);
-                return !testPosition.isAttacked(king, ennemyColor);
+                return pieceColor !== testColor &&
+                    !testPosition.isAttacked(king, ennemyColor);
             });
         };
 
@@ -575,7 +507,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             var pieceName = position.squares[start].toLowerCase();
             var vectors = [];
             if (pieceName === chess.bishop) {
-                return position.getBQRMoves(start, chess.bishopVectors);
+                return position.getMovesBKNQR(start, chess.bishopVectors);
             }
             if (pieceName === chess.king) {
                 return position.getKingMoves(start);
@@ -585,19 +517,44 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
                     [-2, -1], [-2, 1], [-1, -2], [-1, 2],
                     [1, -2], [1, 2], [2, -1], [2, 1]
                 ];
-                return position.getKNMoves(start, vectors);
+                return position.getMovesBKNQR(start, vectors, true);
             }
             if (pieceName === chess.queen) {
                 vectors = chess.bishopVectors.concat(chess.rookVectors);
-                return position.getBQRMoves(start, vectors);
+                return position.getMovesBKNQR(start, vectors);
             }
             if (pieceName === chess.rook) {
-                return position.getBQRMoves(start, chess.rookVectors);
+                return position.getMovesBKNQR(start, chess.rookVectors);
             }
             if (pieceName === chess.pawn) {
                 return position.getPawnMoves(start, allowEmpty);
             }
             throw new Error();
+        };
+
+        /**
+         * Return the movements for bishop, king, knight, queen, rook.
+         */
+        position.getMovesBKNQR = function (start, vectors, noLoop) {
+            var moves = [];
+            var startColumn = chess.columns.indexOf(start.charAt(0));
+            var startRow = chess.rows.indexOf(start.charAt(1));
+            vectors.forEach(function (vector) {
+                var columnIndex = startColumn + vector[0];
+                var rowIndex = startRow + vector[1];
+                var square = "";
+                while (columnIndex >= 0 && columnIndex < 8 &&
+                    rowIndex >= 0 && rowIndex < 8) {
+                    square = chess.columns[columnIndex] + chess.rows[rowIndex];
+                    moves.push(square);
+                    if (noLoop || position.squares.hasOwnProperty(square)) {
+                        return;
+                    }
+                    columnIndex += vector[0];
+                    rowIndex += vector[1];
+                }
+            });
+            return moves;
         };
 
         /**
