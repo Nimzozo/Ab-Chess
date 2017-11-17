@@ -16,7 +16,6 @@
  * TODO
  * - api
  * - use objects instead of arrays when possible
- * - duplications
  */
 
 /**
@@ -1238,8 +1237,8 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
          */
         piece.create = function () {
             var image = "";
-            piece.url = board.options.imagesPath + color + name +
-                board.options.imagesExtension;
+            piece.url = board.options.imagesPath + color.toLowerCase() +
+                name.toLowerCase() + board.options.imagesExtension;
             image = "url('" + piece.url + "')";
             piece.element = document.createElement("div");
             piece.element.className = css.squarePiece;
@@ -1660,36 +1659,14 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         board.getAnimations = function (position) {
             var animations = [];
             var animationsNoEnd = [];
-            var columns = chess.columns.split("");
-            var futureSquares = [];
-            var pastSquares = [];
-            var rows = chess.rows.split("");
-            rows.forEach(function (row) {
-                columns.forEach(function (column) {
-                    var square = column + row;
-                    if (board.position.squares[square] === position[square]) {
-                        return;
-                    }
-                    if (!board.position.squares.hasOwnProperty(square)) {
-                        futureSquares.push(square);
-                        return;
-                    }
-                    if (!position.hasOwnProperty(square)) {
-                        pastSquares.push(square);
-                        return;
-                    }
-                    futureSquares.push(square);
-                    pastSquares.push(square);
-                });
-            });
-            futureSquares.forEach(function (futureSquare) {
+            var differences = board.getDifferences(position);
+            var pastSquares = differences.past;
+            differences.future.forEach(function (futureSquare) {
                 var animation = {};
                 var char = position[futureSquare];
                 var color = "";
-                var endSquare = {};
                 var existsInPast = false;
                 var start = "";
-                var startSquare = {};
                 existsInPast = pastSquares.some(function (pastSquare, index) {
                     start = pastSquare;
                     if (board.position.squares[pastSquare] === char) {
@@ -1698,20 +1675,17 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
                     }
                     return false;
                 });
-                endSquare = board.getSquare(futureSquare);
                 if (existsInPast) {
-                    startSquare = board.getSquare(start);
-                    animation.piece = startSquare.piece;
-                    animation.start = startSquare;
+                    animation.start = board.getSquare(start);
+                    animation.piece = animation.start.piece;
                 } else {
                     animation.start = null;
                     color = (char.toUpperCase() === char)
                         ? chess.white
                         : chess.black;
-                    char = char.toLowerCase();
                     animation.piece = new Piece(char, color, board);
                 }
-                animation.end = endSquare;
+                animation.end = board.getSquare(futureSquare);
                 animations.push(animation);
             });
             animationsNoEnd = board.getAnimationsNoEnd(pastSquares);
@@ -1734,6 +1708,39 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
                 animations.push(animation);
             });
             return animations;
+        };
+
+        /**
+         * Return the differences between two positions.
+         * @param {object} position The occupied squares of the new position.
+         */
+        board.getDifferences = function (position) {
+            var columns = chess.columns.split("");
+            var differences = {};
+            var futureSquares = [];
+            var pastSquares = [];
+            var rows = chess.rows.split("");
+            rows.forEach(function (row) {
+                columns.forEach(function (column) {
+                    var square = column + row;
+                    if (board.position.squares[square] === position[square]) {
+                        return;
+                    }
+                    if (!board.position.squares.hasOwnProperty(square)) {
+                        futureSquares.push(square);
+                        return;
+                    }
+                    if (!position.hasOwnProperty(square)) {
+                        pastSquares.push(square);
+                        return;
+                    }
+                    futureSquares.push(square);
+                    pastSquares.push(square);
+                });
+            });
+            differences.past = pastSquares;
+            differences.future = futureSquares;
+            return differences;
         };
 
         /**
@@ -1855,13 +1862,12 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
                 animation.piece.moveFromTo(animation.start, animation.end);
             });
             animations.forEach(function (animation) {
-                if (animation.start !== null) {
-                    return;
+                if (animation.start === null) {
+                    raf(function () {
+                        animation.end.placePiece(animation.piece);
+                        animation.piece.appear();
+                    });
                 }
-                raf(function () {
-                    animation.end.placePiece(animation.piece);
-                    animation.piece.appear();
-                });
             });
         };
 
