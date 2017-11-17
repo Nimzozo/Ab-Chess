@@ -1,6 +1,6 @@
 # Ab-Chess
 
-[![Issue Count](https://codeclimate.com/github/Nimzozo/Ab-Chess/badges/issue_count.svg)](https://codeclimate.com/github/Nimzozo/Ab-Chess)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/4cf8f39c2ee846b4ad7349dc5532efad)](https://www.codacy.com/app/Nimzozo/Ab-Chess?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Nimzozo/Ab-Chess&amp;utm_campaign=Badge_Grade)
 
 ## Chess API for JavaScript
 
@@ -45,13 +45,9 @@ More informations are available on the [GitHub pages](https://nimzozo.github.io/
   - FEN string
   - PGN string
 
-- Game
-  - export :
-    - PGN moves array
-    - PGN string
-  - import :
-    - play moves
-    - PGN string
+- Game :
+  - input moves and get data
+  - parse a PGN string and display the game
 
 ## How to use
 
@@ -72,7 +68,7 @@ Download the latest release and simply follow these steps :
 <script src="AbChess-x.x.x.js"></script>
 ```
 
-- To embed a chessboard with the default configuration, run this script.
+- This simple script will display a chessboard with the default configuration.
 ```javascript
 var abChess = new AbChess("chessboard");
 abChess.draw();
