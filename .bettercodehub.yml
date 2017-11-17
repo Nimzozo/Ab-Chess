@@ -3,9 +3,4 @@ exclude:
 - /test/.*
 component_depth: 1
 languages:
-- javascriptexclude:
-- /src/AbChess/AbChess-0.2.6.js
-- /test/.*
-component_depth: 1
-languages:
 - javascript
