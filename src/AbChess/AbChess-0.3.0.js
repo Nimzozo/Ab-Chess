@@ -158,6 +158,22 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
     };
 
     /**
+     * Remove the tag pairs, comments and variations from a PGN string.
+     * @param {string} pgn The PGN string to clean.
+     */
+    function cleanPGN(pgn) {
+        pgn = pgn.replace(regExp.tagPair, "");
+        while (regExp.comment.test(pgn)) {
+            pgn = pgn.replace(regExp.comment, "");
+        }
+        while (regExp.variation.test(pgn)) {
+            pgn = pgn.replace(regExp.variation, "");
+        }
+        pgn = pgn.replace(/\s{2,}/gm, " ");
+        return pgn;
+    };
+
+    /**
      * Convert a FEN string to a position object.
      * @param {string} fen The FEN string to convert.
      */
@@ -217,13 +233,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
         if (tagPairs.length < 7) {
             return false;
         }
-        pgn = pgn.replace(regExp.tagPair, "");
-        while (regExp.comment.test(pgn)) {
-            pgn = pgn.replace(regExp.comment, "");
-        }
-        while (regExp.variation.test(pgn)) {
-            pgn = pgn.replace(regExp.variation, "");
-        }
+        pgn = cleanPGN(pgn);
         moves = pgn.match(regExp.pgnMove);
         if (moves.length < 1) {
             return false;
@@ -1112,17 +1122,10 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
          * Delete infos, comments and variations.
          */
         game.importPGNMoves = function (pgn) {
-            var importedPGNMoves = [];
-            pgn = pgn.replace(regExp.tagPair, "");
-            while (regExp.comment.test(pgn)) {
-                pgn = pgn.replace(regExp.comment, "");
-            }
-            while (regExp.variation.test(pgn)) {
-                pgn = pgn.replace(regExp.variation, "");
-            }
-            pgn = pgn.replace(/\s{2,}/gm, " ");
-            importedPGNMoves = pgn.match(regExp.pgnMove);
-            importedPGNMoves.forEach(function (pgnMove) {
+            var pgnMoves = [];
+            pgn = cleanPGN(pgn);
+            pgnMoves = pgn.match(regExp.pgnMove);
+            pgnMoves.forEach(function (pgnMove) {
                 pgnMove = pgnMove.replace(regExp.pgnMoveNumber, "");
                 game.pgnMoves.push(pgnMove);
             });
