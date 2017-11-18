@@ -1,6 +1,6 @@
 /**
  * AbChess.js
- * 2017-11-17
+ * 2017-11-18
  * Copyright (c) 2017 Nimzozo
  */
 
@@ -328,20 +328,16 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             var ennemyColor = "";
             var moves = [];
             var startRow = start.charAt(1);
-            if (start.charAt(0) !== chess.columns.charAt(4) ||
-                allowedCastles === "-") {
-                return [];
-            }
-            if ((color === chess.white && startRow !== chess.rows.charAt(0)) ||
-                (color === chess.black && startRow !== chess.rows.charAt(7))) {
-                return [];
+            if (allowedCastles === "-" ||
+                start.charAt(0) !== chess.columns.charAt(4) ||
+                (color === chess.white && startRow !== chess.rows.charAt(0)) ||
+                (color === chess.black && startRow !== chess.rows.charAt(7)) ||
+                position.isCheck(color)) {
+                return moves;
             }
             ennemyColor = (color === chess.white)
                 ? chess.black
                 : chess.white;
-            if (position.isCheck(color)) {
-                return [];
-            }
             castles.forEach(function (castle, index) {
                 var hasCheck = false;
                 var hasCollision = false;
