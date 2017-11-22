@@ -17,7 +17,6 @@
  * - api :
  *   - enable/disable animations :
  *     - navigation
- *   - isLegalMove
  * - use objects instead of arrays when possible
  */
 
@@ -2099,14 +2098,21 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             return abBoard.game.tags[info];
         },
         getLegalMoves: function (index) {
-            var moves = [];
+            var legalMoves = [];
             var pieces = [];
             var position = abBoard.game.positions[index];
             pieces = position.getPieces(position.activeColor);
-            pieces.forEach(function (piece) {
-                moves = moves.concat(position.getLegalMoves(piece));
+            pieces.forEach(function (pieceStart) {
+                var destinations = position.getLegalMoves(pieceStart);
+                destinations.forEach(function (destination) {
+                    var move = {
+                        end: destination,
+                        start: pieceStart
+                    };
+                    legalMoves.push(move);
+                });
             });
-            return moves;
+            return legalMoves;
         },
         getMovesPGN: function (symbols) {
             var pgnMoves = abBoard.game.pgnMoves;
@@ -2144,9 +2150,14 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             var position = abBoard.game.positions[index];
             return position.isLackingMaterial();
         },
-        isLegalMove: function (index, move) {
+        isLegalMove: function (index, start, destination) {
+            var legalMoves = [];
             var position = abBoard.game.positions[index];
-
+            if (!position.squares.hasOwnProperty(start)) {
+                return false;
+            }
+            legalMoves = position.getLegalMoves(start);
+            return legalMoves.indexOf(destination) > -1;
         },
         isStalemate: function (index) {
             var position = abBoard.game.positions[index];
