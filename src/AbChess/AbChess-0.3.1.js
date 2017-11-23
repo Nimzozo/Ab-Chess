@@ -1,6 +1,6 @@
 /**
  * AbChess.js
- * 2017-11-22
+ * 2017-11-24
  * Copyright (c) 2017 Nimzozo
  */
 
@@ -926,6 +926,7 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
                 } else if (startRowIndex - endRowIndex === 2) {
                     enPassant = start.charAt(0) + chess.rows.charAt(5);
                 }
+                position.halfMoveClock = 0;
             } else {
                 if (piece.toLowerCase() === chess.king &&
                     regExp.castleStart.test(start) &&
@@ -934,9 +935,10 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
                     position.squares[rookMove[1]] = position.squares[rookMove[0]];
                     delete position.squares[rookMove[0]];
                 }
-                if (!position.squares.hasOwnProperty(end)) {
-                    position.halfMoveClock += 1;
-                }
+                position.halfMoveClock = (position.squares.hasOwnProperty(end))
+                    ? 0
+                    : position.halfMoveClock + 1;
+
             }
             if (position.activeColor === chess.white) {
                 position.activeColor = chess.black;
@@ -946,7 +948,6 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
             }
             position.updateCastles(start, end);
             position.enPassant = enPassant;
-            position.halfMoveClock = 0;
             position.squares[end] = piece;
             delete position.squares[start];
             position.fen = position.getFEN();
@@ -1330,7 +1331,9 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
          * @param {string} promotion A character representing the promotion.
          */
         piece.promote = function (square, promotion) {
-            var newPiece = new Piece(promotion, piece.color, piece.board);
+            var newPiece = {};
+            promotion = promotion || chess.queen;
+            newPiece = new Piece(promotion, piece.color, piece.board);
             square.placePiece(newPiece);
             newPiece.appear();
         };
@@ -1968,16 +1971,18 @@ window.AbChess = window.AbChess || function (abId, abOptions) {
          */
         board.play = function (move, animate) {
             var end = move.end;
+            var pieceChar = "";
             var start = move.start;
-            var startSquare = board.getSquare(start);
-            if (startSquare.piece.name === chess.pawn &&
-                board.position.enPassant === end) {
+            pieceChar = board.position.squares[start].toLowerCase();
+            if (!regExp.promotionEnd.test(end)) {
+                delete move.promotion;
+            }
+            if (pieceChar === chess.pawn && board.position.enPassant === end) {
                 board.finishEnPassant();
-            } else if (startSquare.piece.name === chess.king &&
+            } else if (pieceChar === chess.king &&
                 regExp.castleStart.test(start) && regExp.castleEnd.test(end)) {
                 board.finishCastle(end);
             }
-            move.promotion = move.promotion || chess.queen;
             board.saveMove(move);
             board.movePiece(move, animate);
             board.updateHighlighting();
