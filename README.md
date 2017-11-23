@@ -11,7 +11,7 @@ It lets you import, play and export a chessgame in the PGN notation.
 More informations are available on the [GitHub pages](https://nimzozo.github.io/Ab-Chess/) :
 
 - [Documentation](https://nimzozo.github.io/Ab-Chess/docs/overview.html)
-- [Examples](https://nimzozo.github.io/Ab-Chess/examples/basics/default.html)
+- [Examples](https://nimzozo.github.io/Ab-Chess/examples/options/animated.html)
 - [Releases](https://nimzozo.github.io/Ab-Chess/download.html)
 
 ## Features
@@ -71,7 +71,6 @@ Download the latest release and simply follow these steps :
 - This simple script will display a chessboard with the default configuration.
 ```javascript
 var abChess = new AbChess("chessboard");
-abChess.draw();
 abChess.setFEN();
 ```
 
