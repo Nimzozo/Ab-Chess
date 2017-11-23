@@ -1,7 +1,11 @@
 .overview {
     display: inline-block;
     vertical-align: top;
-    width: 25%;
+    width: 50%;
+}
+
+h1 {
+    font-size: 1.6em;
 }
 
 .overview-header {

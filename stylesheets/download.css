@@ -47,3 +47,10 @@
 li {
     margin: 8px;
 }
+
+code {
+    font-family: "Lucida Console", Monaco, monospace;
+    background-color: lavender;
+    font-size: 0.9em;
+    padding: 2px;
+}

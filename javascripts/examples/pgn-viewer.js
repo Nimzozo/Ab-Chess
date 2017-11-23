@@ -5,27 +5,63 @@ window.addEventListener("load", function () {
     var data = {
         "items": [
             {
-                "name": "Basics",
+                "name": "Options",
                 "items": [
                     {
-                        "name": "Default options",
-                        "href": "examples/basics/default.html"
+                        "name": "Animated",
+                        "href": "examples/options/animated.html"
                     },
                     {
-                        "name": "Visual changes",
-                        "href": "examples/basics/visual.html"
+                        "name": "Animation speed",
+                        "href": "examples/options/animation-speed.html"
                     },
                     {
-                        "name": "Locked pieces",
-                        "href": "examples/basics/locked.html"
+                        "name": "Clickable",
+                        "href": "examples/options/clickable.html"
                     },
                     {
-                        "name": "Orientation",
-                        "href": "examples/basics/orientation.html"
+                        "name": "Coordinates",
+                        "href": "examples/options/coordinates.html"
                     },
                     {
-                        "name": "Squares highlighting",
-                        "href": "examples/basics/highlighting.html"
+                        "name": "Draggable",
+                        "href": "examples/options/draggable.html"
+                    },
+                    {
+                        "name": "Images",
+                        "href": "examples/options/images-path.html"
+                    },
+                    {
+                        "name": "Legal marks color",
+                        "href": "examples/options/legal-marks-color.html"
+                    },
+                    {
+                        "name": "Mark check",
+                        "href": "examples/options/mark-check.html"
+                    },
+                    {
+                        "name": "Mark last move",
+                        "href": "examples/options/mark-last-move.html"
+                    },
+                    {
+                        "name": "Mark legal squares",
+                        "href": "examples/options/mark-legal-squares.html"
+                    },
+                    {
+                        "name": "Mark overflown square",
+                        "href": "examples/options/mark-overflown-square.html"
+                    },
+                    {
+                        "name": "Mark start square",
+                        "href": "examples/options/mark-start-square.html"
+                    },
+                    {
+                        "name": "Reversed",
+                        "href": "examples/options/reversed.html"
+                    },
+                    {
+                        "name": "Width",
+                        "href": "examples/options/width.html"
                     }
                 ]
             },
@@ -45,8 +81,12 @@ window.addEventListener("load", function () {
                         "href": "examples/methods/get-fen.html"
                     },
                     {
-                        "name": "Get game info",
-                        "href": "examples/methods/get-game-info.html"
+                        "name": "Get info",
+                        "href": "examples/methods/get-info.html"
+                    },
+                    {
+                        "name": "Play",
+                        "href": "examples/methods/play.html"
                     },
                     {
                         "name": "Set FEN",
@@ -55,10 +95,6 @@ window.addEventListener("load", function () {
                     {
                         "name": "Set PGN",
                         "href": "examples/methods/set-pgn.html"
-                    },
-                    {
-                        "name": "Play",
-                        "href": "examples/methods/play.html"
                     }
                 ]
             },
@@ -76,7 +112,7 @@ window.addEventListener("load", function () {
                     {
                         "name": "PGN viewer",
                         "href": "examples/advanced/pgn-viewer.html",
-                        "selected": true
+                        selected: true
                     }
                 ],
                 "open": true
@@ -103,8 +139,8 @@ window.addEventListener("load", function () {
             var pgnTextarea = document.getElementById("pgn-textarea");
             var previousButton = document.getElementById("previous-button");
             var selectedSpanId = "move-span_selected";
+
             abChess = new AbChess("chessboard", config);
-            abChess.draw();
             abChess.setFEN();
 
             function navigate(index) {
@@ -116,7 +152,7 @@ window.addEventListener("load", function () {
                     return;
                 }
                 currentIndex = index;
-                abChess.navigate(currentIndex);
+                abChess.view(currentIndex);
                 if (selectedSpan !== null) {
                     selectedSpan.removeAttribute("id");
                 }
@@ -158,9 +194,9 @@ window.addEventListener("load", function () {
                 var pgn = pgnTextarea.value;
                 abChess.setPGN(pgn);
                 clearSpans();
-                moves = abChess.getGameMovesPGN();
+                moves = abChess.getMovesPGN();
                 moves.forEach(addMoveSpan);
-                lastIndex = abChess.getLastPositionIndex();
+                lastIndex = moves.length;
                 navigate(lastIndex);
             }
 

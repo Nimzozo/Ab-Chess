@@ -17,7 +17,7 @@
             <div class="inline-block">
                 <a class="header__link" href="index.html">AB-Chess</a>
                 <a class="header__link" href="docs/overview.html" id="selected-tab">Documentation</a>
-                <a class="header__link" href="examples/basics/default.html">Examples</a>
+                <a class="header__link" href="examples/options/animated.html">Examples</a>
                 <a class="header__link" href="download.html">Download</a>
             </div>
             <div class="inline-block right">
@@ -29,65 +29,52 @@
     <div id="main-container">
 
         <div id="sub-main">
-            <h1><a class="link" href="docs/doc.html">AbChess</a></h1>
+            <h1><a class="link" href="docs/doc.html">AbChess API reference</a></h1>
             <div class="overview">
                 <h2 class="overview-header">options</h2>
                 <ul class="list">
+                    <li class="list__item"><a class="link" href="docs/doc.html#animated">animated</a></li>
                     <li class="list__item"><a class="link" href="docs/doc.html#animationSpeed">animationSpeed</a></li>
                     <li class="list__item"><a class="link" href="docs/doc.html#clickable">clickable</a></li>
+                    <li class="list__item"><a class="link" href="docs/doc.html#coordinates">coordinates</a></li>
                     <li class="list__item"><a class="link" href="docs/doc.html#draggable">draggable</a></li>
-                    <li class="list__item"><a class="link" href="docs/doc.html#flipped">flipped</a></li>
                     <li class="list__item"><a class="link" href="docs/doc.html#imagesExtension">imagesExtension</a></li>
                     <li class="list__item"><a class="link" href="docs/doc.html#imagesPath">imagesPath</a></li>
                     <li class="list__item"><a class="link" href="docs/doc.html#legalMarksColor">legalMarksColor</a></li>
-                    <li class="list__item"><a class="link" href="docs/doc.html#markKingInCheck">markKingInCheck</a></li>
+                    <li class="list__item"><a class="link" href="docs/doc.html#markCheck">markCheck</a></li>
                     <li class="list__item"><a class="link" href="docs/doc.html#markLastMove">markLastMove</a></li>
                     <li class="list__item"><a class="link" href="docs/doc.html#markLegalSquares">markLegalSquares</a></li>
                     <li class="list__item"><a class="link" href="docs/doc.html#markOverflownSquare">markOverflownSquare</a></li>
-                    <li class="list__item"><a class="link" href="docs/doc.html#markSelectedSquare">markSelectedSquare</a></li>
-                    <li class="list__item"><a class="link" href="docs/doc.html#notationBorder">notationBorder</a></li>
+                    <li class="list__item"><a class="link" href="docs/doc.html#markStartSquare">markStartSquare</a></li>
+                    <li class="list__item"><a class="link" href="docs/doc.html#reversed">reversed</a></li>
                     <li class="list__item"><a class="link" href="docs/doc.html#width">width</a></li>
                 </ul>
             </div><!--
             --><div class="overview">
-                <h2 class="overview-header">board</h2>
+                <h2 class="overview-header">methods</h2>
                 <ul class="list">
-                    <li class="list__item"><a class="link" href="docs/doc.html#draw">draw()</a></li>
-                    <li class="list__item"><a class="link" href="docs/doc.html#flip">flip()</a></li>
-                    <li class="list__item"><a class="link" href="docs/doc.html#navigate">navigate(index)</a></li>
-                    <li class="list__item"><a class="link" href="docs/doc.html#onMovePlayed">onMovePlayed(callback)</a></li>
-                    <li class="list__item"><a class="link" href="docs/doc.html#play">play(move, promotion)</a></li>
-                    <li class="list__item"><a class="link" href="docs/doc.html#reset">reset()</a></li>
-                    <li class="list__item"><a class="link" href="docs/doc.html#setFEN">setFEN(fen)</a></li>
-                </ul>
-            </div><!--
-            --><div class="overview">
-                <h2 class="overview-header">game</h2>
-                <ul class="list">
-                    <li class="list__item"><a class="link" href="docs/doc.html#getActiveColor">getActiveColor(index)</a></li>
-                    <li class="list__item"><a class="link" href="docs/doc.html#getFEN">getFEN(index)</a></li>
-                    <li class="list__item"><a class="link" href="docs/doc.html#getGameInfo">getGameInfo(name)</a></li>
-                    <li class="list__item"><a class="link" href="docs/doc.html#getGameMoves">getGameMoves()</a></li>
-                    <li class="list__item"><a class="link" href="docs/doc.html#getGameMovesPGN">getGameMovesPGN(symbols)</a></li>
-                    <li class="list__item"><a class="link" href="docs/doc.html#getLastPositionIndex">getLastPositionIndex()</a></li>
-                    <li class="list__item"><a class="link" href="docs/doc.html#getLegalMoves">getLegalMoves(index)</a></li>
-                    <li class="list__item"><a class="link" href="docs/doc.html#getPGN">getPGN()</a></li>
-                    <li class="list__item"><a class="link" href="docs/doc.html#is50MovesDraw">is50MovesDraw(index)</a></li>
-                    <li class="list__item"><a class="link" href="docs/doc.html#isCheckmate">isCheckmate(index)</a></li>
-                    <li class="list__item"><a class="link" href="docs/doc.html#isInCheck">isInCheck(index)</a></li>
-                    <li class="list__item"><a class="link" href="docs/doc.html#isInsufficientMaterialDraw">isInsufficientMaterialDraw(index)</a></li>
-                    <li class="list__item"><a class="link" href="docs/doc.html#isLegal">isLegal(index, move)</a></li>
-                    <li class="list__item"><a class="link" href="docs/doc.html#isStalemate">isStalemate(index)</a></li>
-                    <li class="list__item"><a class="link" href="docs/doc.html#isValidPGN">isValidPGN(pgn)</a></li>
-                    <li class="list__item"><a class="link" href="docs/doc.html#setGameInfo">setGameInfo(name, value)</a></li>
-                    <li class="list__item"><a class="link" href="docs/doc.html#setPGN">setPGN(pgn, loadMoves)</a></li>
-                </ul>
-            </div><!--
-            --><div class="overview">
-                <h2 class="overview-header">position</h2>
-                <ul class="list">
-                    <li class="list__item"><a class="link" href="docs/doc.html#DEFAULT_FEN">DEFAULT_FEN</a></li>
-                    <li class="list__item"><a class="link" href="docs/doc.html#isValidFEN">isValidFEN(fen, onlyCheckRows)</a></li>
+                    <li class="list__item"><a class="link" href="docs/doc.html#flip">AbChess#flip()</a></li>
+                    <li class="list__item"><a class="link" href="docs/doc.html#getActiveColor">AbChess#getActiveColor(index)</a></li>
+                    <li class="list__item"><a class="link" href="docs/doc.html#getFEN">AbChess#getFEN(index)</a></li>
+                    <li class="list__item"><a class="link" href="docs/doc.html#getInfo">AbChess#getInfo(name)</a></li>
+                    <li class="list__item"><a class="link" href="docs/doc.html#getLegalMoves">AbChess#getLegalMoves(index)</a></li>
+                    <li class="list__item"><a class="link" href="docs/doc.html#getMovesPGN">AbChess#getMovesPGN(symbols)</a></li>
+                    <li class="list__item"><a class="link" href="docs/doc.html#getPGN">AbChess#getPGN()</a></li>
+                    <li class="list__item"><a class="link" href="docs/doc.html#is50Moves">AbChess#is50Moves(index)</a></li>
+                    <li class="list__item"><a class="link" href="docs/doc.html#isCheck">AbChess#isCheck(index)</a></li>
+                    <li class="list__item"><a class="link" href="docs/doc.html#isCheckmate">AbChess#isCheckmate(index)</a></li>
+                    <li class="list__item"><a class="link" href="docs/doc.html#isInsufficientMaterial">AbChess#isInsufficientMaterial(index)</a></li>
+                    <li class="list__item"><a class="link" href="docs/doc.html#isLegalMove">AbChess#isLegalMove(index, start, destination)</a></li>
+                    <li class="list__item"><a class="link" href="docs/doc.html#isStalemate">AbChess#isStalemate(index)</a></li>
+                    <li class="list__item"><a class="link" href="docs/doc.html#isValidFEN">AbChess#isValidFEN(fen)</a></li>
+                    <li class="list__item"><a class="link" href="docs/doc.html#isValidPGN">AbChess#isValidPGN(pgn)</a></li>
+                    <li class="list__item"><a class="link" href="docs/doc.html#onMovePlayed">AbChess#onMovePlayed(callback)</a></li>
+                    <li class="list__item"><a class="link" href="docs/doc.html#play">AbChess#play(start, destination, promotion)</a></li>
+                    <li class="list__item"><a class="link" href="docs/doc.html#reset">AbChess#reset()</a></li>
+                    <li class="list__item"><a class="link" href="docs/doc.html#setFEN">AbChess#setFEN(fen)</a></li>
+                    <li class="list__item"><a class="link" href="docs/doc.html#setInfo">AbChess#setInfo(name, value)</a></li>
+                    <li class="list__item"><a class="link" href="docs/doc.html#setPGN">AbChess#setPGN(pgn)</a></li>
+                    <li class="list__item"><a class="link" href="docs/doc.html#view">AbChess#view(index)</a></li>
                 </ul>
             </div>
         </div>

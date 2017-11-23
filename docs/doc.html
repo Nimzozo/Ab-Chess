@@ -18,7 +18,7 @@
             <div class="inline-block">
                 <a class="header__link" href="index.html">AB-Chess</a>
                 <a class="header__link" href="docs/overview.html" id="selected-tab">Documentation</a>
-                <a class="header__link" href="examples/basics/default.html">Examples</a>
+                <a class="header__link" href="examples/options/animated.html">Examples</a>
                 <a class="header__link" href="download.html">Download</a>
             </div>
             <div class="inline-block right">
@@ -62,9 +62,12 @@
                     <th class="parameter-table__header" colspan="2">options</th>
                 </tr>
                 <tr>
+                    <td id="animated">animated</td>
+                    <td>Optional<br>Boolean<br>If set to false, disable the animations of the pieces. The default is <code class="inline-code">true</code>.</td>
+                </tr>
+                <tr>
                     <td id="animationSpeed">animationSpeed</td>
-                    <td>Optional<br>String<br>The speed of the animated pieces. Allowed values are <code class="inline-code">"slow"</code>, <code class="inline-code">"normal"</code>, <code class="inline-code">"fast"</code> and
-                        <code class="inline-code">"instant"</code>. The default is <code class="inline-code">"normal"</code>.</td>
+                    <td>Optional<br>Number<br>The speed of the animated pieces. The default is <code class="inline-code">20</code>.</td>
                 </tr>
                 <tr>
                     <td id="clickable">clickable</td>
@@ -72,14 +75,13 @@
                         default is <code class="inline-code">true</code>.</td>
                 </tr>
                 <tr>
+                    <td id="coordinates">coordinates</td>
+                    <td>Optional<br>Boolean<br>If set to true, the chessboard will have a coordinates border. The default is <code class="inline-code">true</code>.</td>
+                </tr>
+                <tr>
                     <td id="draggable">draggable</td>
                     <td>Optional<br>Boolean<br>If set to true, the chess pieces will be movable with a drag-and-drop method.
                         The default is <code class="inline-code">true</code>.</td>
-                </tr>
-                <tr>
-                    <td id="flipped">flipped</td>
-                    <td>Optional<br>Boolean<br>If set to true, the chessboard will be oriented for black point of view. The default
-                        is <code class="inline-code">false</code>.</td>
                 </tr>
                 <tr>
                     <td id="imagesExtension">imagesExtension</td>
@@ -91,10 +93,10 @@
                 </tr>
                 <tr>
                     <td id="legalMarksColor">legalMarksColor</td>
-                    <td>Optional<br>String<br>The CSS color of the legal moves indications. The default is <code class="inline-code">"steelblue"</code>.</td>
+                    <td>Optional<br>String<br>The CSS color of the legal moves indications. The default is <code class="inline-code">"cornflowerblue"</code>.</td>
                 </tr>
                 <tr>
-                    <td id="markKingInCheck">markKingInCheck</td>
+                    <td id="markCheck">markCheck</td>
                     <td>Optional<br>Boolean<br>If set to true, highlight the square of the king when it is attacked. The default
                         is <code class="inline-code">true</code>.</td>
                 </tr>
@@ -114,17 +116,18 @@
                         The default is <code class="inline-code">true</code>.</td>
                 </tr>
                 <tr>
-                    <td id="markSelectedSquare">markSelectedSquare</td>
+                    <td id="markStartSquare">markStartSquare</td>
                     <td>Optional<br>Boolean<br>If set to true, highlight the square of a piece when it is selected. The default
                         is <code class="inline-code">true</code>.</td>
                 </tr>
                 <tr>
-                    <td id="notationBorder">notationBorder</td>
-                    <td>Optional<br>Boolean<br>If set to true, the chessboard will have a notation border. The default is <code class="inline-code">true</code>.</td>
+                    <td id="reversed">reversed</td>
+                    <td>Optional<br>Boolean<br>If set to true, the chessboard will be oriented from black's point of view. The default
+                        is <code class="inline-code">false</code>.</td>
                 </tr>
                 <tr>
                     <td id="width">width</td>
-                    <td>Optional<br>Number<br>The width of the chessboard in pixel. Multiples of 8 are recommended. The default is <code class="inline-code">360</code>.</td>
+                    <td>Optional<br>Number<br>The width of the chessboard in pixel. Multiples of 8 are recommended. The default is <code class="inline-code">400</code>.</td>
                 </tr>
             </table>
 
@@ -135,29 +138,14 @@
             var abConfig = {
                 clickable: true,
                 draggable: false,
-                flipped: false,
-                showKingInCheck: true,
-                showLegalMoves: false,
-                width: 180
+                width: 200
             };
             var containerId = "abContainer";
             abChess = new AbChess(containerId, abConfig);
             </code>
 
-            <h2 class="big-header">Constant</h2>
-            <div class="anchor" id="DEFAULT_FEN"></div>
-            <h3 class="identifier-header">DEFAULT_FEN</h3>
-            <p class="description">String<br>The FEN string of the starting position in a classical chess game.</p>
-
             <h2 class="big-header">Methods</h2>
 
-            <div class="method">
-                <div class="anchor" id="draw"></div>
-                <h3 class="identifier-header">draw()</h3>
-                <p class="description">Draw the chessboard in the HTML container element.
-                    This method should be called right after the constructor.</p>
-                <p>See <a class="link" href="examples/basics/default.html">example</a>.</p>
-            </div>
             <div class="method">
                 <div class="anchor" id="flip"></div>
                 <h3 class="identifier-header">flip()</h3>
@@ -197,9 +185,9 @@
                 <p>See <a class="link" href="examples/methods/get-fen.html">example</a>.</p>
             </div>
             <div class="method">
-                <div class="anchor" id="getGameInfo"></div>
-                <h3 class="identifier-header">getGameInfo(name)</h3>
-                <p>Return an information stored in the game. Seven informations should be present in a game : Event, Site, Date,
+                <div class="anchor" id="getInfo"></div>
+                <h3 class="identifier-header">getInfo(name)</h3>
+                <p>Return an information of the game. Seven informations should be present in a game : Event, Site, Date,
                     Round, White, Black, Result. Some other ones can be added.</p>
                 <table class="parameter-table">
                     <tr>
@@ -211,17 +199,27 @@
                     </tr>
                 </table>
                 <p>Return type : String</p>
-                <p>See <a class="link" href="examples/methods/get-game-info.html">example</a>.</p>
+                <p>See <a class="link" href="examples/methods/get-info.html">example</a>.</p>
             </div>
             <div class="method">
-                <div class="anchor" id="getGameMoves"></div>
-                <h3 class="identifier-header">getGameMoves()</h3>
-                <p>Return an array of the moves stored in the game in a simple algebraic notation.</p>
-                <p>Return type : String[]</p>
+                <div class="anchor" id="getLegalMoves"></div>
+                <h3 class="identifier-header">getLegalMoves(index)</h3>
+                <p>Return an array of the legal moves in a position.</p>
+                <table class="parameter-table">
+                    <tr>
+                        <th class="parameter-table__header" colspan="2">Parameter</th>
+                    </tr>
+                    <tr>
+                        <td>index</td>
+                        <td>Number<br>The index of the desired position. It should be a positive integer.</td>
+                    </tr>
+                </table>
+                <p>Return type : Object[]</p>
+                <p>See <a class="link" href="examples/advanced/random-moves.html">example</a>.</p>
             </div>
             <div class="method">
-                <div class="anchor" id="getGameMovesPGN"></div>
-                <h3 class="identifier-header">getGameMovesPGN(symbols)</h3>
+                <div class="anchor" id="getMovesPGN"></div>
+                <h3 class="identifier-header">getMovesPGN(symbols)</h3>
                 <p>Return an array of the moves stored in the game in PGN notation.</p>
                 <table class="parameter-table">
                     <tr>
@@ -237,29 +235,6 @@
                 <p>See <a class="link" href="examples/advanced/pgn-viewer.html">example</a>.</p>
             </div>
             <div class="method">
-                <div class="anchor" id="getLastPositionIndex"></div>
-                <h3 class="identifier-header">getLastPositionIndex()</h3>
-                <p>Return the index of the last position of the game.</p>
-                <p>Return type : Number</p>
-                <p>See <a class="link" href="examples/methods/set-pgn.html">example</a>.</p>
-            </div>
-            <div class="method">
-                <div class="anchor" id="getLegalMoves"></div>
-                <h3 class="identifier-header">getLegalMoves(index)</h3>
-                <p>Return an array of the legal moves in a position.</p>
-                <table class="parameter-table">
-                    <tr>
-                        <th class="parameter-table__header" colspan="2">Parameter</th>
-                    </tr>
-                    <tr>
-                        <td>index</td>
-                        <td>Number<br>The index of the desired position. It should be a positive integer.</td>
-                    </tr>
-                </table>
-                <p>Return type : String[]</p>
-                <p>See <a class="link" href="examples/advanced/random-moves.html">example</a>.</p>
-            </div>
-            <div class="method">
                 <div class="anchor" id="getPGN"></div>
                 <h3 class="identifier-header">getPGN()</h3>
                 <p>Return the PGN string of the current game.</p>
@@ -267,8 +242,8 @@
                 <p>See <a class="link" href="examples/advanced/random-moves.html">example</a>.</p>
             </div>
             <div class="method">
-                <div class="anchor" id="is50MovesDraw"></div>
-                <h3 class="identifier-header">is50MovesDraw(index)</h3>
+                <div class="anchor" id="is50Moves"></div>
+                <h3 class="identifier-header">is50Moves(index)</h3>
                 <p>Return <code class="inline-code">true</code> if a position is a draw because of the 50 moves rule or <code class="inline-code">false</code> if it's not.</p>
                 <table class="parameter-table">
                     <tr>
@@ -281,6 +256,21 @@
                 </table>
                 <p>Return type : Boolean</p>
                 <p>See <a class="link" href="examples/advanced/random-moves.html">example</a>.</p>
+            </div>
+            <div class="method">
+                <div class="anchor" id="isCheck"></div>
+                <h3 class="identifier-header">isCheck(index)</h3>
+                <p>Return <code class="inline-code">true</code> if the king of the active color is in check in a position or <code class="inline-code">false</code> if it's not.</p>
+                <table class="parameter-table">
+                    <tr>
+                        <th class="parameter-table__header" colspan="2">Parameter</th>
+                    </tr>
+                    <tr>
+                        <td>index</td>
+                        <td>Number<br>The index of the desired position. It should be a positive integer.</td>
+                    </tr>
+                </table>
+                <p>Return type : Boolean</p>
             </div>
             <div class="method">
                 <div class="anchor" id="isCheckmate"></div>
@@ -299,23 +289,8 @@
                 <p>See <a class="link" href="examples/advanced/random-moves.html">example</a>.</p>
             </div>
             <div class="method">
-                <div class="anchor" id="isInCheck"></div>
-                <h3 class="identifier-header">isInCheck(index)</h3>
-                <p>Return <code class="inline-code">true</code> if the king of the active color is in check in a position or <code class="inline-code">false</code> if it's not.</p>
-                <table class="parameter-table">
-                    <tr>
-                        <th class="parameter-table__header" colspan="2">Parameter</th>
-                    </tr>
-                    <tr>
-                        <td>index</td>
-                        <td>Number<br>The index of the desired position. It should be a positive integer.</td>
-                    </tr>
-                </table>
-                <p>Return type : Boolean</p>
-            </div>
-            <div class="method">
-                <div class="anchor" id="isInsufficientMaterialDraw"></div>
-                <h3 class="identifier-header">isInsufficientMaterialDraw(index)</h3>
+                <div class="anchor" id="isInsufficientMaterial"></div>
+                <h3 class="identifier-header">isInsufficientMaterial(index)</h3>
                 <p>Return <code class="inline-code">true</code> if the remaining material is insufficient to win a position or <code class="inline-code">false</code> if it's not.</p>
                 <table class="parameter-table">
                     <tr>
@@ -330,8 +305,8 @@
                 <p>See <a class="link" href="examples/advanced/random-moves.html">example</a>.</p>
             </div>
             <div class="method">
-                <div class="anchor" id="isLegal"></div>
-                <h3 class="identifier-header">isLegal(index, move)</h3>
+                <div class="anchor" id="isLegalMove"></div>
+                <h3 class="identifier-header">isLegalMove(index, start, destination)</h3>
                 <p>Return <code class="inline-code">true</code> if a move is legal in a position or <code class="inline-code">false</code> if it's not.</p>
                 <table class="parameter-table">
                     <tr>
@@ -342,8 +317,12 @@
                         <td>Number<br>The index of the desired position. It should be a positive integer.</td>
                     </tr>
                     <tr>
-                        <td>move</td>
-                        <td>String<br>The move to test. It should be in the algebraic format.</td>
+                        <td>start</td>
+                        <td>String<br>The start coordinate of the move to check.</td>
+                    </tr>
+                    <tr>
+                        <td>destination</td>
+                        <td>String<br>The destination coordinate of the move to check.</td>
                     </tr>
                 </table>
                 <p>Return type : Boolean</p>
@@ -353,8 +332,8 @@
                 <code class="code">var abChess = {};
             var containerId = "abContainer";
             abChess = new AbChess(containerId);
-            abChess.isLegal(0, "e2-e4"); // True
-            abChess.isLegal(0, "e1-e4"); // False
+            abChess.isLegal(0, "e2", "e4"); // True
+            abChess.isLegal(0, "e1", "e4"); // False
                 </code>
             </div>
             <div class="method">
@@ -375,7 +354,7 @@
             </div>
             <div class="method">
                 <div class="anchor" id="isValidFEN"></div>
-                <h3 class="identifier-header">isValidFEN(fen, onlyCheckRows)</h3>
+                <h3 class="identifier-header">isValidFEN(fen)</h3>
                 <p>Return <code class="inline-code">true</code> if a FEN string is valid or <code class="inline-code">false</code> if it's not.</p>
                 <table class="parameter-table">
                     <tr>
@@ -384,11 +363,6 @@
                     <tr>
                         <td>fen</td>
                         <td>String<br>The Forsyth-Edwards Notation string to validate.</td>
-                    </tr>
-                    <tr>
-                        <td>onlyCheckRows</td>
-                        <td>Optional<br>Boolean<br>When set to true, the function will only check if the position rows are valid.
-                            When set to false, the function will validate the entire string. The default is <code class="inline-code">false</code>.</td>
                     </tr>
                 </table>
                 <p>Return type : Boolean</p>
@@ -400,7 +374,6 @@
             abChess = new AbChess(containerId);
             abChess.isValidFEN("rnbqkbnr/pp3ppp/8/3p4/3P4/8/PP3PPP/RNBQKBNR w KQkq - 0 6"); // True
             abChess.isValidFEN("rnbqkbnr/8/8/8/8/8/8/RNBQKBNR"); // False
-            abChess.isValidFEN("rnbqkbnr/8/8/8/8/8/8/RNBQKBNR", true); // True
                 </code>
             </div>
             <div class="method">
@@ -417,23 +390,6 @@
                     </tr>
                 </table>
                 <p>Return type : Boolean</p>
-
-            </div>
-            <div class="method">
-                <div class="anchor" id="navigate"></div>
-                <h3 class="identifier-header">navigate(index)</h3>
-                <p>Update the chessboard to a position in the game. The pieces are automatically locked until the last position
-                    is reached again.</p>
-                <table class="parameter-table">
-                    <tr>
-                        <th class="parameter-table__header" colspan="2">Parameter</th>
-                    </tr>
-                    <tr>
-                        <td>index</td>
-                        <td>Number<br>The index of the desired position. It should be a positive integer.</td>
-                    </tr>
-                </table>
-                <p>See <a class="link" href="examples/advanced/pgn-reader.html">example</a>.</p>
             </div>
             <div class="method">
                 <div class="anchor" id="onMovePlayed"></div>
@@ -452,15 +408,19 @@
             </div>
             <div class="method">
                 <div class="anchor" id="play"></div>
-                <h3 class="identifier-header">play(move, promotion)</h3>
-                <p>Play a move in the game and return the resulting FEN string.</p>
+                <h3 class="identifier-header">play(start, destination, promotion)</h3>
+                <p>Play a move on the board.</p>
                 <table class="parameter-table">
                     <tr>
                         <th class="parameter-table__header" colspan="2">Parameter</th>
                     </tr>
                     <tr>
-                        <td>move</td>
-                        <td>String<br>The move to play. It should be in the algebraic format.</td>
+                        <td>start</td>
+                        <td>String<br>The start coordinate of the move to play.</td>
+                    </tr>
+                    <tr>
+                        <td>destination</td>
+                        <td>String<br>The destination coordinate of the move to play.</td>
                     </tr>
                     <tr>
                         <td>promotion</td>
@@ -492,8 +452,8 @@
                 <p>See <a class="link" href="examples/methods/set-fen.html">example</a>.</p>
             </div>
             <div class="method">
-                <div class="anchor" id="setGameInfo"></div>
-                <h3 class="identifier-header">setGameInfo(name, value)</h3>
+                <div class="anchor" id="setInfo"></div>
+                <h3 class="identifier-header">setInfo(name, value)</h3>
                 <p>Set an information and its value in the game. Replace the information if it already exists. Create a new
                     one if not.</p>
                 <table class="parameter-table">
@@ -513,7 +473,7 @@
             </div>
             <div class="method">
                 <div class="anchor" id="setPGN"></div>
-                <h3 class="identifier-header">setPGN(pgn, loadMoves)</h3>
+                <h3 class="identifier-header">setPGN(pgn)</h3>
                 <p>Load a chessgame from a PGN string. This will replace the game in progress.</p>
                 <table class="parameter-table">
                     <tr>
@@ -523,12 +483,23 @@
                         <td>pgn</td>
                         <td>String<br>The Portable Game Notation to import.</td>
                     </tr>
-                    <tr>
-                        <td>loadMoves</td>
-                        <td>Optional<br>Boolean<br>When set to false, the function will only load the game informations. The default is <code class="inline-code">true</code>.</td>
-                    </tr>
                 </table>
                 <p>See <a class="link" href="examples/methods/set-pgn.html">example</a>.</p>
+            </div>
+            <div class="method">
+                <div class="anchor" id="view"></div>
+                <h3 class="identifier-header">view(index)</h3>
+                <p>Update the chessboard to a position in the game.</p>
+                <table class="parameter-table">
+                    <tr>
+                        <th class="parameter-table__header" colspan="2">Parameter</th>
+                    </tr>
+                    <tr>
+                        <td>index</td>
+                        <td>Number<br>The index of the desired position. It should be a positive integer.</td>
+                    </tr>
+                </table>
+                <p>See <a class="link" href="examples/advanced/pgn-reader.html">example</a>.</p>
             </div>
 
         </div>

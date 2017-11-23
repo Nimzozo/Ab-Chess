@@ -4,27 +4,63 @@ window.addEventListener("load", function () {
     var data = {
         "items": [
             {
-                "name": "Basics",
+                "name": "Options",
                 "items": [
                     {
-                        "name": "Default options",
-                        "href": "examples/basics/default.html"
+                        "name": "Animated",
+                        "href": "examples/options/animated.html"
                     },
                     {
-                        "name": "Visual changes",
-                        "href": "examples/basics/visual.html"
+                        "name": "Animation speed",
+                        "href": "examples/options/animation-speed.html"
                     },
                     {
-                        "name": "Locked pieces",
-                        "href": "examples/basics/locked.html"
+                        "name": "Clickable",
+                        "href": "examples/options/clickable.html"
                     },
                     {
-                        "name": "Orientation",
-                        "href": "examples/basics/orientation.html"
+                        "name": "Coordinates",
+                        "href": "examples/options/coordinates.html"
                     },
                     {
-                        "name": "Squares highlighting",
-                        "href": "examples/basics/highlighting.html"
+                        "name": "Draggable",
+                        "href": "examples/options/draggable.html"
+                    },
+                    {
+                        "name": "Images",
+                        "href": "examples/options/images-path.html"
+                    },
+                    {
+                        "name": "Legal marks color",
+                        "href": "examples/options/legal-marks-color.html"
+                    },
+                    {
+                        "name": "Mark check",
+                        "href": "examples/options/mark-check.html"
+                    },
+                    {
+                        "name": "Mark last move",
+                        "href": "examples/options/mark-last-move.html"
+                    },
+                    {
+                        "name": "Mark legal squares",
+                        "href": "examples/options/mark-legal-squares.html"
+                    },
+                    {
+                        "name": "Mark overflown square",
+                        "href": "examples/options/mark-overflown-square.html"
+                    },
+                    {
+                        "name": "Mark start square",
+                        "href": "examples/options/mark-start-square.html"
+                    },
+                    {
+                        "name": "Reversed",
+                        "href": "examples/options/reversed.html"
+                    },
+                    {
+                        "name": "Width",
+                        "href": "examples/options/width.html"
                     }
                 ]
             },
@@ -44,8 +80,12 @@ window.addEventListener("load", function () {
                         "href": "examples/methods/get-fen.html"
                     },
                     {
-                        "name": "Get game info",
-                        "href": "examples/methods/get-game-info.html"
+                        "name": "Get info",
+                        "href": "examples/methods/get-info.html"
+                    },
+                    {
+                        "name": "Play",
+                        "href": "examples/methods/play.html"
                     },
                     {
                         "name": "Set FEN",
@@ -54,10 +94,6 @@ window.addEventListener("load", function () {
                     {
                         "name": "Set PGN",
                         "href": "examples/methods/set-pgn.html"
-                    },
-                    {
-                        "name": "Play",
-                        "href": "examples/methods/play.html"
                     }
                 ]
             },
@@ -71,7 +107,7 @@ window.addEventListener("load", function () {
                     {
                         "name": "PGN reader",
                         "href": "examples/advanced/pgn-reader.html",
-                        "selected": true
+                        selected: true
                     },
                     {
                         "name": "PGN viewer",
@@ -99,12 +135,11 @@ window.addEventListener("load", function () {
             var previousButton = document.getElementById("previous-button");
 
             abChess = new AbChess("chessboard", config);
-            abChess.draw();
             abChess.setFEN();
 
             function importPGN(pgn) {
-                abChess.setPGN(pgn, true);
-                lastIndex = abChess.getLastPositionIndex();
+                abChess.setPGN(pgn);
+                lastIndex = abChess.getMovesPGN().length;
                 clickLastButton();
             }
 
@@ -112,10 +147,10 @@ window.addEventListener("load", function () {
                 var option = document.createElement("OPTION");
                 var pgn = games[key].innerText;
                 abChess.setPGN(pgn, false);
-                option.innerText = abChess.getGameInfo("White") + " vs " +
-                    abChess.getGameInfo("Black") +
-                    " | " + abChess.getGameInfo("Event") +
-                    " (" + abChess.getGameInfo("Round") + ")";
+                option.innerText = abChess.getInfo("White") + " vs " +
+                    abChess.getInfo("Black") +
+                    " | " + abChess.getInfo("Event") +
+                    " (" + abChess.getInfo("Round") + ")";
                 option.addEventListener("dblclick", function () {
                     importPGN(pgn);
                 });
@@ -124,12 +159,12 @@ window.addEventListener("load", function () {
 
             function clickFirstButton() {
                 index = 0;
-                abChess.navigate(index);
+                abChess.view(index);
             }
 
             function clickLastButton() {
                 index = lastIndex;
-                abChess.navigate(index);
+                abChess.view(index);
             }
 
             function clickNextButton() {
@@ -137,7 +172,7 @@ window.addEventListener("load", function () {
                     return;
                 }
                 index += 1;
-                abChess.navigate(index);
+                abChess.view(index);
             }
 
             function clickPreviousButton() {
@@ -145,7 +180,7 @@ window.addEventListener("load", function () {
                     return;
                 }
                 index -= 1;
-                abChess.navigate(index);
+                abChess.view(index);
             }
 
             firstButton.addEventListener("click", clickFirstButton);

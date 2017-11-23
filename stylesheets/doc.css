@@ -19,13 +19,14 @@
 }
 
 .parameter-table {
+    font-size: 0.9em;
     width: 100%;
     border-spacing: 0;
 }
 
 .parameter-table__header {
     text-align: left;
-    background-color: lightblue;
+    background-color: lightsteelblue;
     color: white;
     padding: 4px;
 }
@@ -37,7 +38,7 @@
 }
 
 .parameter-table td:first-child {
-    background-color: lightcyan;
+    background-color: azure;
 }
 
 .link {

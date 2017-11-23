@@ -5,27 +5,63 @@ window.addEventListener("load", function () {
     var data = {
         "items": [
             {
-                "name": "Basics",
+                "name": "Options",
                 "items": [
                     {
-                        "name": "Default options",
-                        "href": "examples/basics/default.html"
+                        "name": "Animated",
+                        "href": "examples/options/animated.html"
                     },
                     {
-                        "name": "Visual changes",
-                        "href": "examples/basics/visual.html"
+                        "name": "Animation speed",
+                        "href": "examples/options/animation-speed.html"
                     },
                     {
-                        "name": "Locked pieces",
-                        "href": "examples/basics/locked.html"
+                        "name": "Clickable",
+                        "href": "examples/options/clickable.html"
                     },
                     {
-                        "name": "Orientation",
-                        "href": "examples/basics/orientation.html"
+                        "name": "Coordinates",
+                        "href": "examples/options/coordinates.html"
                     },
                     {
-                        "name": "Squares highlighting",
-                        "href": "examples/basics/highlighting.html"
+                        "name": "Draggable",
+                        "href": "examples/options/draggable.html"
+                    },
+                    {
+                        "name": "Images",
+                        "href": "examples/options/images-path.html"
+                    },
+                    {
+                        "name": "Legal marks color",
+                        "href": "examples/options/legal-marks-color.html"
+                    },
+                    {
+                        "name": "Mark check",
+                        "href": "examples/options/mark-check.html"
+                    },
+                    {
+                        "name": "Mark last move",
+                        "href": "examples/options/mark-last-move.html"
+                    },
+                    {
+                        "name": "Mark legal squares",
+                        "href": "examples/options/mark-legal-squares.html"
+                    },
+                    {
+                        "name": "Mark overflown square",
+                        "href": "examples/options/mark-overflown-square.html"
+                    },
+                    {
+                        "name": "Mark start square",
+                        "href": "examples/options/mark-start-square.html"
+                    },
+                    {
+                        "name": "Reversed",
+                        "href": "examples/options/reversed.html"
+                    },
+                    {
+                        "name": "Width",
+                        "href": "examples/options/width.html"
                     }
                 ]
             },
@@ -45,8 +81,13 @@ window.addEventListener("load", function () {
                         "href": "examples/methods/get-fen.html"
                     },
                     {
-                        "name": "Get game info",
-                        "href": "examples/methods/get-game-info.html"
+                        "name": "Get info",
+                        "href": "examples/methods/get-info.html"
+                    },
+                    {
+                        "name": "Play",
+                        "href": "examples/methods/play.html",
+                        selected: true
                     },
                     {
                         "name": "Set FEN",
@@ -55,11 +96,6 @@ window.addEventListener("load", function () {
                     {
                         "name": "Set PGN",
                         "href": "examples/methods/set-pgn.html"
-                    },
-                    {
-                        "name": "Play",
-                        "href": "examples/methods/play.html",
-                        "selected": true
                     }
                 ],
                 "open": true
@@ -88,26 +124,22 @@ window.addEventListener("load", function () {
             var abChess = {};
             var d4Button = document.getElementById("d4Button");
             var e4Button = document.getElementById("e4Button");
-            var resetButton = document.getElementById("resetButton");
             abChess = new AbChess("chessboard");
-            abChess.draw();
             abChess.setFEN();
             d4Button.addEventListener("click", function () {
-                abChess.play("d2-d4");
-                abChess.play("g8-f6");
+                abChess.play("d2", "d4");
+                abChess.play("g8", "f6");
             });
             e4Button.addEventListener("click", function () {
-                abChess.play("e2-e4");
-                abChess.play("c7-c5");
+                abChess.play("e2", "e4");
+                abChess.play("c7", "c5");
             });
-            resetButton.addEventListener("click", abChess.reset);
         },
         html: "<div>\n" +
-        "  <button id=\"d4Button\" class=\"commands__button\">d4 Nf6</button>\n" +
-        "  <button id=\"e4Button\" class=\"commands__button\">e4 c5</button>\n" +
-        "  <button id=\"resetButton\" class=\"commands__button\">Reset</button>\n" +
-        "</div>\n" +
-        "<div id=\"chessboard\"></div>"
+            "  <button id=\"d4Button\" class=\"commands__button\">d4 Nf6</button>\n" +
+            "  <button id=\"e4Button\" class=\"commands__button\">e4 c5</button>\n" +
+            "</div>\n" +
+            "<div id=\"chessboard\"></div>"
 
     };
     var htmlCode = document.getElementById("html-code");
