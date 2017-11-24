@@ -9,9 +9,8 @@ h1 {
 }
 
 .overview-header {
-    color: lightslategrey;
     font-weight: normal;
-    border-bottom: 1px solid gainsboro;
+    border-bottom: 2px solid gainsboro;
 }
 
 .list {
@@ -20,7 +19,7 @@ h1 {
 }
 
 .list__item {
-    margin: 2px;
+    margin: 4px;
 }
 
 .link {

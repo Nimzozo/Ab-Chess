@@ -1,3 +1,3 @@
-# Ab-Chess GitHub pages
+# AbChess GitHub pages
 
 ## https://nimzozo.github.io/Ab-Chess/

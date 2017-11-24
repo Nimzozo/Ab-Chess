@@ -22,8 +22,9 @@ h1, h2, h3 {
     z-index: 9;
     top: 0;
     left: 0;
-    background-color: darkslategrey;
+    background-color: steelblue;
     width: 100%;
+    border-bottom: lightsteelblue 1px solid;
 }
 
 #sub-fixed-header {
@@ -46,7 +47,7 @@ h1, h2, h3 {
 .header__link {
     display: table-cell;
     vertical-align: middle;
-    padding: 16px;
+    padding: 20px;
     color: white;
     text-decoration: none;
 }
@@ -56,10 +57,9 @@ h1, h2, h3 {
 }
 
 #selected-tab {
-    border-top: 2px solid white;
-    padding-top: 14px;
+    text-decoration: underline;
+    font-weight: bold;
     color: white;
-    background-color: slategrey;
 }
 
 #main-container {
@@ -69,14 +69,14 @@ h1, h2, h3 {
 
 #sub-main {
     width: 72%;
-    margin: 20px auto;
+    margin: 24px auto;
 }
 
 footer {
     position: absolute;
     bottom: 0;
-    background-color: darkslategrey;
-    color: skyblue;
+    background-color: steelblue;
+    color: lightsteelblue;
     width: 100%;
     margin-top: 50px;
 }
