@@ -99,42 +99,6 @@ window.addEventListener("load", function () {
                         "href": "examples/methods/set-pgn.html"
                     }
                 ]
-            },{
-                "name": "Methods",
-                "items": [
-                    {
-                        "name": "Draw",
-                        "href": "examples/methods/draw.html"
-                    },
-                    {
-                        "name": "Flip",
-                        "href": "examples/methods/flip.html"
-                    },
-                    {
-                        "name": "Get active color",
-                        "href": "examples/methods/get-active-color.html"
-                    },
-                    {
-                        "name": "Get FEN",
-                        "href": "examples/methods/get-fen.html"
-                    },
-                    {
-                        "name": "Get info",
-                        "href": "examples/methods/get-info.html"
-                    },
-                    {
-                        "name": "Set FEN",
-                        "href": "examples/methods/set-fen.html"
-                    },
-                    {
-                        "name": "Set PGN",
-                        "href": "examples/methods/set-pgn.html"
-                    },
-                    {
-                        "name": "Play",
-                        "href": "examples/methods/play.html"
-                    }
-                ]
             },
             {
                 "name": "Advanced",
