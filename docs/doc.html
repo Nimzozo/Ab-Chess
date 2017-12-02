@@ -9,7 +9,6 @@
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="stylesheets/global.css">
     <link rel="stylesheet" href="stylesheets/doc.css">
-    <link rel="stylesheet" href="stylesheets/colorize.css">
 </head>
 
 <body>
@@ -130,19 +129,6 @@
                     <td>Optional<br>Number<br>The width of the chessboard in pixel. Multiples of 8 are recommended. The default is <code class="inline-code">400</code>.</td>
                 </tr>
             </table>
-
-            <h4 class="little-header">Example</h4>
-            <p class="description">Create an AbChess instance.</p>
-            <span class="code-title">JavaScript</span>
-            <code class="code">var abChess = {};
-            var abConfig = {
-                clickable: true,
-                draggable: false,
-                width: 200
-            };
-            var containerId = "abContainer";
-            abChess = new AbChess(containerId, abConfig);
-            </code>
 
             <h2 class="big-header">Methods</h2>
 
@@ -326,15 +312,6 @@
                     </tr>
                 </table>
                 <p>Return type : Boolean</p>
-                <h4 class="little-header">Example</h4>
-                <p class="description">Test some moves legality.</p>
-                <span class="code-title">JavaScript</span>
-                <code class="code">var abChess = {};
-            var containerId = "abContainer";
-            abChess = new AbChess(containerId);
-            abChess.isLegal(0, "e2", "e4"); // True
-            abChess.isLegal(0, "e1", "e4"); // False
-                </code>
             </div>
             <div class="method">
                 <div class="anchor" id="isStalemate"></div>
@@ -366,15 +343,6 @@
                     </tr>
                 </table>
                 <p>Return type : Boolean</p>
-                <h4 class="little-header">Example</h4>
-                <p class="description">Test some FEN strings.</p>
-                <span class="code-title">JavaScript</span>
-                <code class="code">var abChess = {};
-            var containerId = "abContainer";
-            abChess = new AbChess(containerId);
-            abChess.isValidFEN("rnbqkbnr/pp3ppp/8/3p4/3P4/8/PP3PPP/RNBQKBNR w KQkq - 0 6"); // True
-            abChess.isValidFEN("rnbqkbnr/8/8/8/8/8/8/RNBQKBNR"); // False
-                </code>
             </div>
             <div class="method">
                 <div class="anchor" id="isValidPGN"></div>

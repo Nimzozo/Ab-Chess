@@ -1,26 +1,14 @@
-
-.code-title {
-    display: inline-block;
-    padding: 4px;
-    border: 1px solid gainsboro;
-    border-bottom: none;
-    background-color: whitesmoke;
-    color: grey;
-    font-size: 0.8em;
-}
-
 .code {
     display: block;
-    background-color: whitesmoke;
-    border: 1px solid gainsboro;
+    background-color: lavender;
     white-space: pre;
     font-family: "Lucida Console", Monaco, monospace;
     font-size: 0.9em;
     line-height: 20px;
-    padding: 4px;
-    margin-bottom: 8px;
+    padding: 16px;
     overflow: auto;
     max-height: 400px;
+    margin-bottom: 20px;
 }
 
 pre {
@@ -33,11 +21,11 @@ pre {
 }
 
 .number {
-    color: steelblue;
+    color: darkred;
 }
 
 .pink {
-    color: darksalmon;
+    color: forestgreen;
 }
 
 .comment {
