@@ -3,12 +3,12 @@
     background-color: lavender;
     white-space: pre;
     font-family: "Lucida Console", Monaco, monospace;
-    font-size: 0.9em;
+    font-size: .9em;
     line-height: 20px;
     padding: 16px;
     overflow: auto;
-    max-height: 400px;
-    margin-bottom: 20px;
+    max-height: 320px;
+    margin-bottom: 16px;
 }
 
 pre {

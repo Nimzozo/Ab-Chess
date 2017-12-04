@@ -142,6 +142,7 @@ textarea {
 .inline-code {
     font-family: "Lucida Console", Monaco, monospace;
     background-color: lavender;
-    font-size: 0.9em;
-    padding: 2px;
+    color: dimgrey;
+    padding: 4px;
+    font-size: .9em;
 }
