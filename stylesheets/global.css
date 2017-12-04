@@ -48,17 +48,17 @@ h1, h2, h3 {
     display: table-cell;
     vertical-align: middle;
     padding: 20px;
-    color: white;
+    color: lightblue;
     text-decoration: none;
 }
 
 .header__link:hover {
     text-decoration: underline;
+    color: white;
 }
 
 #selected-tab {
     text-decoration: underline;
-    font-weight: bold;
     color: white;
 }
 
@@ -76,7 +76,7 @@ footer {
     position: absolute;
     bottom: 0;
     background-color: steelblue;
-    color: lightsteelblue;
+    color: lightblue;
     width: 100%;
     margin-top: 50px;
 }
