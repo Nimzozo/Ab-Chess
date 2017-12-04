@@ -168,8 +168,8 @@ window.addEventListener("load", function () {
                 playRandomMove(0);
             }, 1000);
         },
-        html: "<div id=\"chessboard\"></div>\n" +
-            "<code id=\"fenCode\" class=\"code\"></code>\n" +
+        html: "<code id=\"fenCode\" class=\"code\"></code>\n" +
+            "<div id=\"chessboard\"></div>\n" +
             "<code id=\"pgnCode\" class=\"code\"></code>"
     };
     var htmlCode = document.getElementById("html-code");

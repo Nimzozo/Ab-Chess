@@ -13,11 +13,10 @@
 }
 
 #result {
-    margin: 24px auto;
+    margin: 16px auto;
 }
 
 #description {
-    color: grey;
     text-align: justify;
 }
 
@@ -28,7 +27,7 @@
 }
 
 .commands {
-    margin: 10px;
+    margin: 10px auto;
 }
 
 .commands__button {
@@ -36,17 +35,18 @@
     display: inline-block;
     vertical-align: top;
     margin: 8px 2px;
-    background-color: gainsboro;
-    color: slategrey;
+    background-color: white;
+    color: steelblue;
     border: none;
     min-height: 40px;
     min-width: 40px;
     text-align: center;
     font-size: 1.2em;
+    border: 1px solid steelblue;
 }
 
 .commands__button:hover {
-    background-color: slategrey;
+    background-color: steelblue;
     color: white;
 }
 
@@ -55,6 +55,19 @@ textarea {
     height: 100px;
     min-width: 100%;
     margin: 8px 0;
+    white-space: nowrap;
+}
+
+#game-code {
+    white-space: pre-line;
+    display: block;
+    background-color: lavender;
+    font-family: "Lucida Console", Monaco, monospace;
+    font-size: .9em;
+    line-height: 20px;
+    padding: 16px;
+    overflow: auto;
+    max-height: 320px;
 }
 
 #black-name {

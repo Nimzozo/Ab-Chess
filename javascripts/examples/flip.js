@@ -128,9 +128,7 @@ window.addEventListener("load", function () {
             flipButton.addEventListener("click", abChess.flip);
         },
         html: "<div id=\"chessboard\"></div>\n" +
-            "<div>\n" +
-            "  <button id=\"flipButton\" class=\"commands__button\">&#8634;</button>\n" +
-            "</div>"
+            "<button id=\"flipButton\" class=\"commands__button\">&#8634;</button>"
     };
     var htmlCode = document.getElementById("html-code");
     var jsCode = document.getElementById("js-code");

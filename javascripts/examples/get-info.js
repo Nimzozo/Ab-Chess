@@ -124,16 +124,16 @@ window.addEventListener("load", function () {
             var abChess = {};
             var blackName = "";
             var blackParagraph = document.getElementById("black-name");
+            var gameCode = document.getElementById("game-code");
             var options = {
                 clickable: false,
                 draggable: false
             };
-            var pgnTextarea = document.getElementById("pgn-textarea");
             var whiteName = "";
             var whiteParagraph = document.getElementById("white-name");
             abChess = new AbChess("chessboard", options);
             abChess.setFEN();
-            abChess.setPGN(pgnTextarea.value);
+            abChess.setPGN(gameCode.innerText);
             blackName = abChess.getInfo("Black");
             whiteName = abChess.getInfo("White");
             blackParagraph.innerText = blackName;

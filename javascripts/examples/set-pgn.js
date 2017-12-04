@@ -122,14 +122,14 @@ window.addEventListener("load", function () {
     var example = {
         func: function () {
             var abChess = {};
+            var gameCode = document.getElementById("game-code");
             var options = {
                 clickable: false,
                 draggable: false
             };
-            var pgnTextarea = document.getElementById("pgn-textarea");
             abChess = new AbChess("chessboard", options);
             abChess.setFEN();
-            abChess.setPGN(pgnTextarea.value);
+            abChess.setPGN(gameCode.innerText);
         },
         html: "<div id=\"chessboard\"></div>"
     };
