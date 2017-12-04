@@ -12,7 +12,7 @@ More informations are available on the [GitHub pages](https://nimzozo.github.io/
 
 - [Documentation](https://nimzozo.github.io/Ab-Chess/docs/overview.html)
 - [Examples](https://nimzozo.github.io/Ab-Chess/examples/options/animated.html)
-- [Releases](https://nimzozo.github.io/Ab-Chess/download.html)
+- [Releases](https://nimzozo.github.io/Ab-Chess/releases.html)
 
 ## Features
 
