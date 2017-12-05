@@ -80,4 +80,14 @@ hr {
 .container__shorter {
     width: 92%;
     margin: 20px auto;
+    text-align: center;
+}
+
+#game-code {
+    display: none;
+}
+
+#chessboard {
+    display: inline-block;
+    margin: auto;
 }
