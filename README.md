@@ -11,7 +11,7 @@ It lets you import, play and export a chessgame in the PGN notation.
 More informations are available on the [GitHub pages](https://nimzozo.github.io/Ab-Chess/) :
 
 - [Documentation](https://nimzozo.github.io/Ab-Chess/docs/overview.html)
-- [Examples](https://nimzozo.github.io/Ab-Chess/examples/options/animated.html)
+- [Examples](https://nimzozo.github.io/Ab-Chess/examples.html)
 - [Releases](https://nimzozo.github.io/Ab-Chess/releases.html)
 
 ## Features
