@@ -1,63 +1,64 @@
-/** Accordeon.css
- * 2017-03-11
+/** drop-down-list.css
+ * 2017-12-07
  * Copyright (c) 2017 Nimzozo
  */
 
-.accordeon__link {
-    color: black;
-    text-decoration: none;
-    display: block;
-}
-
-.link_selected {
-    color: dodgerblue;
-    text-decoration: none;
-    display: block;
-    font-weight: bold;
-}
-
-.list-header, .list-header_open {
+ .drop-down-header, .drop-down-header_open {
     cursor: pointer;
     margin: 8px;
+    color: black;
     -webkit-user-select: none; /* Chrome, Opera, Safari */
     -moz-user-select: none; /* Firefox 2+ */
     -ms-user-select: none; /* IE 10+ */
     user-select: none; /* Standard syntax */
 }
 
-.list-header:hover, .list-header_open:hover, .accordeon__link:hover {
-    color: dodgerblue;
-}
-
-.list-header::before {
+.drop-down-header::before {
     content: "♖";
     color: black;
     position: relative;
     left: -4px;
 }
 
-.list-header_open::before {
+.drop-down-header_open::before {
     content: "♜";
     color: black;
     position: relative;
     left: -4px;
 }
 
-.accordeon__list {
+.drop-down-list {
     display: none;
 }
 
-.list_open {
+.drop-down-list_open {
     list-style-type: none;
     margin: 0;
     padding: 0;
-    text-indent: 24px;
-    font-size: 0.9em;
+    text-indent: 4px;
+    font-size: .9em;
     display: block;
 }
 
-.list__item {
+.drop-down-list__item {
     height: 20px;
     margin: 4px;
     display: block;
+}
+
+ .drop-down-list__link {
+    color: black;
+    text-decoration: none;
+    display: block;
+}
+
+.drop-down-list__link_selected {
+    color: dodgerblue;
+    text-decoration: none;
+    display: block;
+    font-weight: bold;
+}
+
+.drop-down-header:hover, .drop-down-list__link:hover {
+    color: dodgerblue;
 }
