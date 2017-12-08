@@ -6,16 +6,17 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="releases/AbChess-0.3.0/AbChess-0.3.0-min.css">
-    <link rel="stylesheet" href="stylesheets/drop-down-list.css">
-    <link rel="stylesheet" href="stylesheets/colorize.css">
     <link rel="stylesheet" href="stylesheets/global.css">
     <link rel="stylesheet" href="stylesheets/examples.css">
+    <link rel="stylesheet" href="releases/AbChess-0.3.0/AbChess-0.3.0-min.css">
+    <link rel="stylesheet" href="stylesheets/colorize.css">
+    <link rel="stylesheet" href="stylesheets/drop-down-list.css">
 </head>
 
 <body>
-    <header id="fixed-header">
-        <div id="sub-fixed-header">
+
+    <header id="main-header">
+        <div id="sub-main-header">
             <div class="inline-block">
                 <a class="header__link" href="index.html">AbChess</a>
                 <a class="header__link" href="docs/overview.html">Documentation</a>
@@ -23,7 +24,7 @@
                 <a class="header__link" href="releases.html">Releases</a>
             </div>
             <div class="inline-block right">
-                <a class="header__link" href="https://github.com/Nimzozo/Ab-Chess">GitHub</a>
+                <a class="header__link" href="https://github.com/Nimzozo/Ab-Chess" target="_blank">GitHub</a>
             </div>
         </div>
     </header>
@@ -75,18 +76,31 @@
 
         </div>
 
-        <footer>
-            <div id="footer-inside">
-                <div class="inline-block">
-                    &copy; 2016-2017 <a class="footer__link" href="https://github.com/Nimzozo">Nimzozo</a>
-                </div><!--
-                --><div class="inline-block right">
-                    Code licensed <a class="footer__link" href="https://github.com/Nimzozo/Ab-Chess/blob/master/LICENSE.txt">MIT</a>
-                </div>
-            </div>
-        </footer>
-
     </div>
+
+    <footer>
+        <div id="footer-inside">
+
+            <div class="footer__block">
+                <header class="footer__header">&copy; 2017 AbChess</header>
+                <p class="footer__p">Code licensed <a class="footer__link" href="https://github.com/Nimzozo/Ab-Chess/blob/master/LICENSE.txt" target="_blank">MIT</a></p>
+            </div><!--
+            --><div class="footer__block">
+                <header class="footer__header">Docs</header>
+                <p class="footer__p"><a class="footer__link" href="docs/overview.html">Overview</a></p>
+                <p class="footer__p"><a class="footer__link" href="docs/doc.html">Documentation</a></p>
+                <p class="footer__p"><a class="footer__link" href="examples.html">Examples</a></p>
+                <p class="footer__p"><a class="footer__link" href="releases.html">Releases</a></p>
+            </div><!--
+            --><div class="footer__block">
+                <header class="footer__header">About</header>
+                <p class="footer__p"><a class="footer__link" href="https://github.com/Nimzozo/Ab-Chess" target="_blank">Github</a></p>
+                <p class="footer__p"><a class="footer__link" href="https://github.com/Nimzozo/Ab-Chess/issues" target="_blank">Issues</a></p>
+                <p class="footer__p"><a class="footer__link" href="https://github.com/Nimzozo" target="_blank">@Nimzozo</a></p>
+            </div>
+
+        </div>
+    </footer>
 
     <script src="releases/AbChess-0.3.0/AbChess-0.3.0-min.js"></script>
     <script src="javascripts/drop-down-list.js"></script>

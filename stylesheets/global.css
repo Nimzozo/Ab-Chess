@@ -17,17 +17,13 @@ h1, h2, h3 {
     margin: 10px 0;
 }
 
-#fixed-header {
-    position: absolute;
-    z-index: 9;
-    top: 0;
-    left: 0;
+#main-header {
     background-color: steelblue;
     width: 100%;
     border-bottom: lightsteelblue 1px solid;
 }
 
-#sub-fixed-header {
+#sub-main-header {
     position: relative;
     width: 72%;
     margin: auto;
@@ -64,28 +60,41 @@ h1, h2, h3 {
 
 #main-container {
     height: 100%;
-    padding: 50px 0;
+    margin: auto;
 }
 
 #sub-main {
     width: 72%;
-    margin: 24px auto;
+    margin: auto;
 }
 
 footer {
     position: absolute;
-    bottom: 0;
+    bottom: -300px;
     background-color: steelblue;
     color: lightblue;
     width: 100%;
-    margin-top: 50px;
 }
 
 #footer-inside {
-    position: relative;
     width: 72%;
     margin: auto;
-    padding: 25px 0;
+}
+
+.footer__block {
+    display: inline-block;
+    vertical-align: top;
+    width: 33%;
+    margin: 4% 0;
+}
+
+.footer__header {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 10%;
+}
+
+.footer__p {
+    margin: 2% 10%;
 }
 
 .footer__link {

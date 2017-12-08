@@ -1,28 +1,30 @@
-#main-header {
+#home-header {
     background-color: steelblue;
     background-image: url("../images/chess-vectors.png");
     background-attachment: fixed;
     background-repeat: no-repeat;
-    background-position: center top;
+    background-position: center;
     text-align: center;
     padding: 10px;
 }
 
-#main-header__shorter {
+#home-header__shorter {
     width: 72%;
-    margin: 40px auto;
+    margin: auto;
 }
 
 h1 {
     color: white;
     font-family: Cambria, Cochin, Georgia, Times, Times New Roman, serif;
-    font-size: 45px;
-    margin: 80px;
+    font-size: 3em;
+    margin: 64px;
 }
 
 h2 {
     color: white;
-    margin: 60px;
+    font-size: 2em;
+    font-weight: normal;
+    margin: 56px;
 }
 
 #button-link {
