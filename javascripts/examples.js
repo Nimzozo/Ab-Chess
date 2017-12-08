@@ -185,26 +185,6 @@ window.addEventListener("load", function () {
             html: "<div id=\"chessboard\"></div>\n" +
                 "<button id=\"flipButton\" class=\"commands__button\" title=\"Flip the board\">&#8634;</button>"
         },
-        "get-active-color": {
-            description: "Use <a class=\"inline-code\" href=\"docs/doc.html#getActiveColor\">getActiveColor</a> to get the active color in a position of the game.",
-            func: function () {
-                var abChess = {};
-                var black = "Black to move.";
-                var colorParagraph = document.getElementById("colorParagraph");
-                var movesCount = 0;
-                var white = "White to move.";
-                abChess = new AbChess("chessboard");
-                abChess.setFEN();
-                abChess.onMovePlayed(function () {
-                    movesCount += 1;
-                    colorParagraph.innerText = (abChess.getActiveColor(movesCount) === "w")
-                        ? white
-                        : black;
-                });
-            },
-            html: "<p id=\"colorParagraph\">White to move.</p>\n" +
-                "<div id=\"chessboard\"></div>"
-        },
         "get-fen": {
             description: "Use <a class=\"inline-code\" href=\"docs/doc.html#getFEN\">getFEN</a> to get the FEN string in a position of the game.",
             func: function () {
@@ -220,6 +200,34 @@ window.addEventListener("load", function () {
                 });
             },
             html: "<code id=\"fenCode\" class=\"code\"></code>\n" +
+                "<div id=\"chessboard\"></div>"
+        },
+        "on-move-played": {
+            description: "Use <a class=\"inline-code\" href=\"docs/doc.html#onMovePlayed\">onMovePlayed</a>,"+
+            " <a class=\"inline-code\" href=\"docs/doc.html#getActiveColor\">getActiveColor</a>," +
+            " and <a class=\"inline-code\" href=\"docs/doc.html#isCheck\">isCheck</a>" +
+            " to display the game status on each move.",
+            func: function () {
+                var abChess = {};
+                var statusElement = document.getElementById("statusElement");
+                var movesCount = 0;
+                abChess = new AbChess("chessboard");
+                function updateStatus() {
+                    var status = " to move.";
+                    var turn = "White";
+                    movesCount += 1;
+                    if (abChess.getActiveColor(movesCount) === "b") {
+                        turn = "Black"
+                    }
+                    if (abChess.isCheck(movesCount)) {
+                        status = " is in check.";
+                    }
+                    statusElement.innerText = turn + status;
+                }
+                abChess.setFEN();
+                abChess.onMovePlayed(updateStatus);
+            },
+            html: "<p id=\"statusElement\">White to move.</p>\n" +
                 "<div id=\"chessboard\"></div>"
         },
         "play": {
