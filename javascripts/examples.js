@@ -183,7 +183,7 @@ window.addEventListener("load", function () {
                 flipButton.addEventListener("click", abChess.flip);
             },
             html: "<div id=\"chessboard\"></div>\n" +
-                "<button id=\"flipButton\" class=\"commands__button\">&#8634;</button>"
+                "<button id=\"flipButton\" class=\"commands__button\" title=\"Flip the board\">&#8634;</button>"
         },
         "get-active-color": {
             description: "Use <a class=\"inline-code\" href=\"docs/doc.html#getActiveColor\">getActiveColor</a> to get the active color in a position of the game.",
