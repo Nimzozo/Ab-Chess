@@ -3,7 +3,7 @@ window.addEventListener("load", function () {
 
     var examples = {
         "animated": {
-            description: "Use <a class=\"inline-code\" href=\"docs/doc.html#animated\">animated</a> to enable or disable the animations.",
+            description: "Use <a class=\"inline-code\" href=\"docs/reference.html#animated\">animated</a> to enable or disable the animations.",
             func: function () {
                 var abChess = {};
                 var options = {
@@ -15,7 +15,7 @@ window.addEventListener("load", function () {
             html: "<div id=\"chessboard\"></div>"
         },
         "animation-speed": {
-            description: "Use <a class=\"inline-code\" href=\"docs/doc.html#animationSpeed\">animationSpeed</a> to configure the animations speed.",
+            description: "Use <a class=\"inline-code\" href=\"docs/reference.html#animationSpeed\">animationSpeed</a> to configure the animations speed.",
             func: function () {
                 var abChess = {};
                 var options = {
@@ -28,7 +28,7 @@ window.addEventListener("load", function () {
             html: "<div id=\"chessboard\"></div>"
         },
         "clickable": {
-            description: "Use <a class=\"inline-code\" href=\"docs/doc.html#clickable\">clickable</a> to build a chessboard where the pieces cannot be moved by clicking.",
+            description: "Use <a class=\"inline-code\" href=\"docs/reference.html#clickable\">clickable</a> to build a chessboard where the pieces cannot be moved by clicking.",
             func: function () {
                 var abChess = {};
                 var options = {
@@ -40,7 +40,7 @@ window.addEventListener("load", function () {
             html: "<div id=\"chessboard\"></div>"
         },
         "coordinates": {
-            description: "Use <a class=\"inline-code\" href=\"docs/doc.html#coordinates\">coordinates</a> to enable or disable the coordinates border.",
+            description: "Use <a class=\"inline-code\" href=\"docs/reference.html#coordinates\">coordinates</a> to enable or disable the coordinates border.",
             func: function () {
                 var abChess = {};
                 var options = {
@@ -52,7 +52,7 @@ window.addEventListener("load", function () {
             html: "<div id=\"chessboard\"></div>"
         },
         "draggable": {
-            description: "Use <a class=\"inline-code\" href=\"docs/doc.html#draggable\">draggable</a> to build a chessboard where the pieces are not draggable.",
+            description: "Use <a class=\"inline-code\" href=\"docs/reference.html#draggable\">draggable</a> to build a chessboard where the pieces are not draggable.",
             func: function () {
                 var abChess = {};
                 var options = {
@@ -64,8 +64,8 @@ window.addEventListener("load", function () {
             html: "<div id=\"chessboard\"></div>"
         },
         "images": {
-            description: "Use <a class=\"inline-code\" href=\"docs/doc.html#imagesPath\">imagesPath</a> " +
-                "and <a class=\"inline-code\" href=\"docs/doc.html#imagesExtension\">imagesExtension</a> to change the pieces images.",
+            description: "Use <a class=\"inline-code\" href=\"docs/reference.html#imagesPath\">imagesPath</a> " +
+                "and <a class=\"inline-code\" href=\"docs/reference.html#imagesExtension\">imagesExtension</a> to change the pieces images.",
             func: function () {
                 var abChess = {};
                 var options = {
@@ -78,7 +78,7 @@ window.addEventListener("load", function () {
             html: "<div id=\"chessboard\"></div>"
         },
         "legal-marks-color": {
-            description: "Use <a class=\"inline-code\" href=\"docs/doc.html#legalMarksColor\">legalMarksColor</a> to change the CSS color of the legal moves indications.",
+            description: "Use <a class=\"inline-code\" href=\"docs/reference.html#legalMarksColor\">legalMarksColor</a> to change the CSS color of the legal moves indications.",
             func: function () {
                 var abChess = {};
                 var options = {
@@ -90,7 +90,7 @@ window.addEventListener("load", function () {
             html: "<div id=\"chessboard\"></div>"
         },
         "mark-check": {
-            description: "Use <a class=\"inline-code\" href=\"docs/doc.html#markCheck\">markCheck</a> to enable or disable the check indication.",
+            description: "Use <a class=\"inline-code\" href=\"docs/reference.html#markCheck\">markCheck</a> to enable or disable the check indication.",
             func: function () {
                 var abChess = {};
                 var options = {
@@ -102,7 +102,7 @@ window.addEventListener("load", function () {
             html: "<div id=\"chessboard\"></div>"
         },
         "mark-last-move": {
-            description: "Use <a class=\"inline-code\" href=\"docs/doc.html#markLastMove\">markLastMove</a> to enable or disable the last move indication.",
+            description: "Use <a class=\"inline-code\" href=\"docs/reference.html#markLastMove\">markLastMove</a> to enable or disable the last move indication.",
             func: function () {
                 var abChess = {};
                 var options = {
@@ -114,7 +114,7 @@ window.addEventListener("load", function () {
             html: "<div id=\"chessboard\"></div>"
         },
         "mark-legal-squares": {
-            description: "Use <a class=\"inline-code\" href=\"docs/doc.html#markLegalSquares\">markLegalSquares</a> to enable or disable the legal moves indications.",
+            description: "Use <a class=\"inline-code\" href=\"docs/reference.html#markLegalSquares\">markLegalSquares</a> to enable or disable the legal moves indications.",
             func: function () {
                 var abChess = {};
                 var options = {
@@ -126,7 +126,7 @@ window.addEventListener("load", function () {
             html: "<div id=\"chessboard\"></div>"
         },
         "mark-overflown-square": {
-            description: "Use <a class=\"inline-code\" href=\"docs/doc.html#markOverflownSquare\">markOverflownSquare</a> to enable or disable the overflown square indication.",
+            description: "Use <a class=\"inline-code\" href=\"docs/reference.html#markOverflownSquare\">markOverflownSquare</a> to enable or disable the overflown square indication.",
             func: function () {
                 var abChess = {};
                 var options = {
@@ -138,7 +138,7 @@ window.addEventListener("load", function () {
             html: "<div id=\"chessboard\"></div>"
         },
         "mark-start-square": {
-            description: "Use <a class=\"inline-code\" href=\"docs/doc.html#markStartSquare\">markStartSquare</a> to enable or disable the start square indication.",
+            description: "Use <a class=\"inline-code\" href=\"docs/reference.html#markStartSquare\">markStartSquare</a> to enable or disable the start square indication.",
             func: function () {
                 var abChess = {};
                 var options = {
@@ -150,7 +150,7 @@ window.addEventListener("load", function () {
             html: "<div id=\"chessboard\"></div>"
         },
         "reversed": {
-            description: "Use <a class=\"inline-code\" href=\"docs/doc.html#reversed\">reversed</a> to build a chessboard from black's point of view.",
+            description: "Use <a class=\"inline-code\" href=\"docs/reference.html#reversed\">reversed</a> to build a chessboard from black's point of view.",
             func: function () {
                 var abChess = {};
                 var options = {
@@ -162,7 +162,7 @@ window.addEventListener("load", function () {
             html: "<div id=\"chessboard\"></div>"
         },
         "width": {
-            description: "Use <a class=\"inline-code\" href=\"docs/doc.html#width\">width</a> to configure the board width.",
+            description: "Use <a class=\"inline-code\" href=\"docs/reference.html#width\">width</a> to configure the board width.",
             func: function () {
                 var abChess = {};
                 var options = {
@@ -174,7 +174,7 @@ window.addEventListener("load", function () {
             html: "<div id=\"chessboard\"></div>"
         },
         "flip": {
-            description: "Use <a class=\"inline-code\" href=\"docs/doc.html#flip\">flip</a> to flip the board.",
+            description: "Use <a class=\"inline-code\" href=\"docs/reference.html#flip\">flip</a> to flip the board.",
             func: function () {
                 var abChess = {};
                 var flipButton = document.getElementById("flipButton");
@@ -186,7 +186,7 @@ window.addEventListener("load", function () {
                 "<button id=\"flipButton\" class=\"commands__button\" title=\"Flip the board\">&#8634;</button>"
         },
         "get-fen": {
-            description: "Use <a class=\"inline-code\" href=\"docs/doc.html#getFEN\">getFEN</a> to get the FEN string in a position of the game.",
+            description: "Use <a class=\"inline-code\" href=\"docs/reference.html#getFEN\">getFEN</a> to get the FEN string in a position of the game.",
             func: function () {
                 var abChess = {};
                 var fenCode = document.getElementById("fenCode");
@@ -203,9 +203,9 @@ window.addEventListener("load", function () {
                 "<div id=\"chessboard\"></div>"
         },
         "on-move-played": {
-            description: "Use <a class=\"inline-code\" href=\"docs/doc.html#onMovePlayed\">onMovePlayed</a>,"+
-            " <a class=\"inline-code\" href=\"docs/doc.html#getActiveColor\">getActiveColor</a>," +
-            " and <a class=\"inline-code\" href=\"docs/doc.html#isCheck\">isCheck</a>" +
+            description: "Use <a class=\"inline-code\" href=\"docs/reference.html#onMovePlayed\">onMovePlayed</a>,"+
+            " <a class=\"inline-code\" href=\"docs/reference.html#getActiveColor\">getActiveColor</a>," +
+            " and <a class=\"inline-code\" href=\"docs/reference.html#isCheck\">isCheck</a>" +
             " to display the game status on each move.",
             func: function () {
                 var abChess = {};
@@ -231,7 +231,7 @@ window.addEventListener("load", function () {
                 "<div id=\"chessboard\"></div>"
         },
         "play": {
-            description: "Use <a class=\"inline-code\" href=\"docs/doc.html#play\">play</a> to play a move.",
+            description: "Use <a class=\"inline-code\" href=\"docs/reference.html#play\">play</a> to play a move.",
             func: function () {
                 var abChess = {};
                 var d4Button = document.getElementById("d4Button");
@@ -255,8 +255,8 @@ window.addEventListener("load", function () {
 
         },
         "set-fen": {
-            description: "Use <a class=\"inline-code\" href=\"docs/doc.html#isValidFEN\">isValidFEN</a>" +
-                " and <a class=\"inline-code\" href=\"docs/doc.html#setFEN\">setFEN</a>" +
+            description: "Use <a class=\"inline-code\" href=\"docs/reference.html#isValidFEN\">isValidFEN</a>" +
+                " and <a class=\"inline-code\" href=\"docs/reference.html#setFEN\">setFEN</a>" +
                 " to set a position with a FEN string parameter.",
             func: function () {
                 var abChess = {};
@@ -273,10 +273,10 @@ window.addEventListener("load", function () {
             html: "<div id=\"chessboard\"></div>"
         },
         "pgn-viewer": {
-            description: "Use <a class=\"inline-code\" href=\"docs/doc.html#isValidPGN\">isValidPGN</a>," +
-                " <a class=\"inline-code\" href=\"docs/doc.html#setPGN\">setPGN</a>," +
-                " <a class=\"inline-code\" href=\"docs/doc.html#getMovesPGN\">getMovesPGN</a>" +
-                " and <a class=\"inline-code\" href=\"docs/doc.html#view\">view</a>" +
+            description: "Use <a class=\"inline-code\" href=\"docs/reference.html#isValidPGN\">isValidPGN</a>," +
+                " <a class=\"inline-code\" href=\"docs/reference.html#setPGN\">setPGN</a>," +
+                " <a class=\"inline-code\" href=\"docs/reference.html#getMovesPGN\">getMovesPGN</a>" +
+                " and <a class=\"inline-code\" href=\"docs/reference.html#view\">view</a>" +
                 " to build a PGN viewer.",
             func: function () {
                 var abChess = {};
@@ -388,11 +388,11 @@ window.addEventListener("load", function () {
                 "<div id=\"moves-div\"></div>"
         },
         "random-moves": {
-            description: "Use <a class=\"inline-code\" href=\"docs/doc.html#getLegalMoves\">getLegalMoves</a>," +
-                " <a class=\"inline-code\" href=\"docs/doc.html#is50Moves\">is50Moves</a>," +
-                " <a class=\"inline-code\" href=\"docs/doc.html#isCheckmate\">isCheckmate</a>," +
-                " <a class=\"inline-code\" href=\"docs/doc.html#isInsufficientMaterial\">isInsufficientMaterial</a>," +
-                " and <a class=\"inline-code\" href=\"docs/doc.html#isStalemate\">isStalemate</a>" +
+            description: "Use <a class=\"inline-code\" href=\"docs/reference.html#getLegalMoves\">getLegalMoves</a>," +
+                " <a class=\"inline-code\" href=\"docs/reference.html#is50Moves\">is50Moves</a>," +
+                " <a class=\"inline-code\" href=\"docs/reference.html#isCheckmate\">isCheckmate</a>," +
+                " <a class=\"inline-code\" href=\"docs/reference.html#isInsufficientMaterial\">isInsufficientMaterial</a>," +
+                " and <a class=\"inline-code\" href=\"docs/reference.html#isStalemate\">isStalemate</a>" +
                 " to make a automated random game.",
             func: function () {
                 var abChess = {};
