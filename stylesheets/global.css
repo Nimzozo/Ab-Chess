@@ -1,8 +1,5 @@
-* {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
 html {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     height: 100%;
 }
 
@@ -72,13 +69,14 @@ footer {
     position: absolute;
     bottom: -300px;
     background-color: steelblue;
-    color: lightblue;
     width: 100%;
 }
 
 #footer-inside {
     width: 72%;
     margin: auto;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: lightblue;
 }
 
 .footer__block {
@@ -89,8 +87,9 @@ footer {
 }
 
 .footer__header {
-    font-family: Arial, Helvetica, sans-serif;
     margin: 10%;
+    font-size: 1em;
+    font-weight: normal;
 }
 
 .footer__p {
