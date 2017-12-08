@@ -247,7 +247,9 @@ window.addEventListener("load", function () {
 
         },
         "set-fen": {
-            description: "Use <a class=\"inline-code\" href=\"docs/doc.html#setFEN\">setFEN</a> to set a position with a FEN string parameter.",
+            description: "Use <a class=\"inline-code\" href=\"docs/doc.html#isValidFEN\">isValidFEN</a>" +
+                " and <a class=\"inline-code\" href=\"docs/doc.html#setFEN\">setFEN</a>" +
+                " to set a position with a FEN string parameter.",
             func: function () {
                 var abChess = {};
                 var options = {
@@ -256,12 +258,18 @@ window.addEventListener("load", function () {
                 };
                 var saavedraFEN = "8/8/1KP5/3r4/8/8/8/k7 w - - 0 1";
                 abChess = new AbChess("chessboard", options);
-                abChess.setFEN(saavedraFEN);
+                if (abChess.isValidFEN(saavedraFEN)) {
+                    abChess.setFEN(saavedraFEN);
+                }
             },
             html: "<div id=\"chessboard\"></div>"
         },
         "pgn-viewer": {
-            description: "This PGN viewer allows you to import and navigate through a game.",
+            description: "Use <a class=\"inline-code\" href=\"docs/doc.html#isValidPGN\">isValidPGN</a>," +
+                " <a class=\"inline-code\" href=\"docs/doc.html#setPGN\">setPGN</a>," +
+                " <a class=\"inline-code\" href=\"docs/doc.html#getMovesPGN\">getMovesPGN</a>" +
+                " and <a class=\"inline-code\" href=\"docs/doc.html#view\">view</a>" +
+                " to build a PGN viewer.",
             func: function () {
                 var abChess = {};
                 var config = {
@@ -334,6 +342,10 @@ window.addEventListener("load", function () {
 
                 function importPGN() {
                     var pgn = pgnTextarea.value;
+                    if (!abChess.isValidPGN(pgn)) {
+                        alert("The PGN string is not valid");
+                        return;
+                    }
                     abChess.setPGN(pgn);
                     clearSpans();
                     moves = abChess.getMovesPGN();
@@ -368,7 +380,12 @@ window.addEventListener("load", function () {
                 "<div id=\"moves-div\"></div>"
         },
         "random-moves": {
-            description: "Who will win if we only play random legal moves ?",
+            description: "Use <a class=\"inline-code\" href=\"docs/doc.html#getLegalMoves\">getLegalMoves</a>," +
+                " <a class=\"inline-code\" href=\"docs/doc.html#is50Moves\">is50Moves</a>," +
+                " <a class=\"inline-code\" href=\"docs/doc.html#isCheckmate\">isCheckmate</a>," +
+                " <a class=\"inline-code\" href=\"docs/doc.html#isInsufficientMaterial\">isInsufficientMaterial</a>," +
+                " and <a class=\"inline-code\" href=\"docs/doc.html#isStalemate\">isStalemate</a>" +
+                " to make a automated random game.",
             func: function () {
                 var abChess = {};
                 var config = {
@@ -390,9 +407,9 @@ window.addEventListener("load", function () {
                     var promotion = chooseRandom(promotions);
                     abChess.play(move.start, move.end, promotion);
                     index += 1;
-                    if (abChess.isInsufficientMaterial(index) ||
-                        abChess.is50Moves(index) ||
+                    if (abChess.is50Moves(index) ||
                         abChess.isCheckmate(index) ||
+                        abChess.isInsufficientMaterial(index) ||
                         abChess.isStalemate(index)) {
                         return;
                     }
