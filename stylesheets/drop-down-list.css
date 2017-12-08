@@ -1,5 +1,5 @@
 /** drop-down-list.css
- * 2017-12-07
+ * 2017-12-08
  * Copyright (c) 2017 Nimzozo
  */
 
@@ -14,17 +14,21 @@
 }
 
 .drop-down-header::before {
-    content: "♖";
-    color: black;
+    content: "˃";
+    color: silver;
     position: relative;
-    left: -4px;
+    left: -8px;
+    font-weight: bold;
+    font-size: 1.1em;
 }
 
 .drop-down-header_open::before {
-    content: "♜";
-    color: black;
+    content: "˅";
+    color: dimgrey;
     position: relative;
-    left: -4px;
+    left: -8px;
+    font-weight: bold;
+    font-size: 1.1em;
 }
 
 .drop-down-list {
@@ -35,14 +39,15 @@
     list-style-type: none;
     margin: 0;
     padding: 0;
-    text-indent: 4px;
     font-size: .9em;
     display: block;
 }
 
 .drop-down-list__item {
+    position: relative;
     height: 20px;
     margin: 4px;
+    left: 28px;
     display: block;
 }
 
@@ -59,6 +64,6 @@
     font-weight: bold;
 }
 
-.drop-down-header:hover, .drop-down-list__link:hover {
+.drop-down-header:hover, .drop-down-header_open:hover, .drop-down-list__link:hover {
     color: dodgerblue;
 }
