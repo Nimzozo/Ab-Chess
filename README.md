@@ -1,3 +1,1 @@
-# AbChess GitHub pages
-
-## https://nimzozo.github.io/Ab-Chess/
+# [AbChess GitHub pages](https://nimzozo.github.io/Ab-Chess)
