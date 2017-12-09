@@ -29,6 +29,8 @@ h1, h2, h3 {
 .inline-block {
     display: inline-block;
     vertical-align: top;
+    margin: auto;
+    text-align: left;
 }
 
 .right {
@@ -75,7 +77,7 @@ footer {
 #footer-inside {
     width: 72%;
     margin: auto;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
     color: lightblue;
 }
 
@@ -84,16 +86,17 @@ footer {
     vertical-align: top;
     width: 33%;
     margin: 4% 0;
+    text-align: center;
 }
 
 .footer__header {
-    margin: 10%;
+    margin: 16px 0 32px 0;
     font-size: 1em;
     font-weight: normal;
 }
 
 .footer__p {
-    margin: 2% 10%;
+    margin: 16px 0;
 }
 
 .footer__link {

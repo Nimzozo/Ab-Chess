@@ -15,7 +15,7 @@
 
 h1 {
     color: white;
-    font-family: Cambria, Cochin, Georgia, Times, Times New Roman, serif;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: 3em;
     margin: 64px;
 }
@@ -60,7 +60,7 @@ h2 {
 .introduction__title {
     text-transform: uppercase;
     margin: 24px;
-    font-family: Cambria, Cochin, Georgia, Times, Times New Roman, serif
+    font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
 }
 
 .introduction__paragraph {
