@@ -1,22 +1,13 @@
-# Ab-Chess
+# AbChess
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/4cf8f39c2ee846b4ad7349dc5532efad)](https://www.codacy.com/app/Nimzozo/Ab-Chess?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Nimzozo/Ab-Chess&amp;utm_campaign=Badge_Grade)
 
-## Chess API for JavaScript
-
-Ab-Chess API for JavaScript provides the tools to build HTML playable chessboards with animated pieces.
-
-It lets you import, play and export a chessgame in the PGN notation.
-
-More informations are available on the [GitHub pages](https://nimzozo.github.io/Ab-Chess) :
-
-- [Documentation](https://nimzozo.github.io/Ab-Chess/docs/overview.html)
-- [Examples](https://nimzozo.github.io/Ab-Chess/examples.html)
-- [Releases](https://nimzozo.github.io/Ab-Chess/releases.html)
+AbChess API for JavaScript provides the tools to build HTML playable chessboards with animated pieces.
+It also lets you import, play and export chessgames with the PGN notation.
 
 ## Features
 
-- GUI :
+- Chessboard :
   - customizable board and pieces
   - playable pieces :
     - with two-clicks
@@ -49,30 +40,39 @@ More informations are available on the [GitHub pages](https://nimzozo.github.io/
   - input moves and get data
   - parse a PGN string and display the game
 
-## How to use
+## Getting started
 
 Download the latest release and simply follow these steps :
 
-- Load the CSS file.
+Load the CSS file.
 ```html
 <link rel="stylesheet" href="AbChess-x.x.x.css">
 ```
 
-- Add a chessboard container.
+Add a chessboard container.
 ```html
 <div id="chessboard"></div>
 ```
 
-- Load the JavaScript file.
+Load the JavaScript file.
 ```html
 <script src="AbChess-x.x.x.js"></script>
 ```
 
-- This simple script will display a chessboard with the default configuration.
+This script will display a chessboard with the default configuration.
 ```javascript
 var abChess = new AbChess("chessboard");
 abChess.setFEN();
 ```
+
+## Documentation
+
+More informations are available on the [GitHub pages](https://nimzozo.github.io/Ab-Chess) :
+
+- [Overview](https://nimzozo.github.io/Ab-Chess/docs/overview.html)
+- [API reference](https://nimzozo.github.io/Ab-Chess/docs/reference.html)
+- [Examples](https://nimzozo.github.io/Ab-Chess/examples.html)
+- [Releases](https://nimzozo.github.io/Ab-Chess/releases.html)
 
 ## License
 
