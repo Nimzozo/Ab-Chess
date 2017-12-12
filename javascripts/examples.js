@@ -409,14 +409,16 @@ window.addEventListener("load", function () {
                 " <a class=\"inline-code\" href=\"docs/reference.html#is50Moves\">is50Moves</a>," +
                 " <a class=\"inline-code\" href=\"docs/reference.html#isCheckmate\">isCheckmate</a>," +
                 " <a class=\"inline-code\" href=\"docs/reference.html#isInsufficientMaterial\">isInsufficientMaterial</a>," +
-                " and <a class=\"inline-code\" href=\"docs/reference.html#isStalemate\">isStalemate</a>" +
-                " to make a automated random game.",
+                " <a class=\"inline-code\" href=\"docs/reference.html#isStalemate\">isStalemate</a>," +
+                " and <a class=\"inline-code\" href=\"docs/reference.html#getPGN\">getPGN</a>" +
+                " to make a automated random game and display its notation.",
             func: function () {
                 var abChess = {};
                 var config = {
                     clickable: false,
                     draggable: false
                 };
+                var gamePGN = document.getElementById("game-code");
                 var promotions = ["b", "n", "q", "r"];
                 abChess = new AbChess("chessboard", config);
                 abChess.setFEN();
@@ -431,6 +433,7 @@ window.addEventListener("load", function () {
                     var move = chooseRandom(legalMoves);
                     var promotion = chooseRandom(promotions);
                     abChess.play(move.start, move.end, promotion);
+                    gamePGN.innerText = abChess.getPGN();
                     index += 1;
                     if (abChess.is50Moves(index) ||
                         abChess.isCheckmate(index) ||
@@ -440,14 +443,15 @@ window.addEventListener("load", function () {
                     }
                     timeout = setTimeout(function () {
                         playRandomMove(index);
-                    }, 100);
+                    }, 400);
                 }
 
                 setTimeout(function () {
                     playRandomMove(0);
                 }, 100);
             },
-            html: "<div id=\"chessboard\"></div>\n"
+            html: "<div id=\"chessboard\"></div>\n" +
+                "<p id=\"game-code\"></p>"
         }
     };
     var timeout = 0;

@@ -26,10 +26,6 @@
     margin: 8px auto;
 }
 
-.commands {
-    margin: 10px auto;
-}
-
 .commands__button {
     cursor: pointer;
     display: inline-block;
@@ -63,7 +59,7 @@ textarea {
     display: block;
     background-color: lavender;
     font-family: "Lucida Console", Monaco, monospace;
-    font-size: .9em;
+    font-size: .75em;
     line-height: 20px;
     padding: 16px;
     overflow: auto;
@@ -87,25 +83,6 @@ textarea {
     background-color: white;
     border: 1px solid black;
     text-align: center;
-}
-
-.link {
-    text-decoration: none;
-    font-weight: bold;
-    color: steelblue;
-}
-
-.link:hover {
-    text-decoration: underline;
-}
-
-.game {
-    display: none;
-}
-
-#games-select {
-    display: block;
-    margin: 10px;
 }
 
 #moves-div {
