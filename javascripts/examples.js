@@ -203,14 +203,14 @@ window.addEventListener("load", function () {
                 "<div id=\"chessboard\"></div>"
         },
         "on-move-played": {
-            description: "Use <a class=\"inline-code\" href=\"docs/reference.html#onMovePlayed\">onMovePlayed</a>,"+
-            " <a class=\"inline-code\" href=\"docs/reference.html#getActiveColor\">getActiveColor</a>," +
-            " and <a class=\"inline-code\" href=\"docs/reference.html#isCheck\">isCheck</a>" +
-            " to display the game status on each move.",
+            description: "Use <a class=\"inline-code\" href=\"docs/reference.html#onMovePlayed\">onMovePlayed</a>," +
+                " <a class=\"inline-code\" href=\"docs/reference.html#getActiveColor\">getActiveColor</a>," +
+                " and <a class=\"inline-code\" href=\"docs/reference.html#isCheck\">isCheck</a>" +
+                " to display the game status on each move.",
             func: function () {
                 var abChess = {};
-                var statusElement = document.getElementById("statusElement");
                 var movesCount = 0;
+                var statusElement = document.getElementById("statusElement");
                 abChess = new AbChess("chessboard");
                 function updateStatus() {
                     var status = " to move.";
@@ -240,16 +240,14 @@ window.addEventListener("load", function () {
                 abChess.setFEN();
                 d4Button.addEventListener("click", function () {
                     abChess.play("d2", "d4");
-                    abChess.play("g8", "f6");
                 });
                 e4Button.addEventListener("click", function () {
                     abChess.play("e2", "e4");
-                    abChess.play("c7", "c5");
                 });
             },
             html: "<div>\n" +
-                "  <button id=\"d4Button\" class=\"commands__button\">d4 Nf6</button>\n" +
-                "  <button id=\"e4Button\" class=\"commands__button\">e4 c5</button>\n" +
+                "  <button id=\"d4Button\" class=\"commands__button\">d2-d4</button>\n" +
+                "  <button id=\"e4Button\" class=\"commands__button\">e2-e4</button>\n" +
                 "</div>\n" +
                 "<div id=\"chessboard\"></div>"
 
@@ -260,17 +258,36 @@ window.addEventListener("load", function () {
                 " to set a position with a FEN string parameter.",
             func: function () {
                 var abChess = {};
+                var emptyButton = document.getElementById("emptyButton");
+                var emptyFEN = "8/8/8/8/8/8/8/8 w - - 0 1";
                 var options = {
                     clickable: false,
                     draggable: false
                 };
+                var saavedraButton = document.getElementById("saavedraButton");
                 var saavedraFEN = "8/8/1KP5/3r4/8/8/8/k7 w - - 0 1";
+                var startButton = document.getElementById("startButton");
                 abChess = new AbChess("chessboard", options);
-                if (abChess.isValidFEN(saavedraFEN)) {
-                    abChess.setFEN(saavedraFEN);
-                }
+                emptyButton.addEventListener("click", function () {
+                    if (abChess.isValidFEN(emptyFEN)) {
+                        abChess.setFEN(emptyFEN);
+                    }
+                });
+                saavedraButton.addEventListener("click", function () {
+                    if (abChess.isValidFEN(saavedraFEN)) {
+                        abChess.setFEN(saavedraFEN);
+                    }
+                });
+                startButton.addEventListener("click", function () {
+                    abChess.setFEN();
+                });
             },
-            html: "<div id=\"chessboard\"></div>"
+            html: "<div>\n" +
+                "  <button id=\"emptyButton\" class=\"commands__button\">Empty</button>\n" +
+                "  <button id=\"startButton\" class=\"commands__button\">Start</button>\n" +
+                "  <button id=\"saavedraButton\" class=\"commands__button\">Saavedra</button>\n" +
+                "</div>\n" +
+                "<div id=\"chessboard\"></div>"
         },
         "pgn-viewer": {
             description: "Use <a class=\"inline-code\" href=\"docs/reference.html#isValidPGN\">isValidPGN</a>," +
