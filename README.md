@@ -26,7 +26,7 @@ AbChess is a lightweight JavaScript library for building playable HTML chessboar
   - promotion, en passant, castling, king opposition
   - detection: check, checkmate, stalemate, 50-move rule, insufficient material
 
- ### String validation
+### String validation
   - FEN position
   - PGN game
 
@@ -55,15 +55,15 @@ Add a chessboard container and initialize AbChess.
 </script>
 ```
 
-Use the documentation for the exact API methods and configuration options.
+See the docs for detailed API usage, configuration, and examples.
 
 ## Documentation
 
 Full documentation and examples are available on GitHub Pages:
 
-- [Overview](https://nimzozo.github.io/Ab-Chess/docs/overview.html)
+- [Overview](https://nimzozo.github.io/Ab-Chess/docs/overview.html) for setup
 - [API reference](https://nimzozo.github.io/Ab-Chess/docs/reference.html)
-- [Examples](https://nimzozo.github.io/Ab-Chess/examples.html)
+- [Examples](https://nimzozo.github.io/Ab-Chess/examples.html) for demos
 - [Releases](https://nimzozo.github.io/Ab-Chess/releases.html)
 
 ## Contributing
