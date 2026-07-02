@@ -16,22 +16,21 @@ AbChess is a lightweight JavaScript library for building playable HTML chessboar
 
 ## Features
 
-- Chessboard
+### Graphical user interface
   - customizable board and piece styles
   - playable moves with two-click or drag-and-drop
   - animations for moves, captures, illegal moves, and position changes
 
-- Chess logic
+### Chess logic
   - standard piece movements
   - promotion, en passant, castling, king opposition
-  - check detection
-  - result detection: checkmate, stalemate, 50-move rule, insufficient material
+  - detection: check, checkmate, stalemate, 50-move rule, insufficient material
 
-- Validation
-  - FEN position validation
-  - PGN game validation
+ ### String validation
+  - FEN position
+  - PGN game
 
-- Game support
+### Game support
   - input moves and retrieve game state
   - parse and display PGN games
 
@@ -54,13 +53,6 @@ Add a chessboard container and initialize AbChess.
   var abChess = new AbChess('chessboard');
   abChess.setFEN();
 </script>
-```
-
-Load a PGN string to display a game:
-
-```javascript
-var pgn = '[Event "Friendly"]\n1. e4 e5 2. Nf3 Nc6 3. Bb5 a6';
-abChess.loadPGN(pgn);
 ```
 
 Use the documentation for the exact API methods and configuration options.
